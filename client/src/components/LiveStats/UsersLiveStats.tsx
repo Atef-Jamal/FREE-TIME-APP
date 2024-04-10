@@ -8,7 +8,6 @@ import { TypeFrame, User } from "../../types";
 import { crown } from "../../assets";
 import { FaExclamationCircle } from "react-icons/fa";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 
 const UsersLiveStats = () => {
   const { currentUser, onlineUsers, socet } = useAppSelector(
@@ -82,9 +81,9 @@ const UsersLiveStats = () => {
     <div className="w-full flex items-center gap-2 xs:gap-[6px] overflow-y-scroll scrollbar-none p-2">
       {loading && (
         <>
-          {[...Array(20).keys()].map((_) => (
+          {[...Array(20).keys()].map((item) => (
             <div
-              key={uuidv4()}
+              key={item}
               className="flex items-center gap-2 bg-[#222339] px-3 py-2 xs:py-[6px] rounded-sm"
             >
               <Skeleton className="h-7 w-7 xs:h-5 xs:w-5" />
