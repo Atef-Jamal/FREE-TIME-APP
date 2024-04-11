@@ -3,7 +3,7 @@ import PublicMessage from "../models/publicMessage";
 import Notification from "../models/notification";
 import { io, onLineUsers } from "../server";
 
-export const getAllPublicMessages = async (req: Request, res: Response) => {
+export const getAllPublicMessages = async (_: Request, res: Response) => {
   try {
     const messages = await PublicMessage.find({}).populate([
       { path: "sender", select: "-password" },

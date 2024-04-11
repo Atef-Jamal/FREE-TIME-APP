@@ -5,7 +5,7 @@ import Notification from "../models/notification";
 import { io, onLineUsers } from "../server";
 import PublicMessage from "../models/publicMessage";
 
-export const getAllFrames = async (req: Request, res: Response) => {
+export const getAllFrames = async (_: Request, res: Response) => {
   try {
     const allFrames = await Frame.find();
     return res.status(200).json(allFrames);

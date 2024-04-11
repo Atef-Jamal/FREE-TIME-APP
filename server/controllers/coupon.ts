@@ -2,10 +2,9 @@ import Coupon from "../models/coupon";
 import { Request, Response } from "express";
 import User from "../models/user";
 
-export const getCoupon = async (req: Request, res: Response) => {
+export const getCoupon = async (_: Request, res: Response) => {
   try {
     const coupon = await Coupon.findOne({});
-
     if (!coupon) {
       return res
         .status(404)

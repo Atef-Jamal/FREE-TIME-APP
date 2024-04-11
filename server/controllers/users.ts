@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import Frame from "../models/frame";
 import { io } from "../server";
-import Coupon from "../models/coupon";
 
 export const allUsers = async (req: Request, res: Response) => {
   const limit = Number(req.query.limit);
@@ -129,12 +128,10 @@ export const collectDailyReward = async (req: Request, res: Response) => {
 
     const savedUser = await user.save();
 
-    return res
-      .status(200)
-      .json({
-        points: savedUser?.points,
-        dailyReward: savedUser?.dailyReward.days,
-      });
+    return res.status(200).json({
+      points: savedUser?.points,
+      dailyReward: savedUser?.dailyReward.days,
+    });
   } catch (error) {
     console.log(error);
     return res

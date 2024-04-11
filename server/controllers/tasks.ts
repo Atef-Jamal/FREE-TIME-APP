@@ -5,7 +5,7 @@ import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { io, onLineUsers } from "../server";
 
-export const getAllTasks = async (req: Request, res: Response) => {
+export const getAllTasks = async (_: Request, res: Response) => {
   try {
     const allTasks = await Task.find();
     return res.status(200).json(allTasks);

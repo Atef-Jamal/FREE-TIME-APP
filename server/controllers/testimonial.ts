@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Testimonial from "../models/testimonial";
 
-export const getAllTestimonials = async (req: Request, res: Response) => {
+export const getAllTestimonials = async (_: Request, res: Response) => {
   try {
     const allTestimonials = await Testimonial.find({}).populate(
       "user",
@@ -13,6 +13,7 @@ export const getAllTestimonials = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "failed to get all testimonials" });
   }
 };
+
 export const createTestimonial = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const { content, stars }: { content: string; stars: number } = req.body;
