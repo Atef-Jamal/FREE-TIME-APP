@@ -8,25 +8,19 @@ import {
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
-import axios from "axios";
+import { makeRequest } from "../../utils";
 
 const MobileSidebare = () => {
-  const { openSidebarMobile, currentUser, token, allUnReadedMesseges } =
+  const { openSidebarMobile, currentUser, allUnReadedMesseges } =
     useAppSelector((state) => state.stateManeger);
   const [offerExpanded, setOfferExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => {
     const getAllUnReadedMsgs = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/conversations/all/allunreadedcount",
-          { headers }
+        const response = await makeRequest.get(
+          "api/conversations/all/allunreadedcount"
         );
         dispatch(
           setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })

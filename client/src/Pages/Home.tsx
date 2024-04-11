@@ -43,7 +43,7 @@ import "swiper/css/scrollbar";
 import { getUserData, timeAgoFromMongoDBDate } from "../context/functions";
 import { User } from "../types";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import { makeRequest } from "../utils";
 
 interface TypeTestimonial {
   _id: string;
@@ -54,7 +54,7 @@ interface TypeTestimonial {
 }
 
 const Home = () => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -67,11 +67,6 @@ const Home = () => {
   const { t } = useTranslation();
 
   const searchValue = searchParams.get("ref");
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const showPassword = () => {
     setHidePassword((previous) => !previous);
@@ -130,13 +125,12 @@ const Home = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/testimonials",
+      const response = await makeRequest.post(
+        "api/testimonials",
         {
           content: comment,
           stars,
         },
-        { headers }
       );
       setComment("");
       setTestimonials((prev) => [response.data, ...prev]);
@@ -166,8 +160,8 @@ const Home = () => {
   useEffect(() => {
     const getAllTestimonials = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/testimonials"
+        const response = await makeRequest.get(
+          "api/testimonials"
         );
         setTestimonials(response.data.reverse());
       } catch (error) {

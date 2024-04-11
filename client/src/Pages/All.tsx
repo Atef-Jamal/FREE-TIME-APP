@@ -11,7 +11,7 @@ import { GameCard, Skeleton } from "../components";
 import { tasks } from "../helper/data";
 import { guessColor } from "../assets";
 import { TypeGame } from "../types";
-import axios from "axios";
+import { makeRequest } from "../utils";
 
 const All = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -20,7 +20,7 @@ const All = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/tasks");
+        const response = await makeRequest.get("api/tasks");
         setFetchedTasks(response.data);
       } catch (err) {
         console.log(err);

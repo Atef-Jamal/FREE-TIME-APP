@@ -15,8 +15,8 @@ import { showPopup } from "../context/StateManeger";
 import desktopAffiliateBannerBg from "../assets/desktop-affiliate-banner-bg.png";
 import { BiCopy } from "react-icons/bi";
 import { FaAngleDoubleUp } from "react-icons/fa";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { makeRequest } from "../utils";
 
 interface TypeBounusCode {
   _id: string;
@@ -28,17 +28,13 @@ interface TypeBounusCode {
 }
 
 const Rewards = () => {
-  const { currentUser, currentUserIsLoading, resizeSidebare, token } =
-    useAppSelector((state) => state.stateManeger);
+  const { currentUser, currentUserIsLoading, resizeSidebare } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [otherDays, setOtherDays] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
   const dispatch = useAppDispatch();
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const getOtherDays = () => {
     if (currentUser) {
@@ -65,9 +61,7 @@ const Rewards = () => {
     }
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/coupons", {
-        headers,
-      });
+      const response = await makeRequest.get("api/coupons");
       setBonusCode(response.data);
     } catch (err) {
       console.log(err);

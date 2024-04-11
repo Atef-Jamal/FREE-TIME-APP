@@ -15,8 +15,8 @@ import EachActivity from "../components/Others/EachActivity";
 import verifiedIcon from "../assets/verified-icon.png";
 import { FcFrame } from "react-icons/fc";
 import { FcBusinessman } from "react-icons/fc";
-import axios from "axios";
 import { showPopup } from "../context/StateManeger";
+import { makeRequest } from "../utils";
 
 const OtherUserProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -30,12 +30,8 @@ const OtherUserProfile = () => {
     const fetchUser = async () => {
       if (!loading) setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/users/${id}`
-        );
-        const activities = await axios.get(
-          `http://localhost:3000/api/notifications/${id}`
-        );
+        const response = await makeRequest.get(`api/users/${id}`);
+        const activities = await makeRequest.get(`api/notifications/${id}`);
         setUser(response.data);
         setUserActivities(activities.data);
       } catch (error) {

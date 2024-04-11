@@ -13,8 +13,8 @@ import GuessCardNotify from "./GuessCardNotify";
 import MentionNotify from "./MentionNotify";
 import NotificationBuyMusic from "./BuyMusicNotify";
 import EmailVerifiedNotify from "./EmailVerifiedNotify";
-import axios from "axios";
 import { Skeleton } from "../..";
+import { makeRequest } from "../../../utils";
 
 const NotificationMenu = ({
   notifications,
@@ -23,26 +23,19 @@ const NotificationMenu = ({
   notifications: TypeNotifications[];
   loadingNotifications: boolean;
 }) => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
 
   const dispatch = useAppDispatch();
 
   if (!currentUser) return;
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   useEffect(() => {
     const markNotificationasRead = async () => {
       try {
-        await axios.patch(
-          "http://localhost:3000/api/notifications",
+        await makeRequest.patch(
+          "api/notifications",
           { ddd: "ddd" },
-          {
-            headers,
-          }
         );
         notifications.forEach((item) => (item.isRead = true));
       } catch (error) {

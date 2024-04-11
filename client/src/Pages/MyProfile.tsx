@@ -24,13 +24,11 @@ import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
 import { TypeFrame, TypeNotifications } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { MusicCard, UserImage } from "../components";
-import axios from "axios";
 import ProfileSettings from "../components/myProfile/ProfileSettings";
+import { makeRequest } from "../utils";
 
 const MyProfile = () => {
-  const { currentUser, songs, token } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, songs } = useAppSelector((state) => state.stateManeger);
   const [inputeRef, setInputRef] = useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [statistics, setStatistics] = useState<TypeNotifications[]>([]);
@@ -40,11 +38,6 @@ const MyProfile = () => {
   const musicsRef = useRef<HTMLDivElement>(null);
 
   const paramValue = searchParams.get("to");
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const dispatch = useAppDispatch();
 
@@ -71,10 +64,7 @@ const MyProfile = () => {
   useEffect(() => {
     const getStatistics = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/notifications",
-          { headers }
-        );
+        const response = await makeRequest.get("api/notifications");
         setStatistics(response.data);
       } catch (error) {
         console.log(error);
@@ -91,9 +81,8 @@ const MyProfile = () => {
       return;
     }
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/users/changephotoframe/${frameObject._id}`,
-        { headers }
+      const response = await makeRequest.get(
+        `api/users/changephotoframe/${frameObject._id}`
       );
       dispatch(setCurrentUser({ ...currentUser, activeFrame: response.data }));
       dispatch(
@@ -119,11 +108,8 @@ const MyProfile = () => {
       return;
     }
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/users/unselectuserphotoframe",
-        {
-          headers,
-        }
+      const response = await makeRequest.get(
+        "api/users/unselectuserphotoframe"
       );
       if (response.status === 200) {
         dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));

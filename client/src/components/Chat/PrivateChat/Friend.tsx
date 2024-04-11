@@ -4,8 +4,8 @@ import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { UserImage } from "../../../components";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
-import axios from "axios";
 import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
+import { makeRequest } from "../../../utils";
 
 const Friend = ({
   userInfo,
@@ -14,7 +14,7 @@ const Friend = ({
   userInfo: User;
   setResized: React.Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { token, socet, reFetchThisUserId, onlineUsers } = useAppSelector(
+  const {  socet, reFetchThisUserId, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const [user, setUser] = useState(userInfo);
@@ -24,16 +24,12 @@ const Friend = ({
   const [unReadedCount, setUnReadedCount] = useState<number>(0);
 
   const dispatch = useAppDispatch();
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
+
 
   const getRecentMessage = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/conversations/recentmessage/${user._id}`,
-        { headers }
+      const response = await makeRequest.get(
+        `api/conversations/recentmessage/${user._id}`,
       );
       setRecentMessage(response.data);
     } catch (error) {
@@ -43,9 +39,8 @@ const Friend = ({
 
   const getUnReadedMessagesCount = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/conversations/unreadedcount/${user._id}`,
-        { headers }
+      const response = await makeRequest.get(
+        `api/conversations/unreadedcount/${user._id}`,
       );
 
       setUnReadedCount(response.data.count);

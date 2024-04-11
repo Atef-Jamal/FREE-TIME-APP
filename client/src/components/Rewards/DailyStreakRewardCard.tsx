@@ -1,9 +1,9 @@
 import { BsExclamationCircle, BsExclamationOctagonFill } from "react-icons/bs";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import axios from "axios";
 import { useState } from "react";
 import Spinner from "../Others/Spinner";
+import { makeRequest } from "../../utils";
 
 interface TypeProps {
   day: number;
@@ -11,28 +11,23 @@ interface TypeProps {
   isMock: boolean;
 }
 const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isCollectedNow, setIsCollectedNow] = useState<boolean | undefined>(
     isCollected
   );
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const collect = async () => {
     if (isMock === false && currentUser) {
       setIsLoading(true);
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/coupons/collectdailyreward",
+        const response = await makeRequest.post(
+          "api/coupons/collectdailyreward",
           {
             day,
-          },
-          { headers }
+          }
         );
         console.log(response.data);
 
@@ -44,20 +39,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           })
         );
         setIsCollectedNow(true);
-
-        // const userData = await axios.get(
-        //   `http://localhost:3000/api/users/${currentUser._id}`,
-        //   { headers }
-        // );
-        // const updatedUser = await axios.patch(
-        //   `http://localhost:3000/api/users/${currentUser._id}`,
-        //   {
-        //     dailyReward: [...userData.data.dailyReward, number],
-        //     points: userData.data.points + reward,
-        //   },
-        //   { headers }
-        // );
-        // dispatch(setCurrentUser(updatedUser.data));
       } catch (err) {
         console.log("Failed to collect", err);
         dispatch(

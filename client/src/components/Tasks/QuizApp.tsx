@@ -2,15 +2,15 @@ import { MouseEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
-import axios from "axios";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
+import { makeRequest } from "../../utils";
 
 interface TypeProps {
   taskApp: TypeTaskApp;
 }
 
 const QuizApp = ({ taskApp }: TypeProps) => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [activeQuesition, setActiveQeustion] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [answers, setAnswers] = useState<string[]>([]);
@@ -24,11 +24,6 @@ const QuizApp = ({ taskApp }: TypeProps) => {
   let selected = "";
 
   const dispatch = useAppDispatch();
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const handlSelect = (
     e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
@@ -65,10 +60,9 @@ const QuizApp = ({ taskApp }: TypeProps) => {
       }
       if (error) setError("");
       if (!loading) setLoading(true);
-      const response = await axios.post(
-        `http://localhost:3000/api/tasks/completingtask/${taskApp._id}`,
+      const response = await makeRequest.post(
+        `api/tasks/completingtask/${taskApp._id}`,
         { answers: [...answers, selected] },
-        { headers }
       );
       if (response.data.corrects > response.data.wrongs) {
         dispatch(

@@ -33,7 +33,7 @@ import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
 
-import axios from "axios";
+import { makeRequest } from "../../utils";
 
 export interface TypeFormData {
   name: string;
@@ -127,8 +127,8 @@ const RegisterationForm = () => {
             spinner: true,
           })
         );
-        const axiosResponse = await axios.post(
-          `http://localhost:3000/api/auth/register?ref=${searchValue || ""}`,
+        const axiosResponse = await makeRequest.post(
+          `api/auth/register?ref=${searchValue || ""}`,
           {
             name: formData.name,
             email: formData.email,
@@ -216,8 +216,8 @@ const RegisterationForm = () => {
           })
         );
 
-        const axiosResponse = await axios.post(
-          `http://localhost:3000/api/auth/login`,
+        const axiosResponse = await makeRequest.post(
+          `api/auth/login`,
           {
             email: formData.email,
             password: formData.password,

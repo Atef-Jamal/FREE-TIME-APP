@@ -9,11 +9,12 @@ import {
   setRefetchUnReadedMessagesCount,
   showPopup,
 } from "../../../context/StateManeger";
-import axios from "axios";
+
 import PrivateMessageItem from "./PrivateMessageItem";
+import { makeRequest } from "../../../utils";
 // comment
 const ChatBody = () => {
-  const { currentUser, token, socet } = useAppSelector(
+  const { currentUser, socet } = useAppSelector(
     (state) => state.stateManeger
   );
   const { id } = useParams();
@@ -26,10 +27,6 @@ const ChatBody = () => {
   const [conversationReaded, setConversationReaded] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
   const body = {
     messageText: message,
   };
@@ -40,10 +37,9 @@ const ChatBody = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        `http://localhost:3000/api/conversations/${id}`,
+      const response = await makeRequest.post(
+        `api/conversations/${id}`,
         body,
-        { headers }
       );
       setMessage("");
       setMessages((prev) => [...prev, response.data]);
@@ -68,13 +64,11 @@ const ChatBody = () => {
         try {
           setError("");
           setLoading(true);
-          const fetchedUser = await axios.get(
-            `http://localhost:3000/api/users/${id}`,
-            { headers }
+          const fetchedUser = await makeRequest.get(
+            `api/users/${id}`,
           );
-          const response = await axios.get(
-            `http://localhost:3000/api/conversations/${id}`,
-            { headers }
+          const response = await makeRequest.get(
+            `api/conversations/${id}`,
           );
           setUser(fetchedUser.data);
           setMessages(response.data.messages);
@@ -138,12 +132,9 @@ const ChatBody = () => {
         return;
       }
       try {
-        const response = await axios.patch(
-          `http://localhost:3000/api/conversations/${id}`,
+        const response = await makeRequest.patch(
+          `api/conversations/${id}`,
           { FOR_CONSISTENCY: "FOR_CONSISTENCY" },
-          {
-            headers,
-          }
         );
         if (response.status === 200) {
           socet?.emit("conversation-readed", {

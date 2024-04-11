@@ -6,8 +6,8 @@ import { User } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { Welcome, Friend, Spinner } from "../components";
 import { IoClose } from "react-icons/io5";
-import axios from "axios";
 import { showPopup } from "../context/StateManeger";
+import { makeRequest } from "../utils";
 
 const PrivateChat = () => {
   const { currentUser, hiddenLiveStats, socet } = useAppSelector(
@@ -23,7 +23,7 @@ const PrivateChat = () => {
     const fetchAllUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3000/api/users");
+        const response = await makeRequest.get("api/users");
         setUsers(response.data);
       } catch (err) {
         console.log(err);

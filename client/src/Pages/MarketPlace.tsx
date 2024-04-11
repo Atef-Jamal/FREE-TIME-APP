@@ -4,8 +4,8 @@ import { BsExclamationOctagonFill } from "react-icons/bs";
 import { showPopup } from "../context/StateManeger";
 import { TypeFrame } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import axios from "axios";
 import FrameItem from "../components/MarketPlace/FrameItem";
+import { makeRequest } from "../utils";
 
 const MarketPlace = () => {
   const { resizeSidebare, currentUser, currentUserIsLoading } = useAppSelector(
@@ -18,7 +18,7 @@ const MarketPlace = () => {
   useEffect(() => {
     const getFrames = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/frames");
+        const response = await makeRequest.get("api/frames");
         setFrames(response.data);
       } catch (err) {
         dispatch(

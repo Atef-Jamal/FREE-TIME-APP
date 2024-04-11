@@ -21,60 +21,17 @@ const ReferrerNotify = ({
   isCollected,
   referredUser,
 }: PropType) => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   if (!currentUser) return;
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
-
-  // const collectRewardd = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await axios.patch(
-  //       `http://localhost:3000/api/notifications/collect/${_id}`,
-  //       {
-  //         FOR_CONSISTENCY: "FOR_CONSISTENCY",
-  //       },
-  //       { headers }
-  //     );
-  //     setIsRewadCollected(response.data.isCollected);
-  //     dispatch(
-  //       setCurrentUser({
-  //         ...currentUser,
-  //         points: currentUser.points + response.data.prize,
-  //       })
-  //     );
-  //     dispatch(
-  //       showPopup({
-  //         status: true,
-  //         message: "collected successfully ",
-  //         icon: <GoCheckCircleFill />,
-  //       })
-  //     );
-  //   } catch (err) {
-  //     console.log(err);
-  //     dispatch(
-  //       showPopup({
-  //         status: true,
-  //         message: "Failed to Collect ",
-  //         icon: <BsExclamationOctagonFill />,
-  //       })
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const collect = async () => {
     setIsLoading(true);
     try {
-      const response = await collectReward(_id, headers);
+      const response = await collectReward(_id);
       setIsRewadCollected(response.isCollected);
       dispatch(
         setCurrentUser({

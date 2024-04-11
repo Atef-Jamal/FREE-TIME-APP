@@ -11,26 +11,17 @@ import { CgPushDown } from "react-icons/cg";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import bonusImage from "../../assets/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
-import axios from "axios";
 import { IoClose } from "react-icons/io5";
+import { makeRequest } from "../../utils";
 
 const ApplyCoupon = () => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [openHelp, setOpenHelp] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-
-  // const now = new Date();
-  // now.setDate(now.getDate() + 1);
-  // console.log(now);
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const handleApply = async () => {
     if (!currentUser) return;
@@ -41,12 +32,11 @@ const ApplyCoupon = () => {
     try {
       setError("");
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:3000/api/coupons",
+      const response = await makeRequest.post(
+        "api/coupons",
         {
           code,
         },
-        { headers }
       );
 
       if (response.status === 200) {

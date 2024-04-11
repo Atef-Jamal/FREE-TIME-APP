@@ -9,19 +9,14 @@ import {
   toggleResizeSidebare,
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import axios from "axios";
 import { TypePrivateMessage } from "../../types";
 import messageSoundSrc from "../../assets/messageSound.wav";
+import { makeRequest } from "../../utils";
 
 const Sidebar = () => {
-  const { resizeSidebare, currentUser, socet, token, allUnReadedMesseges } =
+  const { resizeSidebare, currentUser, socet, allUnReadedMesseges } =
     useAppSelector((state) => state.stateManeger);
   const [offerExpanded, setOfferExpanded] = useState(false);
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const dispatch = useAppDispatch();
 
@@ -34,9 +29,8 @@ const Sidebar = () => {
         return;
       }
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/conversations/all/allunreadedcount",
-          { headers }
+        const response = await makeRequest.get(
+          "api/conversations/all/allunreadedcount"
         );
         dispatch(
           setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })

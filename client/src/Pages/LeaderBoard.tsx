@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
-// import { db } from "../firebase";
-// import { QuerySnapshot, collection, getDocs } from "firebase/firestore";
 import { showPopup } from "../context/StateManeger";
 import { User } from "../types";
 import { useAppDispatch } from "../context/Hooks";
 import { UsersWinnerCard } from "../components";
-import axios from "axios";
+import { makeRequest } from "../utils";
 
 const LeaderBoard = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -17,8 +15,8 @@ const LeaderBoard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/users?limit=3"
+        const response = await makeRequest.get(
+          "api/users?limit=3"
         );
         setUsers(response.data);
       } catch (error) {

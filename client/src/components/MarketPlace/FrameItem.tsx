@@ -1,13 +1,14 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { Spinner } from "..";
+import { makeRequest } from "../../utils";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
-  const { currentUser, token, currentUserIsLoading } = useAppSelector(
+  const { currentUser, currentUserIsLoading } = useAppSelector(
     (state) => state.stateManeger
   );
   const purshasedByCurrentUser = singleFrame.purshasedBy.includes(
@@ -17,10 +18,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useAppDispatch();
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
+
 
   const buyNow = async (frameId: string) => {
     if (!currentUser) {
@@ -29,9 +27,8 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
     }
     setIsLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/frames/${frameId}`,
-        { headers }
+      const response = await makeRequest.get(
+        `api/frames/${frameId}`
       );
       if (response.status === 200) {
         dispatch(

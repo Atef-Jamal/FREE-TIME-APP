@@ -5,22 +5,20 @@ import {
   setCurrentUser,
   showPopup,
 } from "../../context/StateManeger";
-import axios from "axios";
+
 import VerifyEmailBox from "./VerifyEmailBox";
 import { IoClose } from "react-icons/io5";
+import { makeRequest } from "../../utils";
 
 const ProfileSettings = () => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
   const [openEnterCode, setOpenEnterCode] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
+
 
   const handleChangeName = (e: any) => {
     setNewName(e.target.value);
@@ -38,11 +36,9 @@ const ProfileSettings = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/changename",
-        { newName },
-        { headers }
-      );
+      const response = await makeRequest.post("api/auth/changename", {
+        newName,
+      });
       dispatch(setCurrentUser({ ...currentUser, name: response.data.name }));
       dispatch(
         showPopup({ status: true, message: "your name successfully changed" })
@@ -57,11 +53,10 @@ const ProfileSettings = () => {
       return;
     }
     try {
-      await axios.post(
-        "http://localhost:3000/api/auth/changepassword",
-        { newPass, enterdOldPass: oldPass },
-        { headers }
-      );
+      await makeRequest.post("api/auth/changepassword", {
+        newPass,
+        enterdOldPass: oldPass,
+      });
       dispatch(
         showPopup({
           status: true,

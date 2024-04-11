@@ -1,21 +1,17 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { CgClose } from "react-icons/cg";
-import axios from "axios";
+
 import { resetModel, showPopup } from "../../context/StateManeger";
 import { Spinner } from "..";
 import EnterVerificationCode from "./EnterVerificationCode";
+import { makeRequest } from "../../utils";
 
 const VerifyEmailBox = () => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [openEnterCode, setOpenEnterCode] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
 
   const sendVerificationCode = async () => {
     if (!currentUser || currentUser.emailVerified) {
@@ -29,13 +25,9 @@ const VerifyEmailBox = () => {
     }
     setLoading(true);
     try {
-      await axios.post(
-        `http://localhost:3000/api/auth/sendverificationemailcode`,
-        {
-          FOR_CONSISTENCY: "FOR_CONSISTENCY",
-        },
-        { headers }
-      );
+      await makeRequest.post(`api/auth/sendverificationemailcode`, {
+        FOR_CONSISTENCY: "FOR_CONSISTENCY",
+      });
       setOpenEnterCode(true);
     } catch (error) {
       console.log(error);

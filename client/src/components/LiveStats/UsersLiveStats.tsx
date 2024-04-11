@@ -7,7 +7,7 @@ import { UserImage, Skeleton } from "../../components";
 import { TypeFrame, User } from "../../types";
 import { crown } from "../../assets";
 import { FaExclamationCircle } from "react-icons/fa";
-import axios from "axios";
+import { makeRequest } from "../../utils";
 
 const UsersLiveStats = () => {
   const { currentUser, onlineUsers, socet } = useAppSelector(
@@ -23,7 +23,7 @@ const UsersLiveStats = () => {
       try {
         setError("");
         setLoading(true);
-        const response = await axios.get("http://localhost:3000/api/users");
+        const response = await makeRequest.get("api/users");
         setUsers(response.data);
         setLoading(false);
       } catch (error) {

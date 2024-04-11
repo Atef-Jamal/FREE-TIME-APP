@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-
-import axios from "axios";
+import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
+import { makeRequest } from "../../utils";
 
 const EnterVerificationCode = () => {
-  const { token } = useAppSelector((state) => state.stateManeger);
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
   const [first, setFirst] = useState("");
   const [second, setSecod] = useState("");
@@ -18,11 +16,6 @@ const EnterVerificationCode = () => {
   const fourtInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => {
     firstInput.current?.focus();
   }, []);
@@ -30,11 +23,7 @@ const EnterVerificationCode = () => {
   const handleVerify = async () => {
     const code = first + second + third + fourt;
     try {
-      await axios.post(
-        "http://localhost:3000/api/auth/verifiyemail",
-        { enteredCode: code },
-        { headers }
-      );
+      await makeRequest.post("api/auth/verifiyemail", { enteredCode: code });
       setSuccessfullyVerified(true);
     } catch (error) {
       console.log(error);

@@ -3,22 +3,19 @@ import { useParams } from "react-router-dom";
 import { GuessCardApp, QuizApp, Spinner } from "../components";
 import { useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
-import axios from "axios";
 import { TypeTaskApp } from "../types";
 import { FaExclamationCircle } from "react-icons/fa";
+import { makeRequest } from "../utils";
 
 const Playing = () => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser} = useAppSelector((state) => state.stateManeger);
   const [taskApp, setTaskApp] = useState<TypeTaskApp | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [isCompleted, setIsComleted] = useState<boolean>(false);
   const { id } = useParams();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
+
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -28,9 +25,8 @@ const Playing = () => {
             setIsLoading(true);
           }
           setError("");
-          const userResponse = await axios.get(
-            `http://localhost:3000/api/users/${currentUser._id}`,
-            { headers }
+          const userResponse = await makeRequest.get(
+            `api/users/${currentUser._id}`
           );
           const cHeckIsCompleted =
             userResponse.data.completedTasks.includes(id);
@@ -39,9 +35,8 @@ const Playing = () => {
             setIsComleted(true);
           }
 
-          const response = await axios.get(
-            `http://localhost:3000/api/tasks/${id}`,
-            { headers }
+          const response = await makeRequest.get(
+            `api/tasks/${id}`,
           );
 
           setTaskApp(response.data);

@@ -21,6 +21,7 @@ import { auth } from "../firebase";
 import { updateDocument } from "../context/functions";
 import io from "socket.io-client";
 import Model from "../components/Others/Model";
+import { Helmet } from "react-helmet-async";
 
 const Layout = () => {
   const {
@@ -78,7 +79,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (currentUser) {
-      const socet = io("http://localhost:3000", {
+      const socet = io(import.meta.env.VITE_BASE_URL, {
         query: { userId: currentUser?._id },
       });
 
@@ -115,6 +116,10 @@ const Layout = () => {
   // console.log(window.innerWidth);
   return (
     <div className="flex flex-col items-center justify-center relative">
+      <Helmet>
+        <title>FREE TIME</title>
+      </Helmet>
+
       <OpenPopup />
       {model.status && <Model children={model.children} />}
       <Navbare />

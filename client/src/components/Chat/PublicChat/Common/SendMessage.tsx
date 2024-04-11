@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { BsExclamationOctagonFill } from "react-icons/bs";
-// import { serverTimestamp } from "firebase/firestore";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { MentionListOfUsers } from "../../../../components";
-// import { addDocument } from "../../../../context/functions";
-import axios from "axios";
 import { TypePublicChatItem } from "../../../../types";
+import { makeRequest } from "../../../../utils";
 
 interface typeProps {
   stopScrolling: boolean;
@@ -17,7 +15,7 @@ interface typeProps {
 }
 
 const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
-  const { currentUser, token, socet } = useAppSelector(
+  const { currentUser, socet } = useAppSelector(
     (state) => state.stateManeger
   );
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,10 +24,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
+
   const body = {
     messageText: message,
     mentioned: user?._id,
@@ -54,10 +49,9 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       setStopScrolling(false);
     }
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/publicchat",
+      const response = await makeRequest.post(
+        "api/publicchat",
         body,
-        { headers }
       );
 
       setMessage("");

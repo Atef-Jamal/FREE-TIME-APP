@@ -9,8 +9,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import axios from "axios";
-// import { User } from "../types";
+
+import { makeRequest } from "../utils";
+
 
 export const validation = (
   values: string[],
@@ -142,13 +143,12 @@ export const timeAgoFromMongoDBDate = (dateArg: string): string => {
   }
 };
 
-export const collectReward = async (notificationId: string, headers: any) => {
-  const response = await axios.patch(
-    `http://localhost:3000/api/notifications/collect/${notificationId}`,
+export const collectReward = async (notificationId: string) => {
+  const response = await makeRequest.patch(
+    `api/notifications/collect/${notificationId}`,
     {
       FOR_CONSISTENCY: "FOR_CONSISTENCY",
     },
-    { headers }
   );
 
   return response.data;

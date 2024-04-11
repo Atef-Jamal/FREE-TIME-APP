@@ -7,12 +7,10 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { Message, ChatHeader, SendMessage } from "../../../../components";
 import { TypePublicChatItem } from "../../../../types";
 import FreeTime from "../Common/FreeTime";
-import axios from "axios";
+import { makeRequest } from "../../../../utils";
 
 const DisktopChat = () => {
-  const { isChatOpen, token, socet } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { isChatOpen, socet } = useAppSelector((state) => state.stateManeger);
   const [messages, setMessages] = useState<TypePublicChatItem[]>([]);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
@@ -23,18 +21,10 @@ const DisktopChat = () => {
 
   const searchValue = searchParams.get("messageid");
 
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const getMessages = await axios.get(
-          "http://localhost:3000/api/publicchat",
-          { headers }
-        );
+        const getMessages = await makeRequest.get("api/publicchat");
 
         setMessages(getMessages.data);
       } catch (error) {

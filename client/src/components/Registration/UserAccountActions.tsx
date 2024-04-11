@@ -16,12 +16,12 @@ import ProfileSkeleton from "../Others/ProfileSkeleton";
 import { UserImage, ProfileMenu, NotificationMenu } from "../../components";
 import { IoMdNotifications } from "react-icons/io";
 import { TypeNotifications } from "../../types";
-import axios from "axios";
 import ApplyCoupon from "../Others/ApplyCoupon";
 import notificationSound from "../../assets/notificationSound.wav";
+import { makeRequest } from "../../utils";
 
 const UserAccountActions = () => {
-  const { currentUser, currentUserIsLoading, openNotification, token, socet } =
+  const { currentUser, currentUserIsLoading, openNotification, socet } =
     useAppSelector((state) => state.stateManeger);
   const [initial, setInitial] = useState(true);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
@@ -29,6 +29,7 @@ const UserAccountActions = () => {
   const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   const dispatch = useAppDispatch();
+  const token = localStorage.getItem("token") || null;
 
   let notifySound = new Audio();
   notifySound.src = notificationSound;
@@ -37,20 +38,12 @@ const UserAccountActions = () => {
     (element) => element.isRead === false
   ).length;
 
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
         if (token) {
           dispatch(setCurrentUserIsLoading(true));
-          const response = await axios.get(
-            `http://localhost:3000/api/auth/currentuser`,
-            { headers }
-          );
+          const response = await makeRequest.get("api/auth/currentuser");
           dispatch(setCurrentUser(response.data));
           dispatch(setCurrentUserIsLoading(false));
         }
@@ -77,10 +70,7 @@ const UserAccountActions = () => {
     const fetchNotifications = async () => {
       try {
         if (currentUser) {
-          const response = await axios.get(
-            "http://localhost:3000/api/notifications",
-            { headers }
-          );
+          const response = await makeRequest.get("api/notifications");
           setNotifications(response.data);
         }
       } catch (error) {

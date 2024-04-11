@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Message, SendMessage } from "../../../../components";
-
 import FreeTime from "../Common/FreeTime";
 import { useAppSelector } from "../../../../context/Hooks";
-import axios from "axios";
 import { TypePublicChatItem } from "../../../../types";
+import { makeRequest } from "../../../../utils";
 
 const MobileChat = () => {
-  const { hiddenLiveStats, token, socet } = useAppSelector(
+  const { hiddenLiveStats, socet } = useAppSelector(
     (state) => state.stateManeger
   );
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -19,18 +18,10 @@ const MobileChat = () => {
 
   const searchValue = searchParams.get("messageid");
 
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const getMessages = await axios.get(
-          "http://localhost:3000/api/publicchat",
-          { headers }
-        );
+        const getMessages = await makeRequest.get("api/publicchat");
 
         setMessages(getMessages.data);
       } catch (error) {

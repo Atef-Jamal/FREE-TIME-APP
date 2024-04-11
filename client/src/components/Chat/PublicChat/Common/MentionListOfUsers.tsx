@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 // import { collection, getDocs } from "firebase/firestore";
 import { User } from "../../../../types";
 import { useAppSelector } from "../../../../context/Hooks";
-import axios from "axios";
+import { makeRequest } from "../../../../utils";
 
 interface TypeProps {
   setUser: React.Dispatch<
@@ -21,7 +21,7 @@ const MentionListOfUsers = ({ setUser }: TypeProps) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/users");
+        const response = await makeRequest.get("api/users");
         const excludCurrentAccount = response.data.filter(
           (item: User) => item._id !== currentUser._id
         );

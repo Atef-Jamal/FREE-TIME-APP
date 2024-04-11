@@ -1,6 +1,5 @@
 import { FaPlay } from "react-icons/fa6";
 import { IoIosPause } from "react-icons/io";
-import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
   setCurrentSong,
@@ -14,9 +13,10 @@ import { FaExclamation } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Spinner from "../Others/Spinner";
+import { makeRequest } from "../../utils";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
-  const { currentUser, currentSong, isPlaying, token } = useAppSelector(
+  const { currentUser, currentSong, isPlaying } = useAppSelector(
     (state) => state.stateManeger
   );
   const [isLoading, setIsLoading] = useState(false);
@@ -27,10 +27,6 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
   const handleClick = (song: any) => {
     dispatch(toggleMusicModal(true));
     const audioElement = document.getElementById("audioid") as HTMLAudioElement;
@@ -72,12 +68,11 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
     }
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `http://localhost:3000/api/songs/buysong/${songDetails.id}`,
+      const response = await makeRequest.post(
+        `api/songs/buysong/${songDetails.id}`,
         {
           musicTitle: songDetails.title,
-        },
-        { headers }
+        }
       );
       dispatch(
         setCurrentUser({

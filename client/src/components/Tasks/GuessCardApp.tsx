@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-
 import { FaCircleCheck } from "react-icons/fa6";
-import axios from "axios";
 import { TypeTaskApp } from "../../types";
 import { setCurrentUser } from "../../context/StateManeger";
 import { BsCheck2Circle } from "react-icons/bs";
+import { makeRequest } from "../../utils";
 
 const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
   const [score, setScore] = useState(0);
@@ -20,10 +18,7 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
   const allElements = document.querySelectorAll(".card-item");
 
   const dispatch = useAppDispatch();
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
+
 
   const handleSelect = (e: React.MouseEvent<HTMLDivElement>) => {
     if (stopp) {
@@ -66,12 +61,11 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
         try {
           setError("");
           setIsLoading(true);
-          const response = await axios.post(
-            `http://localhost:3000/api/tasks/completegame/${taskApp._id}`,
+          const response = await makeRequest.post(
+            `api/tasks/completegame/${taskApp._id}`,
             {
               status: "success",
             },
-            { headers }
           );
           if (response.status === 200) {
             setCompleted(true);

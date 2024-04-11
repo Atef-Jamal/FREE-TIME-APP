@@ -18,19 +18,10 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { GameCard, OfferParnterCard, Skeleton } from "../components";
 import { arrayoffers, tasks } from "../helper/data";
-import axios from "axios";
 import { TypeGame } from "../types";
+import { Helmet } from "react-helmet-async";
+import { makeRequest } from "../utils";
 
-// interface TypeGame {
-//   name: string;
-//   // type: string;
-//   category: string;
-//   prize: number;
-//   description: string;
-//   createdAt: Timestamp;
-//   id: string;
-//   image: string;
-// }
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -40,7 +31,7 @@ const Earn = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/tasks");
+        const response = await makeRequest.get("api/tasks");
         setFetchedTasks(response.data);
       } catch (err) {
         console.log(err);
@@ -61,6 +52,9 @@ const Earn = () => {
 
   return (
     <div className="flex flex-col p-4 lg:p-3 xs:p-2 xs:py-6 gap-4 bg-[#21223a]">
+      <Helmet>
+        <title>Earn</title>
+      </Helmet>
       <div className="flex flex-col mt-[6px]">
         <div className=" flex items-center gap-4 pl-4 mb-2 sm:pl-2 sm:justify-between sm:gap-0">
           <span className="text-gray-300 text-xl font-bold sm:ml-2 xs:text-lg ">

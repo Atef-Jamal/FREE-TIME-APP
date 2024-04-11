@@ -11,7 +11,7 @@ import { showPopup } from "../../../../context/StateManeger";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { UserImage } from "../../../../components";
-import axios from "axios";
+import { makeRequest } from "../../../../utils";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -27,7 +27,7 @@ const Message = ({
   mentionedMessageRef,
 }: TypeMessageProp) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const { currentUser, token, socet } = useAppSelector(
+  const { currentUser, socet } = useAppSelector(
     (state) => state.stateManeger
   );
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,11 +48,6 @@ const Message = ({
 
   const dispatch = useAppDispatch();
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
-
   const date = timeAgoFromMongoDBDate(createdAt.toString());
 
   const deleteMessage = async (paramId: string) => {
@@ -61,10 +56,9 @@ const Message = ({
       if (setStopScrolling !== undefined) {
         setStopScrolling(true);
       }
-      const response = await axios.patch(
-        `http://localhost:3000/api/publicchat/${paramId}`,
+      const response = await makeRequest.patch(
+        `api/publicchat/${paramId}`,
         { isDeleted: true },
-        { headers }
       );
       socet?.emit("interact-with-public-message", response.data);
     } catch (err) {
@@ -82,10 +76,9 @@ const Message = ({
 
   const reactToMessage = async (arg: "loves" | "likes" | "dislikes") => {
     try {
-      const response = await axios.patch(
-        `http://localhost:3000/api/publicchat/${_id}/${arg}`,
+      const response = await makeRequest.patch(
+        `api/publicchat/${_id}/${arg}`,
         { FOR_CONSISTENCY: "FOR_CONSISTENCY" },
-        { headers }
       );
       if (response.status === 200) {
         socet?.emit("interact-with-public-message", response.data);
