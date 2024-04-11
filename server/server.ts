@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -50,7 +50,7 @@ app.use("/api/testimonials", testimonialRoute);
 
 app.use("/api/coupons", couponRoute);
 
-app.use("/api/currentdate", (_, res) => {
+app.use("/api/currentdate", (_, res: Response) => {
   const date = new Date();
   return res.status(200).json(date);
 });
