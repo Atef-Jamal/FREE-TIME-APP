@@ -122,7 +122,7 @@ setInterval(async () => {
   });
 }, 24 * 60 * 60 * 1000);
 
-app.use(express.static(path.join(__dirname, "client", "dist")));
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
 app.get("*", (_: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
