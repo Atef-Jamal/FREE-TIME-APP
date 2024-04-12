@@ -12,7 +12,6 @@ import { db } from "../firebase";
 
 import { makeRequest } from "../utils";
 
-
 export const validation = (
   values: string[],
   signIn: boolean,
@@ -148,7 +147,7 @@ export const collectReward = async (notificationId: string) => {
     `api/notifications/collect/${notificationId}`,
     {
       FOR_CONSISTENCY: "FOR_CONSISTENCY",
-    },
+    }
   );
 
   return response.data;

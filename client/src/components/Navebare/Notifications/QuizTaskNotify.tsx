@@ -14,22 +14,17 @@ import { useState } from "react";
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 
 const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
-  const { currentUser, token } = useAppSelector((state) => state.stateManeger);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   if (!currentUser) return;
 
-  const headers = {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${token}`,
-  };
-
   const collect = async () => {
     setIsLoading(true);
     try {
-      const response = await collectReward(_id, headers);
+      const response = await collectReward(_id);
       setIsRewadCollected(response.isCollected);
       dispatch(
         setCurrentUser({

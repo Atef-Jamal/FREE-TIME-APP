@@ -1,49 +1,19 @@
-import { useEffect, useState } from "react";
-// import { quizImage } from "../assets";
-import { Error, GameCard, Skeleton } from "../components";
 import { useAppSelector } from "../context/Hooks";
-// import { tasks } from "../helper/data";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
-import { TypeGame } from "../types";
 
 const Quiz = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [fetchedTasks, setFetchedTasks] = useState<TypeGame[]>([]);
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        setError(false);
-        setLoading(true);
-        const response = await getDocs(
-          collection(db, import.meta.env.VITE_TASKS_COLLECTION_NAME)
-        );
-        let arr: TypeGame[] = [];
-        response.forEach((item) =>
-          arr.push({ ...item.data(), id: item.id } as TypeGame)
-        );
-        setFetchedTasks(arr);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        setError(true);
-
-      }
-    };
-    fetchTasks();
-  }, []);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<boolean>(false);
+  // const [fetchedTasks, setFetchedTasks] = useState<TypeGame[]>([]);
 
   return (
     <div className="m-4 p-4">
       <h1 className="font-bold text-lg text-gray-300 p-3 border-b mb-4">
         QUIZ APPS
       </h1>
-      {error && !loading && fetchedTasks.length === 0 && (
+      {/* {error && !loading && fetchedTasks.length === 0 && (
         <Error generalError={true} />
-      )}
+      )} */}
       <div
         className={`${
           resizeSidebare
@@ -51,7 +21,7 @@ const Quiz = () => {
             : "grid grid-cols-7 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 xs:grid-cols-2"
         } gap-3 p-2`}
       >
-        {loading &&
+        {/* {loading &&
           !error &&
           [...Array(21).keys()].map((i) => (
             <div
@@ -88,7 +58,7 @@ const Quiz = () => {
               firstItem={i === 0 ? true : false}
             />
           )
-        )}
+        )} */}
       </div>
     </div>
   );

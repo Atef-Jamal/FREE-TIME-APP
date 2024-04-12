@@ -1,9 +1,5 @@
 import { Link } from "react-router-dom";
 import { BsCheckCircleFill } from "react-icons/bs";
-// import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-
-// import { auth } from "../../firebase";
-// import { signOut } from "firebase/auth";
 import { logout, showPopup, toggleLiveStats } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 

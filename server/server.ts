@@ -14,6 +14,7 @@ import frameRoute from "./routes/frameRoute";
 import testimonialRoute from "./routes/testimonialRoute";
 import couponRoute from "./routes/couponRoute";
 import http from "http";
+import path from "path";
 import { Server } from "socket.io";
 import User from "./models/user";
 
@@ -121,7 +122,13 @@ setInterval(async () => {
   });
 }, 24 * 60 * 60 * 1000);
 
-server.listen(process.env.PORT, () => {
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+app.get("*", (_: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+
+server.listen(3000, () => {
   connecteToMongodb();
-  console.log(`success server Running  on port: ${process.env.PORT}`);
+  console.log(`success server Running  on port: 3000`);
 });

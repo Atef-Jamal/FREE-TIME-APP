@@ -13,10 +13,10 @@ const OffersSignUp = () => {
       >
         {tasks
           .filter((item) => item.category === "Signup")
-          .map(({ name, description, category, id, prize, image }) => (
+          .map(({ name, description, category, _id, prize, image }) => (
             <GameCard
-              key={id}
-              id={id}
+              key={_id}
+              _id={_id}
               name={name}
               image={image}
               description={description}

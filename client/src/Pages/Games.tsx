@@ -14,7 +14,7 @@ const Games = () => {
       >
         <GameCard
           key={"guessCards"}
-          id={"guesscard"}
+          _id={"guesscard"}
           name={"Guess Card"}
           image={guessColor}
           description={"guess cards and Earn Reawads immediatly"}
@@ -24,10 +24,10 @@ const Games = () => {
         />
         {tasks
           .filter((item) => item.category === "Game")
-          .map(({ name, description, category, id, prize, image }) => (
+          .map(({ name, description, category, _id, prize, image }) => (
             <GameCard
-              key={id}
-              id={id}
+              key={_id}
+              _id={_id}
               name={name}
               image={image}
               description={description}

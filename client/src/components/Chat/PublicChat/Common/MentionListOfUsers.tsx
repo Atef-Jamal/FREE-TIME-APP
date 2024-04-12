@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-// import { db } from "../../../../firebase";
-// import { collection, getDocs } from "firebase/firestore";
 import { User } from "../../../../types";
 import { useAppSelector } from "../../../../context/Hooks";
 import { makeRequest } from "../../../../utils";
