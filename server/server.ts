@@ -22,15 +22,9 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-app.use(
-  cors({
-    origin: "https://free-time-beta.vercel.app",
-  })
-);
+app.use(cors());
 
-export const io = new Server(server, {
-  cors: { origin: "https://free-time-beta.vercel.app" },
-});
+export const io = new Server(server);
 
 app.use(express.json());
 app.use(cookieParser());
