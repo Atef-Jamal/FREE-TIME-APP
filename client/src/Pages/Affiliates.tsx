@@ -21,8 +21,8 @@ const Affiliates = () => {
           We offer the most rewarding referral system in the market.
         </p>
         {!currentUser && (
-          <button className="bg-[#01D676] rounded-md w-[15%] sm:w-[70%] py-2 text-black font-bold tracking-wider mt-6">
-            Sign Un
+          <button className="bg-[#01D676] rounded-md w-40 py-2 text-black font-bold tracking-wider mt-6">
+            Sign Up
           </button>
         )}
         <img

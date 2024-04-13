@@ -25,7 +25,6 @@ const DisktopChat = () => {
     const fetchMessages = async () => {
       try {
         const getMessages = await makeRequest.get("api/publicchat");
-
         setMessages(getMessages.data);
       } catch (error) {
         console.log(error);
@@ -70,7 +69,7 @@ const DisktopChat = () => {
       };
     }
   }, [socet]);
-
+  console.log(messages);
   return (
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
       <span
@@ -119,6 +118,7 @@ const DisktopChat = () => {
       </div>
       <SendMessage
         setMessages={setMessages}
+        // messages={messages}
         stopScrolling={stopScrolling}
         setStopScrolling={setStopScrolling}
       />

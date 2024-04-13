@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { BsArrowDown, BsFillPersonFill } from "react-icons/bs";
-import { TfiKey } from "react-icons/tfi";
 import {
   toggleSigningMode,
   toggleRegisterForm,
@@ -19,6 +18,7 @@ import { TypeNotifications } from "../../types";
 import ApplyCoupon from "../Others/ApplyCoupon";
 import notificationSound from "../../assets/notificationSound.wav";
 import { makeRequest } from "../../utils";
+import { ImKey2 } from "react-icons/im";
 
 const UserAccountActions = () => {
   const { currentUser, currentUserIsLoading, openNotification, socet } =
@@ -101,15 +101,15 @@ const UserAccountActions = () => {
   return (
     <>
       {!currentUserIsLoading && !currentUser && !initial && (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 sm:gap-2">
           <button
             onClick={() => {
               dispatch(toggleRegisterForm(false));
               dispatch(toggleSigningMode(true));
             }}
-            className=" flex items-center gap-3 sm:gap-2 px-5 h-[50px] lg:h-[40px] rounded-md text-white bg-[#3b3b7eef] sm:tracking-wide sm:font-bold sm:py-1 sm:px-2 sm:h-[35px] sm:text-[10px] border border-gray-500"
+            className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ebeaea] bg-[#3b3b7eef] font-bold border border-gray-500 px-7 py-3 tracking-wider sm:py-2 sm:px-3 sm:text-sm"
           >
-            <BsFillPersonFill className="text-sm" />
+            <BsFillPersonFill className="text-xl sm:text-lg" />
             Sign In
           </button>
           <button
@@ -117,9 +117,9 @@ const UserAccountActions = () => {
               dispatch(toggleRegisterForm(false));
               dispatch(toggleSigningMode(false));
             }}
-            className="flex items-center gap-3 px-5 h-[50px] rounded-md text-white border border-gray-500 bg-[#e7ac5e] sm:h-[35px] sm:rounded-md sm:gap-2 lg:h-[40px] sm:font-bold sm:py-1 sm:px-2 sm:text-[10px]"
+            className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ffffff] bg-[#01D676] font-bold border border-gray-500 px-6 py-3 tracking-wider sm:p-2  sm:text-sm"
           >
-            <TfiKey className="text-sm" />
+            <ImKey2 />
             Sign Up
           </button>
         </div>

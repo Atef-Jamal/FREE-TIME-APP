@@ -107,6 +107,7 @@ const MobileChat = () => {
 
       <SendMessage
         setMessages={setMessages}
+        // messages={messages}
         stopScrolling={stopScrolling}
         setStopScrolling={setStopScrolling}
       />

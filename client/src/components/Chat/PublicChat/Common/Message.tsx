@@ -20,6 +20,8 @@ interface TypeMessageProp {
   setStopScrolling?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type TypeFieldName = "loves" | "likes" | "dislikes";
+
 const Message = ({
   singleMessage,
   setStopScrolling,
@@ -27,9 +29,7 @@ const Message = ({
   mentionedMessageRef,
 }: TypeMessageProp) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const { currentUser, socet } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const [searchParams, setSearchParams] = useSearchParams();
   const [messageItem, setMessageItem] =
     useState<TypePublicChatMessage>(singleMessage);
@@ -44,6 +44,7 @@ const Message = ({
     likes,
     loves,
     mentioned,
+    // helper,
   } = messageItem;
 
   const dispatch = useAppDispatch();
@@ -56,10 +57,9 @@ const Message = ({
       if (setStopScrolling !== undefined) {
         setStopScrolling(true);
       }
-      const response = await makeRequest.patch(
-        `api/publicchat/${paramId}`,
-        { isDeleted: true },
-      );
+      const response = await makeRequest.patch(`api/publicchat/${paramId}`, {
+        isDeleted: true,
+      });
       socet?.emit("interact-with-public-message", response.data);
     } catch (err) {
       dispatch(
@@ -74,11 +74,35 @@ const Message = ({
     }
   };
 
-  const reactToMessage = async (arg: "loves" | "likes" | "dislikes") => {
+  const reactToMessage = async (
+    fieldName: TypeFieldName,
+    otherFieldOne: TypeFieldName,
+    otherFieldTow: TypeFieldName
+  ) => {
+    if (!currentUser) {
+      dispatch(showPopup({ status: true, message: "sign in first" }));
+      return;
+    }
+
+    const updateMessage = (prev: TypePublicChatMessage) => ({
+      ...prev,
+      [fieldName]: prev[fieldName].includes(currentUser._id)
+        ? prev[fieldName].filter((item) => item !== currentUser._id)
+        : [...prev[fieldName], currentUser._id],
+      [otherFieldOne]: prev[otherFieldOne].includes(currentUser._id)
+        ? prev[otherFieldOne].filter((item) => item !== currentUser._id)
+        : prev[otherFieldOne],
+      [otherFieldTow]: prev[otherFieldTow].includes(currentUser._id)
+        ? prev[otherFieldTow].filter((item) => item !== currentUser._id)
+        : prev[otherFieldTow],
+    });
+
+    setMessageItem(updateMessage);
+
     try {
       const response = await makeRequest.patch(
-        `api/publicchat/${_id}/${arg}`,
-        { FOR_CONSISTENCY: "FOR_CONSISTENCY" },
+        `api/publicchat/${_id}/${fieldName}`,
+        { FOR_CONSISTENCY: "FOR_CONSISTENCY" }
       );
       if (response.status === 200) {
         socet?.emit("interact-with-public-message", response.data);
@@ -191,7 +215,7 @@ const Message = ({
           </p>
           <div className="flex items-center justify-end gap-3 ml-auto w-[130px]  ">
             <button
-              onClick={() => reactToMessage("dislikes")}
+              onClick={() => reactToMessage("dislikes", "likes", "loves")}
               className="flex items-center gap-1"
             >
               <AiTwotoneDislike className="text-sm opacity-40" />
@@ -200,7 +224,7 @@ const Message = ({
               </span>
             </button>
             <button
-              onClick={() => reactToMessage("likes")}
+              onClick={() => reactToMessage("likes", "dislikes", "loves")}
               className="flex items-center gap-1"
             >
               <AiTwotoneLike className="text-sm opacity-40" />
@@ -209,7 +233,7 @@ const Message = ({
               </span>
             </button>
             <button
-              onClick={() => reactToMessage("loves")}
+              onClick={() => reactToMessage("loves", "dislikes", "likes")}
               className="flex items-center gap-1 "
             >
               <FcLike className="text-sm opacity-70" />

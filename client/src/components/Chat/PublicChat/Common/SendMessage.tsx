@@ -12,18 +12,21 @@ interface typeProps {
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
   setMessages: React.Dispatch<React.SetStateAction<TypePublicChatItem[]>>;
+  // messages: TypePublicChatItem[];
 }
 
-const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
-  const { currentUser, socet } = useAppSelector(
-    (state) => state.stateManeger
-  );
+const SendMessage = ({
+  stopScrolling,
+  setStopScrolling,
+}: // messages,
+// setMessages,
+typeProps) => {
+  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const [loading, setLoading] = useState<boolean>(false);
   const [toggleMentionList, settoggleMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const dispatch = useAppDispatch();
-
 
   const body = {
     messageText: message,
@@ -34,6 +37,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
   const sendMessageHandler = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!currentUser) return;
+
     if (message.trim() === "") {
       dispatch(
         showPopup({
@@ -49,15 +53,21 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       setStopScrolling(false);
     }
     try {
-      const response = await makeRequest.post(
-        "api/publicchat",
-        body,
-      );
+      const response = await makeRequest.post("api/publicchat", body);
+      // const indexToReplace = messages.findIndex(
+      //   (item) => item._id === helperId
+      // );
+      // const clonedMessages = messages;
+      // console.log("before", clonedMessages);
+      // clonedMessages[indexToReplace] = response.data;
+      // console.log("after", clonedMessages);
+      // setMessages(clonedMessages);
 
       setMessage("");
       socet?.emit("public-message", response.data);
       setUser(null);
     } catch (err) {
+      console.log(err);
       dispatch(
         showPopup({
           status: true,

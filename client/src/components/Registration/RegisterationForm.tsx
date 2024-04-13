@@ -12,7 +12,6 @@ import { GrClose } from "react-icons/gr";
 import { IoMdPlay } from "react-icons/io";
 import {
   setCurrentUser,
-  resetPopup,
   showPopup,
   toggleSigningMode,
   toggleRegisterForm,
@@ -147,7 +146,6 @@ const RegisterationForm = () => {
             return searchParams;
           });
         }
-        window.location.reload();
         dispatch(
           showPopup({
             status: true,
@@ -155,6 +153,7 @@ const RegisterationForm = () => {
             icon: <BsCheckCircleFill />,
           })
         );
+        window.location.reload();
       } catch (err: any) {
         let msg = "";
         if (err.message.includes("email-already-in-use")) {
@@ -180,8 +179,6 @@ const RegisterationForm = () => {
       }
     } else {
       try {
-        // THIS Condition Validate Inputs Before Sending its Values to The Backend
-        // Start Valtidation.
         if (
           validation(
             [formData.email, formData.password],
@@ -206,8 +203,6 @@ const RegisterationForm = () => {
 
           return;
         }
-        // End Valtidation
-        // Start Submiting
         dispatch(
           showPopup({
             status: true,
@@ -216,38 +211,13 @@ const RegisterationForm = () => {
           })
         );
 
-        const axiosResponse = await makeRequest.post(
-          `api/auth/login`,
-          {
-            email: formData.email,
-            password: formData.password,
-          }
-        );
+        const axiosResponse = await makeRequest.post(`api/auth/login`, {
+          email: formData.email,
+          password: formData.password,
+        });
         if (axiosResponse.status === 200) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-
-        dispatch(
-          setCurrentUser({
-            email: axiosResponse.data._doc.email,
-            name: axiosResponse.data._doc.name,
-            createdAt: axiosResponse.data._doc.createdAt,
-            emailVerified: axiosResponse.data._doc.emailVerified,
-            points: axiosResponse.data._doc.points,
-            completedTasks: axiosResponse.data._doc.completedTasks,
-            myFrames: axiosResponse.data._doc.myFrames,
-            activeFrame: axiosResponse.data._doc.activeFrame,
-            dailyReward: axiosResponse.data._doc.dailyReward,
-            profilePicture: axiosResponse.data._doc.profilePicture,
-            mySongs: axiosResponse.data._doc.mySongs,
-            copouns: axiosResponse.data._doc.copouns,
-            _id: axiosResponse.data._doc._id,
-          })
-        );
-        setFormData(initialValue);
-        dispatch(toggleRegisterForm(false));
-        dispatch(resetPopup());
-        window.location.reload();
         dispatch(
           showPopup({
             status: true,
@@ -255,8 +225,7 @@ const RegisterationForm = () => {
             icon: <BsCheckCircleFill />,
           })
         );
-        setSubmiting(false);
-        // End Submiting
+        window.location.reload();
       } catch (err: any) {
         // handling Error messages
         let msg = "";
@@ -269,7 +238,6 @@ const RegisterationForm = () => {
         } else {
           msg = "Something Went Wrong, Try Again";
         }
-        // Show Custom toast message
         dispatch(
           showPopup({
             status: true,
@@ -326,7 +294,6 @@ const RegisterationForm = () => {
         navigate("/myprofile");
       }
     } catch (error) {
-      // console.log(error);
       dispatch(
         showPopup({
           status: true,

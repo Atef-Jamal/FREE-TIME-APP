@@ -123,19 +123,19 @@ table.leaderboard tbody tr td {
 
 @keyframes firstAnimation {
   from {
-    border-top-color: #3d3d5f;
+    background-color: #3d3d5f;
   }
   to {
-    border-top-color: #01d676;
+    background-color: #01d676;
   }
 }
 
 @keyframes secondAnimation {
   from {
-    border-top-color: #01d676;
+    background-color: #01d676;
   }
   to {
-    border-top-color: #3d3d5f;
+    background-color: #3d3d5f;
   }
 }
 

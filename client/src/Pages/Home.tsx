@@ -125,13 +125,10 @@ const Home = () => {
       return;
     }
     try {
-      const response = await makeRequest.post(
-        "api/testimonials",
-        {
-          content: comment,
-          stars,
-        },
-      );
+      const response = await makeRequest.post("api/testimonials", {
+        content: comment,
+        stars,
+      });
       setComment("");
       setTestimonials((prev) => [response.data, ...prev]);
       dispatch(
@@ -160,9 +157,7 @@ const Home = () => {
   useEffect(() => {
     const getAllTestimonials = async () => {
       try {
-        const response = await makeRequest.get(
-          "api/testimonials"
-        );
+        const response = await makeRequest.get("api/testimonials");
         setTestimonials(response.data.reverse());
       } catch (error) {
         console.log(error);

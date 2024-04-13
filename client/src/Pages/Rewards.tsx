@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
-import { dollarInHand, desktopAffiliateGraphicRight, crown } from "../assets";
+import { dollarInHand, desktopAffiliateGraphicRight } from "../assets";
 import { MdCardGiftcard } from "react-icons/md";
 import { MdOutlineGppMaybe } from "react-icons/md";
-import { IoIosHelpCircleOutline } from "react-icons/io";
 import { MdAppSettingsAlt } from "react-icons/md";
 import { BsCheckCircleFill, BsTwitter } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import {
-  TopWinsLast24Hours,
-  DailyStreakRewardCard,
-  Spinner,
-} from "../components";
+import { DailyStreakRewardCard, Spinner } from "../components";
 import { showPopup } from "../context/StateManeger";
 import desktopAffiliateBannerBg from "../assets/desktop-affiliate-banner-bg.png";
 import { BiCopy } from "react-icons/bi";
-import { FaAngleDoubleUp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { makeRequest } from "../utils";
+import Ladder from "../components/Rewards/Ladder";
 
 interface TypeBounusCode {
   _id: string;
@@ -90,8 +85,8 @@ const Rewards = () => {
   };
 
   return (
-    <div className="flex flex-col bg-[#242438] ">
-      <div className="flex justify-between items-center bg-[#242438] p-8 sm:flex-col sm:p-4 sm:items-start sm:gap-6 ">
+    <div className="flex flex-col bg-[#242438] gap-8 py-6">
+      <div className="flex justify-between items-center bg-[#242438] px-8 sm:flex-col sm:p-4 sm:items-start sm:gap-6">
         <div className="flex items-center gap-4">
           <img
             alt={""}
@@ -127,8 +122,8 @@ const Rewards = () => {
           </span>
         </button>
       </div>
-      <div className="flex gap-4 bg-[#242438] px-6 lg:px-2 py-10 rounded-b-lg sm:rounded-none sm:flex-col sm:px-3 ">
-        <div className="flex flex-col gap-4 w-[68%] sm:w-full  ">
+      <div className="flex gap-4 bg-[#242438] px-6 lg:px-2  rounded-b-lg sm:rounded-none sm:flex-col sm:px-3 ">
+        <div className="flex flex-col gap-4 w-[68%] max-w-[1500px] sm:w-full  ">
           <div className="relative rounded-lg h-[200px] overflow-hidden">
             <img
               src={desktopAffiliateBannerBg}
@@ -272,110 +267,7 @@ const Rewards = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-10 py-6 px-4 lg:px-2 bg-[#2C2C44] w-[42%] rounded-lg sm:w-full">
-          <div className="flex gap-2">
-            <h1 className="text-green-400 font-bold text-xl">
-              Daily Bonus Laddar
-            </h1>
-
-            <IoIosHelpCircleOutline />
-          </div>
-          <div className="relative flex flex-col bg-[#242438] rounded-md gap-3 overflow-hidden py-6">
-            <span className="relative w-[90%] mx-auto border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent">
-              <img
-                alt={""}
-                src={crown}
-                className="absolute -top-[76px] -right-[22px]  w-8   rotate-[40deg] z-[1]"
-              />
-              <span className="absolute -top-[40px] left-[37%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[83%] mx-auto">
-              <span className="absolute -top-[40px] left-[36%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[76%] mx-auto">
-              <span className="absolute -top-[40px] left-[35%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[69%] mx-auto">
-              <span className="absolute -top-[40px] left-[34%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[62%] mx-auto">
-              <span className="absolute -top-[40px] left-[32%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[55%] mx-auto">
-              <span className="absolute -top-[40px] left-[32%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[48%] mx-auto">
-              <span className="absolute -top-[40px] left-[30%] flex items-center gap-2 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="light__animation__one relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[41%] mx-auto">
-              <span className="absolute -top-[40px] left-[26%] flex items-center gap-1 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[34%] mx-auto">
-              <span className="absolute -top-[40px] left-[24%] flex items-center gap-1 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-            <span className="light__animation__two relative border-t-[60px] border-t-[#6ff16a] border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent w-[27%] mx-auto">
-              <span className="absolute -top-[40px] left-[20%] flex items-center gap-1 text-black font-bold">
-                <FaAngleDoubleUp className="rotate-180" /> 53.45
-              </span>
-            </span>
-          </div>
-          <div className="flex gap-4 lg:gap-2 justify-center items-center bg-[#242438] py-4">
-            <button className="bg-[#01D676] rounded-md text-white px-6 text-sm lg:px-4 py-2">
-              Double or 0
-            </button>
-            <button className="bg-[#01D676] rounded-md text-white px-8 text-sm lg:px-4 py-2">
-              Claim 10
-            </button>
-          </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <span className="text-xs ">Level 0</span>
-              <span className="text-xs ">Level 1</span>
-            </div>
-            <div className="relative reach__level w-full h-3 bg-[#242438] rounded-lg"></div>
-            <div className="flex justify-between px-5 mt-[-6px]">
-              <span className="text-xs text-yellow-200 ml-1">10</span>
-              <span className="text-[10px]">
-                Reach level 1 to Double or Claim your first daily reward{" "}
-              </span>
-              <span className="text-xs">10</span>
-            </div>
-          </div>
-          <div className="flex flex-col justify-center items-center bg-[#242438]  py-8 gap-6 ">
-            <h1 className="text-sm">Top Wins Last 24 Hours</h1>
-            <div className="flex gap-2 w-full px-2 ">
-              <TopWinsLast24Hours
-                name={"John"}
-                money={"22,963"}
-                color={"one"}
-              />
-              <TopWinsLast24Hours name={"Max"} money={"22,963"} color={"two"} />
-              <TopWinsLast24Hours
-                name={"Atef"}
-                money={"22,963"}
-                color={"three"}
-              />
-            </div>
-          </div>
-        </div>
+        <Ladder />
       </div>
     </div>
   );

@@ -4,8 +4,6 @@ import Error from "./Errors/Error";
 import Footer from "./Footer/Footer";
 import UsersWinnerCard from "./Leaderboard/UsersWinnerCard";
 import LiveStats from "./LiveStats/LiveStats";
-import SelectLang from "./LiveStats/SelectLang";
-import UsersLiveStats from "./LiveStats/UsersLiveStats";
 import Navbare from "./Navebare/Navbare";
 import NavebareBottom from "./Navebare/NavebareBottom";
 import NotificationMenu from "./Navebare/Notifications/NotificationMenu";
@@ -52,8 +50,6 @@ export {
   Footer,
   UsersWinnerCard,
   LiveStats,
-  SelectLang,
-  UsersLiveStats,
   Navbare,
   NavebareBottom,
   NotificationMenu,

@@ -69,7 +69,7 @@ const OtherUserProfile = () => {
     (item) => item.type === "REFERRER"
   ).length;
 
-  return user?._id === currentUser?._id ? (
+  return id === currentUser?._id ? (
     <Navigate to={"/myprofile"} />
   ) : (
     <>
