@@ -1,3 +1,4 @@
+import { lazy, useState } from "react";
 import { GoCheckCircleFill } from "react-icons/go";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { FcApproval } from "react-icons/fc";
@@ -8,8 +9,7 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeQuizAppNotify } from "../../../types";
-import { Spinner } from "../..";
-import { useState } from "react";
+const Spinner = lazy(() => import("../../Others/Spinner"));
 
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 
@@ -81,7 +81,7 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
           className="text-sm bg-[#53ec68ee] w-[100px] py-1 rounded-md border border-gray-700 ml-auto"
         >
           {isLoading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#533a70] border-l-[#533a70]" />
+            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "collect"
           )}

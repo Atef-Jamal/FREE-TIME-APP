@@ -1,4 +1,6 @@
-import { Skeleton } from "..";
+import { lazy } from "react";
+
+const Skeleton = lazy(() => import("../Others/Skeleton"))
 
 const ProfileSkeleton = () => {
   return (

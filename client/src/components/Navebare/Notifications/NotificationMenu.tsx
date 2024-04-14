@@ -1,19 +1,19 @@
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
 import { empty } from "../../../assets";
 import { CgCloseR } from "react-icons/cg";
 import { MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { toggleNotifications } from "../../../context/StateManeger";
 import { TypeNotifications } from "../../../types";
-import ReferrerNotify from "./ReferrerNotify";
-import BuyFrameNotify from "./BuyFrameNotify";
-import QuizTaskNotify from "./QuizTaskNotify";
-import AnnouncementNotify from "./AnnouncementNotify";
-import GuessCardNotify from "./GuessCardNotify";
-import MentionNotify from "./MentionNotify";
-import NotificationBuyMusic from "./BuyMusicNotify";
-import EmailVerifiedNotify from "./EmailVerifiedNotify";
-import { Skeleton } from "../..";
+const ReferrerNotify = lazy(() => import("./ReferrerNotify"));
+const BuyFrameNotify = lazy(() => import("./BuyFrameNotify"));
+const QuizTaskNotify = lazy(() => import("./QuizTaskNotify"));
+const AnnouncementNotify = lazy(() => import("./AnnouncementNotify"));
+const GuessCardNotify = lazy(() => import("./GuessCardNotify"));
+const MentionNotify = lazy(() => import("./MentionNotify"));
+const NotificationBuyMusic = lazy(() => import("./BuyMusicNotify"));
+const EmailVerifiedNotify = lazy(() => import("./EmailVerifiedNotify"));
+const  Skeleton =lazy(() => import("../../Others/Skeleton"))
 import { makeRequest } from "../../../utils";
 
 const NotificationMenu = ({

@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Message, SendMessage } from "../../../../components";
-import FreeTime from "../Common/FreeTime";
+
+const FreeTime = lazy(() => import("../Common/FreeTime"));
+const Message = lazy(() => import("../Common/Message"));
+const SendMessage = lazy(() => import("../Common/SendMessage"));
+
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types";
 import { makeRequest } from "../../../../utils";

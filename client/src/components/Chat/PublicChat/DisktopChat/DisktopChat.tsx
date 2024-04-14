@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { chatToggleButton } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { Message, ChatHeader, SendMessage } from "../../../../components";
+const Message = lazy(() => import("../Common/Message"));
+const ChatHeader = lazy(() => import("../Common/ChatHeader"));
+const SendMessage = lazy(() => import("../Common/SendMessage"));
+const FreeTime = lazy(() => import("../Common/FreeTime"));
 import { TypePublicChatItem } from "../../../../types";
-import FreeTime from "../Common/FreeTime";
 import { makeRequest } from "../../../../utils";
 
 const DisktopChat = () => {

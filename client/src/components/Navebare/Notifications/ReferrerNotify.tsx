@@ -1,3 +1,4 @@
+import { lazy, useState } from "react";
 import { GoCheckCircleFill } from "react-icons/go";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
@@ -9,8 +10,7 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Spinner } from "../..";
+const Spinner = lazy(() => import("../../Others/Spinner"));
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 
@@ -93,7 +93,7 @@ const ReferrerNotify = ({
           className="text-sm bg-[#53ec68ee] w-[100px] py-1 rounded-md border border-gray-700 ml-auto"
         >
           {isLoading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#533a70] border-l-[#533a70]" />
+            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "collect"
           )}

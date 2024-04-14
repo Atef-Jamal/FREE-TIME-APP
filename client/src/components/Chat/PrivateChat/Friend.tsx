@@ -1,8 +1,8 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, Suspense, lazy, useEffect, useState } from "react";
+const UserImage = lazy(() => import("../../../components/Others/UserImage"));
 import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { UserImage } from "../../../components";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
 import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
@@ -14,7 +14,7 @@ const Friend = ({
   userInfo: User;
   setResized: React.Dispatch<SetStateAction<boolean>>;
 }) => {
-  const {  socet, reFetchThisUserId, onlineUsers } = useAppSelector(
+  const { socet, reFetchThisUserId, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const [user, setUser] = useState(userInfo);
@@ -25,11 +25,10 @@ const Friend = ({
 
   const dispatch = useAppDispatch();
 
-
   const getRecentMessage = async () => {
     try {
       const response = await makeRequest.get(
-        `api/conversations/recentmessage/${user._id}`,
+        `api/conversations/recentmessage/${user._id}`
       );
       setRecentMessage(response.data);
     } catch (error) {
@@ -40,7 +39,7 @@ const Friend = ({
   const getUnReadedMessagesCount = async () => {
     try {
       const response = await makeRequest.get(
-        `api/conversations/unreadedcount/${user._id}`,
+        `api/conversations/unreadedcount/${user._id}`
       );
 
       setUnReadedCount(response.data.count);
@@ -119,7 +118,9 @@ const Friend = ({
     >
       <div className="w-full flex gap-2">
         <div className="w-[50px] h-[35px] sm:w-[30px] sm:h-[25px]">
-          <UserImage user={user} />
+          <Suspense>
+            <UserImage user={user} />
+          </Suspense>
         </div>
 
         <div className="flex flex-col w-full overflow-hidden ">

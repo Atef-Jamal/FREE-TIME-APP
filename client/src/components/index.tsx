@@ -7,11 +7,10 @@ import LiveStats from "./LiveStats/LiveStats";
 import Navbare from "./Navebare/Navbare";
 import NavebareBottom from "./Navebare/NavebareBottom";
 import NotificationMenu from "./Navebare/Notifications/NotificationMenu";
-import ProfileMenu from "./Navebare/ProfileMenu";
+import ProfileMenu from "./Navebare/ProfileAccount/ProfileMenu";
 import GameCard from "./Offers/GameCard";
 import OfferParnterCard from "./Offers/OfferParnterCard";
-import RegisterationForm from "./Registration/RegisterationForm";
-import DailyBonusCard from "./Rewards/DailyBonusCard";
+import RegisterationForm from "./Navebare/Registration/RegisterationForm";
 import DailyStreakRewardCard from "./Rewards/DailyStreakRewardCard";
 import TopWinsLast24Hours from "./Rewards/TopWinsLast24Hours";
 import Sidebar from "./Sidebar/Sidebar";
@@ -26,7 +25,6 @@ import Friend from "./Chat/PrivateChat/Friend";
 import MentionListOfUsers from "./Chat/PublicChat/Common/MentionListOfUsers";
 import Message from "./Chat/PublicChat/Common/Message";
 import SendMessage from "./Chat/PublicChat/Common/SendMessage";
-import UserImage from "./Others/UserImage";
 import Skeleton from "./Others/Skeleton";
 import OpenPopup from "./Others/OpenPopup";
 import MusicCard from "./Music/MusicCard";
@@ -42,7 +40,6 @@ export {
   Message,
   SendMessage,
   OpenPopup,
-  UserImage,
   MentionListOfUsers,
   Spinner,
   Skeleton,
@@ -57,7 +54,6 @@ export {
   GameCard,
   OfferParnterCard,
   RegisterationForm,
-  DailyBonusCard,
   DailyStreakRewardCard,
   TopWinsLast24Hours,
   Sidebar,

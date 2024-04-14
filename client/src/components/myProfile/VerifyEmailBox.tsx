@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { CgClose } from "react-icons/cg";
-
 import { resetModel, showPopup } from "../../context/StateManeger";
-import { Spinner } from "..";
-import EnterVerificationCode from "./EnterVerificationCode";
+const Spinner = lazy(() => import("../Others/Spinner"));
+const EnterVerificationCode = lazy(() => import("./EnterVerificationCode"));
 import { makeRequest } from "../../utils";
 
 const VerifyEmailBox = () => {
@@ -57,7 +56,7 @@ const VerifyEmailBox = () => {
           className="bg-[#93e672] w-[140px] sm:w-[80px]  text-blue-950 py-1 rounded-md flex items-center justify-center border border-[#9b4848]"
         >
           {loading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#533a70] border-l-[#533a70]" />
+            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "Send"
           )}

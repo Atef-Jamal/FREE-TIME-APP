@@ -1,6 +1,6 @@
+import { lazy, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { Spinner } from "../../components";
-import { useEffect } from "react";
+const  Spinner = lazy(() => import("../Others/Spinner"))
 import { resetPopup } from "../../context/StateManeger";
 
 const OpenPopup = () => {

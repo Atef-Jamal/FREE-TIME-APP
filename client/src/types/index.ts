@@ -117,6 +117,7 @@ export interface User {
 export interface TypeInitialState {
   currentUser: User | null;
   currentUserIsLoading: boolean;
+  currentUserIsFetched: boolean;
   openRegisterForm: boolean;
   openNotification: boolean;
   isChatOpen: boolean;
@@ -124,10 +125,10 @@ export interface TypeInitialState {
   openSidebarMobile: boolean;
   openPopup: TypePopup;
   resizeSidebare: boolean;
-  songs: any[];
   hiddenLiveStats: boolean;
   openMusicModal: boolean;
   isPlaying: boolean;
+  allMusics: any[];
   currentSong: {
     artist: { name: string };
     id: string;

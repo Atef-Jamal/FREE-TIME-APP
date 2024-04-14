@@ -1,4 +1,3 @@
-// import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { GoMention } from "react-icons/go";
 import {
@@ -7,7 +6,6 @@ import {
 } from "../../../context/StateManeger";
 import { TypeMentionNotify } from "../../../types";
 import {
-  // getUserData,
   timeAgoFromMongoDBDate,
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";

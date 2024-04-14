@@ -6,6 +6,7 @@ import { TypePopup, User, TypeInitialState } from "../types";
 const initialState: TypeInitialState = {
   currentUser: null,
   currentUserIsLoading: false,
+  currentUserIsFetched: false,
   openNotification: false,
   openPopup: {
     status: false,
@@ -17,12 +18,12 @@ const initialState: TypeInitialState = {
   isChatOpen: false,
   isSignIn: false,
   openSidebarMobile: false,
-  resizeSidebare: false,
+  resizeSidebare: window.innerWidth < 1300 ? true : false,
   hiddenLiveStats: false,
-  songs: [],
   openMusicModal: false,
   isPlaying: false,
   currentSong: null,
+  allMusics: [],
   token: localStorage.getItem("token") || null,
   socet: null,
   onlineUsers: [],
@@ -55,6 +56,9 @@ const StateManegerSlice = createSlice({
     },
     setCurrentUserIsLoading(state, action: PayloadAction<boolean>) {
       state.currentUserIsLoading = action.payload;
+    },
+    setCurrentUserIsFetched(state, action: PayloadAction<boolean>) {
+      state.currentUserIsFetched = action.payload;
     },
     toggleSidebarMobile(state) {
       state.openSidebarMobile = !state.openSidebarMobile;
@@ -89,9 +93,6 @@ const StateManegerSlice = createSlice({
       state.openPopup.spinner = false;
       state.openPopup.message = "";
     },
-    setAllSongs(state, action: PayloadAction<any>) {
-      state.songs = action.payload;
-    },
     toggleMusicModal(state, action: PayloadAction<boolean>) {
       state.openMusicModal = action.payload;
     },
@@ -103,6 +104,9 @@ const StateManegerSlice = createSlice({
     },
     resetCurrentSong(state) {
       state.currentSong = null;
+    },
+    setAllMusics(state, action: PayloadAction<any>) {
+      state.allMusics = action.payload;
     },
     setSocet(state, action: PayloadAction<any>) {
       state.socet = action.payload;
@@ -140,15 +144,16 @@ export const {
   toggleSigningMode,
   setCurrentUser,
   setCurrentUserIsLoading,
+  setCurrentUserIsFetched,
   toggleSidebarMobile,
   showPopup,
   resetPopup,
   toggleResizeSidebare,
   toggleLiveStats,
-  setAllSongs,
   toggleMusicModal,
   toggleIsPlaying,
   setCurrentSong,
+  setAllMusics,
   resetCurrentSong,
   setSocet,
   setOnlineUsers,

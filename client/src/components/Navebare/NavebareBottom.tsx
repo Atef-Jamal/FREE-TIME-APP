@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
@@ -6,7 +7,6 @@ import { IoChatbubblesSharp } from "react-icons/io5";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { toggleSidebarMobile } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { useEffect } from "react";
 
 const NavebareBottom = () => {
   const { openSidebarMobile } = useAppSelector((state) => state.stateManeger);
@@ -32,7 +32,7 @@ const NavebareBottom = () => {
       <div className="w-[17%] h-full  flex items-center justify-center">
         <FaList
           className="text-2xl"
-          onClick={(e: Event) => {
+          onClick={(e: React.MouseEvent<SVGElement, MouseEvent>) => {
             e.stopPropagation();
             dispatch(toggleSidebarMobile());
           }}

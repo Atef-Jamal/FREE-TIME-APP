@@ -1,6 +1,6 @@
 import React from "react";
 import { BiSolidHide } from "react-icons/bi";
-import { avatar } from "../../assets";
+import { avatar } from "../../../assets";
 
 interface TypeInput {
   label: string;

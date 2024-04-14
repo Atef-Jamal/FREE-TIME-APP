@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
+import { IoClose } from "react-icons/io5";
 import { User } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { Welcome, Friend, Spinner } from "../components";
-import { IoClose } from "react-icons/io5";
 import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
+const Welcome = lazy(() => import("../components/Chat/PrivateChat/Welcome"))
+const Friend = lazy(() => import("../components/Chat/PrivateChat/Friend"))
+const Spinner = lazy(() => import("../components/Others/Spinner"))
 
 const PrivateChat = () => {
   const { currentUser, hiddenLiveStats, socet } = useAppSelector(

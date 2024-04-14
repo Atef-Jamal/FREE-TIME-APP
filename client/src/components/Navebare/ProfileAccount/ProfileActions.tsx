@@ -1,70 +1,35 @@
-import { useEffect, useState } from "react";
-import { BsExclamationOctagonFill } from "react-icons/bs";
-import { BsArrowDown, BsFillPersonFill } from "react-icons/bs";
+import { lazy, useEffect, useState } from "react";
+import { BsArrowDown } from "react-icons/bs";
 import {
-  toggleSigningMode,
-  toggleRegisterForm,
   toggleNotifications,
-  setCurrentUser,
   showPopup,
-  setCurrentUserIsLoading,
   openModel,
-} from "../../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import ProfileSkeleton from "../Others/ProfileSkeleton";
-import { UserImage, ProfileMenu, NotificationMenu } from "../../components";
+} from "../../../context/StateManeger";
+import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
-import { TypeNotifications } from "../../types";
-import ApplyCoupon from "../Others/ApplyCoupon";
-import notificationSound from "../../assets/notificationSound.wav";
-import { makeRequest } from "../../utils";
-import { ImKey2 } from "react-icons/im";
+import { TypeNotifications } from "../../../types";
+const ApplyCoupon = lazy(() => import("../../Others/ApplyCoupon"));
+const UserImage = lazy(() => import("../../Others/UserImage"));
+const ProfileMenu = lazy(() => import("../../Navebare/ProfileAccount/ProfileMenu"));
+const NotificationMenu = lazy(() => import("../../Navebare/Notifications/NotificationMenu"));
+import { makeRequest } from "../../../utils";
 
-const UserAccountActions = () => {
-  const { currentUser, currentUserIsLoading, openNotification, socet } =
-    useAppSelector((state) => state.stateManeger);
-  const [initial, setInitial] = useState(true);
+const ProfileActions = () => {
+  const { currentUser, openNotification, socet } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [notifications, setNotifications] = useState<TypeNotifications[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   const dispatch = useAppDispatch();
-  const token = localStorage.getItem("token");
 
-  let notifySound = new Audio();
-  notifySound.src = notificationSound;
+  // let notifySound = new Audio();
+  // notifySound.src = notificationSound;
 
   const numUnReaded = notifications.filter(
     (element) => element.isRead === false
   ).length;
-
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      try {
-        if (token) {
-          dispatch(setCurrentUserIsLoading(true));
-          const response = await makeRequest.get("api/auth/currentuser");
-          dispatch(setCurrentUser(response.data));
-        }
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: `something went wrong! Check your Network and try again`,
-            icon: <BsExclamationOctagonFill />,
-          })
-        );
-      } finally {
-        dispatch(setCurrentUserIsLoading(false));
-        const timout = setTimeout(() => {
-          setInitial(false);
-        }, 1500);
-        return () => clearTimeout(timout);
-      }
-    };
-
-    getCurrentUser();
-  }, [token]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -86,7 +51,7 @@ const UserAccountActions = () => {
   const handleNewNotification = (notfication: TypeNotifications) => {
     console.log("trigger");
     setNotifications((prev) => [...prev, notfication]);
-    notifySound.play();
+    // notifySound.play();
   };
 
   useEffect(() => {
@@ -100,33 +65,7 @@ const UserAccountActions = () => {
 
   return (
     <>
-      {!currentUserIsLoading && !currentUser && !initial && (
-        <div className="flex items-center gap-4 sm:gap-2">
-          <button
-            onClick={() => {
-              dispatch(toggleRegisterForm(false));
-              dispatch(toggleSigningMode(true));
-            }}
-            className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ebeaea] bg-[#3b3b7eef] font-bold border border-gray-500 px-7 py-3 tracking-wider sm:py-2 sm:px-3 sm:text-sm"
-          >
-            <BsFillPersonFill className="text-xl sm:text-lg" />
-            Sign In
-          </button>
-          <button
-            onClick={() => {
-              dispatch(toggleRegisterForm(false));
-              dispatch(toggleSigningMode(false));
-            }}
-            className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ffffff] bg-[#01D676] font-bold border border-gray-500 px-6 py-3 tracking-wider sm:p-2  sm:text-sm"
-          >
-            <ImKey2 />
-            Sign Up
-          </button>
-        </div>
-      )}
-      {currentUserIsLoading && <ProfileSkeleton />}
       {currentUser && (
-        //bg-[#0c0d16c5]
         <div className="relative flex items-center gap-4 sm:gap-2 ">
           <div className=" flex items-center rounded-md  gap-2 xs:gap-1 ">
             <span
@@ -191,4 +130,4 @@ const UserAccountActions = () => {
   );
 };
 
-export default UserAccountActions;
+export default ProfileActions;

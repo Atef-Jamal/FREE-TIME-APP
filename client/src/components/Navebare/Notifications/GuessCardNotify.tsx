@@ -8,9 +8,8 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeGuessCardNotify } from "../../../types";
-import { useState } from "react";
-import { Spinner } from "../..";
-
+import { lazy, useState } from "react";
+const Spinner = lazy(() => import("../../Others/Spinner"))
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 
 const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
@@ -81,7 +80,7 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
           className="text-sm bg-[#53ec68ee] w-[100px] py-1 rounded-md border border-gray-700 ml-auto"
         >
           {isLoading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#533a70] border-l-[#533a70]" />
+            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "collect"
           )}

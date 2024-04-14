@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 import { useAppSelector } from "../context/Hooks";
 import { useEffect, useState } from "react";
 import { BsExclamationOctagonFill } from "react-icons/bs";
-// import { Error } from "../components";
 
 const Protected = () => {
   const { currentUser, currentUserIsLoading } = useAppSelector(

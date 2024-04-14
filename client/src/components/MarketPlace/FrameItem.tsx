@@ -1,24 +1,22 @@
-
-import { useEffect, useState } from "react";
+import { lazy, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsExclamationOctagonFill } from "react-icons/bs";
-import { Spinner } from "..";
+const Spinner = lazy(() => import("../Others/Spinner"));
 import { makeRequest } from "../../utils";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
-  const { currentUser, currentUserIsLoading } = useAppSelector(
+  const { currentUser, currentUserIsFetched } = useAppSelector(
     (state) => state.stateManeger
   );
-  const purshasedByCurrentUser = singleFrame.purshasedBy.includes(
-    currentUser?._id as string
+  const purshasedByCurrentUser = !!currentUser?.myFrames.find(
+    (item) => item._id === singleFrame._id
   );
-  const [isPurshased, setIsPurshased] = useState(purshasedByCurrentUser);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useAppDispatch();
-
 
   const buyNow = async (frameId: string) => {
     if (!currentUser) {
@@ -27,9 +25,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
     }
     setIsLoading(true);
     try {
-      const response = await makeRequest.get(
-        `api/frames/${frameId}`
-      );
+      const response = await makeRequest.get(`api/frames/${frameId}`);
       if (response.status === 200) {
         dispatch(
           setCurrentUser({
@@ -38,7 +34,6 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
             myFrames: [...currentUser.myFrames, response.data.savedFrame],
           })
         );
-        setIsPurshased(true);
       }
     } catch (err: any) {
       let error: string;
@@ -59,13 +54,6 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
     }
   };
 
-  useEffect(() => {
-    const isPurshasedInitially = !!currentUser?.myFrames.find(
-      (item) => item._id === singleFrame._id
-    );
-    setIsPurshased(isPurshasedInitially);
-  }, [currentUser]);
-  if (currentUserIsLoading) return;
   return (
     <div className="flex flex-col justify-center p-2 bg-[#5b667a42] rounded-md ">
       <div className="relative">
@@ -97,7 +85,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
         </span>
       </div>
 
-      {isPurshased && (
+      {currentUserIsFetched && purshasedByCurrentUser && (
         <button
           onClick={() =>
             dispatch(
@@ -113,17 +101,30 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
           Purshased
         </button>
       )}
-      {!isPurshased && (
+      {currentUserIsFetched && !purshasedByCurrentUser && (
         <button
           onClick={() => buyNow(singleFrame._id)}
-          className="text-sm  border border-gray-500 bg-[#65e661] rounded-md py-[6px] mt-3 text-[#ffffff] font-bold"
+          className="text-sm  border border-gray-500 bg-[#65e661] rounded-md py-[6px] mt-3 font-bold"
         >
           {isLoading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#533a70] border-l-[#533a70]" />
+            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             " Buy Now"
           )}
         </button>
+      )}
+      {currentUserIsFetched && !currentUser && (
+        <button
+          onClick={() => buyNow(singleFrame._id)}
+          className="text-sm  border border-gray-500 bg-[#65e661] rounded-md py-[6px] mt-3 text-[#ffffff] font-bold"
+        >
+          Buy Now
+        </button>
+      )}
+      {!currentUserIsFetched && (
+        <span className="text-sm  border border-gray-500 rounded-md py-1 mt-3 font-bold">
+          <Spinner className="w-5 h-5 mx-auto border-t-[#533a70] border-r-[#533a70]" />
+        </span>
       )}
     </div>
   );

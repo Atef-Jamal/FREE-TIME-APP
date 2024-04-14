@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { toggleLiveStats } from "../../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { toggleLiveStats } from "../../../context/StateManeger";
+import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";

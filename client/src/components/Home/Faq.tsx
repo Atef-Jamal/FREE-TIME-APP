@@ -1,5 +1,4 @@
 import React from "react";
-// import AssignmentReturnedIcon from "@mui/icons-material/AssignmentReturned";
 import { MdOutlineAssignmentReturned } from "react-icons/md";
 
 const Faq = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
@@ -14,11 +14,11 @@ import {
   showPopup,
   toggleSigningMode,
   toggleRegisterForm,
-} from "../../context/StateManeger";
-import { User } from "../../types";
-import { useAppSelector, useAppDispatch } from "../../context/Hooks";
-import { getUserData, validation } from "../../context/functions";
-import { auth, db, storage } from "../../firebase";
+} from "../../../context/StateManeger";
+import { User } from "../../../types";
+import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
+import { getUserData, validation } from "../../../context/functions";
+import { auth, db, storage } from "../../../firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import {
@@ -27,11 +27,10 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import Input from "./Input";
-import LeftSide from "./LeftSide";
-import UploadImage from "./UploadImage";
-
-import { makeRequest } from "../../utils";
+const Input = lazy(() => import("./Input"))
+const LeftSide = lazy(() => import("./LeftSide"))
+const UploadImage = lazy(() => import("./UploadImage"))
+import { makeRequest } from "../../../utils";
 
 export interface TypeFormData {
   name: string;

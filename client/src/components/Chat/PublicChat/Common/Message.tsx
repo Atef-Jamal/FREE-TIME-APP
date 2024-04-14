@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
@@ -10,7 +10,7 @@ import { timeAgoFromMongoDBDate } from "../../../../context/functions";
 import { showPopup } from "../../../../context/StateManeger";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { UserImage } from "../../../../components";
+const UserImage = lazy(() => import("../../../../components/Others/UserImage"));
 import { makeRequest } from "../../../../utils";
 
 interface TypeMessageProp {

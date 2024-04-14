@@ -5,7 +5,6 @@ import App from "./App";
 import { Provider } from "react-redux";
 import { HelmetProvider } from "react-helmet-async";
 import store from "./context/store";
-import "./i18n";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 

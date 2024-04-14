@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { GuessCardApp, QuizApp, Spinner } from "../components";
 import { useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
 import { TypeTaskApp } from "../types";
 import { FaExclamationCircle } from "react-icons/fa";
 import { makeRequest } from "../utils";
+const GuessCardApp= lazy(() => import("../components/Tasks/GuessCardApp"))
+const QuizApp= lazy(() => import("../components/Tasks/QuizApp"))
+const Spinner= lazy(() => import("../components/Others/Spinner"))
 
 const Playing = () => {
   const { currentUser} = useAppSelector((state) => state.stateManeger);

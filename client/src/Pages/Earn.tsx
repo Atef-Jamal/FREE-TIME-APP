@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop } from "react-icons/io5";
@@ -9,18 +9,19 @@ import {
   AdscendMediaGlow,
   guessColor,
 } from "../assets";
-
 import { PiExamDuotone } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
-import { GameCard, OfferParnterCard, Skeleton } from "../components";
 import { arrayoffers, tasks } from "../helper/data";
 import { TypeGame } from "../types";
 import { Helmet } from "react-helmet-async";
 import { makeRequest } from "../utils";
+const GameCard = lazy(() => import("../components/Offers/GameCard"))
+const OfferParnterCard = lazy(() => import("../components/Offers/OfferParnterCard"))
+const Skeleton = lazy(() => import("../components/Others/Skeleton"))
 
 
 const Earn = () => {

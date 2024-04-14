@@ -1,4 +1,5 @@
-import { GameCard } from "../components";
+import { lazy } from "react";
+const GameCard = lazy(() => import("../components/Offers/GameCard"));
 import { tasks } from "../helper/data";
 
 const OffersSignUp = () => {

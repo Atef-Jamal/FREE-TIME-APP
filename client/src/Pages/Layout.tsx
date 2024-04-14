@@ -1,30 +1,22 @@
-import { useEffect } from "react";
-import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import {
-  setAllSongs,
-  setOnlineUsers,
-  setSocet,
-  showPopup,
-} from "../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import {
-  Sidebar,
-  MobileSidebare,
-  Navbare,
-  Footer,
-  DisktopChat,
-  LiveStats,
-  NavebareBottom,
-  OpenPopup,
-} from "../components";
+import { lazy, useEffect } from "react";
 import io from "socket.io-client";
-import Model from "../components/Others/Model";
+import { Outlet, useLocation, useSearchParams } from "react-router-dom";
+import { setOnlineUsers, setSocet, showPopup } from "../context/StateManeger";
+import { useAppDispatch, useAppSelector } from "../context/Hooks";
+const Model= lazy(() => import("../components/Others/Model"))
+const Sidebar= lazy(() => import("../components/Sidebar/Sidebar"))
+const MobileSidebare= lazy(() => import("../components/Sidebar/MobileSidebare"))
+const Navbare= lazy(() => import("../components/Navebare/Navbare"))
+const Footer= lazy(() => import("../components/Footer/Footer"))
+const DisktopChat= lazy(() => import("../components/Chat/PublicChat/DisktopChat/DisktopChat"))
+const LiveStats= lazy(() => import("../components/LiveStats/LiveStats"))
+const NavebareBottom= lazy(() => import("../components/Navebare/NavebareBottom"))
+const OpenPopup= lazy(() => import("../components/Others/OpenPopup"))
 import { Helmet } from "react-helmet-async";
 
 const Layout = () => {
   const {
     currentUser,
-    currentUserIsLoading,
     resizeSidebare,
     isChatOpen,
     hiddenLiveStats,
@@ -36,33 +28,6 @@ const Layout = () => {
   const location = useLocation();
 
   const paramValue = searchParams.get("redirectedfrom");
-
-  useEffect(() => {
-    const fechSongs = async () => {
-      const url =
-        "https://deezerdevs-deezer.p.rapidapi.com/search?q=amr%20diab";
-      const options = {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key":
-            "ea97c9aa5amsh33c80843d253d57p13e60ejsn31e5ff47a85c",
-          "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
-        },
-      };
-
-      try {
-        const response = await fetch(url, options);
-        const result = await response.json();
-        dispatch(setAllSongs(result.data));
-      } catch (error) {
-        dispatch(showPopup({ status: true, message: "Failed to Load Songs" }));
-        console.error(error);
-      }
-    };
-    if (!currentUserIsLoading) {
-      fechSongs();
-    }
-  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {

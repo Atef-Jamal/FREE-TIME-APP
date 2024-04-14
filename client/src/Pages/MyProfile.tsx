@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useRef, useState } from "react";
 import {
   rank1Desktop,
   rank2Desktop,
@@ -23,12 +23,17 @@ import { useSearchParams } from "react-router-dom";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
 import { TypeFrame, TypeNotifications } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { MusicCard, UserImage } from "../components";
-import ProfileSettings from "../components/myProfile/ProfileSettings";
+const ProfileSettings = lazy(
+  () => import("../components/myProfile/ProfileSettings")
+);
+const MusicCard = lazy(() => import("../components/Music/MusicCard"));
+const UserImage = lazy(() => import("../components/Others/UserImage"));
 import { makeRequest } from "../utils";
 
 const MyProfile = () => {
-  const { currentUser, songs } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, allMusics } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const [statistics, setStatistics] = useState<TypeNotifications[]>([]);
 
@@ -426,8 +431,8 @@ const MyProfile = () => {
                 My Musics
               </h1>
               <div className="grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2 p-4">
-                {songs.length &&
-                  songs
+                {allMusics.length &&
+                  allMusics
                     .filter((item) => {
                       if (currentUser?.mySongs?.includes(item.id.toString())) {
                         return item;

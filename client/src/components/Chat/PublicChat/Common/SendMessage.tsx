@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { MentionListOfUsers } from "../../../../components";
+const MentionListOfUsers = lazy(() => import("./MentionListOfUsers"));
 import { makeRequest } from "../../../../utils";
 
 interface typeProps {

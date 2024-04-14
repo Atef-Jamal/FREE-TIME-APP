@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, egypt } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { useTranslation } from "react-i18next";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { showPopup } from "../../context/StateManeger";
 import { TypeFrame, User } from "../../types";
-import UserImage from "../Others/UserImage";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
-import LiveStatsSkeleton from "./LiveStatsSkeleton";
+const UserImage = lazy(() => import("../../components/Others/UserImage"));
+const LiveStatsSkeleton = lazy(() =>import("./LiveStatsSkeleton"))
 
 const LiveStats = () => {
   const { currentUser, hiddenLiveStats, onlineUsers, socet } = useAppSelector(
@@ -22,17 +21,12 @@ const LiveStats = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const { i18n } = useTranslation();
   const dispatch = useAppDispatch();
 
   const languages = [
     { title: "Global", lang: "en" },
     { title: "Egypt", lang: "ar" },
   ];
-
-  const handleChange = (lang: string) => {
-    i18n.changeLanguage(lang);
-  };
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -119,7 +113,7 @@ const LiveStats = () => {
           {languages.map((item) => (
             <button
               key={item.lang}
-              onClick={() => handleChange(item.lang)}
+              onClick={() => {}}
               className="flex gap-4 items-center rounded-lg mx-2 px-4 py-2 sm:py-1 hover:bg-slate-500"
             >
               {item.title === "Global" ? (

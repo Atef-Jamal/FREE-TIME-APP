@@ -1,22 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IoMdSend } from "react-icons/io";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { Skeleton, UserImage } from "../../../components";
 import {
   setAllUnReadedMesseges,
   setRefetchUnReadedMessagesCount,
   showPopup,
 } from "../../../context/StateManeger";
-
-import PrivateMessageItem from "./PrivateMessageItem";
 import { makeRequest } from "../../../utils";
-// comment
+import LoadingChatBody from "./LoadingChatBody";
+
+const UserImage = lazy(() => import("../../../components/Others/UserImage"));
+const PrivateMessageItem = lazy(() => import("./PrivateMessageItem"));
+
 const ChatBody = () => {
-  const { currentUser, socet } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const { id } = useParams();
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
@@ -37,10 +36,7 @@ const ChatBody = () => {
       return;
     }
     try {
-      const response = await makeRequest.post(
-        `api/conversations/${id}`,
-        body,
-      );
+      const response = await makeRequest.post(`api/conversations/${id}`, body);
       setMessage("");
       setMessages((prev) => [...prev, response.data]);
       socet?.emit("private-message", { reciever: id, data: response.data });
@@ -64,12 +60,8 @@ const ChatBody = () => {
         try {
           setError("");
           setLoading(true);
-          const fetchedUser = await makeRequest.get(
-            `api/users/${id}`,
-          );
-          const response = await makeRequest.get(
-            `api/conversations/${id}`,
-          );
+          const fetchedUser = await makeRequest.get(`api/users/${id}`);
+          const response = await makeRequest.get(`api/conversations/${id}`);
           setUser(fetchedUser.data);
           setMessages(response.data.messages);
         } catch (error) {
@@ -132,10 +124,9 @@ const ChatBody = () => {
         return;
       }
       try {
-        const response = await makeRequest.patch(
-          `api/conversations/${id}`,
-          { FOR_CONSISTENCY: "FOR_CONSISTENCY" },
-        );
+        const response = await makeRequest.patch(`api/conversations/${id}`, {
+          FOR_CONSISTENCY: "FOR_CONSISTENCY",
+        });
         if (response.status === 200) {
           socet?.emit("conversation-readed", {
             reciever: id,
@@ -180,7 +171,9 @@ const ChatBody = () => {
         <div className="w-full flex flex-col items-center h-full gap-2 pb-3">
           <div className="flex items-center gap-4 w-full justify-center bg-[#1f1f2e9a] py-2 border border-gray-700">
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-              <UserImage user={user} />
+              <Suspense>
+                <UserImage user={user} />
+              </Suspense>
             </div>
             <span className="text-sm text-[#62e66d] font-[900]">
               {user.name}
@@ -191,14 +184,16 @@ const ChatBody = () => {
             {messages &&
               messages.length > 0 &&
               messages.map((msg, index) => (
-                <PrivateMessageItem
-                  key={msg._id}
-                  messages={messages}
-                  message={msg}
-                  index={index}
-                  lastMessageRef={lastMessageRef}
-                  conversationReaded={conversationReaded}
-                />
+                <Suspense key={msg._id}>
+                  <PrivateMessageItem
+                    key={msg._id}
+                    messages={messages}
+                    message={msg}
+                    index={index}
+                    lastMessageRef={lastMessageRef}
+                    conversationReaded={conversationReaded}
+                  />
+                </Suspense>
               ))}
           </div>
           <div className="w-full flex items-center gap-3 sm:gap-2 ">
@@ -228,40 +223,6 @@ const ChatBody = () => {
         </div>
       )}
     </>
-  );
-};
-
-const LoadingChatBody = () => {
-  return (
-    <div className="w-full h-full flex flex-col items-center gap-2 pb-3">
-      <div className="flex  gap-2 w-full justify-center bg-[#1f1f2e9a] py-2 border border-gray-700">
-        <Skeleton className="w-10 h-10 " />
-        <div className="mt-2">
-          <Skeleton className="w-[150px] h-2 mb-1" />
-          <Skeleton className="w-[90px] h-2" />
-        </div>
-      </div>
-      <div className="flex flex-col items-center w-full h-[100%] gap-2 overflow-scroll scrollbar-none p-1 pb-2 ">
-        {[...Array(5).keys()].map((ele) => (
-          <div
-            key={ele}
-            className="bg-[#0b0b226c] w-full rounded-lg p-2 flex flex-col gap-1"
-          >
-            <div className="flex gap-2">
-              <Skeleton className="w-9 h-9" />
-              <div className="mt-1">
-                <Skeleton className="w-[150px] h-2 mb-[6px] rounded-sm" />
-                <Skeleton className="w-[150px] h-2 rounded-sm" />
-              </div>
-            </div>
-            <div className="">
-              <Skeleton className="w-[85%] h-2 mb-1" />
-              <Skeleton className="w-[70%] h-2" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 };
 

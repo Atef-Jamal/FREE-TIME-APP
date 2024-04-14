@@ -8,11 +8,10 @@ import {
   toggleIsPlaying,
   toggleMusicModal,
 } from "../../context/StateManeger";
-
 import { FaExclamation } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
-import Spinner from "../Others/Spinner";
+import { lazy, useState } from "react";
+const Spinner = lazy(() => import("../Others/Spinner"))
 import { makeRequest } from "../../utils";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
@@ -21,7 +20,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isPurshased, setIsPurshased] = useState(
-    currentUser?.mySongs.includes(songDetails.id.toString())
+    !!currentUser?.mySongs.includes(songDetails.id.toString())
   );
 
   const dispatch = useAppDispatch();
@@ -146,18 +145,19 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
           </span>
         </div>
       </div>
-      {!isPurshased ? (
+      {!isPurshased && (
         <button
           onClick={buySong}
           className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center"
         >
           {isLoading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#533a70] border-l-[#533a70]" />
+            <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "Buy"
           )}
         </button>
-      ) : (
+      )}
+      {isPurshased && (
         <button
           onClick={() => {
             handleClick(songDetails);
