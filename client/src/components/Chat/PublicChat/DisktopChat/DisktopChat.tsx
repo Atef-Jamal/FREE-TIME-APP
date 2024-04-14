@@ -16,7 +16,6 @@ const DisktopChat = () => {
   const [searchParams] = useSearchParams();
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const mentionedMessageRef = useRef<HTMLDivElement>(null);
-
   const dispatch = useAppDispatch();
 
   const searchValue = searchParams.get("messageid");
@@ -69,7 +68,7 @@ const DisktopChat = () => {
       };
     }
   }, [socet]);
-  console.log(messages);
+  // console.log(messages);
   return (
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
       <span
@@ -83,42 +82,38 @@ const DisktopChat = () => {
         )}
       </span>
       <ChatHeader />
-      <div
-        id="publicchatid"
-        className="w-full flex flex-col items-center h-[83%] overflow-auto  gap-2 p-2 transition-all"
-      >
-        {messages?.map((message, index) => {
-          if (message.type === "FREETIME") {
+      <div className="w-full flex flex-col items-center h-[83%] overflow-auto  gap-2 p-2 transition-all">
+        {messages.length > 0 &&
+          messages.map((message, index) => {
+            if (message.type === "FREETIME") {
+              return (
+                <FreeTime
+                  key={message._id}
+                  singleMessage={message}
+                  lastMessageRef={
+                    index === messages.length - 1 ? lastMessageRef : null
+                  }
+                />
+              );
+            }
             return (
-              <FreeTime
+              <Message
                 key={message._id}
+                setStopScrolling={setStopScrolling}
                 singleMessage={message}
                 lastMessageRef={
-                  index === messages.length - 1 ? lastMessageRef : null
+                  index === messages.length - 1 && !searchValue
+                    ? lastMessageRef
+                    : null
+                }
+                mentionedMessageRef={
+                  searchValue === message._id ? mentionedMessageRef : null
                 }
               />
             );
-          }
-          return (
-            <Message
-              key={message._id}
-              setStopScrolling={setStopScrolling}
-              singleMessage={message}
-              lastMessageRef={
-                index === messages.length - 1 && !searchValue
-                  ? lastMessageRef
-                  : null
-              }
-              mentionedMessageRef={
-                searchValue === message._id ? mentionedMessageRef : null
-              }
-            />
-          );
-        })}
+          })}
       </div>
       <SendMessage
-        setMessages={setMessages}
-        // messages={messages}
         stopScrolling={stopScrolling}
         setStopScrolling={setStopScrolling}
       />

@@ -154,6 +154,7 @@ export interface TypePublicChatMessage {
   dislikes: string[];
   loves: string[];
   mentioned: User | null;
+  // pending?: boolean;
 }
 
 export interface TypePublicChatFreeTime {

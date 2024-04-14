@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { BsCheckCircleFill } from "react-icons/bs";
-import { logout, showPopup, toggleLiveStats } from "../../context/StateManeger";
+import { toggleLiveStats } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
 import { MdOutlineDiversity3 } from "react-icons/md";
@@ -9,28 +8,17 @@ import { MdContactSupport } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 
 interface ProfilTypeProp {
-  openProfileMenu: boolean;
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileMenu = ({
-  openProfileMenu,
-  setOpenProfileMenu,
-}: ProfilTypeProp) => {
+const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
 
   const handleLogOut = async () => {
-    dispatch(logout());
-    setOpenProfileMenu(!openProfileMenu);
-    dispatch(
-      showPopup({
-        status: true,
-        message: "Sign out Successfully",
-        icon: <BsCheckCircleFill />,
-      })
-    );
-    window.location.reload();
+    localStorage.setItem("token", "");
+    setOpenProfileMenu((previos) => !previos);
+    window.location.href = "http://localhost:5173/?redirectedfrom=logout";
   };
 
   const handleToggleLiveStats = () => {
@@ -40,13 +28,13 @@ const ProfileMenu = ({
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-[#00000018] ">
       <div
-        onClick={() => setOpenProfileMenu(!openProfileMenu)}
+        onClick={() => setOpenProfileMenu((previos) => !previos)}
         className="w-full h-full"
       ></div>
       <div className=" absolute top-[70px] sm:top-[55px] right-5 w-[300px] xs:w-[200px] sm:w-[250px] rounded-lg flex flex-col items-center bg-[#32324c] p-2 ">
         <Link
           to={"myprofile"}
-          onClick={() => setOpenProfileMenu(!openProfileMenu)}
+          onClick={() => setOpenProfileMenu((previos) => !previos)}
           className="flex items-center hover:bg-[#3a6186ee] gap-4 sm:gap-[10px] w-full p-2 rounded-md  "
         >
           <IoPersonCircle style={{ fontSize: "18px" }} />
@@ -54,7 +42,7 @@ const ProfileMenu = ({
         </Link>
         <Link
           to={"affiliates"}
-          onClick={() => setOpenProfileMenu(!openProfileMenu)}
+          onClick={() => setOpenProfileMenu((previos) => !previos)}
           className="flex items-center hover:bg-[#3a6186ee]  gap-4 sm:gap-[10px] w-full p-2 rounded-md  font-[500] text-gray-400 hover:text-gray-200 "
         >
           <MdOutlineDiversity3 style={{ fontSize: "18px" }} />
@@ -62,7 +50,7 @@ const ProfileMenu = ({
         </Link>
         <Link
           to={""}
-          onClick={() => setOpenProfileMenu(!openProfileMenu)}
+          onClick={() => setOpenProfileMenu((previos) => !previos)}
           className="flex items-center hover:bg-[#3a6186ee] gap-4 sm:gap-[10px] w-full p-2 rounded-md  "
         >
           <MdContactSupport style={{ fontSize: "18px" }} />

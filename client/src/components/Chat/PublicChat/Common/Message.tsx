@@ -44,7 +44,7 @@ const Message = ({
     likes,
     loves,
     mentioned,
-    // helper,
+    // pending,
   } = messageItem;
 
   const dispatch = useAppDispatch();

@@ -29,7 +29,7 @@ const UserAccountActions = () => {
   const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   const dispatch = useAppDispatch();
-  const token = localStorage.getItem("token") || null;
+  const token = localStorage.getItem("token");
 
   let notifySound = new Audio();
   notifySound.src = notificationSound;
@@ -45,10 +45,8 @@ const UserAccountActions = () => {
           dispatch(setCurrentUserIsLoading(true));
           const response = await makeRequest.get("api/auth/currentuser");
           dispatch(setCurrentUser(response.data));
-          dispatch(setCurrentUserIsLoading(false));
         }
       } catch (error) {
-        dispatch(setCurrentUserIsLoading(false));
         dispatch(
           showPopup({
             status: true,
@@ -56,35 +54,37 @@ const UserAccountActions = () => {
             icon: <BsExclamationOctagonFill />,
           })
         );
-        console.log(error);
       } finally {
-        setTimeout(() => {
+        dispatch(setCurrentUserIsLoading(false));
+        const timout = setTimeout(() => {
           setInitial(false);
         }, 1500);
+        return () => clearTimeout(timout);
       }
     };
+
     getCurrentUser();
   }, [token]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
+      if (!currentUser) return;
       try {
-        if (currentUser) {
-          const response = await makeRequest.get("api/notifications");
-          setNotifications(response.data);
-        }
+        const response = await makeRequest.get("api/notifications");
+        setNotifications(response.data);
       } catch (error) {
-        console.log(error);
+        dispatch(
+          showPopup({ status: true, message: "Failed to Load Notifications" })
+        );
       } finally {
-        setTimeout(() => {
-          setLoadingNotifications(false);
-        }, 3000);
+        setLoadingNotifications(false);
       }
     };
     fetchNotifications();
   }, [currentUser]);
 
   const handleNewNotification = (notfication: TypeNotifications) => {
+    console.log("trigger");
     setNotifications((prev) => [...prev, notfication]);
     notifySound.play();
   };
@@ -177,10 +177,7 @@ const UserAccountActions = () => {
           </div>
 
           {openProfileMenu && (
-            <ProfileMenu
-              openProfileMenu={openProfileMenu}
-              setOpenProfileMenu={setOpenProfileMenu}
-            />
+            <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
           )}
         </div>
       )}

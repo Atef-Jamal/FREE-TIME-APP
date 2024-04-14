@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import {
   setAllSongs,
   setOnlineUsers,
@@ -17,8 +17,6 @@ import {
   NavebareBottom,
   OpenPopup,
 } from "../components";
-import { auth } from "../firebase";
-import { updateDocument } from "../context/functions";
 import io from "socket.io-client";
 import Model from "../components/Others/Model";
 import { Helmet } from "react-helmet-async";
@@ -33,8 +31,11 @@ const Layout = () => {
     socet,
     model,
   } = useAppSelector((state) => state.stateManeger);
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const location = useLocation();
+
+  const paramValue = searchParams.get("redirectedfrom");
 
   useEffect(() => {
     const fechSongs = async () => {
@@ -64,25 +65,10 @@ const Layout = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    const verifyUserDoc = async () => {
-      const isVerified = auth.currentUser?.emailVerified;
-      if (currentUser && currentUser.emailVerified === false && isVerified) {
-        await updateDocument(
-          import.meta.env.VITE_USERS_COLLECTION_NAME,
-          currentUser._id,
-          { emailVerified: true }
-        );
-      }
-    };
-    verifyUserDoc();
-  }, [currentUser]);
-
-  useEffect(() => {
     if (currentUser) {
       const socet = io("http://localhost:3000", {
-        query: { userId: currentUser?._id },
+        query: { userId: currentUser._id },
       });
-
       dispatch(setSocet(socet));
     }
   }, [currentUser]);
@@ -100,20 +86,28 @@ const Layout = () => {
     }
   }, [socet]);
 
-  const handleewards = (data: any) => {
-    console.log(data);
-  };
-
   useEffect(() => {
-    if (socet) {
-      socet.on("daily-reward", handleewards);
-      return () => {
-        socet.off("daily-reward", handleewards);
-      };
+    if (paramValue) {
+      let popupMessage = "";
+      if (paramValue === "logout") {
+        popupMessage = "Logout successfull";
+      }
+      if (paramValue === "login") {
+        popupMessage = "Login successfull";
+      }
+      if (paramValue === "signup") {
+        popupMessage = "Sign Up successfull";
+      }
+      if (popupMessage) {
+        dispatch(showPopup({ status: true, message: popupMessage }));
+        setSearchParams(() => {
+          searchParams.delete("redirectedfrom", paramValue);
+          return searchParams;
+        });
+      }
     }
-  }, [socet]);
-  // console.log([...Array(8).keys()]);
-  // console.log(window.innerWidth);
+  }, [paramValue]);
+
   return (
     <div className="flex flex-col items-center justify-center relative">
       <Helmet>
@@ -131,7 +125,7 @@ const Layout = () => {
           } sm:w-full flex flex-col items-center relative `}
         >
           <LiveStats />
-          <div className="flex flex-col items-center w-full ">
+          <div className="flex flex-col items-center w-full">
             <div
               style={{
                 minHeight: hiddenLiveStats
@@ -142,7 +136,7 @@ const Layout = () => {
                     }`
                   : `${
                       window.screen.width < 800
-                        ? `calc(100dvh - 173px)`
+                        ? `calc(100dvh - 165px)`
                         : `calc(100dvh - 142px)`
                     }`,
               }}

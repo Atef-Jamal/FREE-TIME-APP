@@ -56,10 +56,6 @@ const StateManegerSlice = createSlice({
     setCurrentUserIsLoading(state, action: PayloadAction<boolean>) {
       state.currentUserIsLoading = action.payload;
     },
-    logout(state) {
-      localStorage.removeItem("token");
-      state.currentUser = null;
-    },
     toggleSidebarMobile(state) {
       state.openSidebarMobile = !state.openSidebarMobile;
     },
@@ -144,7 +140,6 @@ export const {
   toggleSigningMode,
   setCurrentUser,
   setCurrentUserIsLoading,
-  logout,
   toggleSidebarMobile,
   showPopup,
   resetPopup,

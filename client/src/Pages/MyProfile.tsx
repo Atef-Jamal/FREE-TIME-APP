@@ -29,7 +29,6 @@ import { makeRequest } from "../utils";
 
 const MyProfile = () => {
   const { currentUser, songs } = useAppSelector((state) => state.stateManeger);
-  const [inputeRef, setInputRef] = useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [statistics, setStatistics] = useState<TypeNotifications[]>([]);
 
@@ -61,20 +60,14 @@ const MyProfile = () => {
     (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP"
   ).length;
 
-  useEffect(() => {
-    const getStatistics = async () => {
-      try {
-        const response = await makeRequest.get("api/notifications");
-        setStatistics(response.data);
-      } catch (error) {
-        console.log(error);
-        dispatch(
-          showPopup({ status: true, message: "failed to fetch statistics" })
-        );
-      }
-    };
-    getStatistics();
-  }, [currentUser]);
+  const handleOpenSetting = () => {
+    dispatch(
+      openModel({
+        status: true,
+        children: <ProfileSettings />,
+      })
+    );
+  };
 
   const changeFrame = async (frameObject: TypeFrame) => {
     if (!currentUser) {
@@ -133,8 +126,8 @@ const MyProfile = () => {
     }
   };
 
-  const copyReferralLink = () => {
-    navigator.clipboard.writeText(inputeRef);
+  const copyReferralLink = (text: string) => {
+    navigator.clipboard.writeText(text);
     dispatch(
       showPopup({
         status: true,
@@ -144,9 +137,35 @@ const MyProfile = () => {
     );
   };
 
+  const handleClickLinkDiv = (type: string) => {
+    if (type === "referrallink") {
+      referralLinkRef.current?.classList.remove("animate-pulse");
+    } else if (type === "frames") {
+      framesRef.current?.classList.remove("animate-pulse");
+    } else if (type === "musics") {
+      musicsRef.current?.classList.remove("animate-pulse");
+    }
+    setSearchParams(() => {
+      searchParams.delete("to", type);
+      return searchParams;
+    });
+  };
+
   useEffect(() => {
-    if (currentUser)
-      setInputRef(`https://make4free.netlify.app/?ref=${currentUser._id}`);
+    const getStatistics = async () => {
+      try {
+        const response = await makeRequest.get("api/notifications");
+        setStatistics(response.data);
+      } catch (error) {
+        console.log(error);
+        dispatch(
+          showPopup({ status: true, message: "failed to fetch statistics" })
+        );
+      }
+    };
+    if (currentUser) {
+      getStatistics();
+    }
   }, [currentUser]);
 
   useEffect(() => {
@@ -174,33 +193,10 @@ const MyProfile = () => {
     }
   }, [paramValue]);
 
-  const handleClickLinkDiv = (type: string) => {
-    if (type === "referrallink") {
-      referralLinkRef.current?.classList.remove("animate-pulse");
-    } else if (type === "frames") {
-      framesRef.current?.classList.remove("animate-pulse");
-    } else if (type === "musics") {
-      musicsRef.current?.classList.remove("animate-pulse");
-    }
-    setSearchParams(() => {
-      searchParams.delete("to", type);
-      return searchParams;
-    });
-  };
-
-  const handleOpenSetting = () => {
-    dispatch(
-      openModel({
-        status: true,
-        children: <ProfileSettings />,
-      })
-    );
-  };
-
   return (
-    <div className="bg-[#141523] py-6 sm:pt-3 min-h-[100vh] sm:min-h-[50vh] flex items-center justify-center w-full">
+    <div className="bg-[#141523] py-6 sm:py-4 h-full flex items-center justify-center">
       {!currentUser ? (
-        <div className="text-xl text-[#fccece] flex items-center justify-center h-full">
+        <div className="text-gray-400 font-bold  font-serif">
           Login To View Your Profile
         </div>
       ) : (
@@ -347,10 +343,14 @@ const MyProfile = () => {
                     name="referrallink"
                     className="bg-[#1b243fcb] outline-none w-full text-gray-400 py-1"
                     readOnly={true}
-                    value={inputeRef}
+                    value={`https://make4free.netlify.app/?ref=${currentUser._id}`}
                   />
                   <span
-                    onClick={copyReferralLink}
+                    onClick={() =>
+                      copyReferralLink(
+                        `https://make4free.netlify.app/?ref=${currentUser._id}`
+                      )
+                    }
                     className="relative w-[15%] h-5 flex items-center justify-center"
                   >
                     <RiFileCopyLine className="text-xl " />

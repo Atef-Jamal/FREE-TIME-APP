@@ -5,27 +5,20 @@ import { BsExclamationOctagonFill } from "react-icons/bs";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { MentionListOfUsers } from "../../../../components";
-import { TypePublicChatItem } from "../../../../types";
 import { makeRequest } from "../../../../utils";
 
 interface typeProps {
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessages: React.Dispatch<React.SetStateAction<TypePublicChatItem[]>>;
-  // messages: TypePublicChatItem[];
 }
 
-const SendMessage = ({
-  stopScrolling,
-  setStopScrolling,
-}: // messages,
-// setMessages,
-typeProps) => {
+const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const [loading, setLoading] = useState<boolean>(false);
   const [toggleMentionList, settoggleMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
+
   const dispatch = useAppDispatch();
 
   const body = {
@@ -48,24 +41,18 @@ typeProps) => {
       );
       return;
     }
+
     setLoading(true);
     if (stopScrolling) {
       setStopScrolling(false);
     }
     try {
-      const response = await makeRequest.post("api/publicchat", body);
-      // const indexToReplace = messages.findIndex(
-      //   (item) => item._id === helperId
-      // );
-      // const clonedMessages = messages;
-      // console.log("before", clonedMessages);
-      // clonedMessages[indexToReplace] = response.data;
-      // console.log("after", clonedMessages);
-      // setMessages(clonedMessages);
-
       setMessage("");
+      const response = await makeRequest.post("api/publicchat", body);
       socet?.emit("public-message", response.data);
-      setUser(null);
+      if (user) {
+        setUser(null);
+      }
     } catch (err) {
       console.log(err);
       dispatch(
@@ -161,3 +148,18 @@ typeProps) => {
 };
 
 export default SendMessage;
+
+// const initializeMessage = (messageText: string) => {
+//   const messagesDiv = document.getElementById("all-messages-div");
+//   const created = document.createElement("div");
+//   created.classList.add(
+//     "w-full",
+//     "h-[60px]",
+//     "border",
+//     "text-sm",
+//     "text-gray-300",
+//     "text-center"
+//   );
+//   created.textContent = messageText;
+//   messagesDiv?.appendChild(created);
+// };

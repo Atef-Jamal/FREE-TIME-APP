@@ -61,11 +61,11 @@ const PrivateChat = () => {
             } `
           : `${
               window.screen.width < 867
-                ? "calc(100dvh - 173px)"
+                ? "calc(100dvh - 165px)"
                 : "calc(100dvh - 147px)"
             }`,
       }}
-      className="sticky top-0 h-full w-full bg-[#202233] flex items-center justify-center p-2 xs:p-0"
+      className="sticky top-0 h-full w-full bg-[#202233] flex items-center justify-center"
     >
       <div
         className={`relative overflow-hidden flex items-center sm:w-full w-[80%] h-full bg-[#1c1031c9]`}

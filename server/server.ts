@@ -28,6 +28,8 @@ export const io = new Server(server, {
   cors: { origin: "http://localhost:5173" },
 });
 
+export const onLineUsers: any = {};
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -55,8 +57,6 @@ app.use("/api/currentdate", (_: Request, res: Response) => {
   const date = new Date();
   return res.status(200).json(date);
 });
-
-export const onLineUsers: any = {};
 
 io.on("connection", (socet) => {
   const userId = socet.handshake.query.userId;

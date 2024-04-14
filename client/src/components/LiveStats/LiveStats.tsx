@@ -156,7 +156,7 @@ const LiveStats = () => {
                 to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
                 className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
               >
-                <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
+                <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
                   <UserImage user={user} />
                 </div>
                 <div className="flex flex-col">

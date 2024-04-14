@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
 import {
-  BsCheckCircleFill,
   BsExclamationTriangleFill,
   BsExclamationOctagonFill,
 } from "react-icons/bs";
@@ -60,7 +59,7 @@ const RegisterationForm = () => {
   const [getFile, setGetFile] = useState<File | null>(null);
   const [filePercentage, setFilePercentage] = useState<number>(0);
   const [submiting, setSubmiting] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { currentUser, isSignIn } = useAppSelector(
     (state) => state.stateManeger
   );
@@ -139,42 +138,26 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 201) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-
-        if (searchValue) {
-          setSearchParams(() => {
-            searchParams.delete("ref", searchValue);
-            return searchParams;
-          });
-        }
-        dispatch(
-          showPopup({
-            status: true,
-            message: "Successfully Sign Up ",
-            icon: <BsCheckCircleFill />,
-          })
-        );
-        window.location.reload();
+        window.location.href = "http://localhost:5173/?redirectedfrom=signup";
       } catch (err: any) {
-        let msg = "";
-        if (err.message.includes("email-already-in-use")) {
-          msg = "Email Exists Before";
-        } else if (
-          err.message.includes("Password should be at least 6 characters")
-        ) {
-          msg = "Password should be at least 6 characters";
-        } else if (err.message.includes("invalid-email")) {
-          msg = "Invalid Email address";
+        const errorMessage = err.response.data.error;
+        if (typeof errorMessage === "string") {
+          dispatch(
+            showPopup({
+              status: true,
+              message: errorMessage,
+              icon: <BsExclamationOctagonFill />,
+            })
+          );
         } else {
-          msg = `Something Went Wrong, Try Againnn ${err}`;
+          dispatch(
+            showPopup({
+              status: true,
+              message: "an Error occurred, Try Again",
+              icon: <BsExclamationOctagonFill />,
+            })
+          );
         }
-        console.log(err);
-        dispatch(
-          showPopup({
-            status: true,
-            message: msg,
-            icon: <BsExclamationOctagonFill />,
-          })
-        );
         setSubmiting(false);
       }
     } else {
@@ -218,33 +201,26 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 200) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        dispatch(
-          showPopup({
-            status: true,
-            message: "Successfully Login ",
-            icon: <BsCheckCircleFill />,
-          })
-        );
-        window.location.reload();
+        window.location.href = "http://localhost:5173/?redirectedfrom=login";
       } catch (err: any) {
-        // handling Error messages
-        let msg = "";
-        if (err.message.includes("user-not-found")) {
-          msg = "User Does Not Exist";
-        } else if (err.message.includes("wrong-password")) {
-          msg = "Wrong Password";
-        } else if (err.message.includes("invalid-email")) {
-          msg = "Invalid Email";
+        const errorMessage = err.response.data.error;
+        if (typeof errorMessage === "string") {
+          dispatch(
+            showPopup({
+              status: true,
+              message: errorMessage,
+              icon: <BsExclamationOctagonFill />,
+            })
+          );
         } else {
-          msg = "Something Went Wrong, Try Again";
+          dispatch(
+            showPopup({
+              status: true,
+              message: "Fail to Login, Try Again",
+              icon: <BsExclamationOctagonFill />,
+            })
+          );
         }
-        dispatch(
-          showPopup({
-            status: true,
-            message: msg,
-            icon: <BsExclamationOctagonFill />,
-          })
-        );
         setSubmiting(false);
       }
     }

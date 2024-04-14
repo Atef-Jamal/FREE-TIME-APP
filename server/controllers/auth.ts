@@ -65,7 +65,7 @@ export const register = async (req: Request, res: Response) => {
           { path: "newUserReferred", select: "-password" },
         ]);
         io.emit("public-message", savedMessage);
-        io.to(onLineUsers[referrerUser as string]).emit(
+        io.to(onLineUsers[referrerUser.toString()]).emit(
           "new-notification",
           savedNotification
         );
