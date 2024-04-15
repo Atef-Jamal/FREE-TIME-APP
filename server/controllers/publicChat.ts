@@ -23,7 +23,6 @@ export const createPublicMessage = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const { messageText, type, mentioned } = req.body;
   try {
-    console.log(onLineUsers);
     const message = new PublicMessage({
       sender: currentUserId,
       message: messageText,
