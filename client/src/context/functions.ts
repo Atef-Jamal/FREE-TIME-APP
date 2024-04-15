@@ -95,7 +95,7 @@ export const shuffle = (array: string[]) => {
 
 export const getUserData = async (id: string) => {
   const response: DocumentSnapshot<DocumentData, DocumentData> = await getDoc(
-    doc(db, import.meta.env.VITE_USERS_COLLECTION_NAME, id)
+    doc(db, "users", id)
   );
   return response;
 };

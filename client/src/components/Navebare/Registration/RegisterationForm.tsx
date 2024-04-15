@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
 import { FaPauseCircle } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { IoMdPlay } from "react-icons/io";
 import {
-  setCurrentUser,
   showPopup,
   toggleSigningMode,
   toggleRegisterForm,
 } from "../../../context/StateManeger";
-import { User } from "../../../types";
 import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
-import { getUserData, validation } from "../../../context/functions";
-import { auth, db, storage } from "../../../firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { validation } from "../../../context/functions";
+import { storage } from "../../../firebase";
 import {
   UploadTask,
   getDownloadURL,
@@ -62,7 +58,6 @@ const RegisterationForm = () => {
   );
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const searchValue = searchParams.get("ref");
 
@@ -135,9 +130,7 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 201) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        window.location.href = `${
-          import.meta.env.VITE_BASE_URL
-        }/?redirectedfrom=signup`;
+        window.location.href = `${window.location.href}/?redirectedfrom=signup`;
       } catch (err: any) {
         const errorMessage = err.response.data.error;
         if (typeof errorMessage === "string") {
@@ -200,9 +193,7 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 200) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        window.location.href = `${
-          import.meta.env.VITE_BASE_URL
-        }/?redirectedfrom=login`;
+        window.location.href = `${window.location.href}/?redirectedfrom=login`;
       } catch (err: any) {
         const errorMessage = err.response.data.error;
         if (typeof errorMessage === "string") {
@@ -232,53 +223,7 @@ const RegisterationForm = () => {
   ) => {
     e.preventDefault();
     try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const response = await getUserData(result.user.providerData[0].uid);
-
-      if (response.exists()) {
-        dispatch(
-          setCurrentUser({ ...response.data(), _id: response.id } as User)
-        );
-        navigate("/myprofile");
-      } else {
-        await setDoc(
-          doc(
-            db,
-            import.meta.env.VITE_USERS_COLLECTION_NAME,
-            result.user.providerData[0].uid
-          ),
-          {
-            name: result.user.providerData[0].displayName,
-            email: result.user.providerData[0].email,
-            profilePicture: result.user.providerData[0].photoURL,
-            emailVerified: result.user.emailVerified,
-            points: 0,
-            copouns: [],
-            completedTasks: [],
-            activeFrame: null,
-            myFrames: [],
-            mySongs: [],
-            dailyReward: [],
-          }
-        );
-        const response = await getUserData(result.user.providerData[0].uid);
-        //
-        dispatch(
-          setCurrentUser({ ...response.data(), _id: response.id } as User)
-        );
-        dispatch(toggleRegisterForm(false));
-        navigate("/myprofile");
-      }
-    } catch (error) {
-      dispatch(
-        showPopup({
-          status: true,
-          message: "somthing went wrong, check your Network connection",
-          icon: <BiErrorAlt />,
-        })
-      );
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
