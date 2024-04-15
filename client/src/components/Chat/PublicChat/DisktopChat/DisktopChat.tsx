@@ -70,7 +70,7 @@ const DisktopChat = () => {
       };
     }
   }, [socet]);
-  // console.log(messages);
+
   return (
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
       <span
