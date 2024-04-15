@@ -22,9 +22,15 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://free-time-ten.vercel.app"],
+  })
+);
 
-export const io = new Server(server);
+export const io = new Server(server, {
+  cors: { origin: "https://free-time-ten.vercel.app" },
+});
 
 export const onLineUsers: any = {};
 
