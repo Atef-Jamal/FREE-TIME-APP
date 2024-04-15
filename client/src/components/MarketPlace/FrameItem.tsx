@@ -4,8 +4,8 @@ import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
-import { MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
 import { BiErrorAlt } from "react-icons/bi";
+import { IoLockClosed } from "react-icons/io5";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
   const { currentUser, currentUserIsFetched } = useAppSelector(
@@ -25,7 +25,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
         showPopup({
           status: true,
           message: "Sign In First",
-          icon: <MdOutlineNoEncryptionGmailerrorred />,
+          icon: <IoLockClosed />,
         })
       );
       return;

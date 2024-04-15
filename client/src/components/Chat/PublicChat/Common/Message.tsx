@@ -1,17 +1,18 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
-import { MdDeleteOutline, MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
 import { TypeFrame, TypePublicChatMessage } from "../../../../types";
 import verifiedIcon from "../../../../assets/verified-icon.png";
 import { timeAgoFromMongoDBDate } from "../../../../context/functions";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import UserImage from "../../../../components/Others/UserImage"
+import UserImage from "../../../../components/Others/UserImage";
 import { makeRequest } from "../../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { IoLockClosed } from "react-icons/io5";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -66,7 +67,7 @@ const Message = ({
         showPopup({
           status: true,
           message: "Failing to Delete Message,Try Again",
-          icon: <BiErrorAlt />
+          icon: <BiErrorAlt />,
         })
       );
     } finally {
@@ -80,8 +81,13 @@ const Message = ({
     otherFieldTow: TypeFieldName
   ) => {
     if (!currentUser) {
-      dispatch(showPopup({ status: true, message: "sign in first", icon: <MdOutlineNoEncryptionGmailerrorred />
-    }));
+      dispatch(
+        showPopup({
+          status: true,
+          message: "sign in first",
+          icon: <IoLockClosed />,
+        })
+      );
       return;
     }
 

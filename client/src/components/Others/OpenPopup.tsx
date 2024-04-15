@@ -19,7 +19,7 @@ const OpenPopup = () => {
     <div
       className={`${
         openPopup.status ? "opacity-100" : " opacity-0 border-none"
-      } transition duration-500 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#7768fff8] rounded-lg border px-4 sm:px-2 py-2 sm:py-1 mx-auto border-[#97f34cde] `}
+      } transition duration-500 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#7768fff8] rounded-lg border px-4 sm:px-2 py-2 mx-auto border-[#97f34cde] `}
     >
       <span className="text-xl">{openPopup.icon}</span>
       <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">

@@ -13,8 +13,8 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
-import { MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
 import { BiErrorAlt } from "react-icons/bi";
+import { IoLockClosed } from "react-icons/io5";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const { currentUser, currentSong, isPlaying } = useAppSelector(
@@ -62,7 +62,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
         showPopup({
           status: true,
           message: "Sign In First",
-          icon: <MdOutlineNoEncryptionGmailerrorred />,
+          icon: <IoLockClosed />,
         })
       );
       return;

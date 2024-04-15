@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoLockClosed } from "react-icons/io5";
 import { User } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { showPopup } from "../context/StateManeger";
+import { showPopup, toggleRegisterForm } from "../context/StateManeger";
 import { makeRequest } from "../utils";
 import Welcome from "../components/Chat/PrivateChat/Welcome";
 import Friend from "../components/Chat/PrivateChat/Friend";
@@ -144,7 +144,15 @@ const PrivateChat = () => {
       </div>
     </div>
   ) : (
-    <div>Login first</div>
+    <div className="h-full flex flex-col items-center justify-center  text-4xl sm:text-2xl font-bold tracking-wider gap-5">
+      <IoLockClosed className="opacity-50 text-4xl" />
+      <button
+        onClick={() => dispatch(toggleRegisterForm(true))}
+        className="text-[#ceb545] underline"
+      >
+        Login or Register to Unlock Chat
+      </button>
+    </div>
   );
 };
 

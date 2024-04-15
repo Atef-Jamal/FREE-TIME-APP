@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
-import { MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
+import { IoLockClosed } from "react-icons/io5";
 
 interface TypeProps {
   day: number;
@@ -57,7 +57,7 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           showPopup({
             status: true,
             message: "Sign In First",
-            icon: <MdOutlineNoEncryptionGmailerrorred />,
+            icon: <IoLockClosed />,
           })
         );
       } else {
@@ -113,7 +113,7 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
               showPopup({
                 status: true,
                 message: "Please, Sign In First",
-                icon: <MdOutlineNoEncryptionGmailerrorred />,
+                icon: <IoLockClosed />,
               })
             );
           }}

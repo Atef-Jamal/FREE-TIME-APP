@@ -4,7 +4,6 @@ import { makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { timeAgoFromMongoDBDate } from "../../context/functions";
 import {
-  MdOutlineNoEncryptionGmailerrorred,
   MdOutlineStarOutline,
   MdOutlineStarPurple500,
 } from "react-icons/md";
@@ -14,6 +13,7 @@ import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { User } from "../../types";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
+import { IoLockClosed } from "react-icons/io5";
 
 interface TypeTestimonial {
   _id: string;
@@ -37,7 +37,7 @@ const TestimonialSection = () => {
         showPopup({
           message: "sign In First",
           status: true,
-          icon: <MdOutlineNoEncryptionGmailerrorred />,
+          icon: <IoLockClosed />,
         })
       );
       return;

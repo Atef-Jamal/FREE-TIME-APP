@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  MdCardGiftcard,
-  MdOutlineNoEncryptionGmailerrorred,
-} from "react-icons/md";
+import { MdCardGiftcard } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
 import { BiCopy, BiErrorAlt } from "react-icons/bi";
@@ -12,6 +9,7 @@ import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { IoLockClosed } from "react-icons/io5";
 
 interface TypeBounusCode {
   _id: string;
@@ -35,7 +33,7 @@ const Rewards = () => {
         showPopup({
           status: true,
           message: "Sign In first",
-          icon: <MdOutlineNoEncryptionGmailerrorred />,
+          icon: <IoLockClosed />,
         })
       );
       return;
