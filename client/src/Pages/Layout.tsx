@@ -6,14 +6,11 @@ import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import Model from "../components/Others/Model";
 import Sidebar from "../components/Sidebar/Sidebar";
 import MobileSidebare from "../components/Sidebar/MobileSidebare";
-
 import Navbare from "../components/Navebare/Navbare";
 import Footer from "../components/Footer/Footer";
 import DisktopChat from "../components/Chat/PublicChat/DisktopChat/DisktopChat";
-
 import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
-
 import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -21,6 +18,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 const Layout = () => {
   const {
     currentUser,
+    currentUserIsFetched,
     resizeSidebare,
     isChatOpen,
     hiddenLiveStats,
@@ -34,26 +32,17 @@ const Layout = () => {
   const paramValue = searchParams.get("redirectedfrom");
 
   useEffect(() => {
-    if (currentUser) {
-      const socet = io(import.meta.env.VITE_BASE_URL, {
-        query: { userId: currentUser._id },
-      });
-      dispatch(setSocet(socet));
+    let realUserOrAnonymousUser = "";
+    if (currentUser && currentUserIsFetched) {
+      realUserOrAnonymousUser = currentUser._id;
+    } else {
+      realUserOrAnonymousUser = "anonymous";
     }
+    const socet = io(import.meta.env.VITE_BASE_URL, {
+      query: { userId: realUserOrAnonymousUser },
+    });
+    dispatch(setSocet(socet));
   }, [currentUser]);
-
-  const handleOnlineUsers = (data: string[]) => {
-    dispatch(setOnlineUsers(data));
-  };
-
-  useEffect(() => {
-    if (socet) {
-      socet.on("getOnlineUsers", handleOnlineUsers);
-      return () => {
-        socet.off("getOnlineUsers", handleOnlineUsers);
-      };
-    }
-  }, [socet]);
 
   useEffect(() => {
     if (paramValue) {
@@ -82,6 +71,19 @@ const Layout = () => {
       }
     }
   }, [paramValue]);
+
+  const handleOnlineUsers = (data: string[]) => {
+    dispatch(setOnlineUsers(data));
+  };
+
+  useEffect(() => {
+    if (socet) {
+      socet.on("getOnlineUsers", handleOnlineUsers);
+      return () => {
+        socet.off("getOnlineUsers", handleOnlineUsers);
+      };
+    }
+  }, [socet]);
 
   return (
     <div className="flex flex-col items-center justify-center relative">

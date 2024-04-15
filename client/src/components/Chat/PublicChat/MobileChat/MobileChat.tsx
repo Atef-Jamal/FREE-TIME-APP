@@ -1,9 +1,9 @@
-import {useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import FreeTime from  "../Common/FreeTime"
-import Message from  "../Common/Message"
-import SendMessage from  "../Common/SendMessage"
+import FreeTime from "../Common/FreeTime";
+import Message from "../Common/Message";
+import SendMessage from "../Common/SendMessage";
 
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types";
@@ -13,9 +13,9 @@ const MobileChat = () => {
   const { hiddenLiveStats, socet } = useAppSelector(
     (state) => state.stateManeger
   );
-  const lastMessageRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<TypePublicChatItem[]>([]);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
   const mentionedMessageRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
 
@@ -35,15 +35,6 @@ const MobileChat = () => {
   }, []);
 
   useEffect(() => {
-    const scrollToElement = () => {
-      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-    if (!stopScrolling) {
-      scrollToElement();
-    }
-  }, [messages]);
-
-  useEffect(() => {
     const scrollToMessage = () => {
       mentionedMessageRef.current?.scrollIntoView({
         block: "nearest",
@@ -59,7 +50,7 @@ const MobileChat = () => {
     if (searchValue) {
       scrollToMessage();
     }
-  }, [searchValue]);
+  }, [searchValue, messages]);
 
   const handleMessage = (message: TypePublicChatItem) => {
     setMessages((prev) => [...prev, message]);
@@ -73,6 +64,15 @@ const MobileChat = () => {
       };
     }
   }, [socet]);
+
+  useEffect(() => {
+    const scrollToElement = () => {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+    if (!stopScrolling) {
+      scrollToElement();
+    }
+  }, [messages]);
 
   return (
     <div
@@ -93,6 +93,7 @@ const MobileChat = () => {
               <Message
                 key={index}
                 setStopScrolling={setStopScrolling}
+                stopScrolling={stopScrolling}
                 singleMessage={message}
                 lastMessageRef={
                   index === messages.length - 1 && !searchValue

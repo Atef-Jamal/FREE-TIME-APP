@@ -14,7 +14,6 @@ import frameRoute from "./routes/frameRoute";
 import testimonialRoute from "./routes/testimonialRoute";
 import couponRoute from "./routes/couponRoute";
 import http from "http";
-// import path from "path";
 import { Server } from "socket.io";
 import User from "./models/user";
 
@@ -24,12 +23,14 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: ["https://free-time-ten.vercel.app"],
+    origin: [process.env.CLIENT_BASE_URL!, "http://localhost:5173"],
   })
 );
 
 export const io = new Server(server, {
-  cors: { origin: "https://free-time-ten.vercel.app" },
+  cors: {
+    origin: [process.env.CLIENT_BASE_URL!, "http://localhost:5173"],
+  },
 });
 
 export const onLineUsers: any = {};
@@ -70,6 +71,8 @@ io.on("connection", (socet) => {
   const userId = socet.handshake.query.userId;
   if (userId !== undefined) {
     onLineUsers[userId as string] = socet.id;
+  } else {
+    onLineUsers["anonymous"] = socet.id;
   }
 
   io.emit("getOnlineUsers", Object.keys(onLineUsers));
@@ -92,7 +95,15 @@ io.on("connection", (socet) => {
 
   socet.on("disconnect", () => {
     const userId = socet.handshake.query.userId;
-    delete onLineUsers[userId as string];
+    if (userId === "anonymous") {
+      Object.keys(onLineUsers).forEach((item) => {
+        if (onLineUsers[item] === socet.id) {
+          delete onLineUsers[item];
+        }
+      });
+    } else {
+      delete onLineUsers[userId as string];
+    }
     io.emit("getOnlineUsers", Object.keys(onLineUsers));
   });
 });

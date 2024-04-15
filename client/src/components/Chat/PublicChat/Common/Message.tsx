@@ -18,7 +18,8 @@ interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
   lastMessageRef?: React.RefObject<HTMLDivElement> | null;
   mentionedMessageRef?: React.RefObject<HTMLDivElement> | null;
-  setStopScrolling?: React.Dispatch<React.SetStateAction<boolean>>;
+  stopScrolling: boolean;
+  setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type TypeFieldName = "loves" | "likes" | "dislikes";
@@ -26,6 +27,7 @@ type TypeFieldName = "loves" | "likes" | "dislikes";
 const Message = ({
   singleMessage,
   setStopScrolling,
+  stopScrolling,
   lastMessageRef,
   mentionedMessageRef,
 }: TypeMessageProp) => {
@@ -55,7 +57,7 @@ const Message = ({
   const deleteMessage = async (paramId: string) => {
     setIsDeleting(true);
     try {
-      if (setStopScrolling !== undefined) {
+      if (stopScrolling === false) {
         setStopScrolling(true);
       }
       const response = await makeRequest.patch(`api/publicchat/${paramId}`, {

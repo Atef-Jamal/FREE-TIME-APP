@@ -4,10 +4,10 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { chatToggleButton } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import Message from "../Common/Message"
-import ChatHeader from "../Common/ChatHeader"
-import SendMessage from "../Common/SendMessage"
-import FreeTime from "../Common/FreeTime"
+import Message from "../Common/Message";
+import ChatHeader from "../Common/ChatHeader";
+import SendMessage from "../Common/SendMessage";
+import FreeTime from "../Common/FreeTime";
 import { TypePublicChatItem } from "../../../../types";
 import { makeRequest } from "../../../../utils";
 
@@ -102,6 +102,7 @@ const DisktopChat = () => {
               <Message
                 key={message._id}
                 setStopScrolling={setStopScrolling}
+                stopScrolling={stopScrolling}
                 singleMessage={message}
                 lastMessageRef={
                   index === messages.length - 1 && !searchValue

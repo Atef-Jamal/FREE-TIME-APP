@@ -6,7 +6,7 @@ import {
   openModel,
 } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
-import notificationSound from "../../../assets/notificationSound.wav";
+import notificationSoundSrc from "../../../assets/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
 import { TypeNotifications } from "../../../types";
@@ -26,8 +26,8 @@ const ProfileActions = () => {
 
   const dispatch = useAppDispatch();
 
-  let notifySound = new Audio();
-  notifySound.src = notificationSound;
+  const notifySound = new Audio();
+  notifySound.src = notificationSoundSrc;
 
   const numUnReaded = notifications.filter(
     (element) => element.isRead === false
@@ -44,7 +44,7 @@ const ProfileActions = () => {
           showPopup({
             status: true,
             message: "Failed to Load Notifications",
-            icon: <BiErrorAlt />
+            icon: <BiErrorAlt />,
           })
         );
       } finally {
@@ -55,9 +55,8 @@ const ProfileActions = () => {
   }, [currentUser]);
 
   const handleNewNotification = (notfication: TypeNotifications) => {
-    console.log("trigger");
     setNotifications((prev) => [...prev, notfication]);
-    // notifySound.play();
+    notifySound.play();
   };
 
   useEffect(() => {

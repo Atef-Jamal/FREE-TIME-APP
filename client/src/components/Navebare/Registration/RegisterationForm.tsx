@@ -130,7 +130,7 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 201) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        window.location.href = `${window.location.href}/?redirectedfrom=signup`;
+        window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
       } catch (err: any) {
         const errorMessage = err.response.data.error;
         if (typeof errorMessage === "string") {
@@ -193,7 +193,7 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 200) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        window.location.href = `${window.location.href}/?redirectedfrom=login`;
+        window.location.href = `${window.location.origin}/?redirectedfrom=login`;
       } catch (err: any) {
         const errorMessage = err.response.data.error;
         if (typeof errorMessage === "string") {
