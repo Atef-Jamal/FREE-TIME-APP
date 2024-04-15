@@ -135,7 +135,9 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 201) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        window.location.href = "http://localhost:5173/?redirectedfrom=signup";
+        window.location.href = `${
+          import.meta.env.VITE_BASE_URL
+        }/?redirectedfrom=signup`;
       } catch (err: any) {
         const errorMessage = err.response.data.error;
         if (typeof errorMessage === "string") {
@@ -198,7 +200,9 @@ const RegisterationForm = () => {
         if (axiosResponse.status === 200) {
           localStorage.setItem("token", axiosResponse.data.token);
         }
-        window.location.href = "http://localhost:5173/?redirectedfrom=login";
+        window.location.href = `${
+          import.meta.env.VITE_BASE_URL
+        }/?redirectedfrom=login`;
       } catch (err: any) {
         const errorMessage = err.response.data.error;
         if (typeof errorMessage === "string") {

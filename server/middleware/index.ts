@@ -24,13 +24,10 @@ const protectedRoute = async (
       return res.status(401).json({ error: "Unauthorizedddd" });
     }
 
-    const decoded: any = jwt.verify(
-      token,
-      "a8908f02766c63417f00659f49549eaff1e043e87b7f84c5abac96c142c9896a"
-    );
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "");
 
     if (!decoded) {
-      return res.status(404).json({ error: "unauthorized - invalid token" });
+      return res.status(404).json({ error: "UnAuthorized - Invalid token" });
     }
 
     const user = await User.findById(decoded.userId).select("-password");
@@ -43,8 +40,7 @@ const protectedRoute = async (
 
     return next();
   } catch (error) {
-    // console.log(error);
-    return res.status(500).json({ error: "internal server error ttttttt" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

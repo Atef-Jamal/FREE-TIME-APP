@@ -18,7 +18,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const handleLogOut = async () => {
     localStorage.setItem("token", "");
     setOpenProfileMenu((previos) => !previos);
-    window.location.href = "http://localhost:5173/?redirectedfrom=logout";
+    window.location.href = `${import.meta.env.VITE_BASE_URL}/?redirectedfrom=logout`;
   };
 
   const handleToggleLiveStats = () => {

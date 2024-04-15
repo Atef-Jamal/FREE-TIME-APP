@@ -347,12 +347,12 @@ const MyProfile = () => {
                     name="referrallink"
                     className="bg-[#1b243fcb] outline-none w-full text-gray-400 py-1"
                     readOnly={true}
-                    value={`https://make4free.netlify.app/?ref=${currentUser._id}`}
+                    value={`https://free-time-beta.vercel.app/?ref=${currentUser._id}`}
                   />
                   <span
                     onClick={() =>
                       copyReferralLink(
-                        `https://make4free.netlify.app/?ref=${currentUser._id}`
+                        `https://free-time-beta.vercel.app/?ref=${currentUser._id}`
                       )
                     }
                     className="relative w-[15%] h-5 flex items-center justify-center"

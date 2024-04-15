@@ -33,9 +33,15 @@ export const register = async (req: Request, res: Response) => {
 
     const savedUser = await newUser.save();
 
+    if (!process.env.JWT_SECRET_KEY) {
+      return res
+        .status(404)
+        .json({ error: "an Error occurred, try again later" });
+    }
+
     const token = jwt.sign(
       { userId: savedUser._id },
-      "a8908f02766c63417f00659f49549eaff1e043e87b7f84c5abac96c142c9896a"
+      process.env.JWT_SECRET_KEY
     );
 
     if (referrerUser) {
@@ -94,10 +100,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "invalid password" });
     }
 
-    const token = jwt.sign(
-      { userId: user._id },
-      "a8908f02766c63417f00659f49549eaff1e043e87b7f84c5abac96c142c9896a"
-    );
+    if (!process.env.JWT_SECRET_KEY) {
+      return res
+        .status(404)
+        .json({ error: "an Error occurred, Try again later" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
 
     return res.status(200).json({ ...user, token });
   } catch (error) {
@@ -115,10 +124,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const user: any = jwt.verify(
-      token,
-      "a8908f02766c63417f00659f49549eaff1e043e87b7f84c5abac96c142c9896a"
-    );
+    const user: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "");
 
     const getUser = await User.findById(user.userId).select("-password");
 
@@ -173,7 +179,7 @@ export const sendEmailVerificationCode = async (
       from: "atefgmal778@gmail.com",
       to: user.email,
       subject: "Verify Your Email Adress",
-      text: `verification code : ${generateCode}`,
+      text: `Verification code : ${generateCode}`,
     };
 
     await transporter.sendMail(options);
@@ -182,7 +188,7 @@ export const sendEmailVerificationCode = async (
   } catch (error) {
     console.log(error);
     return res.status(404).json({
-      error: "server - fail to send verification code, an error occurred",
+      error: "server - Fail to send verification code, an error occurred",
     });
   }
 };
@@ -257,7 +263,7 @@ export const changePassword = async (req: Request, res: Response) => {
     const isCorrect = await bcrypt.compare(enterdOldPass, oldPassword);
 
     if (!isCorrect) {
-      return res.status(404).json({ error: "old password is not correct" });
+      return res.status(404).json({ error: "Old Password is not correct" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -271,7 +277,7 @@ export const changePassword = async (req: Request, res: Response) => {
     console.log(error);
     return res
       .status(404)
-      .json({ error: "server - can not change password, an error occurred" });
+      .json({ error: "Can't change password, an error occurred" });
   }
 };
 
@@ -284,7 +290,7 @@ export const changeName = async (req: Request, res: Response) => {
     if (!user) {
       return res
         .status(404)
-        .json({ error: "can not change name because user not found" });
+        .json({ error: "Can't change name because user not found" });
     }
     if (newName === "") {
       return res.status(404).json({ error: "please Enter Name" });
@@ -296,6 +302,6 @@ export const changeName = async (req: Request, res: Response) => {
     console.log(error);
     return res
       .status(404)
-      .json({ error: "can not change name, an error occurred" });
+      .json({ error: "Can't change name, an error occurred" });
   }
 };

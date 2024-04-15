@@ -35,7 +35,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (currentUser) {
-      const socet = io("http://localhost:3000", {
+      const socet = io(import.meta.env.VITE_BASE_URL, {
         query: { userId: currentUser._id },
       });
       dispatch(setSocet(socet));
