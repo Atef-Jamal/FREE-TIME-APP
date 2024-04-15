@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
-import {
-  BsExclamationTriangleFill,
-  BsExclamationOctagonFill,
-} from "react-icons/bs";
 import { FaPauseCircle } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { IoMdPlay } from "react-icons/io";
@@ -31,6 +27,8 @@ import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
 import { makeRequest } from "../../../utils";
+import Spinner from "../../Others/Spinner";
+import { BiErrorAlt } from "react-icons/bi";
 
 export interface TypeFormData {
   name: string;
@@ -111,7 +109,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: errorMessage,
-              icon: <BsExclamationTriangleFill />,
+              icon: <BiErrorAlt />,
             })
           );
           setSubmiting(false);
@@ -120,8 +118,8 @@ const RegisterationForm = () => {
         dispatch(
           showPopup({
             status: true,
-            message: "Signing Up ....",
-            spinner: true,
+            message: "signing Up....",
+            icon: <Spinner className="w-5 h-5" />,
           })
         );
         const axiosResponse = await makeRequest.post(
@@ -145,7 +143,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: errorMessage,
-              icon: <BsExclamationOctagonFill />,
+              icon: <BiErrorAlt />,
             })
           );
         } else {
@@ -153,7 +151,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: "an Error occurred, Try Again",
-              icon: <BsExclamationOctagonFill />,
+              icon: <BiErrorAlt />,
             })
           );
         }
@@ -177,7 +175,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: errorMessage,
-              icon: <BsExclamationTriangleFill />,
+              icon: <BiErrorAlt />,
             })
           );
 
@@ -188,8 +186,8 @@ const RegisterationForm = () => {
         dispatch(
           showPopup({
             status: true,
-            spinner: true,
-            message: "Loging In ...",
+            icon: <Spinner className="w-5 h-5" />,
+            message: "Loging In...",
           })
         );
 
@@ -208,7 +206,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: errorMessage,
-              icon: <BsExclamationOctagonFill />,
+              icon: <BiErrorAlt />,
             })
           );
         } else {
@@ -216,7 +214,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: "Fail to Login, Try Again",
-              icon: <BsExclamationOctagonFill />,
+              icon: <BiErrorAlt />,
             })
           );
         }
@@ -273,7 +271,7 @@ const RegisterationForm = () => {
         showPopup({
           status: true,
           message: "somthing went wrong, check your Network connection",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     }
@@ -287,6 +285,7 @@ const RegisterationForm = () => {
             showPopup({
               status: true,
               message: `image size expected to be less than 2 MB`,
+              icon: <BiErrorAlt />,
             })
           );
           setGetFile(null);
@@ -326,7 +325,7 @@ const RegisterationForm = () => {
                     : err.code === "storage/unauthorized"
                     ? "Image size must be less than 2 MB"
                     : "an Error occured, try again",
-                icon: <BsExclamationOctagonFill />,
+                icon: <BiErrorAlt />,
               })
             );
             setUploading(false);

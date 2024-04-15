@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { GoCheckCircleFill } from "react-icons/go";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import { FcApproval } from "react-icons/fc";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import {
@@ -9,7 +7,9 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeQuizAppNotify } from "../../../types";
-import Spinner from "../../Others/Spinner"
+import Spinner from "../../Others/Spinner";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { BiErrorAlt } from "react-icons/bi";
 
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 
@@ -36,7 +36,7 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
         showPopup({
           status: true,
           message: "collected successfully ",
-          icon: <GoCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (error) {
@@ -45,7 +45,7 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
         showPopup({
           status: true,
           message: "Failed to Collect ",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     } finally {

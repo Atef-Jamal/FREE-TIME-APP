@@ -10,14 +10,10 @@ import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { RiFileCopyLine } from "react-icons/ri";
-import { BiTask } from "react-icons/bi";
-import { FaUsers } from "react-icons/fa";
+import { BiErrorAlt, BiTask } from "react-icons/bi";
+import { FaRegCheckCircle, FaUsers } from "react-icons/fa";
 import { FcOk } from "react-icons/fc";
-import {
-  BsCheckCircleFill,
-  BsExclamationOctagonFill,
-  BsFillClockFill,
-} from "react-icons/bs";
+import { BsFillClockFill } from "react-icons/bs";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
 import { useSearchParams } from "react-router-dom";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
@@ -86,7 +82,7 @@ const MyProfile = () => {
         showPopup({
           status: true,
           message: "Changed Successfully",
-          icon: <BsCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (err) {
@@ -94,7 +90,7 @@ const MyProfile = () => {
         showPopup({
           status: true,
           message: "Failing to Change Your Frame. somthing went wrong",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     }
@@ -115,7 +111,7 @@ const MyProfile = () => {
         showPopup({
           status: true,
           message: "unselected Successfully",
-          icon: <BsCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (error) {
@@ -124,7 +120,7 @@ const MyProfile = () => {
         showPopup({
           status: true,
           message: "Failing to Unselect Frame, try again",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     }
@@ -136,7 +132,7 @@ const MyProfile = () => {
       showPopup({
         status: true,
         message: "Copied Successfully",
-        icon: <BsCheckCircleFill />,
+        icon: <FaRegCheckCircle />,
       })
     );
   };
@@ -163,7 +159,11 @@ const MyProfile = () => {
       } catch (error) {
         console.log(error);
         dispatch(
-          showPopup({ status: true, message: "failed to fetch statistics" })
+          showPopup({
+            status: true,
+            message: "Failed to Load statistics",
+            icon: <BiErrorAlt />,
+          })
         );
       }
     };

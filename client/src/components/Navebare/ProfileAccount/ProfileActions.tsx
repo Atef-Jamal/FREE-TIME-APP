@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import {
   toggleNotifications,
@@ -10,10 +10,11 @@ import notificationSound from "../../../assets/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
 import { TypeNotifications } from "../../../types";
-import ApplyCoupon from "../../Others/ApplyCoupon"
-import UserImage from "../../Others/UserImage"
-import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu"
-import  NotificationMenu from "../../Navebare/Notifications/NotificationMenu"
+import ApplyCoupon from "../../Others/ApplyCoupon";
+import UserImage from "../../Others/UserImage";
+import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
+import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
+import { BiErrorAlt } from "react-icons/bi";
 
 const ProfileActions = () => {
   const { currentUser, openNotification, socet } = useAppSelector(
@@ -40,7 +41,11 @@ const ProfileActions = () => {
         setNotifications(response.data);
       } catch (error) {
         dispatch(
-          showPopup({ status: true, message: "Failed to Load Notifications" })
+          showPopup({
+            status: true,
+            message: "Failed to Load Notifications",
+            icon: <BiErrorAlt />
+          })
         );
       } finally {
         setLoadingNotifications(false);

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const EnterVerificationCode = () => {
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
@@ -27,7 +28,13 @@ const EnterVerificationCode = () => {
       setSuccessfullyVerified(true);
     } catch (error) {
       console.log(error);
-      dispatch(showPopup({ status: true, message: "an error occured" }));
+      dispatch(
+        showPopup({
+          status: true,
+          message: "an error occured",
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 

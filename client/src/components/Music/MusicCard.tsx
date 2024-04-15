@@ -8,11 +8,13 @@ import {
   toggleIsPlaying,
   toggleMusicModal,
 } from "../../context/StateManeger";
-import { FaExclamation } from "react-icons/fa";
+import { FaRegCheckCircle } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
-import {  useState } from "react";
-import Spinner from "../Others/Spinner"
+import { useState } from "react";
+import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
+import { MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
+import { BiErrorAlt } from "react-icons/bi";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const { currentUser, currentSong, isPlaying } = useAppSelector(
@@ -60,7 +62,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
         showPopup({
           status: true,
           message: "Sign In First",
-          icon: <FaExclamation />,
+          icon: <MdOutlineNoEncryptionGmailerrorred />,
         })
       );
       return;
@@ -84,6 +86,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
         showPopup({
           status: true,
           message: "successfully purshased",
+          icon: <FaRegCheckCircle />,
         })
       );
       setIsPurshased(true);
@@ -93,7 +96,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
         showPopup({
           status: true,
           message: "Failed to Purshase This Music, try again",
-          icon: <FaExclamation />,
+          icon: <BiErrorAlt />,
         })
       );
     } finally {

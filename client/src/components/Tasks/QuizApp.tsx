@@ -4,6 +4,7 @@ import { TypeTaskApp } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { makeRequest } from "../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 interface TypeProps {
   taskApp: TypeTaskApp;
@@ -85,7 +86,8 @@ const QuizApp = ({ taskApp }: TypeProps) => {
         showPopup({
           status: true,
           message: "Failed to Complete Task, try again",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />
+
         })
       );
     }

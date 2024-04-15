@@ -6,8 +6,9 @@ import {
   setCurrentUser,
   showPopup,
 } from "../../context/StateManeger";
-import VerifyEmailBox from "./VerifyEmailBox"
+import VerifyEmailBox from "./VerifyEmailBox";
 import { makeRequest } from "../../utils";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 const ProfileSettings = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -16,8 +17,6 @@ const ProfileSettings = () => {
   const [newPass, setNewPass] = useState<string>("");
   const [openEnterCode, setOpenEnterCode] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-
-
 
   const handleChangeName = (e: any) => {
     setNewName(e.target.value);
@@ -40,7 +39,11 @@ const ProfileSettings = () => {
       });
       dispatch(setCurrentUser({ ...currentUser, name: response.data.name }));
       dispatch(
-        showPopup({ status: true, message: "your name successfully changed" })
+        showPopup({
+          status: true,
+          message: "Name successfully changed",
+          icon: <FaRegCheckCircle />,
+        })
       );
     } catch (error) {
       console.log(error);
@@ -59,7 +62,8 @@ const ProfileSettings = () => {
       dispatch(
         showPopup({
           status: true,
-          message: "your password successfully changed",
+          message: "Password successfully changed",
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (error) {

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { GoCheckCircleFill } from "react-icons/go";
 import VerifiedIcon from "../../../assets/verified-icon.png";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
@@ -8,8 +7,9 @@ import {
   timeAgoFromMongoDBDate,
 } from "../../../context/functions";
 import { TypeEmailVerifiedNotify } from "../../../types";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import Spinner from "../../Others/Spinner";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { BiErrorAlt } from "react-icons/bi";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
 
@@ -41,7 +41,7 @@ const EmailVerifiedNotify = ({
         showPopup({
           status: true,
           message: "collected successfully ",
-          icon: <GoCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (error) {
@@ -50,7 +50,7 @@ const EmailVerifiedNotify = ({
         showPopup({
           status: true,
           message: "Failed to Collect ",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     } finally {

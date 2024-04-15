@@ -16,6 +16,7 @@ import NavebareBottom from "../components/Navebare/NavebareBottom";
 
 import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 const Layout = () => {
   const {
@@ -67,7 +68,13 @@ const Layout = () => {
         popupMessage = "Sign Up successfull";
       }
       if (popupMessage) {
-        dispatch(showPopup({ status: true, message: popupMessage }));
+        dispatch(
+          showPopup({
+            status: true,
+            message: popupMessage,
+            icon: <FaRegCheckCircle />,
+          })
+        );
         setSearchParams(() => {
           searchParams.delete("redirectedfrom", paramValue);
           return searchParams;
@@ -81,8 +88,9 @@ const Layout = () => {
       <Helmet>
         <title>FREE TIME</title>
       </Helmet>
-
-      <OpenPopup />
+      <div className="fixed top-4 w-fit z-[100]">
+        <OpenPopup />
+      </div>
       {model.status && <Model children={model.children} />}
       <Navbare />
       <div className="w-full flex bg-[#212134]">

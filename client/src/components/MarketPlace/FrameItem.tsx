@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
-import { BsExclamationOctagonFill } from "react-icons/bs";
-import Spinner from "../Others/Spinner"
+import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
+import { MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
+import { BiErrorAlt } from "react-icons/bi";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
   const { currentUser, currentUserIsFetched } = useAppSelector(
@@ -20,7 +21,13 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
 
   const buyNow = async (frameId: string) => {
     if (!currentUser) {
-      dispatch(showPopup({ status: true, message: "Sign In First" }));
+      dispatch(
+        showPopup({
+          status: true,
+          message: "Sign In First",
+          icon: <MdOutlineNoEncryptionGmailerrorred />,
+        })
+      );
       return;
     }
     setIsLoading(true);
@@ -46,7 +53,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
         showPopup({
           status: true,
           message: error,
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     } finally {
@@ -91,8 +98,8 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
             dispatch(
               showPopup({
                 status: true,
-                message: "already Buyed. Try with another Frames",
-                icon: <BsExclamationOctagonFill />,
+                message: "Already Buyed. Try with another Frames",
+                icon: <BiErrorAlt />,
               })
             )
           }

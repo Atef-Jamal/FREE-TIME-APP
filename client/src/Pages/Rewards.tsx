@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { MdCardGiftcard } from "react-icons/md";
-import { BsCheckCircleFill } from "react-icons/bs";
+import {
+  MdCardGiftcard,
+  MdOutlineNoEncryptionGmailerrorred,
+} from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
-import { BiCopy } from "react-icons/bi";
+import { BiCopy, BiErrorAlt } from "react-icons/bi";
 import { makeRequest } from "../utils";
 import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 interface TypeBounusCode {
   _id: string;
@@ -28,7 +31,13 @@ const Rewards = () => {
 
   const getBonusCode = async () => {
     if (!currentUser) {
-      dispatch(showPopup({ status: true, message: "Sign In first" }));
+      dispatch(
+        showPopup({
+          status: true,
+          message: "Sign In first",
+          icon: <MdOutlineNoEncryptionGmailerrorred />,
+        })
+      );
       return;
     }
     setLoading(true);
@@ -40,7 +49,8 @@ const Rewards = () => {
       dispatch(
         showPopup({
           status: true,
-          message: "can not get Bounus Code, an error occurred",
+          message: "Can't Load Bounus Code, an error occurred",
+          icon: <BiErrorAlt />,
         })
       );
     } finally {
@@ -55,7 +65,7 @@ const Rewards = () => {
         showPopup({
           status: true,
           message: "Copied!",
-          icon: <BsCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     }

@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
@@ -7,9 +7,10 @@ import { User } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
-import  Welcome from "../components/Chat/PrivateChat/Welcome"
-import  Friend from "../components/Chat/PrivateChat/Friend"
-import  Spinner from "../components/Others/Spinner"
+import Welcome from "../components/Chat/PrivateChat/Welcome";
+import Friend from "../components/Chat/PrivateChat/Friend";
+import Spinner from "../components/Others/Spinner";
+import { BiErrorAlt } from "react-icons/bi";
 
 const PrivateChat = () => {
   const { currentUser, hiddenLiveStats, socet } = useAppSelector(
@@ -30,7 +31,11 @@ const PrivateChat = () => {
       } catch (err) {
         console.log(err);
         dispatch(
-          showPopup({ status: true, message: "Failed to load peoples" })
+          showPopup({
+            status: true,
+            message: "Failed to load peoples",
+            icon: <BiErrorAlt />,
+          })
         );
       } finally {
         setLoading(false);

@@ -1,6 +1,4 @@
 import { FcApproval } from "react-icons/fc";
-import { GoCheckCircleFill } from "react-icons/go";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import {
   collectReward,
@@ -10,6 +8,8 @@ import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeGuessCardNotify } from "../../../types";
 import { useState } from "react";
 import Spinner from "../../Others/Spinner";
+import { BiErrorAlt } from "react-icons/bi";
+import { FaRegCheckCircle } from "react-icons/fa";
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 
 const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
@@ -35,7 +35,7 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
         showPopup({
           status: true,
           message: "collected successfully ",
-          icon: <GoCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (error) {
@@ -44,7 +44,7 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
         showPopup({
           status: true,
           message: "Failed to Collect ",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     } finally {

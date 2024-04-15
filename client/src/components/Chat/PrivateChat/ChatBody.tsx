@@ -13,6 +13,7 @@ import Spinner from "../../Others/Spinner";
 
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem"
+import { BiErrorAlt } from "react-icons/bi";
 
 const ChatBody = () => {
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
@@ -32,7 +33,8 @@ const ChatBody = () => {
 
   const sendMessage = async () => {
     if (message.trim() === "") {
-      dispatch(showPopup({ status: true, message: "Enter a Message" }));
+      dispatch(showPopup({ status: true, message: "Enter a Message",icon: <BiErrorAlt />
+    }));
       return;
     }
     try {
@@ -43,7 +45,8 @@ const ChatBody = () => {
       if (conversationReaded === true) setConversationReaded(false);
     } catch (error) {
       console.log(error);
-      dispatch(showPopup({ status: true, message: "somthing went wrong" }));
+      dispatch(showPopup({ status: true, message: "somthing went wrong",icon: <BiErrorAlt />
+    }));
     }
   };
 

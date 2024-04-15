@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { BsArrowDownShort } from "react-icons/bs";
-import { BiMenu } from "react-icons/bi";
+import { BiErrorAlt, BiMenu } from "react-icons/bi";
 import { sidebareItems } from "../../helper/data";
 import {
   setAllUnReadedMesseges,
@@ -38,7 +38,11 @@ const Sidebar = () => {
       } catch (error) {
         console.log(error);
         dispatch(
-          showPopup({ status: true, message: "failed to get unreadedMsges" })
+          showPopup({
+            status: true,
+            message: "Failed to get unreaded Messages",
+            icon: <BiErrorAlt />,
+          })
         );
       }
     };

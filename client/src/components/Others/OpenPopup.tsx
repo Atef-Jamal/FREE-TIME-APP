@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import Spinner from "../Others/Spinner";
 import { resetPopup } from "../../context/StateManeger";
 
 const OpenPopup = () => {
@@ -8,7 +7,7 @@ const OpenPopup = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (openPopup.spinner !== true) {
+    if (openPopup.status === true) {
       const timeOut = setTimeout(() => {
         dispatch(resetPopup());
       }, 5000);
@@ -18,13 +17,12 @@ const OpenPopup = () => {
 
   return (
     <div
-      className={`transition duration-500 ease-linear border border-[#97f34cde]  ${
-        openPopup.status ? "opacity-100 py-2 " : " opacity-0 border-0"
-      } fixed top-9 sm:top-2 z-[100] sm:left-[8%] lg:left-[22%] left-[38%] sm:w-[80%]  bg-[#7768fff8] rounded-md flex items-center  gap-4 px-4`}
+      className={`${
+        openPopup.status ? "opacity-100" : " opacity-0 border-none"
+      } transition duration-500 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#7768fff8] rounded-lg border px-4 sm:px-2 py-2 sm:py-1 mx-auto border-[#97f34cde] `}
     >
-      {openPopup.icon ? <div>{openPopup.icon}</div> : undefined}
-      {openPopup.spinner === true ? <Spinner className="w-4 h-4" /> : undefined}
-      <p className="text-sm font-[500] tracking-wider text-[#f7ffe6]">
+      <span className="text-xl">{openPopup.icon}</span>
+      <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">
         {openPopup.message}
       </p>
     </div>

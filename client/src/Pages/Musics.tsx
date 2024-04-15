@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { FcMusic } from "react-icons/fc";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { setAllMusics, showPopup } from "../context/StateManeger";
-import MusicCard from "../components/Music/MusicCard"
-import  Skeleton from "../components/Others/Skeleton"
+import MusicCard from "../components/Music/MusicCard";
+import Skeleton from "../components/Others/Skeleton";
+import { BiErrorAlt } from "react-icons/bi";
 
 const Musics = () => {
   const { currentUserIsFetched, allMusics } = useAppSelector(
@@ -29,7 +30,13 @@ const Musics = () => {
         const result = await response.json();
         dispatch(setAllMusics(result.data));
       } catch (error) {
-        dispatch(showPopup({ status: true, message: "Failed to Load Songs" }));
+        dispatch(
+          showPopup({
+            status: true,
+            message: "Failed to Load Songs",
+            icon: <BiErrorAlt />,
+          })
+        );
         console.error(error);
       }
     };

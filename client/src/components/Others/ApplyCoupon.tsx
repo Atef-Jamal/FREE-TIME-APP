@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle, FaRegCheckCircle } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
   resetModel,
@@ -13,6 +13,7 @@ import bonusImage from "../../assets/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { makeRequest } from "../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const ApplyCoupon = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -32,25 +33,34 @@ const ApplyCoupon = () => {
     try {
       setError("");
       setLoading(true);
-      const response = await makeRequest.post(
-        "api/coupons",
-        {
-          code,
-        },
-      );
+      const response = await makeRequest.post("api/coupons", {
+        code,
+      });
 
       if (response.status === 200) {
         dispatch(
           setCurrentUser({ ...currentUser, points: response.data.points })
         );
-        dispatch(showPopup({ status: true, message: "successfully applied" }));
+        dispatch(
+          showPopup({
+            status: true,
+            message: "successfully applied",
+            icon: <FaRegCheckCircle />,
+          })
+        );
       }
       setLoading(false);
       setCode("");
     } catch (error: any) {
       setLoading(false);
       setError(error.response.data.error);
-      dispatch(showPopup({ status: true, message: "an Error occurred" }));
+      dispatch(
+        showPopup({
+          status: true,
+          message: "an Error occurred",
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 

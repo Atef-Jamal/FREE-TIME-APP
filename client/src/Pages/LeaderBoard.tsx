@@ -1,12 +1,12 @@
-import {  useEffect, useState } from "react";
-import { BsExclamationOctagonFill } from "react-icons/bs";
+import { useEffect, useState } from "react";
 import { dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
 import { User } from "../types";
 import { useAppDispatch } from "../context/Hooks";
-import  UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard"
+import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import { makeRequest } from "../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const LeaderBoard = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -15,9 +15,7 @@ const LeaderBoard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await makeRequest.get(
-          "api/users?limit=3"
-        );
+        const response = await makeRequest.get("api/users?limit=3");
         setUsers(response.data);
       } catch (error) {
         console.log(error);
@@ -25,7 +23,7 @@ const LeaderBoard = () => {
           showPopup({
             status: true,
             message: "something wrong",
-            icon: <BsExclamationOctagonFill />,
+            icon: <BiErrorAlt />,
           })
         );
       }

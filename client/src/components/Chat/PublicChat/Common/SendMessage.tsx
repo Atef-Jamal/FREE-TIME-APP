@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import MentionListOfUsers from "./MentionListOfUsers"
+import MentionListOfUsers from "./MentionListOfUsers";
 import { makeRequest } from "../../../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 interface typeProps {
   stopScrolling: boolean;
@@ -36,7 +36,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
         showPopup({
           status: true,
           message: "Enter a Message",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
       return;
@@ -58,8 +58,8 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       dispatch(
         showPopup({
           status: true,
-          message: "Failing to Send Message, May Be Your Connection Network ",
-          icon: <BsExclamationOctagonFill />,
+          message: "Failing to Send Message, Try Again",
+          icon: <BiErrorAlt />,
         })
       );
     } finally {

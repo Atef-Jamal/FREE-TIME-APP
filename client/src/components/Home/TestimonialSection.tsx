@@ -3,11 +3,17 @@ import { showPopup } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { timeAgoFromMongoDBDate } from "../../context/functions";
-import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
+import {
+  MdOutlineNoEncryptionGmailerrorred,
+  MdOutlineStarOutline,
+  MdOutlineStarPurple500,
+} from "react-icons/md";
 import { avatar, moneyHome } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { User } from "../../types";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { BiErrorAlt } from "react-icons/bi";
 
 interface TypeTestimonial {
   _id: string;
@@ -27,8 +33,23 @@ const TestimonialSection = () => {
   const handleSendTestimonial = async (e: FormEvent) => {
     e.preventDefault();
     if (!currentUser) {
-      dispatch(showPopup({ message: "Sign In First", status: true }));
+      dispatch(
+        showPopup({
+          message: "sign In First",
+          status: true,
+          icon: <MdOutlineNoEncryptionGmailerrorred />,
+        })
+      );
       return;
+    }
+    if (comment.trim() === "") {
+      dispatch(
+        showPopup({
+          message: "Enter Your Opinion!",
+          status: true,
+          icon: <BiErrorAlt />,
+        })
+      );
     }
     try {
       const response = await makeRequest.post("api/testimonials", {
@@ -41,6 +62,7 @@ const TestimonialSection = () => {
         showPopup({
           status: true,
           message: "your testimonial successfully published",
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (err) {
@@ -49,6 +71,7 @@ const TestimonialSection = () => {
         showPopup({
           status: true,
           message: "can not create your Testimonial",
+          icon: <BiErrorAlt />,
         })
       );
     }
@@ -56,8 +79,7 @@ const TestimonialSection = () => {
 
   const dependOnScreen = () => {
     if (window.innerWidth <= 500) return 1.3;
-    if (window.innerWidth > 500 && window.innerWidth <= 900) return 2.3;
-    if (window.innerWidth > 800) return 3.3;
+    return 2.2;
   };
 
   useEffect(() => {
@@ -66,11 +88,11 @@ const TestimonialSection = () => {
         const response = await makeRequest.get("api/testimonials");
         setTestimonials(response.data.reverse());
       } catch (error) {
-        console.log(error);
         dispatch(
           showPopup({
             status: true,
             message: "Failed to get All Testimonials",
+            icon: <BiErrorAlt />,
           })
         );
       }
@@ -83,9 +105,9 @@ const TestimonialSection = () => {
       <h1 className="text-2xl sm:text-xl tracking-widest font-bold text-center text-[#b0d870] my-5">
         What do our users say?
       </h1>
-      <div className="w-[60%] xl:w-[80%] sm:w-full p-2 mb-10 mx-auto">
+      <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mb-10 mx-auto ">
         <Swiper
-          className="w-full h-[250px]"
+          className="w-full h-[350px] "
           modules={[Navigation, Pagination, Scrollbar, A11y]}
           spaceBetween={10}
           slidesPerView={dependOnScreen()}
@@ -97,11 +119,11 @@ const TestimonialSection = () => {
             return (
               <SwiperSlide
                 key={item._id}
-                className="bg-[#272336ee] rounded-lg max-h-[215px]"
+                className="bg-[#272336ee] rounded-lg max-h-[315px]"
               >
-                <div className="flex flex-col gap-3 px-3 pb-3">
+                <div className="flex flex-col justify-between h-full  px-3 pb-3">
                   <span className=" text-5xl font-[900]">،،</span>
-                  <div className="text-xs text-[#b5cea4] h-[63px] overflow-hidden">
+                  <div className="text-[#b5cea4] h-[50%] overflow-scroll scrollbar-none">
                     {item.content}
                   </div>
                   <div className="flex items-center justify-between">
@@ -145,59 +167,59 @@ const TestimonialSection = () => {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add Your Testimonial"
-              className="placeholder:text-gray-500 outline-none p-2 w-full h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee] "
+              className="placeholder:text-gray-500 outline-none p-4 sm:p-2 w-full min-h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee]"
             />
           </div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
               {stars >= 1 ? (
-                <span onClick={() => setStars(1)}>
+                <button type="button" onClick={() => setStars(1)}>
                   <MdOutlineStarPurple500 className="text-xl" />
-                </span>
+                </button>
               ) : (
-                <span onClick={() => setStars(1)}>
+                <button type="button" onClick={() => setStars(1)}>
                   <MdOutlineStarOutline className="text-xl" />
-                </span>
+                </button>
               )}
               {stars >= 2 ? (
-                <span onClick={() => setStars(2)}>
+                <button type="button" onClick={() => setStars(2)}>
                   <MdOutlineStarPurple500 className="text-xl" />
-                </span>
+                </button>
               ) : (
-                <span onClick={() => setStars(2)}>
+                <button type="button" onClick={() => setStars(2)}>
                   <MdOutlineStarOutline className="text-xl" />
-                </span>
+                </button>
               )}
               {stars >= 3 ? (
-                <span onClick={() => setStars(3)}>
+                <button type="button" onClick={() => setStars(3)}>
                   <MdOutlineStarPurple500 className="text-xl" />
-                </span>
+                </button>
               ) : (
-                <span onClick={() => setStars(3)}>
+                <button type="button" onClick={() => setStars(3)}>
                   <MdOutlineStarOutline className="text-xl" />
-                </span>
+                </button>
               )}
               {stars >= 4 ? (
-                <span onClick={() => setStars(4)}>
+                <button type="button" onClick={() => setStars(4)}>
                   <MdOutlineStarPurple500 className="text-xl" />
-                </span>
+                </button>
               ) : (
-                <span onClick={() => setStars(4)}>
+                <button type="button" onClick={() => setStars(4)}>
                   <MdOutlineStarOutline className="text-xl" />
-                </span>
+                </button>
               )}
               {stars >= 5 ? (
-                <span onClick={() => setStars(5)}>
+                <button type="button" onClick={() => setStars(5)}>
                   <MdOutlineStarPurple500 className="text-xl" />
-                </span>
+                </button>
               ) : (
-                <span onClick={() => setStars(5)}>
+                <button type="button" onClick={() => setStars(5)}>
                   <MdOutlineStarOutline className="text-xl" />
-                </span>
+                </button>
               )}
             </div>
             <button
-              className="text-sm bg-[#9dec6f] px-5 py-1 rounded-md text-black font-bold"
+              className="bg-[#9dec6f] px-6 py-1 rounded-md text-black font-bold"
               type="submit"
             >
               Submit

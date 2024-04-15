@@ -5,6 +5,7 @@ import { resetModel, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner"
 import EnterVerificationCode from "./EnterVerificationCode"
 import { makeRequest } from "../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const VerifyEmailBox = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -18,6 +19,8 @@ const VerifyEmailBox = () => {
         showPopup({
           status: true,
           message: "sorry, Your Email Already Verified",
+          icon: <BiErrorAlt />
+
         })
       );
       return;

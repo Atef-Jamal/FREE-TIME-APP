@@ -36,7 +36,7 @@ const EachActivity = ({
       <div className="text-xs  font-[600] h-full flex items-center justify-center  text-[#9fadddee] xs:p-1 p-2">
         <span className=" w-full h-full px-5 xs:px-2 flex items-center justify-center rounded-md bg-[#7fff294f]">
           {price ? "-" : ""}
-          {prize}
+          {prize || price}
         </span>
       </div>
     </div>

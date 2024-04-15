@@ -1,9 +1,10 @@
-import {  useState } from "react";
-import { BsExclamationCircle, BsExclamationOctagonFill } from "react-icons/bs";
+import { useState } from "react";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import Spinner from "../Others/Spinner"
+import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
+import { BiErrorAlt } from "react-icons/bi";
+import { MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
 
 interface TypeProps {
   day: number;
@@ -17,7 +18,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
-
 
   const collect = async () => {
     if (isMock === false && currentUser) {
@@ -45,7 +45,7 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           showPopup({
             status: true,
             message: "Smothing Went Wrong",
-            icon: <BsExclamationCircle />,
+            icon: <BiErrorAlt />,
           })
         );
       } finally {
@@ -57,7 +57,7 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           showPopup({
             status: true,
             message: "Sign In First",
-            icon: <BsExclamationCircle />,
+            icon: <MdOutlineNoEncryptionGmailerrorred />,
           })
         );
       } else {
@@ -65,7 +65,7 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           showPopup({
             status: true,
             message: "Smothing Went Wrong",
-            icon: <BsExclamationCircle />,
+            icon: <BiErrorAlt />,
           })
         );
       }
@@ -112,8 +112,8 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
             dispatch(
               showPopup({
                 status: true,
-                message: "Please, Log In First",
-                icon: <BsExclamationOctagonFill />,
+                message: "Please, Sign In First",
+                icon: <MdOutlineNoEncryptionGmailerrorred />,
               })
             );
           }}

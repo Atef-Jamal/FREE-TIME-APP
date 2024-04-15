@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { RegisterationForm } from "..";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import {  useEffect } from "react";
+import { useEffect } from "react";
 import {
   setCurrentUser,
   setCurrentUserIsFetched,
@@ -9,11 +9,11 @@ import {
   showPopup,
 } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
-import { BsExclamationOctagonFill } from "react-icons/bs";
-import MusicPlayer from "../Music/MusicPlayer"
-import ProfileSkeleton from "../Others/ProfileSkeleton"
-import ProfileActions from "../Navebare/ProfileAccount/ProfileActions"
-import RegisterButtons from "../Navebare/Registration/RegisterButtons"
+import MusicPlayer from "../Music/MusicPlayer";
+import ProfileSkeleton from "../Others/ProfileSkeleton";
+import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
+import RegisterButtons from "../Navebare/Registration/RegisterButtons";
+import { BiErrorAlt } from "react-icons/bi";
 const Navbare = () => {
   const {
     currentUser,
@@ -39,8 +39,8 @@ const Navbare = () => {
         dispatch(
           showPopup({
             status: true,
-            message: `something went wrong! Check your Network and try again`,
-            icon: <BsExclamationOctagonFill />,
+            message: `something went wrong! try again`,
+            icon: <BiErrorAlt />,
           })
         );
       } finally {

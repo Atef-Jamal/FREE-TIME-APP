@@ -1,16 +1,16 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, egypt } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { showPopup } from "../../context/StateManeger";
 import { TypeFrame, User } from "../../types";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
-import UserImage from "../../components/Others/UserImage"
-import LiveStatsSkeleton from  "./LiveStatsSkeleton"
+import UserImage from "../../components/Others/UserImage";
+import LiveStatsSkeleton from "./LiveStatsSkeleton";
+import { BiErrorAlt } from "react-icons/bi";
 
 const LiveStats = () => {
   const { currentUser, hiddenLiveStats, onlineUsers, socet } = useAppSelector(
@@ -41,7 +41,7 @@ const LiveStats = () => {
           showPopup({
             status: true,
             message: "Failing to Load Live Stats, something went wrong",
-            icon: <BsExclamationOctagonFill />,
+            icon: <BiErrorAlt />,
           })
         );
       } finally {

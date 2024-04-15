@@ -47,9 +47,9 @@ const Input = ({
         onChange={onChange}
         name={name}
         placeholder={placeholder}
-        className={` text-sm placeholder:text-[#6b91fa83] placeholder:font-[200] text-[#7295f7] font-[500] tracking-wider ${
+        className={` sm:text-sm placeholder:text-[#6b91fa83] placeholder:font-bold text-[#7295f7] font-bold tracking-wider ${
           home ? "bg-[#3f3c69]" : "bg-[#323252]"
-        } border-none py-[7px] px-4 outline-none rounded-md mr-1  ${
+        } border-none py-1 px-4 outline-none rounded-md mr-1  ${
           type === "file"
             ? " z-[1] opacity-0 mb-10 sm:mb-1 lg:mb-4 w-[130px] h-[130px] sm:w-[60px] sm:h-[60px] self-center rounded-full flex items-center justify-center "
             : "w-full"

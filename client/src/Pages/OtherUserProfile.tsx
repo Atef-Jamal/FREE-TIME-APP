@@ -3,10 +3,10 @@ import { empty } from "../assets";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { GiProgression } from "react-icons/gi";
-import { BiTask } from "react-icons/bi";
+import { BiErrorAlt, BiTask } from "react-icons/bi";
 import { AiFillGift } from "react-icons/ai";
 import { FcMusic } from "react-icons/fc";
-import { BsExclamationCircle, BsFillClockFill } from "react-icons/bs";
+import { BsFillClockFill } from "react-icons/bs";
 import { User, TypeNotifications } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { useEffect, useState } from "react";
@@ -15,9 +15,9 @@ import { FcFrame } from "react-icons/fc";
 import { FcBusinessman } from "react-icons/fc";
 import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
-import EachActivity from "../components/Others/EachActivity"
-import UserImage from "../components/Others/UserImage"
-import Skeleton from "../components/Others/Skeleton"
+import EachActivity from "../components/Others/EachActivity";
+import UserImage from "../components/Others/UserImage";
+import Skeleton from "../components/Others/Skeleton";
 
 const OtherUserProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -41,7 +41,7 @@ const OtherUserProfile = () => {
           showPopup({
             status: true,
             message: "somthing went wrong",
-            icon: <BsExclamationCircle />,
+            icon: <BiErrorAlt />,
           })
         );
       } finally {
@@ -242,7 +242,7 @@ const OtherUserProfile = () => {
                         prize={item.prize}
                       />
                     );
-                  if (item.type === "BUY-FRAME")
+                  if (item.type === "BUY-FRAME") {
                     return (
                       <EachActivity
                         key={item._id}
@@ -253,6 +253,7 @@ const OtherUserProfile = () => {
                         price={item.frame.price}
                       />
                     );
+                  }
                   if (item.type === "GUESS-CARD")
                     return (
                       <EachActivity

@@ -1,6 +1,4 @@
-import {  useState } from "react";
-import { GoCheckCircleFill } from "react-icons/go";
-import { BsExclamationOctagonFill } from "react-icons/bs";
+import { useState } from "react";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { FcConferenceCall } from "react-icons/fc";
 import { TypeReferrerNotify } from "../../../types";
@@ -10,7 +8,9 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
-import Spinner from "../../Others/Spinner"
+import Spinner from "../../Others/Spinner";
+import { BiErrorAlt } from "react-icons/bi";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 
@@ -43,7 +43,7 @@ const ReferrerNotify = ({
         showPopup({
           status: true,
           message: "collected successfully ",
-          icon: <GoCheckCircleFill />,
+          icon: <FaRegCheckCircle />,
         })
       );
     } catch (error) {
@@ -52,7 +52,7 @@ const ReferrerNotify = ({
         showPopup({
           status: true,
           message: "Failed to Collect ",
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     } finally {

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { MdStorefront } from "react-icons/md";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import { showPopup } from "../context/StateManeger";
 import { TypeFrame } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import FrameItem from "../components/MarketPlace/FrameItem";
 import { makeRequest } from "../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const MarketPlace = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -22,8 +22,8 @@ const MarketPlace = () => {
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to Load frames, Check your Network",
-            icon: <BsExclamationOctagonFill />,
+            message: "Failed to Load Frames, Check your Network",
+            icon: <BiErrorAlt />,
           })
         );
       }

@@ -1,11 +1,11 @@
-import {  useState } from "react";
-import { BsExclamationOctagonFill } from "react-icons/bs";
+import { useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-import Input from "../Navebare/Registration/Input"
+import Input from "../Navebare/Registration/Input";
+import { BiErrorAlt } from "react-icons/bi";
 
 const HeroSection = () => {
   const [email, setEmail] = useState<string>("");
@@ -26,7 +26,7 @@ const HeroSection = () => {
         showPopup({
           status: true,
           message: msg,
-          icon: <BsExclamationOctagonFill />,
+          icon: <BiErrorAlt />,
         })
       );
     }

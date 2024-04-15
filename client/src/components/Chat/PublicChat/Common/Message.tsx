@@ -2,16 +2,16 @@ import {  useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdOutlineNoEncryptionGmailerrorred } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
 import { TypeFrame, TypePublicChatMessage } from "../../../../types";
 import verifiedIcon from "../../../../assets/verified-icon.png";
 import { timeAgoFromMongoDBDate } from "../../../../context/functions";
 import { showPopup } from "../../../../context/StateManeger";
-import { BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage"
 import { makeRequest } from "../../../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -65,8 +65,8 @@ const Message = ({
       dispatch(
         showPopup({
           status: true,
-          message: "Failing to Delete Message, May Be Your Connection Network ",
-          icon: <BsExclamationOctagonFill />,
+          message: "Failing to Delete Message,Try Again",
+          icon: <BiErrorAlt />
         })
       );
     } finally {
@@ -80,7 +80,8 @@ const Message = ({
     otherFieldTow: TypeFieldName
   ) => {
     if (!currentUser) {
-      dispatch(showPopup({ status: true, message: "sign in first" }));
+      dispatch(showPopup({ status: true, message: "sign in first", icon: <MdOutlineNoEncryptionGmailerrorred />
+    }));
       return;
     }
 
