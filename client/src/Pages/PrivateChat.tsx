@@ -144,7 +144,7 @@ const PrivateChat = () => {
       </div>
     </div>
   ) : (
-    <div className="h-full flex flex-col items-center justify-center  text-4xl sm:text-2xl font-bold tracking-wider gap-5">
+    <div className="h-full flex flex-col items-center justify-center  text-4xl sm:text-2xl font-bold tracking-wider gap-5 px-3">
       <IoLockClosed className="opacity-50 text-4xl" />
       <button
         onClick={() => dispatch(toggleRegisterForm(true))}
