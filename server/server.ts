@@ -22,11 +22,10 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
-export const io = new Server(server, {
-  cors: { origin: process.env.BASE_URL },
-});
+export const io = new Server(server);
+// cors: { origin: process.env.BASE_URL },
 
 export const onLineUsers: any = {};
 
