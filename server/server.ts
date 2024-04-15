@@ -14,7 +14,7 @@ import frameRoute from "./routes/frameRoute";
 import testimonialRoute from "./routes/testimonialRoute";
 import couponRoute from "./routes/couponRoute";
 import http from "http";
-import path from "path";
+// import path from "path";
 import { Server } from "socket.io";
 import User from "./models/user";
 
@@ -22,15 +22,9 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors());
 
-export const io = new Server(server, {
-  cors: { origin: "*" },
-});
+export const io = new Server(server);
 
 export const onLineUsers: any = {};
 
@@ -38,6 +32,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
+
+app.get("/", (_, res) => {
+  return res.send("hello ");
+});
 
 app.use("/api/users", usersRouter);
 
@@ -126,13 +124,13 @@ setInterval(async () => {
   });
 }, 24 * 60 * 60 * 1000);
 
-app.use(express.static(path.join(__dirname, "../../client/dist")));
+// app.use(express.static(path.join(__dirname, "../../client/dist")));
 
-app.get("*", (_: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
-});
+// app.get("*", (_: Request, res: Response) => {
+//   res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
+// });
 
-server.listen(3000, () => {
+server.listen(process.env.PORT, () => {
   connecteToMongodb();
-  console.log(`success server Running  on port: 3000`);
+  console.log(`success server Running on port: ${process.env.PORT}`);
 });
