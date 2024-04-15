@@ -10,8 +10,8 @@ import {
 } from "../../context/StateManeger";
 import { FaExclamation } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
-import { lazy, useState } from "react";
-const Spinner = lazy(() => import("../Others/Spinner"))
+import {  useState } from "react";
+import Spinner from "../Others/Spinner"
 import { makeRequest } from "../../utils";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {

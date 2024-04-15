@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, egypt } from "../../assets";
@@ -9,8 +9,8 @@ import { showPopup } from "../../context/StateManeger";
 import { TypeFrame, User } from "../../types";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
-const UserImage = lazy(() => import("../../components/Others/UserImage"));
-const LiveStatsSkeleton = lazy(() =>import("./LiveStatsSkeleton"))
+import UserImage from "../../components/Others/UserImage"
+import LiveStatsSkeleton from  "./LiveStatsSkeleton"
 
 const LiveStats = () => {
   const { currentUser, hiddenLiveStats, onlineUsers, socet } = useAppSelector(

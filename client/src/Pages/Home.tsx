@@ -1,4 +1,4 @@
-import { useEffect, lazy } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toggleRegisterForm } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
@@ -7,13 +7,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
-const Faq = lazy(() => import("../components/Home/Faq"));
-const HeroSection = lazy(() => import("../components/Home/HeroSection"));
-const HowToStart = lazy(() => import("../components/Home/HowToStart"));
-const WhyIsFreeTime = lazy(() => import("../components/Home/WhyIsFreeTime"));
-const TestimonialSection = lazy(
-  () => import("../components/Home/TestimonialSection")
-);
+import Faq from "../components/Home/Faq"
+import HeroSection from "../components/Home/HeroSection"
+import HowToStart from "../components/Home/HowToStart"
+import WhyIsFreeTime from "../components/Home/WhyIsFreeTime"
+import TestimonialSection from "../components/Home/TestimonialSection"
+
 
 const Home = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

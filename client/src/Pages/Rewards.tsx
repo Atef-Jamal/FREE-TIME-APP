@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import { MdCardGiftcard } from "react-icons/md";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
@@ -6,9 +6,9 @@ import { showPopup } from "../context/StateManeger";
 import { BiCopy } from "react-icons/bi";
 import { makeRequest } from "../utils";
 import { dollarInHand } from "../assets";
-const Spinner = lazy(() => import("../components/Others/Spinner"));
-const Ladder = lazy(() => import("../components/Rewards/Ladder"));
-const DailyReward = lazy(() => import("../components/Rewards/DailyReward"));
+import Spinner from "../components/Others/Spinner";
+import Ladder from "../components/Rewards/Ladder";
+import DailyReward from "../components/Rewards/DailyReward";
 
 interface TypeBounusCode {
   _id: string;

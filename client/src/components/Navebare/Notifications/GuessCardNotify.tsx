@@ -8,8 +8,8 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeGuessCardNotify } from "../../../types";
-import { lazy, useState } from "react";
-const Spinner = lazy(() => import("../../Others/Spinner"))
+import { useState } from "react";
+import Spinner from "../../Others/Spinner";
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 
 const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {

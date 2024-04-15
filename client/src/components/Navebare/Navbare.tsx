@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { RegisterationForm } from "..";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { lazy, useEffect } from "react";
+import {  useEffect } from "react";
 import {
   setCurrentUser,
   setCurrentUserIsFetched,
@@ -10,10 +10,10 @@ import {
 } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { BsExclamationOctagonFill } from "react-icons/bs";
-const MusicPlayer = lazy(() => import("../Music/MusicPlayer"))
-const ProfileSkeleton = lazy(() => import("../Others/ProfileSkeleton"))
-const ProfileActions = lazy(() => import("../Navebare/ProfileAccount/ProfileActions"))
-const RegisterButtons = lazy(() => import("../Navebare/Registration/RegisterButtons"))
+import MusicPlayer from "../Music/MusicPlayer"
+import ProfileSkeleton from "../Others/ProfileSkeleton"
+import ProfileActions from "../Navebare/ProfileAccount/ProfileActions"
+import RegisterButtons from "../Navebare/Registration/RegisterButtons"
 const Navbare = () => {
   const {
     currentUser,

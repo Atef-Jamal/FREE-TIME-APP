@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import {
   toggleNotifications,
@@ -10,14 +10,10 @@ import notificationSound from "../../../assets/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
 import { TypeNotifications } from "../../../types";
-const ApplyCoupon = lazy(() => import("../../Others/ApplyCoupon"));
-const UserImage = lazy(() => import("../../Others/UserImage"));
-const ProfileMenu = lazy(
-  () => import("../../Navebare/ProfileAccount/ProfileMenu")
-);
-const NotificationMenu = lazy(
-  () => import("../../Navebare/Notifications/NotificationMenu")
-);
+import ApplyCoupon from "../../Others/ApplyCoupon"
+import UserImage from "../../Others/UserImage"
+import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu"
+import  NotificationMenu from "../../Navebare/Notifications/NotificationMenu"
 
 const ProfileActions = () => {
   const { currentUser, openNotification, socet } = useAppSelector(

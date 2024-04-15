@@ -1,11 +1,11 @@
-import { lazy, useState } from "react";
+import {  useState } from "react";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { FaStar } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-const Input = lazy(() => import("../Navebare/Registration/Input"))
+import Input from "../Navebare/Registration/Input"
 
 const HeroSection = () => {
   const [email, setEmail] = useState<string>("");

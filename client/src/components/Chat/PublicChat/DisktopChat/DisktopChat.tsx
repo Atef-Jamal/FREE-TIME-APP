@@ -1,13 +1,13 @@
-import { lazy, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { chatToggleButton } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-const Message = lazy(() => import("../Common/Message"));
-const ChatHeader = lazy(() => import("../Common/ChatHeader"));
-const SendMessage = lazy(() => import("../Common/SendMessage"));
-const FreeTime = lazy(() => import("../Common/FreeTime"));
+import Message from "../Common/Message"
+import ChatHeader from "../Common/ChatHeader"
+import SendMessage from "../Common/SendMessage"
+import FreeTime from "../Common/FreeTime"
 import { TypePublicChatItem } from "../../../../types";
 import { makeRequest } from "../../../../utils";
 

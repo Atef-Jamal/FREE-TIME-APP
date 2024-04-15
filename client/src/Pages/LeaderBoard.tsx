@@ -1,11 +1,11 @@
-import { lazy, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
 import { User } from "../types";
 import { useAppDispatch } from "../context/Hooks";
-const  UsersWinnerCard  = lazy(() => import("../components/Leaderboard/UsersWinnerCard"))
+import  UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard"
 import { makeRequest } from "../utils";
 
 const LeaderBoard = () => {

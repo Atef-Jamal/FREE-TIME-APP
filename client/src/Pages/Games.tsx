@@ -1,7 +1,6 @@
-import { lazy } from "react";
 import { guessColor } from "../assets";
 import { tasks } from "../helper/data";
-const GameCard = lazy(() => import("../components/Offers/GameCard"))
+import GameCard from "../components/Offers/GameCard"
 
 const Games = () => {
   return (

@@ -1,5 +1,5 @@
-import { SetStateAction, lazy, useEffect, useState } from "react";
-const UserImage = lazy(() => import("../../../components/Others/UserImage"));
+import { SetStateAction, useEffect, useState } from "react";
+import UserImage from "../../../components/Others/UserImage";
 import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";

@@ -1,9 +1,9 @@
-import { lazy, useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const FreeTime = lazy(() => import("../Common/FreeTime"));
-const Message = lazy(() => import("../Common/Message"));
-const SendMessage = lazy(() => import("../Common/SendMessage"));
+import FreeTime from  "../Common/FreeTime"
+import Message from  "../Common/Message"
+import SendMessage from  "../Common/SendMessage"
 
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types";

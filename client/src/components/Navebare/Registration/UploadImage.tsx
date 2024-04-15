@@ -1,6 +1,6 @@
-import React, { lazy } from "react";
+import React  from "react";
 import uploadIcon from "../../../assets/upload-icon.png";
-const Spinner = lazy(() => import("../../Others/Spinner"));
+import Spinner from "../../Others/Spinner"
 
 interface TypeProps {
   profilePicture: string | undefined;

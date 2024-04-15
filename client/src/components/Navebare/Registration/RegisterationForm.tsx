@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
@@ -27,9 +27,9 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-const Input = lazy(() => import("./Input"));
-const LeftSide = lazy(() => import("./LeftSide"));
-const UploadImage = lazy(() => import("./UploadImage"));
+import Input from "./Input";
+import LeftSide from "./LeftSide";
+import UploadImage from "./UploadImage";
 import { makeRequest } from "../../../utils";
 
 export interface TypeFormData {

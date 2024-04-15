@@ -1,9 +1,9 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsExclamationOctagonFill } from "react-icons/bs";
-const Spinner = lazy(() => import("../Others/Spinner"));
+import Spinner from "../Others/Spinner"
 import { makeRequest } from "../../utils";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {

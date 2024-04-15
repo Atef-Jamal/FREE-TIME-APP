@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import { GoCheckCircleFill } from "react-icons/go";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { FcApproval } from "react-icons/fc";
@@ -9,7 +9,7 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeQuizAppNotify } from "../../../types";
-const Spinner = lazy(() => import("../../Others/Spinner"));
+import Spinner from "../../Others/Spinner"
 
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 

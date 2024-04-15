@@ -1,7 +1,6 @@
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { crown } from "../../assets";
-import { lazy } from "react";
-const TopWinsLast24Hours = lazy(() => import("./TopWinsLast24Hours"))
+import TopWinsLast24Hours from "./TopWinsLast24Hours"
 
 const Ladder = () => {
   return (

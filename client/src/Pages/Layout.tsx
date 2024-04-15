@@ -1,23 +1,20 @@
-import { lazy, useEffect } from "react";
+import { useEffect } from "react";
 import io from "socket.io-client";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { setOnlineUsers, setSocet, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-const Model = lazy(() => import("../components/Others/Model"));
-const Sidebar = lazy(() => import("../components/Sidebar/Sidebar"));
-const MobileSidebare = lazy(
-  () => import("../components/Sidebar/MobileSidebare")
-);
-const Navbare = lazy(() => import("../components/Navebare/Navbare"));
-const Footer = lazy(() => import("../components/Footer/Footer"));
-const DisktopChat = lazy(
-  () => import("../components/Chat/PublicChat/DisktopChat/DisktopChat")
-);
-const LiveStats = lazy(() => import("../components/LiveStats/LiveStats"));
-const NavebareBottom = lazy(
-  () => import("../components/Navebare/NavebareBottom")
-);
-const OpenPopup = lazy(() => import("../components/Others/OpenPopup"));
+import Model from "../components/Others/Model";
+import Sidebar from "../components/Sidebar/Sidebar";
+import MobileSidebare from "../components/Sidebar/MobileSidebare";
+
+import Navbare from "../components/Navebare/Navbare";
+import Footer from "../components/Footer/Footer";
+import DisktopChat from "../components/Chat/PublicChat/DisktopChat/DisktopChat";
+
+import LiveStats from "../components/LiveStats/LiveStats";
+import NavebareBottom from "../components/Navebare/NavebareBottom";
+
+import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
 
 const Layout = () => {

@@ -1,4 +1,4 @@
-import { lazy, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   rank1Desktop,
   rank2Desktop,
@@ -23,11 +23,10 @@ import { useSearchParams } from "react-router-dom";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
 import { TypeFrame, TypeNotifications } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-const ProfileSettings = lazy(
-  () => import("../components/myProfile/ProfileSettings")
-);
-const MusicCard = lazy(() => import("../components/Music/MusicCard"));
-const UserImage = lazy(() => import("../components/Others/UserImage"));
+import ProfileSettings from "../components/myProfile/ProfileSettings";
+
+import MusicCard from "../components/Music/MusicCard";
+import UserImage from "../components/Others/UserImage";
 import { makeRequest } from "../utils";
 
 const MyProfile = () => {

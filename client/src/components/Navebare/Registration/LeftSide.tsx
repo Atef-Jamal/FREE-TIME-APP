@@ -1,7 +1,7 @@
-import React, { lazy } from "react";
+import React from "react";
 import { FaPauseCircle } from "react-icons/fa";
 import { IoMdPlay } from "react-icons/io";
-const UploadImage = lazy(() => import("./UploadImage"));
+import UploadImage from "./UploadImage"
 
 interface TypeProps {
   profilePicture: string | undefined;

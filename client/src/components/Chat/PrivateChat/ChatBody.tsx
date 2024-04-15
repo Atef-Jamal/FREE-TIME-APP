@@ -1,4 +1,4 @@
-import { lazy, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IoMdSend } from "react-icons/io";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
@@ -11,8 +11,8 @@ import {
 import { makeRequest } from "../../../utils";
 import Spinner from "../../Others/Spinner";
 
-const UserImage = lazy(() => import("../../../components/Others/UserImage"));
-const PrivateMessageItem = lazy(() => import("./PrivateMessageItem"));
+import UserImage from "../../../components/Others/UserImage";
+import PrivateMessageItem from "./PrivateMessageItem"
 
 const ChatBody = () => {
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);

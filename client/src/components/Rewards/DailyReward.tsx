@@ -1,8 +1,8 @@
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
-const DailyStreakRewardCard = lazy(() => import("./DailyStreakRewardCard"))
+import DailyStreakRewardCard from "./DailyStreakRewardCard"
 import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/desktop-affiliate-banner-bg.png";

@@ -1,9 +1,9 @@
-import { lazy, useEffect } from "react";
+import { useEffect } from "react";
 import { FcMusic } from "react-icons/fc";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { setAllMusics, showPopup } from "../context/StateManeger";
-const MusicCard = lazy(() => import("../components/Music/MusicCard"));
-const Skeleton = lazy(() => import("../components/Others/Skeleton"));
+import MusicCard from "../components/Music/MusicCard"
+import  Skeleton from "../components/Others/Skeleton"
 
 const Musics = () => {
   const { currentUserIsFetched, allMusics } = useAppSelector(

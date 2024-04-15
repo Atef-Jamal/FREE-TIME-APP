@@ -1,9 +1,9 @@
-import { lazy, useState } from "react";
+import {  useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { CgClose } from "react-icons/cg";
 import { resetModel, showPopup } from "../../context/StateManeger";
-const Spinner = lazy(() => import("../Others/Spinner"));
-const EnterVerificationCode = lazy(() => import("./EnterVerificationCode"));
+import Spinner from "../Others/Spinner"
+import EnterVerificationCode from "./EnterVerificationCode"
 import { makeRequest } from "../../utils";
 
 const VerifyEmailBox = () => {

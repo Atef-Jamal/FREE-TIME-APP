@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
@@ -6,7 +6,7 @@ import {
   setCurrentUser,
   showPopup,
 } from "../../context/StateManeger";
-const VerifyEmailBox = lazy(() => import("./VerifyEmailBox"))
+import VerifyEmailBox from "./VerifyEmailBox"
 import { makeRequest } from "../../utils";
 
 const ProfileSettings = () => {

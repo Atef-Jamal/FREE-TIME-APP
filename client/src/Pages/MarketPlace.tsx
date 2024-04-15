@@ -1,10 +1,10 @@
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdStorefront } from "react-icons/md";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { showPopup } from "../context/StateManeger";
 import { TypeFrame } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-const FrameItem = lazy(() => import("../components/MarketPlace/FrameItem"))
+import FrameItem from "../components/MarketPlace/FrameItem";
 import { makeRequest } from "../utils";
 
 const MarketPlace = () => {

@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
@@ -7,9 +7,9 @@ import { User } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
-const Welcome = lazy(() => import("../components/Chat/PrivateChat/Welcome"))
-const Friend = lazy(() => import("../components/Chat/PrivateChat/Friend"))
-const Spinner = lazy(() => import("../components/Others/Spinner"))
+import  Welcome from "../components/Chat/PrivateChat/Welcome"
+import  Friend from "../components/Chat/PrivateChat/Friend"
+import  Spinner from "../components/Others/Spinner"
 
 const PrivateChat = () => {
   const { currentUser, hiddenLiveStats, socet } = useAppSelector(

@@ -1,8 +1,8 @@
-import { lazy, useState } from "react";
+import {  useState } from "react";
 import { BsExclamationCircle, BsExclamationOctagonFill } from "react-icons/bs";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-const Spinner = lazy(() => import("../Others/Spinner"))
+import Spinner from "../Others/Spinner"
 import { makeRequest } from "../../utils";
 
 interface TypeProps {

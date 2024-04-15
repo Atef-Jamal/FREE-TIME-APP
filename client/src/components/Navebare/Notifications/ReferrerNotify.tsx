@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import {  useState } from "react";
 import { GoCheckCircleFill } from "react-icons/go";
 import { BsExclamationOctagonFill } from "react-icons/bs";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
@@ -10,7 +10,7 @@ import {
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
-const Spinner = lazy(() => import("../../Others/Spinner"));
+import Spinner from "../../Others/Spinner"
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 

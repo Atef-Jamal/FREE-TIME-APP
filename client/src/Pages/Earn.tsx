@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop } from "react-icons/io5";
@@ -19,9 +19,9 @@ import { arrayoffers, tasks } from "../helper/data";
 import { TypeGame } from "../types";
 import { Helmet } from "react-helmet-async";
 import { makeRequest } from "../utils";
-const GameCard = lazy(() => import("../components/Offers/GameCard"))
-const OfferParnterCard = lazy(() => import("../components/Offers/OfferParnterCard"))
-const Skeleton = lazy(() => import("../components/Others/Skeleton"))
+import GameCard from "../components/Offers/GameCard"
+import OfferParnterCard from "../components/Offers/OfferParnterCard"
+import Skeleton from "../components/Others/Skeleton"
 
 
 const Earn = () => {

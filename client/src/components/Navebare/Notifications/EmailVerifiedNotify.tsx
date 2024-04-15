@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import { GoCheckCircleFill } from "react-icons/go";
 import VerifiedIcon from "../../../assets/verified-icon.png";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
@@ -9,7 +9,7 @@ import {
 } from "../../../context/functions";
 import { TypeEmailVerifiedNotify } from "../../../types";
 import { BsExclamationOctagonFill } from "react-icons/bs";
-const Spinner = lazy(() => import("../../Others/Spinner"))
+import Spinner from "../../Others/Spinner";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
 

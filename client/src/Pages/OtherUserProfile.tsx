@@ -9,15 +9,15 @@ import { FcMusic } from "react-icons/fc";
 import { BsExclamationCircle, BsFillClockFill } from "react-icons/bs";
 import { User, TypeNotifications } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import verifiedIcon from "../assets/verified-icon.png";
 import { FcFrame } from "react-icons/fc";
 import { FcBusinessman } from "react-icons/fc";
 import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
-const EachActivity = lazy(() => import("../components/Others/EachActivity"));
-const UserImage = lazy(() => import("../components/Others/UserImage"));
-const Skeleton = lazy(() => import("../components/Others/Skeleton"));
+import EachActivity from "../components/Others/EachActivity"
+import UserImage from "../components/Others/UserImage"
+import Skeleton from "../components/Others/Skeleton"
 
 const OtherUserProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
