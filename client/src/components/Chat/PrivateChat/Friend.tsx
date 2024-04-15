@@ -1,4 +1,4 @@
-import { SetStateAction, Suspense, lazy, useEffect, useState } from "react";
+import { SetStateAction, lazy, useEffect, useState } from "react";
 const UserImage = lazy(() => import("../../../components/Others/UserImage"));
 import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
@@ -118,9 +118,7 @@ const Friend = ({
     >
       <div className="w-full flex gap-2">
         <div className="w-[50px] h-[35px] sm:w-[30px] sm:h-[25px]">
-          <Suspense>
-            <UserImage user={user} />
-          </Suspense>
+          <UserImage user={user} />
         </div>
 
         <div className="flex flex-col w-full overflow-hidden ">

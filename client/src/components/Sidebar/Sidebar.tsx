@@ -79,9 +79,9 @@ const Sidebar = () => {
         <BiMenu className="text-2xl" />
       </div>
 
-      <div className="flex flex-col w-full h-[75vh] overflow-scroll scrollbar-none">
+      <ul className="flex flex-col w-full h-[75vh] overflow-scroll scrollbar-none">
         {sidebareItems.map((item, index) => (
-          <div key={index}>
+          <li key={index}>
             <NavLink
               to={item.path}
               onClick={() => {
@@ -117,10 +117,7 @@ const Sidebar = () => {
                 </span>
               )}
               {item.path === "offers" && !resizeSidebare && (
-                <button
-                  // onClick={() => setOfferExpanded((prev) => !prev)}
-                  className="text-2xl ml-auto mr-1  bg-[#3f3f41c9] rounded-md px-3"
-                >
+                <button className="text-2xl ml-auto mr-1 rounded-md px-3">
                   <BsArrowDownShort />
                 </button>
               )}
@@ -159,9 +156,9 @@ const Sidebar = () => {
                 ))}
               </div>
             )}
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

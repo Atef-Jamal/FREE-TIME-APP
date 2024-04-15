@@ -9,8 +9,6 @@ const Musics = () => {
   const { currentUserIsFetched, allMusics } = useAppSelector(
     (state) => state.stateManeger
   );
-  // const [allMusics, setAllMusics] = useState([]);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -29,7 +27,7 @@ const Musics = () => {
       try {
         const response = await fetch(url, options);
         const result = await response.json();
-        setAllMusics(result.data);
+        dispatch(setAllMusics(result.data));
       } catch (error) {
         dispatch(showPopup({ status: true, message: "Failed to Load Songs" }));
         console.error(error);

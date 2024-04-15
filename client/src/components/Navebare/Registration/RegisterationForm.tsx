@@ -27,9 +27,9 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-const Input = lazy(() => import("./Input"))
-const LeftSide = lazy(() => import("./LeftSide"))
-const UploadImage = lazy(() => import("./UploadImage"))
+const Input = lazy(() => import("./Input"));
+const LeftSide = lazy(() => import("./LeftSide"));
+const UploadImage = lazy(() => import("./UploadImage"));
 import { makeRequest } from "../../../utils";
 
 export interface TypeFormData {
@@ -388,7 +388,7 @@ const RegisterationForm = () => {
         className="fixed top-0 left-0 w-full h-full bg-[#00000075] sm:hidden "
       ></div>
       <div className="absolute top-16 sm:top-0 w-[55%] h-[79%] lg:w-[82%] sm:w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-scroll scrollbar-none">
-        <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-2 ">
+        <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-0 ">
           <span className="text-white text-2xl font-bold sm:hidden">
             Welcome
           </span>
@@ -399,7 +399,7 @@ const RegisterationForm = () => {
                 isSignIn
                   ? " border-b-[#fff]  text-[#f8dcdc] "
                   : " text-gray-600"
-              } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3`}
+              } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
             >
               Sign In
             </button>
@@ -412,7 +412,7 @@ const RegisterationForm = () => {
                 !isSignIn
                   ? "pacity-25 border-b-[#fff] text-[#f8dcdc] "
                   : "text-gray-600"
-              }  sm:text-md  font-bold tracking-wider border-b-2 border-b-[#222337] py-3`}
+              }  sm:text-md  font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
             >
               Sign Up
             </button>

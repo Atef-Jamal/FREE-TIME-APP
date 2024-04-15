@@ -35,9 +35,10 @@ const MobileSidebare = () => {
   return (
     <div
       id={"mobile-sidebar"}
+      style={{ height: `calc(100dvh - 70px)` }}
       className={`transition duration-200 ease-linear ${
         openSidebarMobile ? " translate-x-0" : "-translate-x-[100%] "
-      } hidden sm:block fixed top-[56px]  left-0 z-[2] mobile-sidebar w-[250px] border-r border-gray-700 bg-[#212134] p-2`}
+      } hidden sm:block fixed top-[54px] left-0 z-[2] w-[250px] border-r border-gray-700 bg-[#212134] p-2`}
     >
       <div className="flex items-center justify-between border-b border-gray-700 pb-2">
         <span className="text-2xl text-[#74c43f] font-bold">

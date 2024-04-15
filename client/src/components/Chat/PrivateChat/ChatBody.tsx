@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { lazy, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IoMdSend } from "react-icons/io";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
@@ -9,7 +9,7 @@ import {
   showPopup,
 } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
-import LoadingChatBody from "./LoadingChatBody";
+import Spinner from "../../Others/Spinner";
 
 const UserImage = lazy(() => import("../../../components/Others/UserImage"));
 const PrivateMessageItem = lazy(() => import("./PrivateMessageItem"));
@@ -163,7 +163,9 @@ const ChatBody = () => {
   }, [socet]);
 
   return loading ? (
-    <LoadingChatBody />
+    <div className="h-full flex items-center justify-center">
+      <Spinner className="w-7 h-7 border-[3px]" />
+    </div>
   ) : (
     <>
       {error && <div className="w-full h-full">error: {error}</div>}
@@ -171,9 +173,7 @@ const ChatBody = () => {
         <div className="w-full flex flex-col items-center h-full gap-2 pb-3">
           <div className="flex items-center gap-4 w-full justify-center bg-[#1f1f2e9a] py-2 border border-gray-700">
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-              <Suspense>
-                <UserImage user={user} />
-              </Suspense>
+              <UserImage user={user} />
             </div>
             <span className="text-sm text-[#62e66d] font-[900]">
               {user.name}
@@ -184,16 +184,14 @@ const ChatBody = () => {
             {messages &&
               messages.length > 0 &&
               messages.map((msg, index) => (
-                <Suspense key={msg._id}>
-                  <PrivateMessageItem
-                    key={msg._id}
-                    messages={messages}
-                    message={msg}
-                    index={index}
-                    lastMessageRef={lastMessageRef}
-                    conversationReaded={conversationReaded}
-                  />
-                </Suspense>
+                <PrivateMessageItem
+                  key={msg._id}
+                  messages={messages}
+                  message={msg}
+                  index={index}
+                  lastMessageRef={lastMessageRef}
+                  conversationReaded={conversationReaded}
+                />
               ))}
           </div>
           <div className="w-full flex items-center gap-3 sm:gap-2 ">

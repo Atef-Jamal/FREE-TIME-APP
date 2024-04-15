@@ -3,15 +3,21 @@ import io from "socket.io-client";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { setOnlineUsers, setSocet, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-const Model= lazy(() => import("../components/Others/Model"))
-const Sidebar= lazy(() => import("../components/Sidebar/Sidebar"))
-const MobileSidebare= lazy(() => import("../components/Sidebar/MobileSidebare"))
-const Navbare= lazy(() => import("../components/Navebare/Navbare"))
-const Footer= lazy(() => import("../components/Footer/Footer"))
-const DisktopChat= lazy(() => import("../components/Chat/PublicChat/DisktopChat/DisktopChat"))
-const LiveStats= lazy(() => import("../components/LiveStats/LiveStats"))
-const NavebareBottom= lazy(() => import("../components/Navebare/NavebareBottom"))
-const OpenPopup= lazy(() => import("../components/Others/OpenPopup"))
+const Model = lazy(() => import("../components/Others/Model"));
+const Sidebar = lazy(() => import("../components/Sidebar/Sidebar"));
+const MobileSidebare = lazy(
+  () => import("../components/Sidebar/MobileSidebare")
+);
+const Navbare = lazy(() => import("../components/Navebare/Navbare"));
+const Footer = lazy(() => import("../components/Footer/Footer"));
+const DisktopChat = lazy(
+  () => import("../components/Chat/PublicChat/DisktopChat/DisktopChat")
+);
+const LiveStats = lazy(() => import("../components/LiveStats/LiveStats"));
+const NavebareBottom = lazy(
+  () => import("../components/Navebare/NavebareBottom")
+);
+const OpenPopup = lazy(() => import("../components/Others/OpenPopup"));
 import { Helmet } from "react-helmet-async";
 
 const Layout = () => {
@@ -117,7 +123,8 @@ const Layout = () => {
             )}
           </div>
           <div
-            className={`sm:hidden fixed bottom-0 right-0 z-[2] w-[25%] h-[90dvh] lg:w-[35%] bg-[#202138] border-l border-gray-600  transition-all publicchatclass ${
+            style={{ height: `calc(100dvh - 75px)` }}
+            className={`sm:hidden fixed bottom-0 right-0 z-[2] w-[25%] h-[90dvh] lg:w-[35%] bg-[#202138] border-l border-gray-600  transition-all ${
               isChatOpen ? " translate-x-0" : " -translate-x-[-100%]"
             } `}
           >

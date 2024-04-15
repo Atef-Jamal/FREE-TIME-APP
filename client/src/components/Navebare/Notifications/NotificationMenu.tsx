@@ -13,15 +13,17 @@ const GuessCardNotify = lazy(() => import("./GuessCardNotify"));
 const MentionNotify = lazy(() => import("./MentionNotify"));
 const NotificationBuyMusic = lazy(() => import("./BuyMusicNotify"));
 const EmailVerifiedNotify = lazy(() => import("./EmailVerifiedNotify"));
-const  Skeleton =lazy(() => import("../../Others/Skeleton"))
+const Skeleton = lazy(() => import("../../Others/Skeleton"));
 import { makeRequest } from "../../../utils";
 
 const NotificationMenu = ({
   notifications,
+  setNotifications,
   loadingNotifications,
 }: {
   notifications: TypeNotifications[];
   loadingNotifications: boolean;
+  setNotifications: React.Dispatch<React.SetStateAction<TypeNotifications[]>>;
 }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
 
@@ -29,15 +31,19 @@ const NotificationMenu = ({
 
   if (!currentUser) return;
 
-
   useEffect(() => {
     const markNotificationasRead = async () => {
       try {
-        await makeRequest.patch(
-          "api/notifications",
-          { ddd: "ddd" },
-        );
-        notifications.forEach((item) => (item.isRead = true));
+        await makeRequest.patch("api/notifications", { ddd: "ddd" });
+        // notifications.forEach((item) => (item.isRead = true));
+        setNotifications((prev) => {
+          return prev.map((item) => {
+            if (item.isRead === false) {
+              return { ...item, isRead: true };
+            }
+            return item;
+          });
+        });
       } catch (error) {
         console.log(error);
       }
@@ -50,7 +56,7 @@ const NotificationMenu = ({
     if (isThereNotificationUnReaded) {
       markNotificationasRead();
     }
-  }, [currentUser, notifications]);
+  }, [currentUser]);
 
   return (
     <div className=" fixed top-[9%] right-0 w-[100vw] z-[4] h-[100vh] sm:w-full">

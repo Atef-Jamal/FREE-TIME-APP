@@ -5,14 +5,19 @@ import {
   showPopup,
   openModel,
 } from "../../../context/StateManeger";
+import { makeRequest } from "../../../utils";
+import notificationSound from "../../../assets/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
 import { TypeNotifications } from "../../../types";
 const ApplyCoupon = lazy(() => import("../../Others/ApplyCoupon"));
 const UserImage = lazy(() => import("../../Others/UserImage"));
-const ProfileMenu = lazy(() => import("../../Navebare/ProfileAccount/ProfileMenu"));
-const NotificationMenu = lazy(() => import("../../Navebare/Notifications/NotificationMenu"));
-import { makeRequest } from "../../../utils";
+const ProfileMenu = lazy(
+  () => import("../../Navebare/ProfileAccount/ProfileMenu")
+);
+const NotificationMenu = lazy(
+  () => import("../../Navebare/Notifications/NotificationMenu")
+);
 
 const ProfileActions = () => {
   const { currentUser, openNotification, socet } = useAppSelector(
@@ -24,8 +29,8 @@ const ProfileActions = () => {
 
   const dispatch = useAppDispatch();
 
-  // let notifySound = new Audio();
-  // notifySound.src = notificationSound;
+  let notifySound = new Audio();
+  notifySound.src = notificationSound;
 
   const numUnReaded = notifications.filter(
     (element) => element.isRead === false
@@ -124,6 +129,7 @@ const ProfileActions = () => {
         <NotificationMenu
           loadingNotifications={loadingNotifications}
           notifications={notifications}
+          setNotifications={setNotifications}
         />
       )}
     </>

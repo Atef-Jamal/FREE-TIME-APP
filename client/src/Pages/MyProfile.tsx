@@ -431,7 +431,7 @@ const MyProfile = () => {
                 My Musics
               </h1>
               <div className="grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2 p-4">
-                {allMusics.length &&
+                {!!allMusics.length &&
                   allMusics
                     .filter((item) => {
                       if (currentUser?.mySongs?.includes(item.id.toString())) {

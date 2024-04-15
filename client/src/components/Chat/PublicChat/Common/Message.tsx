@@ -167,7 +167,7 @@ const Message = ({
       className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex ">
-        <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
+        <div className="w-[35px] h-[30px] sm:w-[30px] sm:h-[25px]">
           <UserImage user={sender} />
         </div>
         <Link
@@ -192,10 +192,9 @@ const Message = ({
           <button
             onClick={() => deleteMessage(_id)}
             disabled={isDeleting}
-            className="flex items-center justify-center gap-1  bg-[#fd444473] rounded-md px-[9px] py-[3px] ml-auto mb-3"
+            className="ml-auto bg-[#f82a2a38] w-6 h-6 flex items-center justify-center rounded-md"
           >
-            <MdDeleteOutline className="text-[13px]" />
-            <span className="text-[9px] text-gray-300 mt-[2px]">DELETE</span>
+            <MdDeleteOutline className="text-lg opacity-60" />
           </button>
         )}
       </div>

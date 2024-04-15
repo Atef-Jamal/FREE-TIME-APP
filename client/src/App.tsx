@@ -22,7 +22,6 @@ import {
   OffersSignUp,
   Musics,
 } from "./Pages";
-
 import { MobileChat, ChatBody, Error } from "./components";
 
 const router = createBrowserRouter([
@@ -31,7 +30,10 @@ const router = createBrowserRouter([
     element: <Layout />,
     // errorElement: <GeneralError />,
     children: [
-      { path: "", element: <Home /> },
+      {
+        path: "",
+        element: <Home />,
+      },
       { path: "error", element: <Error /> },
       { path: "earn", element: <Earn /> },
       {
