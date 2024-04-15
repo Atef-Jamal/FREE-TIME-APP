@@ -85,8 +85,8 @@ const TestimonialSection = () => {
   useEffect(() => {
     const getAllTestimonials = async () => {
       try {
-        const response = await makeRequest.get("api/testimonials");
-        setTestimonials(response.data.reverse());
+        await makeRequest.get("api/testimonials");
+        setTestimonials([]);
       } catch (error) {
         dispatch(
           showPopup({
