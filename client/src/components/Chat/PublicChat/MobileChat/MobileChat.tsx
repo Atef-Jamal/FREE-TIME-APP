@@ -34,24 +34,6 @@ const MobileChat = () => {
     fetchMessages();
   }, []);
 
-  useEffect(() => {
-    const scrollToMessage = () => {
-      mentionedMessageRef.current?.scrollIntoView({
-        block: "nearest",
-        behavior: "smooth",
-      });
-
-      mentionedMessageRef.current?.classList.add(
-        "animate-pulse",
-        "border",
-        "border-gray-400"
-      );
-    };
-    if (searchValue) {
-      scrollToMessage();
-    }
-  }, [searchValue, messages]);
-
   const handleMessage = (message: TypePublicChatItem) => {
     setMessages((prev) => [...prev, message]);
   };
@@ -64,6 +46,27 @@ const MobileChat = () => {
       };
     }
   }, [socet]);
+
+  useEffect(() => {
+    const scrollToMessage = () => {
+      mentionedMessageRef.current?.scrollIntoView({
+        block: "start",
+        behavior: "smooth",
+      });
+
+      mentionedMessageRef.current?.classList.add(
+        "animate-pulse",
+        "border",
+        "border-gray-400"
+      );
+    };
+    if (searchValue) {
+      const timeOut = setTimeout(() => {
+        scrollToMessage();
+      }, 0);
+      return () => clearTimeout(timeOut);
+    }
+  }, [searchValue, messages]);
 
   useEffect(() => {
     const scrollToElement = () => {
@@ -87,7 +90,15 @@ const MobileChat = () => {
         <div className="w-full h-full flex flex-col items-center  gap-[5px] overflow-scroll scrollbar-none">
           {messages?.map((message, index) => {
             if (message.type === "FREETIME") {
-              return <FreeTime key={message._id} singleMessage={message} />;
+              return (
+                <FreeTime
+                  key={message._id}
+                  singleMessage={message}
+                  messageRef={
+                    index === messages.length - 1 ? lastMessageRef : null
+                  }
+                />
+              );
             }
             return (
               <Message
@@ -95,13 +106,12 @@ const MobileChat = () => {
                 setStopScrolling={setStopScrolling}
                 stopScrolling={stopScrolling}
                 singleMessage={message}
-                lastMessageRef={
-                  index === messages.length - 1 && !searchValue
+                messageRef={
+                  searchValue === message._id
+                    ? mentionedMessageRef
+                    : index === messages.length - 1
                     ? lastMessageRef
                     : null
-                }
-                mentionedMessageRef={
-                  searchValue === message._id ? mentionedMessageRef : null
                 }
               />
             );

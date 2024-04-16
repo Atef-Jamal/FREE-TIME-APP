@@ -3,17 +3,9 @@ import User from "../models/user";
 import Frame from "../models/frame";
 import { io } from "../server";
 
-export const allUsers = async (req: Request, res: Response) => {
-  const limit = Number(req.query.limit);
+export const allUsers = async (_: Request, res: Response) => {
   try {
-    const users = limit
-      ? await User.find({}).select("-password").limit(limit)
-      : await User.find({}).select("-password");
-
-    if (!users) {
-      return res.status(404).json({ error: "failed to load all users" });
-    }
-
+    const users = await User.find({}).select("-password");
     return res.status(200).json(users);
   } catch (error) {
     console.log(error);

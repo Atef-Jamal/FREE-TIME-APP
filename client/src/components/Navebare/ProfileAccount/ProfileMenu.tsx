@@ -18,7 +18,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const handleLogOut = async () => {
     localStorage.setItem("token", "");
     setOpenProfileMenu((previos) => !previos);
-    window.location.href = `${window.location.href}/?redirectedfrom=logout`;
+    window.location.href = `${window.location.origin}/?redirectedfrom=logout`;
   };
 
   const handleToggleLiveStats = () => {

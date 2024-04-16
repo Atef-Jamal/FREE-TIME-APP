@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dailyleaderboard } from "../assets";
+import { avatar, dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
 import { User } from "../types";
@@ -7,15 +7,20 @@ import { useAppDispatch } from "../context/Hooks";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import { makeRequest } from "../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
 
 const LeaderBoard = () => {
   const [users, setUsers] = useState<User[]>([]);
   const dispatch = useAppDispatch();
 
+  const sortedUseres = users.sort((a, b) => {
+    return a.points + b.points;
+  });
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await makeRequest.get("api/users?limit=3");
+        const response = await makeRequest.get("api/users");
         setUsers(response.data);
       } catch (error) {
         console.log(error);
@@ -61,12 +66,70 @@ const LeaderBoard = () => {
           for you this month!
         </div>
         <div className="flex items-center justify-evenly sm:gap-32 gap-24 flex-wrap py-32">
-          {users.map((usr, index) => {
+          {sortedUseres.slice(0, 2).map((usr, index) => {
             return <UsersWinnerCard key={index} user={usr} index={index} />;
           })}
         </div>
-        <div className="flex flex-col pb-10 w-[85%] mx-auto">
-          <table className="leaderboard">
+        <div className="flex flex-col pb-10 w-[85%] mx-auto ">
+          <div className=" w-full flex items-center justify-between bg-[#3b2f5cc4] rounded-[4px] ">
+            <span
+              style={{ width: `calc(95% / 3)` }}
+              className="border-r flex items-center justify-evenly overflow-scroll scrollbar-none font-bold text-[#86b3ee] py-1"
+            >
+              <FaRankingStar className="text-lg opacity-50" />
+              Rank
+            </span>
+            <span
+              style={{ width: `calc(100% / 3)` }}
+              className="border-r flex items-center justify-evenly overflow-scroll scrollbar-none font-bold text-[#86b3ee] py-1"
+            >
+              <FaUserLarge className="opacity-50" />
+              User
+            </span>
+            <span
+              style={{ width: `calc(100% / 3)` }}
+              className="flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] py-1"
+            >
+              points
+            </span>
+          </div>
+          {sortedUseres.map((user, index) => (
+            <div
+              key={user._id}
+              className=" w-full flex items-center justify-between bg-[#] rounded-[4px] py-2"
+            >
+              <span
+                style={{ width: `calc(95% / 3)` }}
+                className="flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] py-1"
+              >
+                <span className="w-9 rounded-md h-[92%] bg-[#e4b42f31] flex items-center justify-center text-[#c3ccf5] ">
+                  {index + 1}
+                </span>
+              </span>
+              <span
+                style={{ width: `calc(100% / 3)` }}
+                className="flex items-center justify-evenly overflow-scroll scrollbar-none font-bold text-[#86b3ee] py-[6px]"
+              >
+                <span className="xs:w-5 xs:h-5 w-7 h-7 rounded-full min-w-fit min-h-fit">
+                  <img
+                    src={user.profilePicture || avatar}
+                    alt=""
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </span>
+                <span className="xs:text-xs text-sm whitespace-nowrap w-[70%] text-[#6baaf1ee]">
+                  {user.name}
+                </span>
+              </span>
+              <span
+                style={{ width: `calc(100% / 3)` }}
+                className="flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] py-1 text-sm"
+              >
+                {user.points}
+              </span>
+            </div>
+          ))}
+          {/* <table className="leaderboard">
             <thead>
               <tr>
                 <th>Rank</th>
@@ -251,41 +314,19 @@ const LeaderBoard = () => {
                 <td>ddd</td>
               </tr>
             </tbody>
-          </table>
-          <ul className="flex gap-2 items-center w-[38%] mx-auto mt-12 sm:mt-6 sm:w-[90%] sm:gap-1 sm:flex-wrap justify-center">
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-black rounded-md bg-[#92f16c]">
-              1
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              2
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              3
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              4
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              5
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              6
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              7
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              7
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              8
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              9
-            </li>
-            <li className=" flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-white rounded-md bg-[#242536]">
-              10
-            </li>
+          </table> */}
+
+          <ul className="flex gap-2 items-center  mx-auto mt-12 sm:mt-6 sm:w-[90%] sm:gap-1 sm:flex-wrap justify-center">
+            {[...Array(11).keys()].map((item) => (
+              <li
+                key={item}
+                className={`flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-black rounded-md ${
+                  item === 0 ? "bg-[#92f16c]" : "bg-[#393b61]"
+                }`}
+              >
+                {item + 1}
+              </li>
+            ))}
           </ul>
         </div>
       </div>

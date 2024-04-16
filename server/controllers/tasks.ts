@@ -110,37 +110,41 @@ export const completingTask = async (req: Request, res: Response) => {
 
 export const completingGame = async (req: Request, res: Response) => {
   const { gameId } = req.params;
+  const currentUserId = req.user._id;
   try {
     const game = await Task.findById(gameId);
 
     if (!game) {
-      return res.status(404).json({ error: "game not found" });
+      return res.status(404).json({ error: "Game Not Found" });
+    }
+    const user = await User.findById(currentUserId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User Not Found" });
     }
 
-    const isCompleted = req.user.completedTasks.includes(gameId);
+    const isCompleted =
+      user.completedTasks.includes(game._id) ||
+      game.completedBy.includes(user._id);
 
     if (isCompleted) {
       return res
         .status(404)
-        .json({ error: "game is completed before, try another" });
+        .json({ error: "Game is completed before, try another" });
     }
-    game.completedBy.push(req.user._id);
-    await game.save();
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: {
-        completedTasks: gameId,
-      },
-    });
+
+    game.completedBy.push(user._id);
+    user.completedTasks.push(game._id);
 
     const createNotification = new Notification({
-      belongsTo: req.user._id,
+      belongsTo: user._id,
       type: "GUESS-CARD",
       isCollected: false,
       prize: 48,
     });
     const savedNotification = await createNotification.save();
     const createPublicMessage = new PublicMessage({
-      sender: req.user._id,
+      sender: user._id,
       type: "FREETIME",
       typeOfTask: "TASK",
     });
@@ -149,14 +153,16 @@ export const completingGame = async (req: Request, res: Response) => {
       "sender",
       "-password"
     );
-
-    io.to(onLineUsers[req.user._id]).emit(
+    io.to(onLineUsers[user._id.toString()]).emit(
       "new-notification",
       savedNotification
     );
 
     io.emit("public-message", populatedPublicMessage);
-
+    await user.save();
+    await game.save();
     return res.status(200).json({ message: "passed sucessfully" });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(404).json({ error: "an error occurred" });
+  }
 };

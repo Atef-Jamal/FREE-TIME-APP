@@ -120,14 +120,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
           )}
         </button>
       )}
-      {currentUserIsFetched && !currentUser && (
-        <button
-          onClick={() => buyNow(singleFrame._id)}
-          className="text-sm  border border-gray-500 bg-[#65e661] rounded-md py-[6px] mt-3 text-[#ffffff] font-bold"
-        >
-          Buy Now
-        </button>
-      )}
+
       {!currentUserIsFetched && (
         <span className="text-sm  border border-gray-500 rounded-md py-1 mt-3 font-bold">
           <Spinner className="w-5 h-5 mx-auto border-t-[#533a70] border-r-[#533a70]" />

@@ -18,7 +18,6 @@ import { FaRegCheckCircle } from "react-icons/fa";
 const Layout = () => {
   const {
     currentUser,
-    currentUserIsFetched,
     resizeSidebare,
     isChatOpen,
     hiddenLiveStats,
@@ -32,17 +31,14 @@ const Layout = () => {
   const paramValue = searchParams.get("redirectedfrom");
 
   useEffect(() => {
-    let realUserOrAnonymousUser = "";
-    if (currentUser && currentUserIsFetched) {
-      realUserOrAnonymousUser = currentUser._id;
-    } else {
-      realUserOrAnonymousUser = "anonymous";
-    }
-    const socet = io(import.meta.env.VITE_BASE_URL, {
-      query: { userId: realUserOrAnonymousUser },
-    });
-    dispatch(setSocet(socet));
-  }, [currentUser]);
+    const establishSocet = () => {
+      const socet = io(import.meta.env.VITE_BASE_URL, {
+        query: { userId: currentUser?._id },
+      });
+      dispatch(setSocet(socet));
+    };
+    establishSocet();
+  }, [currentUser?._id]);
 
   useEffect(() => {
     if (paramValue) {
@@ -78,9 +74,9 @@ const Layout = () => {
 
   useEffect(() => {
     if (socet) {
-      socet.on("getOnlineUsers", handleOnlineUsers);
+      socet.on("online-users", handleOnlineUsers);
       return () => {
-        socet.off("getOnlineUsers", handleOnlineUsers);
+        socet.off("online-users", handleOnlineUsers);
       };
     }
   }, [socet]);

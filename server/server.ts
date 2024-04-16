@@ -71,11 +71,8 @@ io.on("connection", (socet) => {
   const userId = socet.handshake.query.userId;
   if (userId !== undefined) {
     onLineUsers[userId as string] = socet.id;
-  } else {
-    onLineUsers["anonymous"] = socet.id;
   }
-
-  io.emit("getOnlineUsers", Object.keys(onLineUsers));
+  io.emit("online-users", Object.keys(onLineUsers));
 
   socet.on("public-message", (message) => {
     io.emit("public-message", message);
@@ -95,16 +92,8 @@ io.on("connection", (socet) => {
 
   socet.on("disconnect", () => {
     const userId = socet.handshake.query.userId;
-    if (userId === "anonymous") {
-      Object.keys(onLineUsers).forEach((item) => {
-        if (onLineUsers[item] === socet.id) {
-          delete onLineUsers[item];
-        }
-      });
-    } else {
-      delete onLineUsers[userId as string];
-    }
-    io.emit("getOnlineUsers", Object.keys(onLineUsers));
+    delete onLineUsers[userId as string];
+    io.emit("online-users", Object.keys(onLineUsers));
   });
 });
 

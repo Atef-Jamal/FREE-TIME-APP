@@ -35,16 +35,6 @@ const DisktopChat = () => {
   }, []);
 
   useEffect(() => {
-    const scrollToElement = () => {
-      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    if (!stopScrolling) {
-      scrollToElement();
-    }
-  }, [messages]);
-
-  useEffect(() => {
     const scrollToMessage = () => {
       mentionedMessageRef.current?.scrollIntoView({ behavior: "smooth" });
       mentionedMessageRef.current?.classList.add(
@@ -57,6 +47,16 @@ const DisktopChat = () => {
       scrollToMessage();
     }
   }, [searchValue]);
+
+  useEffect(() => {
+    const scrollToElement = () => {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    if (!stopScrolling) {
+      scrollToElement();
+    }
+  }, [messages]);
 
   const handleMessage = (message: TypePublicChatItem) => {
     setMessages((prev) => [...prev, message]);
@@ -92,7 +92,7 @@ const DisktopChat = () => {
                 <FreeTime
                   key={message._id}
                   singleMessage={message}
-                  lastMessageRef={
+                  messageRef={
                     index === messages.length - 1 ? lastMessageRef : null
                   }
                 />
@@ -104,13 +104,12 @@ const DisktopChat = () => {
                 setStopScrolling={setStopScrolling}
                 stopScrolling={stopScrolling}
                 singleMessage={message}
-                lastMessageRef={
-                  index === messages.length - 1 && !searchValue
+                messageRef={
+                  searchValue === message._id
+                    ? mentionedMessageRef
+                    : index === messages.length - 1
                     ? lastMessageRef
                     : null
-                }
-                mentionedMessageRef={
-                  searchValue === message._id ? mentionedMessageRef : null
                 }
               />
             );

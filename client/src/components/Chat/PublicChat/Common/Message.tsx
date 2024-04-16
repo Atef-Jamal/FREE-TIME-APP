@@ -16,8 +16,7 @@ import { IoLockClosed } from "react-icons/io5";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
-  lastMessageRef?: React.RefObject<HTMLDivElement> | null;
-  mentionedMessageRef?: React.RefObject<HTMLDivElement> | null;
+  messageRef: React.RefObject<HTMLDivElement> | null;
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -28,8 +27,7 @@ const Message = ({
   singleMessage,
   setStopScrolling,
   stopScrolling,
-  lastMessageRef,
-  mentionedMessageRef,
+  messageRef,
 }: TypeMessageProp) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
@@ -159,14 +157,14 @@ const Message = ({
 
   return (
     <div
-      ref={mentionedMessageRef || lastMessageRef}
+      ref={messageRef}
       onClick={(e) => {
         e.currentTarget.classList.remove(
           "border",
           "animate-pulse",
           "border-gray-400"
         );
-        if (mentionedMessageRef) {
+        if (searchParams.get("messageid") === singleMessage._id) {
           setSearchParams(() => {
             searchParams.delete("messageid");
             return searchParams;

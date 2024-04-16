@@ -73,7 +73,7 @@ const ProfileActions = () => {
       {currentUser && (
         <div className="relative flex items-center gap-4 sm:gap-2 ">
           <div className=" flex items-center rounded-md  gap-2 xs:gap-1 ">
-            <span
+            <button
               onClick={() => {
                 dispatch(
                   openModel({ status: true, children: <ApplyCoupon /> })
@@ -82,7 +82,7 @@ const ProfileActions = () => {
               className="text-2xl sm:text-xl text-[#8fee37ee] font-bold flex items-center justify-center bg-[#0c0d16c5] sm:p-[8px] p-[10px] rounded-s-md"
             >
               +
-            </span>
+            </button>
             <span className="bg-[#0c0d16c5] whitespace-nowrap sm:text-[10px] p-[14px] tracking-wider font-bold border-l text-[#beababde] rounded-e-md">
               <span className="text-[#3de21c] mr-[3px]">
                 {currentUser.points}

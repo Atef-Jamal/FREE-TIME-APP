@@ -5,6 +5,7 @@ import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { ImSpinner3 } from "react-icons/im";
 
 interface TypeProps {
   taskApp: TypeTaskApp;
@@ -63,7 +64,7 @@ const QuizApp = ({ taskApp }: TypeProps) => {
       if (!loading) setLoading(true);
       const response = await makeRequest.post(
         `api/tasks/completingtask/${taskApp._id}`,
-        { answers: [...answers, selected] },
+        { answers: [...answers, selected] }
       );
       if (response.data.corrects > response.data.wrongs) {
         dispatch(
@@ -86,8 +87,7 @@ const QuizApp = ({ taskApp }: TypeProps) => {
         showPopup({
           status: true,
           message: "Failed to Complete Task, try again",
-          icon: <BiErrorAlt />
-
+          icon: <BiErrorAlt />,
         })
       );
     }
@@ -106,11 +106,18 @@ const QuizApp = ({ taskApp }: TypeProps) => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center ">
-      {loading && "Loading........."}
+    <div className="h-full flex items-center justify-center border">
+      {loading && (
+        <div className="flex items-center gap-4 sm:gap-2">
+          <ImSpinner3 className="text-4xl sm:text-2xl animate-spin" />
+          <span className="text-[#abbe3eee] text-3xl sm:text-xl font-bold font-serif">
+            Waiting Results...
+          </span>
+        </div>
+      )}
       {error && "Error Occurred" + error}
       {!error && !loading && !results.status && (
-        <div className="w-[500px] bg-[#3f3f4dee] p-6 rounded-lg">
+        <div className="w-[500px] bg-[#3f3f4dee] p-6 rounded-lg mx-2">
           <div className="w-full flex flex-col gap-5">
             <div className=" text-[#e79e9e] font-bold border-b-2 border-gray-400 text-xl sm:text-lg py-3">
               {taskApp.quizes[activeQuesition].question} ?

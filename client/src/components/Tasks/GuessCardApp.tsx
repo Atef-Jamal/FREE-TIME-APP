@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { FaCircleCheck } from "react-icons/fa6";
 import { TypeTaskApp } from "../../types";
 import { setCurrentUser } from "../../context/StateManeger";
 import { BsCheck2Circle } from "react-icons/bs";
 import { makeRequest } from "../../utils";
+import { ImSpinner3 } from "react-icons/im";
 
 const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -18,7 +18,6 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
   const allElements = document.querySelectorAll(".card-item");
 
   const dispatch = useAppDispatch();
-
 
   const handleSelect = (e: React.MouseEvent<HTMLDivElement>) => {
     if (stopp) {
@@ -57,55 +56,53 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
 
   useEffect(() => {
     const getReward = async () => {
-      if (currentUser) {
-        try {
-          setError("");
-          setIsLoading(true);
-          const response = await makeRequest.post(
-            `api/tasks/completegame/${taskApp._id}`,
-            {
-              status: "success",
-            },
+      if (!currentUser || score < 5) {
+        return;
+      }
+      if (error) setError("");
+      setIsLoading(true);
+      try {
+        const response = await makeRequest.get(
+          `api/tasks/completeguesscardtask/${taskApp._id}`
+        );
+        console.log(response);
+        if (response.status === 200) {
+          setCompleted(true);
+          dispatch(
+            setCurrentUser({
+              ...currentUser,
+              completedTasks: [...currentUser.completedTasks, taskApp._id],
+            })
           );
-          if (response.status === 200) {
-            setCompleted(true);
-            dispatch(
-              setCurrentUser({
-                ...currentUser,
-                completedTasks: [...currentUser.completedTasks, taskApp._id],
-              })
-            );
-          }
-          setIsLoading(false);
-        } catch (error) {
-          setIsLoading(false);
-          setError("an error occured !");
         }
+        setIsLoading(false);
+      } catch (error) {
+        setError("an error occured!");
+        if (completed) setCompleted(false);
+        setIsLoading(false);
       }
     };
 
-    if (score >= 5) {
-      getReward();
-    }
+    getReward();
   }, [score]);
 
   if (isLoading) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="flex items-center gap-4 sm:gap-2">
+          <ImSpinner3 className="text-4xl sm:text-2xl animate-spin" />
+          <span className="text-[#abbe3eee] text-3xl sm:text-xl font-bold font-serif">
+            Waiting Results...
+          </span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <span>{error}</span>;
-  }
-
-  if (
-    currentUser?.completedTasks.includes(taskApp._id) &&
-    !error &&
-    !completed
-  ) {
     return (
-      <div className="flex items-center justify-center gap-3 h-full opacity-70 py-8 font-bold text-lg">
-        <FaCircleCheck className="text-xl" />
-        Has Been Completed Before, Try another app
+      <div className="h-full flex flex-col items-center justify-center gap-3 opacity-70  font-bold px-8 text-center">
+        {error}
       </div>
     );
   }
@@ -113,9 +110,9 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
   return (
     <div className="flex flex-col items-center justify-center py-8 gap-3 min-h-[70vh]">
       {completed && (
-        <div className="w-[400px] h-[150px] bg-[#422c75c5] flex flex-col items-center justify-center">
+        <div className="w-[400px] xs:w-[90%] rounded-md h-[150px] bg-[#422c75c5] flex flex-col items-center justify-center gap-1">
+          <BsCheck2Circle className="text-3xl mb-3" />
           <div className="flex items-center justify-center gap-3">
-            <BsCheck2Circle className="text-3xl" />
             <p className="text-gray-400 font-500">
               <span className="font-bold text-[#8ecf58]">Congratulation!</span>
               Successfully Completed
@@ -128,17 +125,20 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
       )}
       {!completed && (
         <>
-          <span className="font-bold text-black bg-[#b8ae56] py-1 px-5 rounded-md">
-            SCORE :
-            <span className="font-bold text-[#2341ca] ml-2">{score}</span>
-          </span>
-          <div className="w-[500px] h-[400px] border grid grid-cols-4 gap-2 p-2">
+          <div className="w-[500px] sm:w-[400px] xs:w-[90%] flex items-center justify-between ">
+            <span className="ml-1 text-gray-300 text-sm">Easy Level</span>
+            <span className="font-bold text-black bg-[#b8ae56] py-1 px-5 rounded-md">
+              SCORE :
+              <span className="font-bold text-[#2341ca] ml-2">{score}</span>
+            </span>
+          </div>
+          <div className="w-[500px] sm:w-[400px] xs:w-[90%] h-[300px] xs:h-[230px] border grid grid-cols-4 gap-2 p-2">
             {cards.map((item: string, i: number) => {
               return (
                 <div
                   onClick={handleSelect}
                   key={i}
-                  className="card-item rotate-180 border border-gray-400 text-gray-400 flex items-center justify-center font-bold text-2xl bg-gray-400"
+                  className="card-item rounded-md rotate-180 border border-gray-400 text-gray-400 flex items-center justify-center font-bold text-2xl bg-gray-400"
                 >
                   {item}
                 </div>
