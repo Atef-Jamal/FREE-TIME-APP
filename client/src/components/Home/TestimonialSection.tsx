@@ -3,10 +3,7 @@ import { showPopup } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { timeAgoFromMongoDBDate } from "../../context/functions";
-import {
-  MdOutlineStarOutline,
-  MdOutlineStarPurple500,
-} from "react-icons/md";
+import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
 import { avatar, moneyHome } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
@@ -85,8 +82,8 @@ const TestimonialSection = () => {
   useEffect(() => {
     const getAllTestimonials = async () => {
       try {
-        await makeRequest.get("api/testimonials");
-        setTestimonials([]);
+        const response = await makeRequest.get("api/testimonials");
+        setTestimonials(response.data.reverse());
       } catch (error) {
         dispatch(
           showPopup({
