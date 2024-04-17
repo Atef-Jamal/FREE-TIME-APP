@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { showPopup } from "../../context/StateManeger";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { timeAgoFromMongoDBDate } from "../../context/functions";
 import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
@@ -62,12 +62,11 @@ const TestimonialSection = () => {
           icon: <FaRegCheckCircle />,
         })
       );
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       dispatch(
         showPopup({
           status: true,
-          message: "can not create your Testimonial",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );
@@ -88,7 +87,7 @@ const TestimonialSection = () => {
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to get All Testimonials",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

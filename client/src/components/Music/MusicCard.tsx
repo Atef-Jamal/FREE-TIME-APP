@@ -12,7 +12,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Spinner from "../Others/Spinner";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 
@@ -90,12 +90,11 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
         })
       );
       setIsPurshased(true);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       dispatch(
         showPopup({
           status: true,
-          message: "Failed to Purshase This Music, try again",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

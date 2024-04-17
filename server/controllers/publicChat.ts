@@ -12,10 +12,7 @@ export const getAllPublicMessages = async (_: Request, res: Response) => {
     ]);
     return res.status(200).json(messages);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not get public messages" });
+    return res.status(404).json({ error: "can't Load public chat" });
   }
 };
 
@@ -53,10 +50,9 @@ export const createPublicMessage = async (req: Request, res: Response) => {
     }
     return res.status(200).json(savedMessage);
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
-      .json({ error: "server - can not create public message" });
+      .json({ error: "can't send your message, an Error occurred" });
   }
 };
 
@@ -73,10 +69,7 @@ export const deletePublicMessage = async (req: Request, res: Response) => {
     ).populate("sender", "-password");
     return res.status(200).json(deletedMessage);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not delete public message" });
+    return res.status(404).json({ error: "can't delete message" });
   }
 };
 
@@ -95,7 +88,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
 
     if (!message) {
       return res.status(404).json({
-        error: "server - can not find public message to interact with",
+        error: "Message Not Found",
       });
     }
 
@@ -123,13 +116,13 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
     }
 
     const saveMessage = await message.save();
-    const savedMessage = await saveMessage.populate("sender", "-password");
+    const savedMessage = await saveMessage.populate([
+      { path: "sender", select: "-password" },
+      { path: "mentioned", select: "-password" },
+    ]);
 
     return res.status(200).json(savedMessage);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not interact with public message" });
+    return res.status(404).json({ error: "an Error occurred, Try again" });
   }
 };

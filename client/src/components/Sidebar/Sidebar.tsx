@@ -11,7 +11,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypePrivateMessage } from "../../types";
 import messageSoundSrc from "../../assets/messageSound.wav";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 
 const Sidebar = () => {
   const { resizeSidebare, currentUser, socet, allUnReadedMesseges } =
@@ -36,11 +36,10 @@ const Sidebar = () => {
           setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })
         );
       } catch (error) {
-        console.log(error);
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to get unreaded Messages",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

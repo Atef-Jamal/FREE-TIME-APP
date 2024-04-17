@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 
 const EnterVerificationCode = () => {
@@ -27,11 +27,10 @@ const EnterVerificationCode = () => {
       await makeRequest.post("api/auth/verifiyemail", { enteredCode: code });
       setSuccessfullyVerified(true);
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           status: true,
-          message: "an error occured",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );
@@ -72,7 +71,6 @@ const EnterVerificationCode = () => {
           ref={secondInput}
           onChange={(e) => {
             if (e.target.value.length !== 1 && e.target.value.length !== 0) {
-              console.log(e.target.value);
               return;
             } else {
               setSecod(e.target.value);
@@ -91,7 +89,6 @@ const EnterVerificationCode = () => {
           ref={thirdInput}
           onChange={(e) => {
             if (e.target.value.length !== 1 && e.target.value.length !== 0) {
-              console.log(e.target.value);
               return;
             } else {
               setThird(e.target.value);

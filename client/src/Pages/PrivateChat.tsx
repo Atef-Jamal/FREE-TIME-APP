@@ -6,7 +6,7 @@ import { IoClose, IoLockClosed } from "react-icons/io5";
 import { User } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup, toggleRegisterForm } from "../context/StateManeger";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 import Welcome from "../components/Chat/PrivateChat/Welcome";
 import Friend from "../components/Chat/PrivateChat/Friend";
 import Spinner from "../components/Others/Spinner";
@@ -28,12 +28,11 @@ const PrivateChat = () => {
       try {
         const response = await makeRequest.get("api/users");
         setUsers(response.data);
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to load peoples",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

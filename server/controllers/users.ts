@@ -8,8 +8,7 @@ export const allUsers = async (_: Request, res: Response) => {
     const users = await User.find({}).select("-password");
     return res.status(200).json(users);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - error all users" });
+    return res.status(404).json({ error: "Can't Load all peoples" });
   }
 };
 
@@ -20,15 +19,14 @@ export const getUser = async (req: Request, res: Response) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User Not Found" });
     }
     const populatedUser = await user.populate("myFrames");
 
     return res.status(200).json(populatedUser);
   } catch (error) {
-    console.log(error);
     return res.status(404).json({
-      error: "server - somthing went wrong single user",
+      error: "somthing went wrong ",
     });
   }
 };
@@ -44,8 +42,7 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(200).json(updatedUser);
     }
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not update user" });
+    return res.status(404).json({ error: "an Error occurred" });
   }
 };
 
@@ -76,8 +73,7 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
 
     return res.status(200).json(frame);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not update user" });
+    return res.status(404).json({ error: "can't change your Frame" });
   }
 };
 
@@ -93,8 +89,7 @@ export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
     });
     return res.status(200).json({ message: "suceess" });
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not update user" });
+    return res.status(404).json({ error: "can't change your Frame" });
   }
 };
 
@@ -113,7 +108,7 @@ export const collectDailyReward = async (req: Request, res: Response) => {
     if (isCollectedBefore) {
       return res
         .status(404)
-        .json({ error: "sorry, reward is already collected" });
+        .json({ error: "sorry, Reward is already collected" });
     }
 
     user.points += reward;
@@ -125,9 +120,8 @@ export const collectDailyReward = async (req: Request, res: Response) => {
       dailyReward: savedUser?.dailyReward.days,
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
-      .json({ error: "can not collect a Reward, an error occurred" });
+      .json({ error: "can't collect a Reward, an error occurred" });
   }
 };

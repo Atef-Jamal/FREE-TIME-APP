@@ -62,17 +62,17 @@ const FreeTime = ({
                 ? "/myprofile"
                 : `/user/${singleMessage.sender._id}`
             }
-            className="text-xs text-[#6385e2ee] font-bold mr-2 underline"
+            className="text-xs text-[#6385e2ee] font-bold mr-1 underline"
           >
             {singleMessage.sender.name}
           </Link>
           Referred His Friend
           <Link
             to={`/user/${singleMessage._id}`}
-            className="text-xs text-[#6385e2ee] font-bold mr-2 underline"
+            className=" text-[#6385e2ee] font-bold mx-[3px] underline"
           >
             {singleMessage.newUserReferred.name}
-          </Link>{" "}
+          </Link>
           Now
         </p>
       )}

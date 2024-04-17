@@ -10,7 +10,7 @@ import { timeAgoFromMongoDBDate } from "../../../../context/functions";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
-import { makeRequest } from "../../../../utils";
+import { handleApiError, makeRequest } from "../../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 
@@ -52,13 +52,13 @@ const Message = ({
 
   const date = timeAgoFromMongoDBDate(createdAt.toString());
 
-  const deleteMessage = async (paramId: string) => {
+  const deleteMessage = async (messageId: string) => {
     setIsDeleting(true);
     try {
       if (stopScrolling === false) {
         setStopScrolling(true);
       }
-      const response = await makeRequest.patch(`api/publicchat/${paramId}`, {
+      const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
         isDeleted: true,
       });
       socet?.emit("interact-with-public-message", response.data);
@@ -66,7 +66,7 @@ const Message = ({
       dispatch(
         showPopup({
           status: true,
-          message: "Failing to Delete Message,Try Again",
+          message: handleApiError(err),
           icon: <BiErrorAlt />,
         })
       );
@@ -103,9 +103,7 @@ const Message = ({
         ? prev[otherFieldTow].filter((item) => item !== currentUser._id)
         : prev[otherFieldTow],
     });
-
     setMessageItem(updateMessage);
-
     try {
       const response = await makeRequest.patch(
         `api/publicchat/${_id}/${fieldName}`,
@@ -115,7 +113,13 @@ const Message = ({
         socet?.emit("interact-with-public-message", response.data);
       }
     } catch (error) {
-      console.log(error);
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 
@@ -185,11 +189,11 @@ const Message = ({
           }
           className={`ml-2 sm:ml-[6px] max-w-[60%] h-full overflow-hidden `}
         >
-          <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-[6px]">
+          <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-2">
             {sender?.name}
           </span>
           {createdAt ? (
-            <span className="text-xs text-gray-500 font-bold">{date}</span>
+            <span className="text-[11px] text-gray-500 font-bold">{date}</span>
           ) : null}
         </Link>
         {sender?.emailVerified && (

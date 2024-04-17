@@ -4,7 +4,7 @@ import { MdSend } from "react-icons/md";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
-import { makeRequest } from "../../../../utils";
+import { handleApiError, makeRequest } from "../../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 
 interface typeProps {
@@ -54,11 +54,10 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
         setUser(null);
       }
     } catch (err) {
-      console.log(err);
       dispatch(
         showPopup({
           status: true,
-          message: "Failing to Send Message, Try Again",
+          message: handleApiError(err),
           icon: <BiErrorAlt />,
         })
       );

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 
@@ -42,17 +42,11 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
           })
         );
       }
-    } catch (err: any) {
-      let error: string;
-      if (err.response.data) {
-        error = err.response.data;
-      } else {
-        error = "an error has occurred";
-      }
+    } catch (error: any) {
       dispatch(
         showPopup({
           status: true,
-          message: error,
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

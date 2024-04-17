@@ -1,48 +1,12 @@
-import { useEffect } from "react";
 import { FcMusic } from "react-icons/fc";
-import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { setAllMusics, showPopup } from "../context/StateManeger";
+import { useAppSelector } from "../context/Hooks";
 import MusicCard from "../components/Music/MusicCard";
 import Skeleton from "../components/Others/Skeleton";
-import { BiErrorAlt } from "react-icons/bi";
 
 const Musics = () => {
   const { currentUserIsFetched, allMusics } = useAppSelector(
     (state) => state.stateManeger
   );
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const fechSongs = async () => {
-      const url =
-        "https://deezerdevs-deezer.p.rapidapi.com/search?q=amr%20diab";
-      const options = {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key":
-            "ea97c9aa5amsh33c80843d253d57p13e60ejsn31e5ff47a85c",
-          "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
-        },
-      };
-
-      try {
-        const response = await fetch(url, options);
-        const result = await response.json();
-        dispatch(setAllMusics(result.data));
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: "Failed to Load Songs",
-            icon: <BiErrorAlt />,
-          })
-        );
-        console.error(error);
-      }
-    };
-
-    fechSongs();
-  }, []);
 
   return (
     <div className="p-6 xs:p-3">

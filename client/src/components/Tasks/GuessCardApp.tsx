@@ -62,23 +62,18 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
       if (error) setError("");
       setIsLoading(true);
       try {
-        const response = await makeRequest.get(
-          `api/tasks/completeguesscardtask/${taskApp._id}`
+        await makeRequest.get(`api/tasks/completeguesscardtask/${taskApp._id}`);
+        setCompleted(true);
+        dispatch(
+          setCurrentUser({
+            ...currentUser,
+            completedTasks: [...currentUser.completedTasks, taskApp._id],
+          })
         );
-        console.log(response);
-        if (response.status === 200) {
-          setCompleted(true);
-          dispatch(
-            setCurrentUser({
-              ...currentUser,
-              completedTasks: [...currentUser.completedTasks, taskApp._id],
-            })
-          );
-        }
         setIsLoading(false);
       } catch (error) {
         setError("an error occured!");
-        if (completed) setCompleted(false);
+        setCompleted(false);
         setIsLoading(false);
       }
     };

@@ -7,8 +7,9 @@ import {
   showPopup,
 } from "../../context/StateManeger";
 import VerifyEmailBox from "./VerifyEmailBox";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { BiErrorAlt } from "react-icons/bi";
 
 const ProfileSettings = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -46,7 +47,13 @@ const ProfileSettings = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 
@@ -67,7 +74,13 @@ const ProfileSettings = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 

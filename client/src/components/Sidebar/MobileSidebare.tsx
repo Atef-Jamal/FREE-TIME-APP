@@ -4,11 +4,13 @@ import { RiCloseFill } from "react-icons/ri";
 import { BsArrowDownShort } from "react-icons/bs";
 import {
   setAllUnReadedMesseges,
+  showPopup,
   toggleSidebarMobile,
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const MobileSidebare = () => {
   const { openSidebarMobile, currentUser, allUnReadedMesseges } =
@@ -25,7 +27,15 @@ const MobileSidebare = () => {
         dispatch(
           setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })
         );
-      } catch (error) {}
+      } catch (error) {
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
+      }
     };
     if (currentUser?._id) {
       getAllUnReadedMsgs();

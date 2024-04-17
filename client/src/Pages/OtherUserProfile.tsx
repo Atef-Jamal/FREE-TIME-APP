@@ -14,7 +14,7 @@ import verifiedIcon from "../assets/verified-icon.png";
 import { FcFrame } from "react-icons/fc";
 import { FcBusinessman } from "react-icons/fc";
 import { showPopup } from "../context/StateManeger";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 import EachActivity from "../components/Others/EachActivity";
 import UserImage from "../components/Others/UserImage";
 import Skeleton from "../components/Others/Skeleton";
@@ -36,11 +36,10 @@ const OtherUserProfile = () => {
         setUser(response.data);
         setUserActivities(activities.data);
       } catch (error) {
-        console.log(error);
         dispatch(
           showPopup({
             status: true,
-            message: "somthing went wrong",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

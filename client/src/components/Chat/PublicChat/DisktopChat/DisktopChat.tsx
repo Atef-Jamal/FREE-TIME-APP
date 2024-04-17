@@ -2,14 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { chatToggleButton } from "../../../../context/StateManeger";
+import { chatToggleButton, showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import Message from "../Common/Message";
 import ChatHeader from "../Common/ChatHeader";
 import SendMessage from "../Common/SendMessage";
 import FreeTime from "../Common/FreeTime";
 import { TypePublicChatItem } from "../../../../types";
-import { makeRequest } from "../../../../utils";
+import { handleApiError, makeRequest } from "../../../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const DisktopChat = () => {
   const { isChatOpen, socet } = useAppSelector((state) => state.stateManeger);
@@ -28,7 +29,13 @@ const DisktopChat = () => {
         const getMessages = await makeRequest.get("api/publicchat");
         setMessages(getMessages.data);
       } catch (error) {
-        console.log(error);
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
       }
     };
     fetchMessages();

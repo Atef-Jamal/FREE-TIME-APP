@@ -23,7 +23,7 @@ import ProfileSettings from "../components/myProfile/ProfileSettings";
 
 import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 
 const MyProfile = () => {
   const { currentUser, allMusics } = useAppSelector(
@@ -85,11 +85,11 @@ const MyProfile = () => {
           icon: <FaRegCheckCircle />,
         })
       );
-    } catch (err) {
+    } catch (error) {
       dispatch(
         showPopup({
           status: true,
-          message: "Failing to Change Your Frame. somthing went wrong",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );
@@ -115,11 +115,10 @@ const MyProfile = () => {
         })
       );
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           status: true,
-          message: "Failing to Unselect Frame, try again",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );
@@ -157,11 +156,10 @@ const MyProfile = () => {
         const response = await makeRequest.get("api/notifications");
         setStatistics(response.data);
       } catch (error) {
-        console.log(error);
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to Load statistics",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

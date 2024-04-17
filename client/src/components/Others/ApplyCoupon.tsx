@@ -12,7 +12,7 @@ import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import bonusImage from "../../assets/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 
 const ApplyCoupon = () => {
@@ -57,7 +57,7 @@ const ApplyCoupon = () => {
       dispatch(
         showPopup({
           status: true,
-          message: "an Error occurred",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

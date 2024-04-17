@@ -10,8 +10,7 @@ export const getAllTasks = async (_: Request, res: Response) => {
     const allTasks = await Task.find();
     return res.status(200).json(allTasks);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get all tasks" });
+    return res.status(404).json({ error: "can't Load tasks and offere" });
   }
 };
 
@@ -21,12 +20,13 @@ export const getSingaleTask = async (req: Request, res: Response) => {
     const task = await Task.findById(taskId);
 
     if (!task) {
-      return res.status(404).json({ error: "task not found" });
+      return res.status(404).json({ error: "offer not found" });
     }
     return res.status(200).json(task);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get singale task" });
+    return res
+      .status(404)
+      .json({ error: "can't Load task, an Error occurred" });
   }
 };
 
@@ -38,7 +38,7 @@ export const completingTask = async (req: Request, res: Response) => {
   try {
     const findedTask = await Task.findById(taskId);
     if (!findedTask) {
-      return res.status(404).json({ error: "server - task not found" });
+      return res.status(404).json({ error: "Task Not Found" });
     }
     const isCompletedBefore =
       findedTask.completedBy.includes(currentUserId) ||
@@ -47,7 +47,7 @@ export const completingTask = async (req: Request, res: Response) => {
     if (isCompletedBefore) {
       return res
         .status(404)
-        .json({ error: "server - task completed Before, try another" });
+        .json({ error: "sorry, offer already completed, try another" });
     }
 
     let corrects = 0;
@@ -65,7 +65,7 @@ export const completingTask = async (req: Request, res: Response) => {
       return res.status(200).json({
         corrects,
         wrongs,
-        message: "failed to pass this task, try again",
+        message: "Failed to pass this task, try again",
       });
     }
 
@@ -101,10 +101,9 @@ export const completingTask = async (req: Request, res: Response) => {
       .status(200)
       .json({ corrects, wrongs, message: "successfully completed" });
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
-      .json({ error: "server - can not complete task an error occurred" });
+      .json({ error: "can't complete task an error occurred" });
   }
 };
 
@@ -130,7 +129,7 @@ export const completingGame = async (req: Request, res: Response) => {
     if (isCompleted) {
       return res
         .status(404)
-        .json({ error: "Game is completed before, try another" });
+        .json({ error: "Game is already completed, try another" });
     }
 
     game.completedBy.push(user._id);

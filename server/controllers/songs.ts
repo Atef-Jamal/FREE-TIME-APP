@@ -12,7 +12,7 @@ export const buySong = async (req: Request, res: Response) => {
     const user = await User.findById(currentUserId);
 
     if (!user) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
     if (10 > user.points) {
@@ -26,7 +26,7 @@ export const buySong = async (req: Request, res: Response) => {
     if (isPurshasedBefore) {
       return res
         .status(404)
-        .json({ error: "this music already purshased, try with another" });
+        .json({ error: "already purshased, try with another" });
     }
 
     user.points = user.points - 10;
@@ -57,15 +57,10 @@ export const buySong = async (req: Request, res: Response) => {
       "new-notification",
       savedNotification
     );
-    console.log(populatedMessage);
-
     io.emit("public-message", populatedMessage);
 
     return res.status(200).json({ points: updatedUser.points, songId });
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not buy this song, try again" });
+    return res.status(404).json({ error: "can't buy this Musics, try again" });
   }
 };

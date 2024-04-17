@@ -10,10 +10,7 @@ export const getUserActivities = async (req: Request, res: Response) => {
     }).populate("referredUser", "-password");
     return res.status(200).json(allNotifications);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not get user Activities" });
+    return res.status(404).json({ error: "can't get user Activities" });
   }
 };
 
@@ -26,8 +23,7 @@ export const getNotification = async (req: Request, res: Response) => {
 
     return res.status(200).json(notifications);
   } catch (error) {
-    console.log(error);
-    return res.status(200).json({ error: "server - can not get notification" });
+    return res.status(404).json({ error: "can't Load your Notifications" });
   }
 };
 
@@ -37,13 +33,12 @@ export const createNotification = async (req: Request, res: Response) => {
     const notification = new Notification(requestBody);
 
     if (!notification) {
-      return res.status(404).json({ error: "can not create notification" });
+      return res.status(404).json({ error: "can't create notification" });
     }
 
     return res.status(200).json(notification);
   } catch (error) {
-    console.log(error);
-    return res.status(200).json({ error: "server - can not set notification" });
+    return res.status(200).json({ error: "an Error occurred" });
   }
 };
 
@@ -57,15 +52,12 @@ export const markAsReaded = async (req: Request, res: Response) => {
     );
 
     if (!notifications) {
-      return res
-        .status(404)
-        .json({ error: "can not mark notification as Readed" });
+      return res.status(404).json({ error: "Somtign went wrong" });
     }
 
     return res.status(200).json(notifications);
   } catch (error) {
-    console.log(error);
-    return res.status(200).json({ error: "server - can not get notification" });
+    return res.status(404).json({ error: "an unexpected Error happened" });
   }
 };
 
@@ -80,8 +72,7 @@ export const updateNotify = async (req: Request, res: Response) => {
     );
     return res.status(200).json(updated);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not update notify" });
+    return res.status(404).json({ error: "an Error occurred" });
   }
 };
 
@@ -93,12 +84,12 @@ export const collectReward = async (req: Request, res: Response) => {
     const notify = await Notification.findById(notificationId);
 
     if (!notify) {
-      return res.status(404).json({ error: "Not Found" });
+      return res.status(404).json({ error: "Reward Not Found" });
     }
     const isCollectedBefore = notify.isCollected;
 
     if (isCollectedBefore) {
-      return res.status(404).json({ error: "sorry, Reward Already collected" });
+      return res.status(404).json({ error: "Reward Already collected" });
     }
 
     await User.findByIdAndUpdate(currentUserId, {
@@ -111,9 +102,8 @@ export const collectReward = async (req: Request, res: Response) => {
 
     return res.status(200).json(saveNotify);
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
-      .json({ error: "can not collect a Reward, an error occurred" });
+      .json({ error: "can't collect a Reward, an error occurred" });
   }
 };

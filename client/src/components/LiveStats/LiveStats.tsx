@@ -3,7 +3,7 @@ import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, egypt } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { showPopup } from "../../context/StateManeger";
 import { TypeFrame, User } from "../../types";
 import { Link } from "react-router-dom";
@@ -40,7 +40,7 @@ const LiveStats = () => {
         dispatch(
           showPopup({
             status: true,
-            message: "Failing to Load Live Stats, something went wrong",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

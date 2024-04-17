@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { User } from "../../../../types";
-import { useAppSelector } from "../../../../context/Hooks";
-import { makeRequest } from "../../../../utils";
+import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
+import { handleApiError, makeRequest } from "../../../../utils";
+import { showPopup } from "../../../../context/StateManeger";
+import { BiErrorAlt } from "react-icons/bi";
 
 interface TypeProps {
   setUser: React.Dispatch<
@@ -11,9 +13,7 @@ interface TypeProps {
 
 const MentionListOfUsers = ({ setUser }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  if (!currentUser) {
-    return;
-  }
+  const dispatch = useAppDispatch();
   const [usersList, setUsersList] = useState<User[]>([]);
 
   useEffect(() => {
@@ -21,15 +21,25 @@ const MentionListOfUsers = ({ setUser }: TypeProps) => {
       try {
         const response = await makeRequest.get("api/users");
         const excludCurrentAccount = response.data.filter(
-          (item: User) => item._id !== currentUser._id
+          (item: User) => item._id !== currentUser?._id
         );
         setUsersList(excludCurrentAccount);
       } catch (err) {
-        console.log(err);
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(err),
+            icon: <BiErrorAlt />,
+          })
+        );
       }
     };
     fetchUsers();
   }, []);
+
+  if (!currentUser) {
+    return;
+  }
 
   return (
     <div className="bg-[#141a36] w-full h-full flex flex-col items-center p-2 gap-1 overflow-scroll scrollbar-none">

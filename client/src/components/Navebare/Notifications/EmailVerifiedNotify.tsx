@@ -10,6 +10,7 @@ import { TypeEmailVerifiedNotify } from "../../../types";
 import Spinner from "../../Others/Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
+import { handleApiError } from "../../../utils";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
 
@@ -45,11 +46,10 @@ const EmailVerifiedNotify = ({
         })
       );
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           status: true,
-          message: "Failed to Collect ",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

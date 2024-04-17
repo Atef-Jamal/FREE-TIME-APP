@@ -3,7 +3,7 @@ import { empty } from "../../../assets";
 import { CgCloseR } from "react-icons/cg";
 import { MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { toggleNotifications } from "../../../context/StateManeger";
+import { showPopup, toggleNotifications } from "../../../context/StateManeger";
 import { TypeNotifications } from "../../../types";
 import ReferrerNotify from "./ReferrerNotify";
 import BuyFrameNotify from "./BuyFrameNotify";
@@ -14,7 +14,8 @@ import MentionNotify from "./MentionNotify";
 import NotificationBuyMusic from "./BuyMusicNotify";
 import EmailVerifiedNotify from "./EmailVerifiedNotify";
 import Skeleton from "../../Others/Skeleton";
-import { makeRequest } from "../../../utils";
+import { handleApiError, makeRequest } from "../../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const NotificationMenu = ({
   notifications,
@@ -35,7 +36,6 @@ const NotificationMenu = ({
     const markNotificationasRead = async () => {
       try {
         await makeRequest.patch("api/notifications", { ddd: "ddd" });
-        // notifications.forEach((item) => (item.isRead = true));
         setNotifications((prev) => {
           return prev.map((item) => {
             if (item.isRead === false) {
@@ -45,7 +45,13 @@ const NotificationMenu = ({
           });
         });
       } catch (error) {
-        console.log(error);
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
       }
     };
 

@@ -9,3 +9,16 @@ export const makeRequest = axios.create({
     authorization: `Bearer ${token}`,
   },
 });
+
+export const handleApiError = (error: any) => {
+  let errorMessage = "";
+  if (
+    error.response.data.error &&
+    typeof error.response.data.error === "string"
+  ) {
+    errorMessage = error.response.data.error;
+  } else {
+    errorMessage = "An unexpected Error occurred";
+  }
+  return errorMessage;
+};

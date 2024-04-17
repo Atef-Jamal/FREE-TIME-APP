@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import io from "socket.io-client";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { setOnlineUsers, setSocet, showPopup } from "../context/StateManeger";
+import {
+  setAllMusics,
+  setOnlineUsers,
+  setSocet,
+  showPopup,
+} from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import Model from "../components/Others/Model";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -14,6 +19,7 @@ import NavebareBottom from "../components/Navebare/NavebareBottom";
 import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { BiErrorAlt } from "react-icons/bi";
 
 const Layout = () => {
   const {
@@ -80,6 +86,38 @@ const Layout = () => {
       };
     }
   }, [socet]);
+
+  useEffect(() => {
+    const fechSongs = async () => {
+      const url =
+        "https://deezerdevs-deezer.p.rapidapi.com/search?q=amr%20diab";
+      const options = {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key":
+            "ea97c9aa5amsh33c80843d253d57p13e60ejsn31e5ff47a85c",
+          "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
+        },
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        dispatch(setAllMusics(result.data));
+      } catch (error) {
+        dispatch(
+          showPopup({
+            status: true,
+            message: "Failed to Load Musics, try again Later",
+            icon: <BiErrorAlt />,
+          })
+        );
+        console.error(error);
+      }
+    };
+
+    fechSongs();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center relative">

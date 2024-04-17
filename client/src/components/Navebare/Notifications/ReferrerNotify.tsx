@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import Spinner from "../../Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { handleApiError } from "../../../utils";
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 
@@ -47,11 +48,10 @@ const ReferrerNotify = ({
         })
       );
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           status: true,
-          message: "Failed to Collect ",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

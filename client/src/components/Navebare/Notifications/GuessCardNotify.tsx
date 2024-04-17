@@ -10,6 +10,7 @@ import { useState } from "react";
 import Spinner from "../../Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { handleApiError } from "../../../utils";
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 
 const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
@@ -39,11 +40,10 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
         })
       );
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           status: true,
-          message: "Failed to Collect ",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

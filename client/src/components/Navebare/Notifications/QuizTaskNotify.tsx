@@ -10,6 +10,7 @@ import { TypeQuizAppNotify } from "../../../types";
 import Spinner from "../../Others/Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
+import { handleApiError } from "../../../utils";
 
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 
@@ -40,11 +41,10 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
         })
       );
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           status: true,
-          message: "Failed to Collect ",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

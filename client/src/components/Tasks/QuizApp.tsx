@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { ImSpinner3 } from "react-icons/im";
 
@@ -80,13 +80,12 @@ const QuizApp = ({ taskApp }: TypeProps) => {
         wrongs: response.data.wrongs,
       });
       setLoading(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       setLoading(false);
       dispatch(
         showPopup({
           status: true,
-          message: "Failed to Complete Task, try again",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

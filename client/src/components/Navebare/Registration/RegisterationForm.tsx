@@ -22,7 +22,7 @@ import {
 import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
-import { makeRequest } from "../../../utils";
+import { handleApiError, makeRequest } from "../../../utils";
 import Spinner from "../../Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 
@@ -131,25 +131,14 @@ const RegisterationForm = () => {
           localStorage.setItem("token", axiosResponse.data.token);
         }
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
-      } catch (err: any) {
-        const errorMessage = err.response.data.error;
-        if (typeof errorMessage === "string") {
-          dispatch(
-            showPopup({
-              status: true,
-              message: errorMessage,
-              icon: <BiErrorAlt />,
-            })
-          );
-        } else {
-          dispatch(
-            showPopup({
-              status: true,
-              message: "an Error occurred, Try Again",
-              icon: <BiErrorAlt />,
-            })
-          );
-        }
+      } catch (error: any) {
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
         setSubmiting(false);
       }
     } else {
@@ -194,25 +183,14 @@ const RegisterationForm = () => {
           localStorage.setItem("token", axiosResponse.data.token);
         }
         window.location.href = `${window.location.origin}/?redirectedfrom=login`;
-      } catch (err: any) {
-        const errorMessage = err.response.data.error;
-        if (typeof errorMessage === "string") {
-          dispatch(
-            showPopup({
-              status: true,
-              message: errorMessage,
-              icon: <BiErrorAlt />,
-            })
-          );
-        } else {
-          dispatch(
-            showPopup({
-              status: true,
-              message: "Fail to Login, Try Again",
-              icon: <BiErrorAlt />,
-            })
-          );
-        }
+      } catch (error: any) {
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
         setSubmiting(false);
       }
     }
@@ -223,7 +201,15 @@ const RegisterationForm = () => {
   ) => {
     e.preventDefault();
     try {
-    } catch (error) {}
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -254,11 +240,9 @@ const RegisterationForm = () => {
             switch (snapshot.state) {
               case "paused":
                 setPaused(true);
-                // console.log("Upload is paused");
                 break;
               case "running":
                 setPaused(false);
-                // console.log("Upload is running");
                 break;
               default:
                 break;
@@ -278,7 +262,6 @@ const RegisterationForm = () => {
               })
             );
             setUploading(false);
-            console.log(err);
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {

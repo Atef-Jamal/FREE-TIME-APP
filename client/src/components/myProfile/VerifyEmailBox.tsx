@@ -1,10 +1,10 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { CgClose } from "react-icons/cg";
 import { resetModel, showPopup } from "../../context/StateManeger";
-import Spinner from "../Others/Spinner"
-import EnterVerificationCode from "./EnterVerificationCode"
-import { makeRequest } from "../../utils";
+import Spinner from "../Others/Spinner";
+import EnterVerificationCode from "./EnterVerificationCode";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 
 const VerifyEmailBox = () => {
@@ -19,8 +19,7 @@ const VerifyEmailBox = () => {
         showPopup({
           status: true,
           message: "sorry, Your Email Already Verified",
-          icon: <BiErrorAlt />
-
+          icon: <BiErrorAlt />,
         })
       );
       return;
@@ -32,7 +31,13 @@ const VerifyEmailBox = () => {
       });
       setOpenEnterCode(true);
     } catch (error) {
-      console.log(error);
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
     } finally {
       setLoading(false);
     }

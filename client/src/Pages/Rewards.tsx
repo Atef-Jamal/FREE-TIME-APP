@@ -3,7 +3,7 @@ import { MdCardGiftcard } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
 import { BiCopy, BiErrorAlt } from "react-icons/bi";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
@@ -42,12 +42,11 @@ const Rewards = () => {
     try {
       const response = await makeRequest.get("api/coupons");
       setBonusCode(response.data);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       dispatch(
         showPopup({
           status: true,
-          message: "Can't Load Bounus Code, an error occurred",
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

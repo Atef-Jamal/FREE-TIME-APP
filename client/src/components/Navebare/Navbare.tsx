@@ -8,7 +8,7 @@ import {
   setCurrentUserIsLoading,
   showPopup,
 } from "../../context/StateManeger";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import MusicPlayer from "../Music/MusicPlayer";
 import ProfileSkeleton from "../Others/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
@@ -39,7 +39,7 @@ const Navbare = () => {
         dispatch(
           showPopup({
             status: true,
-            message: `something went wrong! try again`,
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

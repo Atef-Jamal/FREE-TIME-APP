@@ -4,8 +4,12 @@ import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
-import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
-import { makeRequest } from "../../../utils";
+import {
+  setRefetchUnReadedMessagesCount,
+  showPopup,
+} from "../../../context/StateManeger";
+import { handleApiError, makeRequest } from "../../../utils";
+import { BiErrorAlt } from "react-icons/bi";
 
 const Friend = ({
   userInfo,
@@ -32,7 +36,13 @@ const Friend = ({
       );
       setRecentMessage(response.data);
     } catch (error) {
-      console.log(error);
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 
@@ -44,7 +54,13 @@ const Friend = ({
 
       setUnReadedCount(response.data.count);
     } catch (error) {
-      console.log(error);
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          icon: <BiErrorAlt />,
+        })
+      );
     }
   };
 

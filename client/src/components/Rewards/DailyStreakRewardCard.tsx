@@ -2,7 +2,7 @@ import { useState } from "react";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import Spinner from "../Others/Spinner";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 
@@ -29,7 +29,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
             day,
           }
         );
-        console.log(response.data);
 
         dispatch(
           setCurrentUser({
@@ -39,12 +38,11 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           })
         );
         setIsCollectedNow(true);
-      } catch (err) {
-        console.log("Failed to collect", err);
+      } catch (error) {
         dispatch(
           showPopup({
             status: true,
-            message: "Smothing Went Wrong",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

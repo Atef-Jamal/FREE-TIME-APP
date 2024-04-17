@@ -9,8 +9,7 @@ export const getAllTestimonials = async (_: Request, res: Response) => {
     );
     return res.status(200).json(allTestimonials);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "failed to get all testimonials" });
+    return res.status(404).json({ error: "Failed to Load all testimonials" });
   }
 };
 
@@ -19,9 +18,7 @@ export const createTestimonial = async (req: Request, res: Response) => {
   const { content, stars }: { content: string; stars: number } = req.body;
   try {
     if (content.trim() === "") {
-      return res
-        .status(404)
-        .json({ error: "server - please write your testimonial" });
+      return res.status(404).json({ error: "please write your testimonial" });
     }
     const createOne = new Testimonial({
       user: currentUserId,
@@ -33,7 +30,6 @@ export const createTestimonial = async (req: Request, res: Response) => {
     const testimonial = await saved.populate("user", "-password");
     return res.status(200).json(testimonial);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "failed to create testimonial" });
+    return res.status(404).json({ error: "Failed to create testimonial" });
   }
 };

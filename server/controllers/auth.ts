@@ -19,7 +19,9 @@ export const register = async (req: Request, res: Response) => {
     const userExisted = await User.findOne({ email });
 
     if (userExisted) {
-      return res.status(404).json({ error: "user already existed in db" });
+      return res
+        .status(404)
+        .json({ error: "User already existed, Try Log in" });
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -80,8 +82,9 @@ export const register = async (req: Request, res: Response) => {
     io.emit("new-user-register", savedUser);
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "internal server error" });
+    return res
+      .status(404)
+      .json({ error: "an Error occurred, Try again Later" });
   }
 };
 
@@ -92,12 +95,12 @@ export const login = async (req: Request, res: Response) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User Not Found" });
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(404).json({ error: "invalid password" });
+      return res.status(404).json({ error: "Invalid Password" });
     }
 
     if (!process.env.JWT_SECRET_KEY) {
@@ -110,8 +113,9 @@ export const login = async (req: Request, res: Response) => {
 
     return res.status(200).json({ ...user, token });
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "internal server error" });
+    return res
+      .status(404)
+      .json({ error: "an Error occurred, Try again later" });
   }
 };
 
@@ -120,7 +124,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   const token = authHeader?.split(" ")[1];
 
   if (!authHeader || !token) {
-    return res.json({ error: "server error token must be exist" });
+    return res.json({ error: "unauthorized Request, Try to Log in " });
   }
 
   try {
@@ -129,14 +133,13 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     const getUser = await User.findById(user.userId).select("-password");
 
     if (!getUser) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User Not found" });
     }
     const populateedUser = await getUser.populate("myFrames");
 
     return res.status(200).json(populateedUser);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - from currentuser route" });
+    return res.status(404).json({ error: "An unexpected behaviour occurred" });
   }
 };
 
@@ -186,9 +189,8 @@ export const sendEmailVerificationCode = async (
 
     return res.status(200).json({ message: "success" });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({
-      error: "server - Fail to send verification code, an error occurred",
+      error: "Failed to send verification code, an error occurred",
     });
   }
 };
@@ -200,7 +202,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     const user = await User.findById(currentUserId);
 
     if (!user) {
-      return res.status(404).json({ error: "server -user not found" });
+      return res.status(404).json({ error: "User Not Found" });
     }
 
     const isVerifiedBefore = user.emailVerified;
@@ -212,7 +214,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     const storedCode = user.emailVerificationCode?.code.toString();
 
     if (enteredCode.toString() !== storedCode) {
-      return res.status(404).json({ message: "incorrect verification code" });
+      return res.status(404).json({ message: "Incorrect verification code" });
     }
     user.emailVerified = true;
     await user.save();
@@ -242,9 +244,8 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
 
     return res.status(200).json({ message: "successfully verified" });
   } catch (error) {
-    console.log(error);
-    return res.status(200).json({
-      message: "server - can not verify your email, an error occurred",
+    return res.status(404).json({
+      message: "Can'T verify your email, an error occurred",
     });
   }
 };
@@ -256,7 +257,7 @@ export const changePassword = async (req: Request, res: Response) => {
     const user = await User.findById(currentUserId);
 
     if (!user) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User Not Found" });
     }
     const oldPassword = user.password;
 
@@ -272,9 +273,8 @@ export const changePassword = async (req: Request, res: Response) => {
     user.password = hashedPassword;
     await user.save();
 
-    return res.status(200).json({ message: "password changed successfullty" });
+    return res.status(200).json({ message: "Password changed successfullty" });
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
       .json({ error: "Can't change password, an error occurred" });
@@ -299,7 +299,6 @@ export const changeName = async (req: Request, res: Response) => {
     const savedUser = await user.save();
     return res.status(200).json(savedUser);
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
       .json({ error: "Can't change name, an error occurred" });

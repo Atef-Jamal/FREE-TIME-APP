@@ -22,9 +22,7 @@ const All = () => {
       try {
         const response = await makeRequest.get("api/tasks");
         setFetchedTasks(response.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
     fetchTasks();
   }, []);

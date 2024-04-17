@@ -5,9 +5,11 @@ import FreeTime from "../Common/FreeTime";
 import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
 
-import { useAppSelector } from "../../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types";
-import { makeRequest } from "../../../../utils";
+import { handleApiError, makeRequest } from "../../../../utils";
+import { showPopup } from "../../../../context/StateManeger";
+import { BiErrorAlt } from "react-icons/bi";
 
 const MobileChat = () => {
   const { hiddenLiveStats, socet } = useAppSelector(
@@ -18,7 +20,7 @@ const MobileChat = () => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const mentionedMessageRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
-
+  const dispatch = useAppDispatch();
   const searchValue = searchParams.get("messageid");
 
   useEffect(() => {
@@ -28,7 +30,13 @@ const MobileChat = () => {
 
         setMessages(getMessages.data);
       } catch (error) {
-        console.log(error);
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
       }
     };
     fetchMessages();

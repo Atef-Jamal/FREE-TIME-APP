@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop } from "react-icons/io5";
@@ -14,28 +14,36 @@ import { IoStar } from "react-icons/io5";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
-import { useAppSelector } from "../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { arrayoffers, tasks } from "../helper/data";
 import { TypeGame } from "../types";
 import { Helmet } from "react-helmet-async";
-import { makeRequest } from "../utils";
-import GameCard from "../components/Offers/GameCard"
-import OfferParnterCard from "../components/Offers/OfferParnterCard"
-import Skeleton from "../components/Others/Skeleton"
-
+import { handleApiError, makeRequest } from "../utils";
+import GameCard from "../components/Offers/GameCard";
+import OfferParnterCard from "../components/Offers/OfferParnterCard";
+import Skeleton from "../components/Others/Skeleton";
+import { showPopup } from "../context/StateManeger";
+import { BiErrorAlt } from "react-icons/bi";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
   const [translate, setTranslate] = useState("");
   const [fetchedTasks, setFetchedTasks] = useState<TypeGame[]>([]);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         const response = await makeRequest.get("api/tasks");
         setFetchedTasks(response.data);
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            icon: <BiErrorAlt />,
+          })
+        );
       }
     };
     fetchTasks();

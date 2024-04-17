@@ -6,6 +6,7 @@ import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
 import Input from "../Navebare/Registration/Input";
 import { BiErrorAlt } from "react-icons/bi";
+import { handleApiError } from "../../utils";
 
 const HeroSection = () => {
   const [email, setEmail] = useState<string>("");
@@ -17,15 +18,11 @@ const HeroSection = () => {
   const handlaSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-    } catch (err: any) {
-      let msg = "";
-      if (typeof err.response.data.error === "string") {
-        msg = err.response.data.error;
-      }
+    } catch (error: any) {
       dispatch(
         showPopup({
           status: true,
-          message: msg,
+          message: handleApiError(error),
           icon: <BiErrorAlt />,
         })
       );

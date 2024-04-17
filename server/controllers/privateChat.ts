@@ -18,8 +18,7 @@ export const getConversationMessages = async (req: Request, res: Response) => {
     );
     return res.status(200).json(conversation);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get converstaion" });
+    return res.status(404).json({ error: "can't Load Chat" });
   }
 };
 
@@ -51,8 +50,9 @@ export const createMessage = async (req: Request, res: Response) => {
 
     return res.status(200).json(conversation.lastMessage);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not create message" });
+    return res
+      .status(404)
+      .json({ error: "can't create message, an Error occurred" });
   }
 };
 
@@ -70,8 +70,7 @@ export const getRecentMessage = async (req: Request, res: Response) => {
 
     return res.status(200).json(conversation.lastMessage);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get last message" });
+    return res.status(404).json({ error: "can't Load lastest message" });
   }
 };
 
@@ -92,8 +91,7 @@ export const getUnReadedMsgsCount = async (req: Request, res: Response) => {
 
     return res.status(200).json({ count: unReadedCount });
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get last message" });
+    return res.status(404).json({ error: "can't Load unreaded messages" });
   }
 };
 
@@ -125,10 +123,7 @@ export const getAllUnReadedMessages = async (req: Request, res: Response) => {
 
     return res.status(200).json(usersIds);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not get all un readed  messages" });
+    return res.status(404).json({ error: "can't Load unreaded messages" });
   }
 };
 
@@ -152,9 +147,6 @@ export const markAsReaded = async (req: Request, res: Response) => {
     await conversation.save();
     return res.status(200).json({ message: "success" });
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not mark conversation as Readed" });
+    return res.status(404).json({ error: "an Error occurred" });
   }
 };

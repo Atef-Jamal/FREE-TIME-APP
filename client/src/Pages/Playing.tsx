@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
 import { TypeTaskApp } from "../types";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 import GuessCardApp from "../components/Tasks/GuessCardApp";
 import QuizApp from "../components/Tasks/QuizApp";
 import Spinner from "../components/Others/Spinner";
+import { showPopup } from "../context/StateManeger";
+import { BiErrorAlt } from "react-icons/bi";
 
 const Playing = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -15,6 +17,7 @@ const Playing = () => {
   const [error, setError] = useState<string>("");
   const [isCompleted, setIsComleted] = useState<boolean>(false);
   const { id } = useParams();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -38,7 +41,13 @@ const Playing = () => {
 
           setTaskApp(response.data);
         } catch (err) {
-          console.log(err);
+          dispatch(
+            showPopup({
+              status: true,
+              message: handleApiError(error),
+              icon: <BiErrorAlt />,
+            })
+          );
           setError("an error occurred, try again");
         } finally {
           setIsLoading(false);

@@ -5,7 +5,7 @@ import { showPopup } from "../context/StateManeger";
 import { User } from "../types";
 import { useAppDispatch } from "../context/Hooks";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
 
@@ -23,11 +23,10 @@ const LeaderBoard = () => {
         const response = await makeRequest.get("api/users");
         setUsers(response.data);
       } catch (error) {
-        console.log(error);
         dispatch(
           showPopup({
             status: true,
-            message: "something wrong",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

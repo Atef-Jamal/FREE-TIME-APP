@@ -10,8 +10,7 @@ export const getAllFrames = async (_: Request, res: Response) => {
     const allFrames = await Frame.find();
     return res.status(200).json(allFrames);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get all frames" });
+    return res.status(404).json({ error: "can't get Load Frames" });
   }
 };
 
@@ -22,18 +21,16 @@ export const buyFrame = async (req: Request, res: Response) => {
     const getFrame = await Frame.findById(frameId);
 
     if (!getFrame || !getFrame.price) {
-      return res.status(404).json("server - frame not found");
+      return res.status(404).json("Frame not found");
     }
     const price = getFrame.price;
 
     if (points < price) {
-      return res.status(404).json("server - sorry, your points is not enough");
+      return res.status(404).json("sorry, your points is not Enough");
     }
 
     if (myFrames.includes(getFrame._id)) {
-      return res
-        .status(404)
-        .json("server - Already buyed Before, try with another");
+      return res.status(404).json("Already buyed Before, try with another");
     }
     const user = await User.findByIdAndUpdate(
       _id,
@@ -45,7 +42,7 @@ export const buyFrame = async (req: Request, res: Response) => {
     );
 
     if (!user) {
-      return res.status(404).json("server - an error occurred, try again");
+      return res.status(404).json("an error occurred, try again");
     }
 
     getFrame.purshasedBy.push(_id);
@@ -78,9 +75,6 @@ export const buyFrame = async (req: Request, res: Response) => {
 
     return res.status(200).json({ points: user.points, savedFrame });
   } catch (error) {
-    console.log(error);
-    return res
-      .status(404)
-      .json({ error: "server - can not buy frame, an error occured" });
+    return res.status(404).json({ error: "can't buy Frame, an error occured" });
   }
 };

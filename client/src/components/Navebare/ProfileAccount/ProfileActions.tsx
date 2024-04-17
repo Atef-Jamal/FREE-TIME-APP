@@ -5,7 +5,7 @@ import {
   showPopup,
   openModel,
 } from "../../../context/StateManeger";
-import { makeRequest } from "../../../utils";
+import { handleApiError, makeRequest } from "../../../utils";
 import notificationSoundSrc from "../../../assets/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
@@ -43,7 +43,7 @@ const ProfileActions = () => {
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to Load Notifications",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );

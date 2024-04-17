@@ -6,14 +6,11 @@ export const getCoupon = async (_: Request, res: Response) => {
   try {
     const coupon = await Coupon.findOne({});
     if (!coupon) {
-      return res
-        .status(404)
-        .json({ error: "server - no coupons available right now" });
+      return res.status(404).json({ error: "No coupons available right now" });
     }
     return res.status(200).json(coupon);
   } catch (error) {
-    console.log(error);
-    return res.status(404).json({ error: "server - can not get coupon" });
+    return res.status(404).json({ error: "Can not get coupon" });
   }
 };
 
@@ -36,7 +33,7 @@ export const applyCoupon = async (req: Request, res: Response) => {
     if (user.coupons.includes(code.toString())) {
       return res.status(404).json({
         error:
-          "sorry, Already Consummed, stay up to date for upcoming Bounus code",
+          "Already Consummed, stay up to date for upcoming New Bounus code",
       });
     }
 
@@ -64,7 +61,6 @@ export const applyCoupon = async (req: Request, res: Response) => {
 
     return res.status(200).json({ points: savedUser.points });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "an Error occurred, try again" });
   }
 };
@@ -109,9 +105,8 @@ export const collectDailyReward = async (req: Request, res: Response) => {
       dailyReward: savedUser.dailyReward,
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(404)
-      .json({ error: "can not collect daily Reward, an error occurred" });
+      .json({ error: "can't collect daily Reward, an error occurred" });
   }
 };

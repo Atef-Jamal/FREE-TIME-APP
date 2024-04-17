@@ -4,7 +4,7 @@ import { showPopup } from "../context/StateManeger";
 import { TypeFrame } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import FrameItem from "../components/MarketPlace/FrameItem";
-import { makeRequest } from "../utils";
+import { handleApiError, makeRequest } from "../utils";
 import { BiErrorAlt } from "react-icons/bi";
 
 const MarketPlace = () => {
@@ -18,11 +18,11 @@ const MarketPlace = () => {
       try {
         const response = await makeRequest.get("api/frames");
         setFrames(response.data);
-      } catch (err) {
+      } catch (error) {
         dispatch(
           showPopup({
             status: true,
-            message: "Failed to Load Frames, Check your Network",
+            message: handleApiError(error),
             icon: <BiErrorAlt />,
           })
         );
