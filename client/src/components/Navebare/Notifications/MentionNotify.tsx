@@ -5,9 +5,7 @@ import {
   toggleNotifications,
 } from "../../../context/StateManeger";
 import { TypeMentionNotify } from "../../../types";
-import {
-  timeAgoFromMongoDBDate,
-} from "../../../context/functions";
+import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 
 type PropType = Omit<TypeMentionNotify, "_id" | "type" | "isRead">;
@@ -24,7 +22,7 @@ const MentionNotify = ({
   const date = timeAgoFromMongoDBDate(createdAt.toString());
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 bg-[#1010308e] rounded-md p-2 border border-gray-700 ">
+    <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">
       <div className="flex gap-2 w-full">
         <span className="w-8 h-6 rounded-lg bg-[#7aec2e25] flex items-center justify-center">
           <GoMention />
@@ -56,7 +54,7 @@ const MentionNotify = ({
             dispatch(chatToggleButton());
           }
         }}
-        className="text-sm bg-[#364072ee] w-[100px] py-1 rounded-sm border border-gray-700 ml-auto text-center underline text-[#eee]"
+        className="text-sm bg-[#364072ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
       >
         see that
       </Link>

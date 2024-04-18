@@ -93,16 +93,9 @@ const LiveStats = () => {
         hiddenLiveStats ? "hidden" : "flex"
       } items-center w-full sticky top-[75px] sm:top-[55px] z-[2] bg-[#1a1a25] border border-gray-800 `}
     >
-      {!!users.length && (
-        <img
-          src={crown}
-          alt=""
-          className="absolute -top-[6px] left-[70px] sm:left-[60px] w-7 h-7 sm:w-5 sm:h-5 -rotate-45 z-[1]"
-        />
-      )}
       <div
         onClick={() => setToggleLanguage(!toggleLanguage)}
-        className=" bg-[#222339] mx-2 my-2 sm:my-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md "
+        className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md "
       >
         <MdLanguage />
         <IoIosArrowDown />
@@ -128,7 +121,7 @@ const LiveStats = () => {
           ))}
         </div>
       )}
-      <div className="w-full flex items-center gap-2 xs:gap-[6px] overflow-y-scroll scrollbar-none">
+      <div className="w-full flex items-center gap-2 xs:gap-[6px] overflow-y-scroll scrollbar-none pl-2  py-2 sm:py-1">
         {loading && <LiveStatsSkeleton />}
 
         {error && (
@@ -139,8 +132,9 @@ const LiveStats = () => {
         )}
 
         {!loading &&
+          !error &&
           users.length > 0 &&
-          users.map((user) => {
+          users.map((user, index) => {
             const { _id, name, points } = user;
             const isOnline = onlineUsers.includes(_id);
 
@@ -150,6 +144,11 @@ const LiveStats = () => {
                 to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
                 className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
               >
+                {index === 0 && (
+                  <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
+                    <img src={crown} alt="" className="" />
+                  </span>
+                )}
                 <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
                   <UserImage user={user} />
                 </div>

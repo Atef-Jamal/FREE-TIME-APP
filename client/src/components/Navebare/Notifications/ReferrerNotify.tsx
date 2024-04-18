@@ -63,7 +63,7 @@ const ReferrerNotify = ({
   const date = timeAgoFromMongoDBDate(createdAt.toString());
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 bg-[#1010308e] rounded-md p-2 border border-gray-700 ">
+    <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">
       <div className="flex gap-2 w-full">
         <span className="w-8 h-6 rounded-lg bg-[#7aec2e25] flex items-center justify-center">
           <FcConferenceCall className=" text-xl" />
@@ -82,7 +82,7 @@ const ReferrerNotify = ({
         and Get {prize} points as a Reward
       </p>
       {isRewardCollected && (
-        <button className="text-sm bg-[#1a1e33ee] w-[100px] py-1 rounded-md border border-gray-700  ml-auto">
+        <button className="text-sm bg-[#1a1e33ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700  ml-auto">
           collected
         </button>
       )}
@@ -90,7 +90,7 @@ const ReferrerNotify = ({
         <button
           onClick={collect}
           disabled={isLoading}
-          className="text-sm bg-[#53ec68ee] w-[100px] py-1 rounded-md border border-gray-700 ml-auto"
+          className="text-sm bg-[#53ec68ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto"
         >
           {isLoading ? (
             <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />

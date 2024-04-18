@@ -13,9 +13,10 @@ import GuessCardNotify from "./GuessCardNotify";
 import MentionNotify from "./MentionNotify";
 import NotificationBuyMusic from "./BuyMusicNotify";
 import EmailVerifiedNotify from "./EmailVerifiedNotify";
-import Skeleton from "../../Others/Skeleton";
+// import Skeleton from "../../Others/Skeleton";
 import { handleApiError, makeRequest } from "../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import Spinner from "../../Others/Spinner";
 
 const NotificationMenu = ({
   notifications,
@@ -65,14 +66,14 @@ const NotificationMenu = ({
   }, [currentUser]);
 
   return (
-    <div className=" fixed top-[9%] right-0 w-[100vw] z-[4] h-[100vh] sm:w-full">
+    <>
       <div
         onClick={() => dispatch(toggleNotifications(false))}
-        className="fixed top-[73px] sm:top-0 right-0 w-[100vw] h-[100vh] rounded-lg flex flex-col items-center gap-6 py-6 bg-[#01010779] sm:w-full"
+        className="fixed top-[75px] sm:top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#01010779] "
       ></div>
 
-      <div className=" absolute right-4 sm:right-2 top-0 w-[480px] sm:w-[93.5%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-4 ">
-        <div className=" bg-[#2e2e4b] flex justify-between w-[93%] my-2 ">
+      <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-4">
+        <div className=" bg-[#2e2e4b] flex justify-between w-[93%] my-2 xs:my-1 ">
           <h1 className="text-lg font-bold tracking-wider text-gray-300 border-b w-[50%] pb-2 flex items-center gap-2">
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
           </h1>
@@ -83,6 +84,11 @@ const NotificationMenu = ({
         </div>
         <div className="w-[93%] overflow-y-auto scrollbar-thin scrollbar-thumb-[#6d7c5a] scrollbar-track-[#251b3f85] pr-2 flex flex-col gap-[6px]">
           {loadingNotifications && (
+            <div className="w-full h-full flex items-center justify-center">
+              <Spinner className="w-7 h-7" />
+            </div>
+          )}
+          {/* {loadingNotifications && (
             <>
               <div className="w-full  p-2 flex flex-col items-center gap-2 bg-[#1010308e] rounded-md mb-2">
                 <div className="flex flex-col gap-1 w-full">
@@ -124,7 +130,7 @@ const NotificationMenu = ({
                 </div>
               </div>
             </>
-          )}
+          )} */}
           {!loadingNotifications &&
             notifications.length > 0 &&
             notifications
@@ -228,7 +234,7 @@ const NotificationMenu = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -90,43 +90,40 @@ const MobileChat = () => {
       style={{
         height: hiddenLiveStats
           ? `calc(100dvh - 123px)`
-          : `calc(100dvh - 171px)`,
+          : `calc(100dvh - 163px)`,
       }}
-      className="sticky top-[100px] w-full bg-[#202233] hidden sm:flex flex-col items-center "
+      className="sticky top-[100px] w-full bg-[#202233] hidden sm:flex flex-col items-center"
     >
-      <div className="w-full h-full p-2 overflow-scroll scrollbar-none">
-        <div className="w-full h-full flex flex-col items-center  gap-[5px] overflow-scroll scrollbar-none">
-          {messages?.map((message, index) => {
-            if (message.type === "FREETIME") {
-              return (
-                <FreeTime
-                  key={message._id}
-                  singleMessage={message}
-                  messageRef={
-                    index === messages.length - 1 ? lastMessageRef : null
-                  }
-                />
-              );
-            }
+      <div className="w-full h-full px-1 pb-1 flex flex-col items-center  gap-[5px] overflow-scroll scrollbar-none">
+        {messages?.map((message, index) => {
+          if (message.type === "FREETIME") {
             return (
-              <Message
-                key={index}
-                setStopScrolling={setStopScrolling}
-                stopScrolling={stopScrolling}
+              <FreeTime
+                key={message._id}
                 singleMessage={message}
                 messageRef={
-                  searchValue === message._id
-                    ? mentionedMessageRef
-                    : index === messages.length - 1
-                    ? lastMessageRef
-                    : null
+                  index === messages.length - 1 ? lastMessageRef : null
                 }
               />
             );
-          })}
-        </div>
+          }
+          return (
+            <Message
+              key={index}
+              setStopScrolling={setStopScrolling}
+              stopScrolling={stopScrolling}
+              singleMessage={message}
+              messageRef={
+                searchValue === message._id
+                  ? mentionedMessageRef
+                  : index === messages.length - 1
+                  ? lastMessageRef
+                  : null
+              }
+            />
+          );
+        })}
       </div>
-
       <SendMessage
         stopScrolling={stopScrolling}
         setStopScrolling={setStopScrolling}

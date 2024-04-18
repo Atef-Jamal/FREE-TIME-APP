@@ -117,7 +117,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
         {user && (
           <span
             onClick={() => setUser(null)}
-            className="absolute top-2 left-4 xs:left-2 truncate py-[3px] text-[11px] w-[50px] bg-[#3c5db8e0] rounded-sm pl-[2px]"
+            className="absolute top-[5px] left-4 text-center xs:left-2 py-1 text-[11px] w-[50px] truncate bg-[#3c5db8e0] rounded-md px-[3px]"
           >
             {user.name}
           </span>

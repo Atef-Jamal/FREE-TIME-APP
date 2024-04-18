@@ -126,11 +126,13 @@ const ProfileActions = () => {
         </div>
       )}
       {openNotification && (
-        <NotificationMenu
-          loadingNotifications={loadingNotifications}
-          notifications={notifications}
-          setNotifications={setNotifications}
-        />
+        <div className="fixed top-[9%] right-0 w-[100vw] z-[4] h-[100vh] sm:w-full">
+          <NotificationMenu
+            loadingNotifications={loadingNotifications}
+            notifications={notifications}
+            setNotifications={setNotifications}
+          />
+        </div>
       )}
     </>
   );
