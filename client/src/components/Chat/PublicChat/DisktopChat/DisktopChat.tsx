@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { chatToggleButton, showPopup } from "../../../../context/StateManeger";
+import { showPopup, toggleThisEntity } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import Message from "../Common/Message";
 import ChatHeader from "../Common/ChatHeader";
@@ -81,7 +81,7 @@ const DisktopChat = () => {
   return (
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
       <span
-        onClick={() => dispatch(chatToggleButton())}
+        onClick={() => dispatch(toggleThisEntity({ entity: "isChatOpen" }))}
         className="absolute top-[10%] -left-[38px] px-[9px] py-1 bg-[#513d80f8] rounded-sm"
       >
         {isChatOpen ? (

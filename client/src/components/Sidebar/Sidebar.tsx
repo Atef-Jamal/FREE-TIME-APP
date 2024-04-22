@@ -6,7 +6,7 @@ import { sidebareItems } from "../../helper/data";
 import {
   setAllUnReadedMesseges,
   showPopup,
-  toggleResizeSidebare,
+  toggleThisEntity,
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypePrivateMessage } from "../../types";
@@ -74,7 +74,7 @@ const Sidebar = () => {
       } h-[92vh] sticky top-[75px] sm:hidden py-4 border-r border-r-gray-700 `}
     >
       <div
-        onClick={() => dispatch(toggleResizeSidebare())}
+        onClick={() => dispatch(toggleThisEntity({ entity: "resizeSidebare" }))}
         className={`${
           !resizeSidebare ? "ml-auto mr-1" : "mx-auto"
         }  p-[10px] w-[65px] flex items-center justify-center rounded-md mb-2 hover:bg-[#40496975] `}

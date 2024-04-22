@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { TypePopup, User, TypeInitialState } from "../types";
-// import music from "../../assets/music.mp3";
 
 const initialState: TypeInitialState = {
   currentUser: null,
@@ -24,7 +23,6 @@ const initialState: TypeInitialState = {
   isPlaying: false,
   currentSong: null,
   allMusics: [],
-  token: localStorage.getItem("token") || null,
   socet: null,
   onlineUsers: [],
   reFetchThisUserId: "",
@@ -32,24 +30,27 @@ const initialState: TypeInitialState = {
   model: { status: false, children: null },
 };
 
+export interface TypeTogglActionPayload {
+  entity:
+    | "openRegisterForm"
+    | "openNotification"
+    | "isSignIn"
+    | "hiddenLiveStats"
+    | "isChatOpen"
+    | "openSidebarMobile"
+    | "resizeSidebare"
+    | "openMusicModal"
+    | "isPlaying";
+  value?: boolean;
+}
+
 const StateManegerSlice = createSlice({
   name: "stateManeger",
   initialState,
   reducers: {
-    toggleRegisterForm(state, action: PayloadAction<boolean>) {
-      state.openRegisterForm = action.payload || !state.openRegisterForm;
-    },
-    toggleNotifications(state, action: PayloadAction<boolean>) {
-      state.openNotification = action.payload;
-    },
-    toggleSigningMode(state, action: PayloadAction<boolean>) {
-      state.isSignIn = action.payload;
-    },
-    toggleLiveStats(state) {
-      state.hiddenLiveStats = !state.hiddenLiveStats;
-    },
-    chatToggleButton(state) {
-      state.isChatOpen = !state.isChatOpen;
+    toggleThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
+      const { entity, value } = action.payload;
+      state[entity] = value || !state[entity];
     },
     setCurrentUser(state, action: PayloadAction<User>) {
       state.currentUser = action.payload;
@@ -59,12 +60,6 @@ const StateManegerSlice = createSlice({
     },
     setCurrentUserIsFetched(state, action: PayloadAction<boolean>) {
       state.currentUserIsFetched = action.payload;
-    },
-    toggleSidebarMobile(state) {
-      state.openSidebarMobile = !state.openSidebarMobile;
-    },
-    toggleResizeSidebare(state) {
-      state.resizeSidebare = !state.resizeSidebare;
     },
     setRefetchUnReadedMessagesCount(state, action) {
       state.reFetchThisUserId = action.payload;
@@ -92,12 +87,6 @@ const StateManegerSlice = createSlice({
       state.openPopup.icon = null;
       state.openPopup.spinner = false;
       state.openPopup.message = "";
-    },
-    toggleMusicModal(state, action: PayloadAction<boolean>) {
-      state.openMusicModal = action.payload;
-    },
-    toggleIsPlaying(state, action: PayloadAction<boolean>) {
-      state.isPlaying = action.payload;
     },
     setCurrentSong(state, action: PayloadAction<any>) {
       state.currentSong = action.payload;
@@ -138,20 +127,11 @@ const StateManegerSlice = createSlice({
 });
 
 export const {
-  toggleRegisterForm,
-  toggleNotifications,
-  chatToggleButton,
-  toggleSigningMode,
   setCurrentUser,
   setCurrentUserIsLoading,
   setCurrentUserIsFetched,
-  toggleSidebarMobile,
   showPopup,
   resetPopup,
-  toggleResizeSidebare,
-  toggleLiveStats,
-  toggleMusicModal,
-  toggleIsPlaying,
   setCurrentSong,
   setAllMusics,
   resetCurrentSong,
@@ -161,6 +141,7 @@ export const {
   setAllUnReadedMesseges,
   openModel,
   resetModel,
+  toggleThisEntity,
 } = StateManegerSlice.actions;
 
 export default StateManegerSlice;

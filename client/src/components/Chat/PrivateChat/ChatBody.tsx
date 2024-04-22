@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IoMdSend } from "react-icons/io";
 import { TypeFrame, TypePrivateMessage, User } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import {
@@ -14,11 +13,14 @@ import Spinner from "../../Others/Spinner";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import { BiErrorAlt } from "react-icons/bi";
+import SendMessagePrivateChat from "./SendMessagePrivateChat";
 
 const ChatBody = () => {
-  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socet, onlineUsers } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const { id } = useParams();
-  const [message, setMessage] = useState<string>("");
+
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -26,39 +28,6 @@ const ChatBody = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [conversationReaded, setConversationReaded] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-
-  const body = {
-    messageText: message,
-  };
-
-  const sendMessage = async () => {
-    if (message.trim() === "") {
-      dispatch(
-        showPopup({
-          status: true,
-          message: "Enter a Message",
-          icon: <BiErrorAlt />,
-        })
-      );
-      return;
-    }
-    try {
-      const response = await makeRequest.post(`api/conversations/${id}`, body);
-      setMessage("");
-      setMessages((prev) => [...prev, response.data]);
-      socet?.emit("private-message", { reciever: id, data: response.data });
-      if (conversationReaded === true) setConversationReaded(false);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          status: true,
-          message: handleApiError(error),
-          icon: <BiErrorAlt />,
-        })
-      );
-    }
-  };
-
 
   useEffect(() => {
     const scrollToElement = () => {
@@ -181,72 +150,64 @@ const ChatBody = () => {
   useEffect(() => {
     if (socet) {
       socet.on("user-photo-frame-changed", handleAddPhotoFrame);
-      // return () => {
-      //   socet.off("user-photo-frame-changed", handleAddPhotoFrame);
-      // };
+      return () => {
+        socet.off("user-photo-frame-changed", handleAddPhotoFrame);
+      };
     }
   }, [socet]);
 
-  return loading ? (
-    <div className="h-full flex items-center justify-center">
-      <Spinner className="w-7 h-7 border-[3px]" />
-    </div>
-  ) : (
-    <>
-      {error && <div className="w-full h-full">error: {error}</div>}
-      {!error && user && (
-        <div className="w-full flex flex-col items-center h-full gap-2 pb-3">
-          <div className="flex items-center gap-4 w-full justify-center bg-[#1f1f2e9a] py-2 border border-gray-700">
-            <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-              <UserImage user={user} />
-            </div>
-            <span className="text-sm text-[#62e66d] font-[900]">
-              {user.name}
-            </span>
-          </div>
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <Spinner className="w-7 h-7 border-[3px]" />
+      </div>
+    );
+  }
+  if (error) {
+    return <div className="w-full h-full">error: {error}</div>;
+  }
 
-          <div className="flex flex-col items-center w-full h-full gap-2 overflow-scroll scrollbar-none p-1 pb-2 ">
-            {messages &&
-              messages.length > 0 &&
-              messages.map((msg, index) => (
-                <PrivateMessageItem
-                  key={msg._id}
-                  messages={messages}
-                  message={msg}
-                  index={index}
-                  lastMessageRef={lastMessageRef}
-                  conversationReaded={conversationReaded}
-                />
-              ))}
+  if (!loading && !error) {
+    return (
+      <div className="w-full flex flex-col items-center h-full gap-1 pb-1 bg-[#201a29]">
+        <div className="flex items-center gap-4 w-full justify-center bg-[#1f1f2e9a] py-2 border border-gray-700">
+          <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
+            <UserImage user={user} />
           </div>
-          <div className="w-full flex items-center gap-3 sm:gap-2 ">
-            <input
-              onBlur={(e) => {
-                if (
-                  e.relatedTarget ===
-                  document.getElementById("private-chat-send-button")
-                ) {
-                  e.target.focus();
-                }
-              }}
-              onChange={(e) => setMessage(e.target.value)}
-              value={message}
-              name="message"
-              className="outline-none rounded-md w-full py-3 px-4  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm "
-              placeholder="Enter a message"
-            />
-            <button
-              id="private-chat-send-button"
-              className="bg-[#3c3b72] rounded-md flex items-center justify-center sm:px-3 px-5 py-3"
-              onClick={sendMessage}
-            >
-              <IoMdSend className="text-xl sm:text-md" />
-            </button>
-          </div>
+          <span className=" flex flex-col items-center ">
+            <span className="text-sm text-[#62e66d] font-[900]">
+              {user?.name}
+            </span>
+            <span className="sm:text-[9px] text-sm tracking-wider font-[200] xs:-mt-1 text-[#c5bbbb]">
+              {onlineUsers.includes(id || "") ? "(online)" : "(offline)"}
+            </span>
+          </span>
         </div>
-      )}
-    </>
-  );
+
+        <div className="flex flex-col items-center w-full gap-2 sm:gap-[3px] overflow-auto lg:scrollbar-thin grow">
+          {messages &&
+            messages.length > 0 &&
+            messages.map((msg, index) => (
+              <PrivateMessageItem
+                key={msg._id}
+                messages={messages}
+                message={msg}
+                index={index}
+                lastMessageRef={lastMessageRef}
+                conversationReaded={conversationReaded}
+              />
+            ))}
+        </div>
+        <div className="w-full">
+          <SendMessagePrivateChat
+            setConversationReaded={setConversationReaded}
+            conversationReaded={conversationReaded}
+            setMessages={setMessages}
+          />
+        </div>
+      </div>
+    );
+  }
 };
 
 export default ChatBody;

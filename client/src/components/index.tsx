@@ -21,7 +21,7 @@ import Spinner from "./Others/Spinner";
 import ChatBody from "./Chat/PrivateChat/ChatBody";
 import Welcome from "./Chat/PrivateChat/Welcome";
 import ChatHeader from "./Chat/PublicChat/Common/ChatHeader";
-import Friend from "./Chat/PrivateChat/Friend";
+import People from "./Chat/PrivateChat/People";
 import MentionListOfUsers from "./Chat/PublicChat/Common/MentionListOfUsers";
 import Message from "./Chat/PublicChat/Common/Message";
 import SendMessage from "./Chat/PublicChat/Common/SendMessage";
@@ -36,7 +36,7 @@ export {
   ChatHeader,
   ChatBody,
   Welcome,
-  Friend,
+  People,
   Message,
   SendMessage,
   OpenPopup,

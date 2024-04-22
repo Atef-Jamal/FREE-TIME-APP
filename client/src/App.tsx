@@ -22,7 +22,6 @@ const Playing = lazy(() => import("./Pages/Playing"));
 const Protected = lazy(() => import("./Pages/Protected"));
 const OffersSignUp = lazy(() => import("./Pages/OffersSignUp"));
 const Musics = lazy(() => import("./Pages/Musics"));
-
 import { MobileChat, ChatBody, Error } from "./components";
 
 const router = createBrowserRouter([

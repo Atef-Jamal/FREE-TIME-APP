@@ -31,6 +31,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #e9e0e0;
 }
+.highlight {
+  background-color: yellow;
+}
 
 .outlete {
   width: calc(100% - 250px);

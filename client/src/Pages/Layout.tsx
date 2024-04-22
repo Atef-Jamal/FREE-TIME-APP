@@ -6,6 +6,7 @@ import {
   setOnlineUsers,
   setSocet,
   showPopup,
+  toggleThisEntity,
 } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import Model from "../components/Others/Model";
@@ -35,6 +36,7 @@ const Layout = () => {
   const location = useLocation();
 
   const paramValue = searchParams.get("redirectedfrom");
+  const searchValue = searchParams.get("ref");
 
   useEffect(() => {
     const establishSocet = () => {
@@ -118,6 +120,12 @@ const Layout = () => {
 
     fechSongs();
   }, []);
+
+  useEffect(() => {
+    if (searchValue && !currentUser) {
+      dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
+    }
+  }, [dispatch, searchValue, currentUser]);
 
   return (
     <div className="flex flex-col items-center justify-center relative">

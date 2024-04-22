@@ -2,7 +2,7 @@ import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { FcMusic } from "react-icons/fc";
 import { TypeMusicNotify } from "../../../types";
 import { Link } from "react-router-dom";
-import { toggleNotifications } from "../../../context/StateManeger";
+import { toggleThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch } from "../../../context/Hooks";
 
 type PropType = Omit<TypeMusicNotify, "_id" | "isRead" | "type">;
@@ -31,7 +31,9 @@ const BuyMusicNotify = ({ musicTitle, createdAt, price }: PropType) => {
       <Link
         to={"/myprofile?to=musics"}
         onClick={() => {
-          dispatch(toggleNotifications(false));
+          dispatch(
+            toggleThisEntity({ entity: "openNotification", value: false })
+          );
         }}
         className="text-sm bg-[#414a77ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
       >

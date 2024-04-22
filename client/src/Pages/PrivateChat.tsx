@@ -1,156 +1,63 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
-import { BsSearch } from "react-icons/bs";
-import { MdMenu } from "react-icons/md";
-import { IoClose, IoLockClosed } from "react-icons/io5";
-import { User } from "../types";
-import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { showPopup, toggleRegisterForm } from "../context/StateManeger";
-import { handleApiError, makeRequest } from "../utils";
+import { useAppSelector } from "../context/Hooks";
 import Welcome from "../components/Chat/PrivateChat/Welcome";
-import Friend from "../components/Chat/PrivateChat/Friend";
 import Spinner from "../components/Others/Spinner";
-import { BiErrorAlt } from "react-icons/bi";
+import ChatSidbare from "../components/Chat/PrivateChat/ChatSidbare";
 
 const PrivateChat = () => {
-  const { currentUser, hiddenLiveStats, socet } = useAppSelector(
+  const [openSidbare, setOpenSidbare] = useState<boolean>(true);
+  const { currentUser, currentUserIsFetched } = useAppSelector(
     (state) => state.stateManeger
   );
-  const [resized, setResized] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [users, setUsers] = useState<User[]>([]);
-  const param = useParams();
-  const dispatch = useAppDispatch();
+  const { id } = useParams();
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await makeRequest.get("api/users");
-        setUsers(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllUsers();
-  }, []);
-
-  const handleAddUser = (user: User) => {
-    setUsers((prev) => [...prev, user]);
+  const toggleSidbare = () => {
+    setOpenSidbare((prev) => !prev);
   };
 
-  useEffect(() => {
-    if (socet) {
-      socet.on("new-user-register", handleAddUser);
-      return () => {
-        socet.off("new-user-register", handleAddUser);
-      };
-    }
-  }, [socet]);
+  const handleOpenSidbare = () => {
+    if (openSidbare) return;
+    setOpenSidbare(true);
+  };
 
-  return currentUser ? (
+  if (!currentUserIsFetched) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <Spinner className="w-12 h-12 border-3" />
+      </div>
+    );
+  }
+  if (!currentUser) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        Sign In First
+      </div>
+    );
+  }
+
+  return (
     <div
       style={{
-        height: hiddenLiveStats
-          ? `${
-              window.screen.width < 867
-                ? "calc(100dvh - 123px)"
-                : "calc(100dvh - 80px)"
-            } `
-          : `${
-              window.screen.width < 867
-                ? "calc(100dvh - 165px)"
-                : "calc(100dvh - 147px)"
-            }`,
+        height:
+          window.innerWidth <= 867
+            ? `calc(100dvh - 163px)`
+            : "calc(100dvh - 140px)",
       }}
-      className="sticky top-0 h-full w-full bg-[#202233] flex items-center justify-center"
+      className=" absolute w-[100%] right-0 flex items-center justify-center border"
     >
-      <div
-        className={`relative overflow-hidden flex items-center sm:w-full w-[80%] h-full bg-[#1c1031c9]`}
-      >
+      <div className="lg:w-full w-full relative flex items-center h-full overflow-hidden">
         <div
-          className={`transition-all ${
-            resized ? "w-[50px]" : "xl:min-w-[280px] min-w-[380px]"
-          }  lg:absolute top-0 left-0 z-[1] flex flex-col items-center gap-6 h-full bg-[#10102c] rounded-sm border-r border-b border-gray-600`}
+          className={`transition-all lg:absolute top-0 left-0 w-[350px] sm:w-[250px] h-full z-[1] ${
+            openSidbare ? "lg:translate-x-[0%]" : "lg:-translate-x-[100%]"
+          } `}
         >
-          <div
-            className={
-              "flex items-center justify-between gap-2 w-full py-3 px-2"
-            }
-          >
-            {!resized && (
-              <p className="ml-3 font-extrabold text-2xl lg:text-xl xl:text-[20px] text-[#f19c9c] tracking-wider whitespace-nowrap overflow-hidden ">
-                CHATING NOW
-              </p>
-            )}
-            <span className=" " onClick={() => setResized((prev) => !prev)}>
-              {resized ? (
-                <MdMenu className={`hidden xl:block text-3xl`} />
-              ) : (
-                <IoClose className={`hidden xl:block text-3xl`} />
-              )}
-            </span>
-          </div>
-          <div
-            className={`${
-              resized ? "w-0 overflow-hidden" : "w-full"
-            } relative text-center `}
-          >
-            <input
-              type="text"
-              id="searc"
-              autoComplete="off"
-              className="bg-[#302742] rounded-md  font-bold w-[95%] mx-auto placeholder:text-gray-400  placeholder:font-bold text-gray-300 pl-10 pr-2 py-3 xs:py-2 outline-none"
-              placeholder="Search..."
-            />
-            <div className="absolute top-3 left-5">
-              <BsSearch className="text-xl xs:text-lg" />
-            </div>
-          </div>
-          <div
-            className={`${
-              resized ? "-translate-x-[120px]" : ""
-            } flex flex-col items-center gap-2 w-[95%] mx-auto h-[57dvh] overflow-scroll scrollbar-none`}
-          >
-            {loading && <Spinner />}
-            {!loading &&
-              users &&
-              users?.map((user: User) => {
-                if (user._id === currentUser?._id) return;
-                return (
-                  <Friend
-                    key={user._id}
-                    userInfo={user}
-                    setResized={setResized}
-                  />
-                );
-              })}
-          </div>
+          <ChatSidbare toggleSidbare={toggleSidbare} />
         </div>
-        <div
-          className={`xl:max-w-full mx-auto max-w-[50%] xl:px-2 px-2 lg:pl-[55px] h-full flex flex-grow flex-col items-center pt-3 pr-3 bg-[#2f273d]`}
-        >
-          {param.id ? <Outlet /> : <Welcome setResized={setResized} />}
+        <div className="h-full grow max-w-[800px] mx-auto">
+          {id ? <Outlet /> : <Welcome handleOpenSidbare={handleOpenSidbare} />}
         </div>
       </div>
-    </div>
-  ) : (
-    <div className="h-full flex flex-col items-center justify-center  text-4xl sm:text-2xl font-bold tracking-wider gap-5 px-3">
-      <IoLockClosed className="opacity-50 text-4xl" />
-      <button
-        onClick={() => dispatch(toggleRegisterForm(true))}
-        className="text-[#ceb545] underline"
-      >
-        Login or Register to Unlock Chat
-      </button>
     </div>
   );
 };

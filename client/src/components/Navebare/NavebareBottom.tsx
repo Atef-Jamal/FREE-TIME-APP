@@ -5,7 +5,7 @@ import { MdLeaderboard } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
-import { toggleSidebarMobile } from "../../context/StateManeger";
+import { toggleThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
 const NavebareBottom = () => {
@@ -20,7 +20,7 @@ const NavebareBottom = () => {
         openSidebarMobile === true &&
         !element?.contains(e.target)
       ) {
-        dispatch(toggleSidebarMobile());
+        dispatch(toggleThisEntity({ entity: "openSidebarMobile" }));
       }
     }
     document.addEventListener("click", toggle);
@@ -34,7 +34,7 @@ const NavebareBottom = () => {
           className="text-2xl"
           onClick={(e: React.MouseEvent<SVGElement, MouseEvent>) => {
             e.stopPropagation();
-            dispatch(toggleSidebarMobile());
+            dispatch(toggleThisEntity({ entity: "openSidebarMobile" }));
           }}
         />
       </li>

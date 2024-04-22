@@ -1,11 +1,10 @@
-import React from "react";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
 interface TypeProps {
-  setResized: React.Dispatch<React.SetStateAction<boolean>>;
+  handleOpenSidbare: () => void;
 }
 
-const Welcome = ({ setResized }: TypeProps) => {
+const Welcome = ({ handleOpenSidbare }: TypeProps) => {
   return (
     <div className="w-full h-full flex flex-col gap-3 items-center justify-center">
       <IoChatboxEllipsesOutline className="text-6xl" />
@@ -16,10 +15,10 @@ const Welcome = ({ setResized }: TypeProps) => {
         WITH MORE SECURITY AND PRIVACY AND MuCH MORE
         <br />
         <button
-          onClick={() => setResized(false)}
+          onClick={handleOpenSidbare}
           className=" text-lg text-[#9063e481] font-extrabold underline"
         >
-          Select a Friend
+          Select a User
         </button>
       </p>
     </div>

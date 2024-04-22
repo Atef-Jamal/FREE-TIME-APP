@@ -5,7 +5,7 @@ import { BsArrowDownShort } from "react-icons/bs";
 import {
   setAllUnReadedMesseges,
   showPopup,
-  toggleSidebarMobile,
+  toggleThisEntity,
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
@@ -55,7 +55,9 @@ const MobileSidebare = () => {
           FREE<span className="text-2xl text-[#d0ddc7] font-bold">TIME</span>
         </span>
         <span
-          onClick={() => dispatch(toggleSidebarMobile())}
+          onClick={() =>
+            dispatch(toggleThisEntity({ entity: "openSidebarMobile" }))
+          }
           className="bg-[#489b2f] p-[4px] rounded-sm"
         >
           <RiCloseFill style={{ fontSize: "20px" }} />

@@ -5,11 +5,7 @@ import { GrGithub } from "react-icons/gr";
 import { FaPauseCircle } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { IoMdPlay } from "react-icons/io";
-import {
-  showPopup,
-  toggleSigningMode,
-  toggleRegisterForm,
-} from "../../../context/StateManeger";
+import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
 import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
 import { validation } from "../../../context/functions";
 import { storage } from "../../../firebase";
@@ -314,7 +310,9 @@ const RegisterationForm = () => {
     <div className="fixed top-0 left-0 w-full h-[100dvh] flex items-center justify-center z-[5] ">
       <div
         onClick={() => {
-          dispatch(toggleRegisterForm(false));
+          dispatch(
+            toggleThisEntity({ entity: "openRegisterForm", value: false })
+          );
         }}
         className="fixed top-0 left-0 w-full h-full bg-[#00000075] sm:hidden "
       ></div>
@@ -325,7 +323,7 @@ const RegisterationForm = () => {
           </span>
           <div className="flex gap-5">
             <button
-              onClick={() => dispatch(toggleSigningMode(true))}
+              onClick={() => dispatch(toggleThisEntity({entity: "isSignIn", value: true}))}
               className={`${
                 isSignIn
                   ? " border-b-[#fff]  text-[#f8dcdc] "
@@ -337,7 +335,7 @@ const RegisterationForm = () => {
 
             <button
               onClick={() => {
-                dispatch(toggleSigningMode(false));
+                dispatch(toggleThisEntity({entity: "isSignIn", value: false}))
               }}
               className={`${
                 !isSignIn
@@ -350,7 +348,9 @@ const RegisterationForm = () => {
           </div>
           <button
             onClick={() => {
-              dispatch(toggleRegisterForm(false));
+              dispatch(
+                toggleThisEntity({ entity: "openRegisterForm", value: false })
+              );
             }}
             className="w-8 h-6 flex items-center justify-center font-bold bg-[#43a153] rounded-md"
           >

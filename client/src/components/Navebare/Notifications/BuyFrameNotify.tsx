@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FcPaid } from "react-icons/fc";
-import { toggleNotifications } from "../../../context/StateManeger";
+import { toggleThisEntity } from "../../../context/StateManeger";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch } from "../../../context/Hooks";
 import { TypeBuyFrameNotify } from "../../../types";
@@ -25,7 +25,11 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
         congratulation! for buying
         <Link
           to={"/myprofile?to=frames"}
-          onClick={() => dispatch(toggleNotifications(false))}
+          onClick={() =>
+            dispatch(
+              toggleThisEntity({ entity: "openNotification", value: false })
+            )
+          }
           className="text-sm text-[#696cf3] mx-1 underline "
         >
           {frame.title}
@@ -39,7 +43,9 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
       <Link
         to={"/myprofile?to=frames"}
         onClick={() => {
-          dispatch(toggleNotifications(false));
+          dispatch(
+            toggleThisEntity({ entity: "openNotification", value: false })
+          );
         }}
         className="text-sm bg-[#3d4675ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
       >

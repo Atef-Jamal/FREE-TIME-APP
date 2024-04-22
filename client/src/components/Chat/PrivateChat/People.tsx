@@ -1,5 +1,5 @@
-import { SetStateAction, useEffect, useState } from "react";
-import UserImage from "../../../components/Others/UserImage";
+import { useEffect, useState } from "react";
+import UserImage from "../../Others/UserImage";
 import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
@@ -11,13 +11,7 @@ import {
 import { handleApiError, makeRequest } from "../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 
-const Friend = ({
-  userInfo,
-  setResized,
-}: {
-  userInfo: User;
-  setResized: React.Dispatch<SetStateAction<boolean>>;
-}) => {
+const People = ({ userInfo }: { userInfo: User }) => {
   const { socet, reFetchThisUserId, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
@@ -120,9 +114,7 @@ const Friend = ({
 
   return (
     <NavLink
-      onClick={() => {
-        if (window.innerWidth < 1131) setResized(true);
-      }}
+      onClick={() => {}}
       to={`/privatechat/${user._id}`}
       className={({ isActive }) =>
         `${
@@ -180,17 +172,4 @@ const Friend = ({
   );
 };
 
-export default Friend;
-
-// const FriendSkeleton = () => (
-//   <div className="w-full flex flex-col gap-2 sm:gap-1 p-2 sm:p-1">
-//     <div className="flex items-center gap-2">
-//       <Skeleton className="w-9 h-9 sm:w-7 sm:h-7 rounded-sm" />
-//       <div className="flex flex-col items-center gap-1">
-//         <Skeleton className="w-[100px] h-1 rounded-sm" />
-//         <Skeleton className="w-[60px] h-1 rounded-sm" />
-//       </div>
-//     </div>
-//     <Skeleton className="w-[90%] h-2 rounded-sm" />
-//   </div>
-// );
+export default People;

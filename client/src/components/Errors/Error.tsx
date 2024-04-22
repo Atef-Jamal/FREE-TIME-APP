@@ -1,8 +1,5 @@
 import { FaExclamationTriangle } from "react-icons/fa";
-import {
-  toggleRegisterForm,
-  toggleSigningMode,
-} from "../../context/StateManeger";
+import { toggleThisEntity } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 const Error = ({ generalError }: { generalError?: boolean }) => {
   const dispatch = useAppDispatch();
@@ -16,8 +13,10 @@ const Error = ({ generalError }: { generalError?: boolean }) => {
           <p className="text-xl font-bold text-[#63f337]">
             <button
               onClick={() => {
-                dispatch(toggleRegisterForm(true));
-                dispatch(toggleSigningMode(true));
+                dispatch(
+                  toggleThisEntity({ entity: "openRegisterForm", value: true })
+                );
+                dispatch(toggleThisEntity({ entity: "isSignIn", value: true }));
               }}
               className="underline text-[#fd6d6d]"
             >
@@ -30,7 +29,9 @@ const Error = ({ generalError }: { generalError?: boolean }) => {
             <button
               className="underline text-[#fd6d6d]"
               onClick={() => {
-                dispatch(toggleRegisterForm(true));
+                dispatch(
+                  toggleThisEntity({ entity: "openRegisterForm", value: true })
+                );
               }}
             >
               Sign Up

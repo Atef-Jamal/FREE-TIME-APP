@@ -135,7 +135,6 @@ export interface TypeInitialState {
     title: string;
     album: { cover: string };
   } | null;
-  token: string | null;
   socet: Socket | null;
   onlineUsers: string[];
   reFetchThisUserId: string;

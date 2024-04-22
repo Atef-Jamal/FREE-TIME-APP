@@ -3,7 +3,7 @@ import { empty } from "../../../assets";
 import { CgCloseR } from "react-icons/cg";
 import { MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { showPopup, toggleNotifications } from "../../../context/StateManeger";
+import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
 import { TypeNotifications } from "../../../types";
 import ReferrerNotify from "./ReferrerNotify";
 import BuyFrameNotify from "./BuyFrameNotify";
@@ -68,7 +68,11 @@ const NotificationMenu = ({
   return (
     <>
       <div
-        onClick={() => dispatch(toggleNotifications(false))}
+        onClick={() =>
+          dispatch(
+            toggleThisEntity({ entity: "openNotification", value: false })
+          )
+        }
         className="fixed top-[75px] sm:top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#01010779] "
       ></div>
 
@@ -78,7 +82,11 @@ const NotificationMenu = ({
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
           </h1>
           <CgCloseR
-            onClick={() => dispatch(toggleNotifications(false))}
+            onClick={() =>
+              dispatch(
+                toggleThisEntity({ entity: "openNotification", value: false })
+              )
+            }
             className="text-2xl bg-[#222]"
           />
         </div>

@@ -5,8 +5,7 @@ import {
   setCurrentSong,
   setCurrentUser,
   showPopup,
-  toggleIsPlaying,
-  toggleMusicModal,
+  toggleThisEntity,
 } from "../../context/StateManeger";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
@@ -29,29 +28,31 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const location = useLocation();
 
   const handleClick = (song: any) => {
-    dispatch(toggleMusicModal(true));
+    dispatch(toggleThisEntity({ entity: "openMusicModal", value: true }));
     const audioElement = document.getElementById("audioid") as HTMLAudioElement;
 
     if (currentSong?.id !== song.id) {
       if (audioElement.played) {
         audioElement.pause();
         audioElement.src = song.preview;
-        dispatch(toggleIsPlaying(true));
+        dispatch(toggleThisEntity({entity: 'isPlaying', value: true}));
         dispatch(setCurrentSong(song));
         audioElement.play();
       } else {
         audioElement.src = song.preview;
-        dispatch(toggleIsPlaying(true));
+        dispatch(toggleThisEntity({entity: 'isPlaying', value: true}));
+
         dispatch(setCurrentSong(song));
         audioElement.play();
       }
     } else {
       if (isPlaying) {
         audioElement.pause();
-        dispatch(toggleIsPlaying(false));
+        dispatch(toggleThisEntity({entity: 'isPlaying', value: false}));
+
       } else {
         audioElement.play();
-        dispatch(toggleIsPlaying(true));
+        dispatch(toggleThisEntity({entity: 'isPlaying', value: true}));
       }
     }
   };

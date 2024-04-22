@@ -6,11 +6,7 @@ import { IoPlaySkipForward } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { avatar } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import {
-  resetCurrentSong,
-  toggleIsPlaying,
-  toggleMusicModal,
-} from "../../context/StateManeger";
+import { resetCurrentSong, toggleThisEntity } from "../../context/StateManeger";
 import { MdClose } from "react-icons/md";
 
 const MusicPlayer = () => {
@@ -24,22 +20,22 @@ const MusicPlayer = () => {
   const dispatch = useAppDispatch();
   const handlePlay = () => {
     const audioElement = document.getElementById("audioid") as HTMLAudioElement;
-    dispatch(toggleIsPlaying(true));
+    dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
     audioElement.play();
   };
 
   const handlePause = () => {
     const audioElement = document.getElementById("audioid") as HTMLAudioElement;
-    dispatch(toggleIsPlaying(false));
+    dispatch(toggleThisEntity({ entity: "isPlaying", value: false }));
     audioElement.pause();
   };
 
   const handleClose = () => {
     const audioElement = document.getElementById("audioid") as HTMLAudioElement;
     audioElement.src = "";
-    dispatch(toggleIsPlaying(false));
+    dispatch(toggleThisEntity({ entity: "isPlaying", value: false }));
     dispatch(resetCurrentSong());
-    dispatch(toggleMusicModal(false));
+    dispatch(toggleThisEntity({ entity: "openMusicModal", value: false }));
   };
 
   const formatTime = (timeInSeconds: number) => {
@@ -135,7 +131,7 @@ const MusicPlayer = () => {
         </div>
         <audio
           onEnded={() => {
-            dispatch(toggleIsPlaying(false));
+            dispatch(toggleThisEntity({entity: 'isPlaying', value: false}));
           }}
           id="audioid"
           src={undefined}

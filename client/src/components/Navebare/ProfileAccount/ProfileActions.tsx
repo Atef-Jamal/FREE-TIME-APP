@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import {
-  toggleNotifications,
   showPopup,
   openModel,
+  toggleThisEntity,
 } from "../../../context/StateManeger";
 import { handleApiError, makeRequest } from "../../../utils";
 import notificationSoundSrc from "../../../assets/notificationSound.wav";
@@ -105,9 +105,13 @@ const ProfileActions = () => {
           <div
             onClick={() => {
               if (!openNotification) {
-                dispatch(toggleNotifications(true));
+                dispatch(
+                  toggleThisEntity({ entity: "openNotification", value: true })
+                );
               } else {
-                dispatch(toggleNotifications(false));
+                dispatch(
+                  toggleThisEntity({ entity: "openNotification", value: false })
+                );
               }
             }}
             className="flex items-center justify-center relative cursor-pointer sm:h-[38px] h-[45px] w-[45px] rounded-md bg-[#3a3e5877]"

@@ -1,9 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { GoMention } from "react-icons/go";
-import {
-  chatToggleButton,
-  toggleNotifications,
-} from "../../../context/StateManeger";
+import { toggleThisEntity } from "../../../context/StateManeger";
 import { TypeMentionNotify } from "../../../types";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
@@ -49,9 +46,11 @@ const MentionNotify = ({
             : `/chat?messageid=${messageLocation}`
         }
         onClick={() => {
-          dispatch(toggleNotifications(false));
+          dispatch(
+            toggleThisEntity({ entity: "openNotification", value: false })
+          );
           if (!isChatOpen) {
-            dispatch(chatToggleButton());
+            dispatch(toggleThisEntity({ entity: "isChatOpen" }));
           }
         }}
         className="text-sm bg-[#364072ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
