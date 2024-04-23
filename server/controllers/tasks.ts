@@ -162,7 +162,6 @@ export const completingGame = async (req: Request, res: Response) => {
     await game.save();
     return res.status(200).json({ message: "passed sucessfully" });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "an error occurred" });
   }
 };
