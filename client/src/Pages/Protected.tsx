@@ -25,7 +25,7 @@ const Protected = () => {
     );
   }
 
-  return <Outlet />;
+  return <div className="h-full w-full"><Outlet /> </div>;
 };
 
 export default Protected;

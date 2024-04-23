@@ -105,7 +105,7 @@ const QuizApp = ({ taskApp }: TypeProps) => {
   };
 
   return (
-    <div className="h-full flex items-center justify-center border">
+    <div className="h-full flex items-center justify-center">
       {loading && (
         <div className="flex items-center gap-4 sm:gap-2">
           <ImSpinner3 className="text-4xl sm:text-2xl animate-spin" />
