@@ -44,10 +44,10 @@ const PrivateChat = () => {
             ? `calc(100dvh - 123px)`
             : "calc(100dvh - 75px)"
           : window.innerWidth <= 867
-          ? `calc(100dvh - 163px)`
+          ? `calc(100dvh - 165px)`
           : "calc(100dvh - 140px)",
       }}
-      className=" absolute w-full right-0 flex items-center justify-center border"
+      className=" absolute w-full right-0 flex items-center justify-center"
     >
       <div className="lg:w-full w-full relative flex items-center h-full overflow-hidden">
         <div
