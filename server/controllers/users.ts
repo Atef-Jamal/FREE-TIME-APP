@@ -46,6 +46,31 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+export const userVisited = async (req: Request, res: Response) => {
+  const currentUserId = req.user._id;
+  const userVisitedId = req.params.userId;
+  try {
+    const currentUser = await User.findById(currentUserId);
+    const userVisited = await User.findById(userVisitedId);
+
+    if (!currentUser || !userVisited) {
+      return res.status(404).json({ error: "an Error occurred" });
+    }
+
+    userVisited.usersVisitedMe.push({
+      _id: currentUserId,
+      name: currentUser.name,
+      profilPicture: currentUser.profilePicture,
+      createdAt: new Date(),
+    });
+
+    await userVisited.save();
+    return res.status(200).json({ message: "sucess" });
+  } catch (error) {
+    return res.status(404).json({ error: "an Error occurred" });
+  }
+};
+
 export const changeUserPhotoFrame = async (req: Request, res: Response) => {
   const { frameId } = req.params;
   const currentUserId = req.user._id;
@@ -123,5 +148,29 @@ export const collectDailyReward = async (req: Request, res: Response) => {
     return res
       .status(404)
       .json({ error: "can't collect a Reward, an error occurred" });
+  }
+};
+
+export const getWhoVisitMe = async (req: Request, res: Response) => {
+  const currentUserId = req.user._id;
+  try {
+    const user = await User.findById(currentUserId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
+
+    if (user.points < 5) {
+      return res.status(404).json({ error: "your points is not Enough" });
+    }
+
+    user.points = user.points - 5;
+
+    const savedUser = await user.save();
+    return res
+      .status(200)
+      .json({ users: savedUser.usersVisitedMe, points: savedUser.points });
+  } catch (error) {
+    return res.status(404).json({ error: "an error occurred" });
   }
 };

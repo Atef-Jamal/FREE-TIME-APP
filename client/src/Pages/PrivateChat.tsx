@@ -7,7 +7,7 @@ import ChatSidbare from "../components/Chat/PrivateChat/ChatSidbare";
 
 const PrivateChat = () => {
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
-  const { currentUser, currentUserIsFetched } = useAppSelector(
+  const { currentUser, currentUserIsFetched, hiddenLiveStats } = useAppSelector(
     (state) => state.stateManeger
   );
   const { id } = useParams();
@@ -39,12 +39,15 @@ const PrivateChat = () => {
   return (
     <div
       style={{
-        height:
-          window.innerWidth <= 867
-            ? `calc(100dvh - 163px)`
-            : "calc(100dvh - 140px)",
+        height: hiddenLiveStats
+          ? window.innerWidth <= 867
+            ? `calc(100dvh - 123px)`
+            : "calc(100dvh - 75px)"
+          : window.innerWidth <= 867
+          ? `calc(100dvh - 163px)`
+          : "calc(100dvh - 140px)",
       }}
-      className=" absolute w-[100%] right-0 flex items-center justify-center border"
+      className=" absolute w-full right-0 flex items-center justify-center border"
     >
       <div className="lg:w-full w-full relative flex items-center h-full overflow-hidden">
         <div

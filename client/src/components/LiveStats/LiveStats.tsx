@@ -95,7 +95,7 @@ const LiveStats = () => {
     >
       <div
         onClick={() => setToggleLanguage(!toggleLanguage)}
-        className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md "
+        className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md my-1"
       >
         <MdLanguage />
         <IoIosArrowDown />

@@ -40,7 +40,7 @@ const PrivateMessageItem = ({
         className={`relative max-w-[70%] xs:max-w-full p-1 flex flex-col ${
           message.sender._id === currentUser?._id
             ? "bg-[#141722] "
-            : "bg-[#303236] "
+            : "bg-[#343633] "
         } rounded-sm`}
       >
         <div
@@ -54,9 +54,8 @@ const PrivateMessageItem = ({
             {date}
           </span>
         </div>
-        <div className="w-full flex items-end  text-[#5fc1df] text-xs pt-1">
-          {/* {message.message} */}
-          cjsh sjhf ksjdhfks kshdfh
+        <div className="w-full flex items-end  text-[#5fc1df] text-xs pt-1 pb-2">
+          {message.message}
           {conversationReaded &&
             index === messages.length - 1 &&
             message.sender._id === currentUser?._id && (

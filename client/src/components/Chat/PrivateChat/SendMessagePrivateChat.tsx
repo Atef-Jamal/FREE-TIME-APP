@@ -55,14 +55,14 @@ const SendMessagePrivateChat = ({
   return (
     <div className="w-full flex items-center gap-3 sm:gap-1">
       <input
-        onBlur={(e) => {
-          if (
-            e.relatedTarget ===
-            document.getElementById("private-chat-send-button")
-          ) {
-            e.target.focus();
-          }
-        }}
+        // onBlur={(e) => {
+        //   if (
+        //     e.relatedTarget ===
+        //     document.getElementById("private-chat-send-button")
+        //   ) {
+        //     e.target.focus();
+        //   }
+        // }}
         onChange={(e) => setMessage(e.target.value)}
         value={message}
         name="message"

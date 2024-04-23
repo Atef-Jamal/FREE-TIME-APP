@@ -47,43 +47,6 @@ body {
   background-size: cover;
 }
 
-table.leaderboard {
-  width: 95%;
-  margin: 0 auto;
-  border-collapse: separate;
-  border-spacing: 0 6px;
-  overflow: auto;
-}
-
-table.leaderboard thead th {
-  height: 60px;
-}
-
-table.leaderboard td:nth-child(1) {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-table.leaderboard td:nth-child(4) {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-table.leaderboard th {
-  border-radius: 5px;
-}
-
-table.leaderboard tbody tr td {
-  background-color: #2c2c44;
-  height: 60px;
-  max-width: 60px;
-  overflow-wrap: break-word;
-}
-
-table.leaderboard tbody tr td {
-  text-align: center;
-}
-
 .select__languages::before {
   content: "";
   position: absolute;

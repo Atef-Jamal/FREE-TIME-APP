@@ -169,8 +169,8 @@ const ChatBody = () => {
 
   if (!loading && !error) {
     return (
-      <div className="w-full flex flex-col items-center h-full gap-1 pb-1 bg-[#201a29]">
-        <div className="flex items-center gap-4 w-full justify-center bg-[#1f1f2e9a] py-2 border border-gray-700">
+      <div className="w-full flex flex-col items-center h-full gap-1 pb-1 bg-[#332342]">
+        <div className="flex items-center gap-4 sm:gap-2 w-full justify-center bg-[#1f1f2e9a]  border border-gray-700">
           <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
             <UserImage user={user} />
           </div>

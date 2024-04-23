@@ -112,6 +112,12 @@ export interface User {
   mySongs: string[];
   completedTasks: string[];
   dailyReward: { week: number; days: TypeDailyReward[] };
+  usersVisitedMe: {
+    _id: string;
+    createdAt: Date;
+    profilPicture: string;
+    name: string;
+  }[];
 }
 
 export interface TypeInitialState {

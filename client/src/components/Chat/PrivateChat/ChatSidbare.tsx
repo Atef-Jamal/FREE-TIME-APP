@@ -54,7 +54,7 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
         onClick={toggleSidbare}
-        className="hidden lg:flex items-center justify-center  absolute top-0 -right-9 w-9 h-12 bg-[#131129] rounded-sm"
+        className="hidden lg:flex items-center justify-center  absolute top-0 -right-9 w-9 h-9 bg-[#5353a8] rounded-sm"
       >
         <MdKeyboardDoubleArrowRight className="text-2xl" />
       </span>

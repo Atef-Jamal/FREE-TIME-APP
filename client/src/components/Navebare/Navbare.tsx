@@ -77,9 +77,9 @@ const Navbare = () => {
       {!currentUserIsLoading && !currentUser && currentUserIsFetched && (
         <RegisterButtons />
       )}
+      {openRegisterForm && !currentUser && <RegisterationForm />}
       {currentUserIsLoading && <ProfileSkeleton />}
       {currentUser && <ProfileActions />}
-      {openRegisterForm && !currentUser && <RegisterationForm />}
     </div>
   );
 };
