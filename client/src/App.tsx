@@ -19,7 +19,7 @@ const MarketPlace = lazy(() => import("./Pages/MarketPlace"));
 const Games = lazy(() => import("./Pages/Games"));
 const PrivateChat = lazy(() => import("./Pages/PrivateChat"));
 const Playing = lazy(() => import("./Pages/Playing"));
-const Protected = lazy(() => import("./Pages/Protected"));
+// const Protected = lazy(() => import("./Pages/Protected"));
 const OffersSignUp = lazy(() => import("./Pages/OffersSignUp"));
 const Musics = lazy(() => import("./Pages/Musics"));
 import { MobileChat, ChatBody, Error } from "./components";
@@ -196,11 +196,11 @@ const router = createBrowserRouter([
       },
       {
         path: "playing",
-        element: (
-          <Suspense>
-            <Protected />
-          </Suspense>
-        ),
+        // element: (
+        //   <Suspense>
+        //     <Protected />
+        //   </Suspense>
+        // ),
         children: [
           {
             path: ":id",
