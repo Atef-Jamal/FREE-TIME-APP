@@ -12,7 +12,7 @@ const taskSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,
+      default: "",
     },
     name: {
       type: String,

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types";
 import { setCurrentUser } from "../../context/StateManeger";
 import { BsCheck2Circle } from "react-icons/bs";
-import { makeRequest } from "../../utils";
+import { handleApiError, makeRequest } from "../../utils";
 import { ImSpinner3 } from "react-icons/im";
 
 const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
@@ -62,7 +62,12 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
       if (error) setError("");
       setIsLoading(true);
       try {
-        await makeRequest.get(`api/tasks/completeguesscardtask/${taskApp._id}`);
+        await makeRequest.post(
+          `api/tasks/completeguesscardtask/${taskApp._id}`,
+          {
+            example: "example",
+          }
+        );
         setCompleted(true);
         dispatch(
           setCurrentUser({
@@ -72,18 +77,19 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
         );
         setIsLoading(false);
       } catch (error) {
-        setError("an error occured!");
+        setError(handleApiError(error));
         setCompleted(false);
         setIsLoading(false);
       }
     };
-
-    getReward();
+    if (score >= 5) {
+      getReward();
+    }
   }, [score]);
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="h-full flex items-center justify-center min-h-[70vh]">
         <div className="flex items-center gap-4 sm:gap-2">
           <ImSpinner3 className="text-4xl sm:text-2xl animate-spin" />
           <span className="text-[#abbe3eee] text-3xl sm:text-xl font-bold font-serif">
@@ -96,7 +102,7 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
 
   if (error) {
     return (
-      <div className="h-full flex flex-col items-center justify-center gap-3 opacity-70  font-bold px-8 text-center">
+      <div className="h-full min-h-[70vh] flex flex-col items-center justify-center gap-3 opacity-70  font-bold px-8 text-center">
         {error}
       </div>
     );

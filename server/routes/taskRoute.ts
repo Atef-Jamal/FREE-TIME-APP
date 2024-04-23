@@ -10,7 +10,15 @@ const router = express.Router();
 
 router.get("/", getAllTasks);
 router.get("/:id", protectedRoute, getSingaleTask);
-router.get("/completeguesscardtask/:gameId", protectedRoute, completingGame);
-router.post("/completingtask/:taskId", protectedRoute, completingTask);
+router.post(
+  "/completeguesscardtask/:guessCardAppId",
+  protectedRoute,
+  completingGame
+);
+router.post(
+  "/completingquizapptask/:quizappId",
+  protectedRoute,
+  completingTask
+);
 
 export default router;

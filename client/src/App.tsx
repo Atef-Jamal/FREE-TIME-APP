@@ -196,11 +196,7 @@ const router = createBrowserRouter([
       },
       {
         path: "playing",
-        // element: (
-        //   <Suspense>
-        //     <Protected />
-        //   </Suspense>
-        // ),
+
         children: [
           {
             path: ":id",

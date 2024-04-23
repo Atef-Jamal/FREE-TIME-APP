@@ -11,7 +11,9 @@ import { showPopup } from "../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
 
 const Playing = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, currentUserIsFetched } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [taskApp, setTaskApp] = useState<TypeTaskApp | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -28,7 +30,7 @@ const Playing = () => {
           }
           setError("");
           const userResponse = await makeRequest.get(
-            `api/users/${currentUser._id}`
+            `api/users/${currentUser?._id}`
           );
           const cHeckIsCompleted =
             userResponse.data.completedTasks.includes(id);
@@ -52,31 +54,40 @@ const Playing = () => {
         } finally {
           setIsLoading(false);
         }
+      } else {
+        setError("Log In First");
+        setIsLoading(false);
       }
     };
     fetchTask();
   }, [id, currentUser?._id]);
 
-  if (isLoading) {
+  if (isLoading || !currentUserIsFetched) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
         <Spinner className="w-20 h-20" />
       </div>
     );
   }
+
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 h-full opacity-70 border font-bold px-8 text-center">
-        <FaCircleCheck className="text-2xl" />
+      <div className="flex items-center justify-center gap-3 h-full min-h-[800px] sm:min-h-[490px] opacity-70 font-bold px-8 text-center">
+        <BiErrorAlt className="text-2xl" />
         {error}
       </div>
     );
   }
+
   if (isCompleted && !error) {
     return (
-      <div className="flex items-center justify-center gap-3 h-full opacity-70 py-8 font-extrabold text-lg">
-        <FaCircleCheck className="text-xl" />
-        Has Been Completed Before, Try another app
+      <div className="flex items-center justify-center gap-2 h-full min-h-[800px] sm:min-h-[490px] opacity-70 text-lg">
+        <div className="px-4 flex flex-col items-center justify-center gap-3">
+          <FaCircleCheck className="text-xl" />
+          <span className="text-center">
+            Has Been Completed Before, Try another app
+          </span>
+        </div>
       </div>
     );
   }

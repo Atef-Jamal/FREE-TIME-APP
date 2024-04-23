@@ -33,16 +33,16 @@ export const getSingaleTask = async (req: Request, res: Response) => {
 export const completingTask = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const completedTasks = req.user.completedTasks;
-  const { taskId } = req.params;
+  const { quizappId } = req.params;
   const { answers } = req.body;
   try {
-    const findedTask = await Task.findById(taskId);
+    const findedTask = await Task.findById(quizappId);
     if (!findedTask) {
       return res.status(404).json({ error: "Task Not Found" });
     }
     const isCompletedBefore =
       findedTask.completedBy.includes(currentUserId) ||
-      completedTasks.includes(taskId);
+      completedTasks.includes(quizappId);
 
     if (isCompletedBefore) {
       return res
@@ -73,7 +73,7 @@ export const completingTask = async (req: Request, res: Response) => {
     const savedTask = await findedTask.save();
     await User.findByIdAndUpdate(
       currentUserId,
-      { $push: { completedTasks: taskId } },
+      { $push: { completedTasks: quizappId } },
       { new: true }
     );
     const createNotification = new Notification({
@@ -108,10 +108,10 @@ export const completingTask = async (req: Request, res: Response) => {
 };
 
 export const completingGame = async (req: Request, res: Response) => {
-  const { gameId } = req.params;
+  const { guessCardAppId } = req.params;
   const currentUserId = req.user._id;
   try {
-    const game = await Task.findById(gameId);
+    const game = await Task.findById(guessCardAppId);
 
     if (!game) {
       return res.status(404).json({ error: "Game Not Found" });
@@ -162,6 +162,7 @@ export const completingGame = async (req: Request, res: Response) => {
     await game.save();
     return res.status(200).json({ message: "passed sucessfully" });
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "an error occurred" });
   }
 };

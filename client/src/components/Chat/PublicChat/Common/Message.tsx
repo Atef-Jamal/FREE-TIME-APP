@@ -189,12 +189,14 @@ const Message = ({
           }
           className={`ml-2 sm:ml-[6px] max-w-[60%] h-full overflow-hidden `}
         >
-          <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-2">
+          <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-3">
             {sender?.name}
           </span>
-          {createdAt ? (
-            <span className="text-[11px] text-gray-500 font-bold">{date}</span>
-          ) : null}
+          {createdAt && (
+            <span className="text-[10px] sm:text-[8px] text-gray-500 font-bold">
+              {date}
+            </span>
+          )}
         </Link>
         {sender?.emailVerified && (
           <img alt="" src={verifiedIcon} className="w-5 h-5 ml-3" />
