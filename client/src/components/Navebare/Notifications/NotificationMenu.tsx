@@ -4,7 +4,6 @@ import { CgCloseR } from "react-icons/cg";
 import { MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
-import { TypeNotifications } from "../../../types";
 import ReferrerNotify from "./ReferrerNotify";
 import BuyFrameNotify from "./BuyFrameNotify";
 import QuizTaskNotify from "./QuizTaskNotify";
@@ -17,6 +16,7 @@ import EmailVerifiedNotify from "./EmailVerifiedNotify";
 import { handleApiError, makeRequest } from "../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import Spinner from "../../Others/Spinner";
+import { TypeNotifications } from "../../../types/notification";
 
 const NotificationMenu = ({
   notifications,

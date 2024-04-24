@@ -7,10 +7,10 @@ import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
 import { avatar, moneyHome } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
-import { User } from "../../types";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
+import { User } from "../../types/user";
 
 interface TypeTestimonial {
   _id: string;

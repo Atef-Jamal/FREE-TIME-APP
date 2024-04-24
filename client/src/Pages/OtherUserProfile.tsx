@@ -4,7 +4,6 @@ import { FaUsers } from "react-icons/fa";
 import { GiProgression } from "react-icons/gi";
 import { BiErrorAlt, BiTask } from "react-icons/bi";
 import { BsFillClockFill } from "react-icons/bs";
-import { User, TypeNotifications } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { useEffect, useState } from "react";
 import { showPopup } from "../context/StateManeger";
@@ -12,6 +11,8 @@ import { handleApiError, makeRequest } from "../utils";
 import UserImage from "../components/Others/UserImage";
 import ActivitiesList from "../components/OtherUserProfile/ActivitiesList";
 import { OtherUserProfileSkeleton } from "../components/OtherUserProfile/OtherUserProfileSkeleton";
+import { TypeNotifications } from "../types/notification";
+import { User } from "../types/user";
 
 const OtherUserProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

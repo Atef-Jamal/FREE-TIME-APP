@@ -4,7 +4,6 @@ import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
-import { TypeFrame, TypePublicChatMessage } from "../../../../types";
 import verifiedIcon from "../../../../assets/verified-icon.png";
 import { timeAgoFromMongoDBDate } from "../../../../context/functions";
 import { showPopup } from "../../../../context/StateManeger";
@@ -13,6 +12,8 @@ import UserImage from "../../../../components/Others/UserImage";
 import { handleApiError, makeRequest } from "../../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
+import { TypePublicChatMessage } from "../../../../types/publicChat";
+import { TypeFrame } from "../../../../types/frame";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;

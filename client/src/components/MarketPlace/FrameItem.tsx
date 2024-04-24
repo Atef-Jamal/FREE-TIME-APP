@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypeFrame } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
 import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
+import { TypeFrame } from "../../types/frame";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
   const { currentUser, currentUserIsFetched } = useAppSelector(

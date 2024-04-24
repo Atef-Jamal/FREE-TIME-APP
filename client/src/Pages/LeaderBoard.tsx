@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { avatar, dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
-import { User } from "../types";
 import { useAppDispatch } from "../context/Hooks";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import { handleApiError, makeRequest } from "../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
+import { User } from "../types/user";
 
 const LeaderBoard = () => {
   const [users, setUsers] = useState<User[]>([]);

@@ -26,11 +26,15 @@ export const buyFrame = async (req: Request, res: Response) => {
     const price = getFrame.price;
 
     if (points < price) {
-      return res.status(404).json("sorry, your points is not Enough");
+      return res
+        .status(404)
+        .json({ error: "sorry, your points is not Enough" });
     }
 
     if (myFrames.includes(getFrame._id)) {
-      return res.status(404).json("Already buyed Before, try with another");
+      return res
+        .status(404)
+        .json({ error: "Already buyed Before, try with another" });
     }
     const user = await User.findByIdAndUpdate(
       _id,
@@ -42,7 +46,7 @@ export const buyFrame = async (req: Request, res: Response) => {
     );
 
     if (!user) {
-      return res.status(404).json("an error occurred, try again");
+      return res.status(404).json({ error: "an error occurred, try again" });
     }
 
     getFrame.purshasedBy.push(_id);

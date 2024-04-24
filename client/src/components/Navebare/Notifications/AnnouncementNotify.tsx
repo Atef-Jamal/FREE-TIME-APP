@@ -1,6 +1,6 @@
 import { GrAnnounce } from "react-icons/gr";
-import { TypeAnnouncementNoify } from "../../../types";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
+import { TypeAnnouncementNoify } from "../../../types/notification";
 
 type PropType = Omit<TypeAnnouncementNoify, "_id" | "isRead" | "type">;
 

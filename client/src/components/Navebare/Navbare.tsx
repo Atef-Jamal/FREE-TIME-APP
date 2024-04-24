@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { RegisterationForm } from "..";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { useEffect } from "react";
 import {
@@ -14,6 +13,7 @@ import ProfileSkeleton from "../Others/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
 import RegisterButtons from "../Navebare/Registration/RegisterButtons";
 import { BiErrorAlt } from "react-icons/bi";
+import RegisterationForm from "./Registration/RegisterationForm";
 const Navbare = () => {
   const {
     currentUser,

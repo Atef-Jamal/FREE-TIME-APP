@@ -6,7 +6,6 @@ import {
   setCurrentUser,
   showPopup,
 } from "../../context/StateManeger";
-import { Spinner } from "..";
 import { CgPushDown } from "react-icons/cg";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import bonusImage from "../../assets/Bonus-Code.png";
@@ -14,6 +13,8 @@ import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 
 const ApplyCoupon = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -92,13 +93,20 @@ const ApplyCoupon = () => {
             </span>
           </p>
           <ul className="mt-1 ml-6 xs:ml-2  h-[65%]">
-            <li className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-[#469636]"></span>
+            <li className="flex gap-2 sm:gap-1">
+              <span className="w-3 h-3 bg-[#469636] mt-1"></span>
               <span className=" text-lg text-gray-400 xs:text-sm">
-                thats nice to say however it can be done
+                go to Reward Page click on Bonus code Button
+                <Link
+                  to={"/rewards?to=bonus-code"}
+                  onClick={() => dispatch(resetModel())}
+                  className="ml-1 underline text-[#aa7ee4]"
+                >
+                  Here
+                </Link>
               </span>
             </li>
-            <li className="flex items-center gap-2">
+            {/* <li className="flex items-center gap-2">
               <span className="w-3 h-3 bg-[#469636]"></span>
               <span className=" text-lg text-gray-400 xs:text-sm">
                 thats nice to say however it can be done
@@ -109,7 +117,7 @@ const ApplyCoupon = () => {
               <span className="text-lg text-gray-400 xs:text-sm">
                 thats nice to say however it can be done
               </span>
-            </li>
+            </li> */}
           </ul>
           <button
             onClick={() => setOpenHelp((prev) => !prev)}

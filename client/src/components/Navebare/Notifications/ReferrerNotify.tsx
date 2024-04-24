@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { FcConferenceCall } from "react-icons/fc";
-import { TypeReferrerNotify } from "../../../types";
 import {
   collectReward,
   timeAgoFromMongoDBDate,
@@ -12,6 +11,7 @@ import Spinner from "../../Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { handleApiError } from "../../../utils";
+import { TypeReferrerNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 

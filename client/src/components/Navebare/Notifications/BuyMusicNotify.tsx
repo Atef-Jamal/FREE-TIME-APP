@@ -1,9 +1,9 @@
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { FcMusic } from "react-icons/fc";
-import { TypeMusicNotify } from "../../../types";
 import { Link } from "react-router-dom";
 import { toggleThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch } from "../../../context/Hooks";
+import { TypeMusicNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeMusicNotify, "_id" | "isRead" | "type">;
 

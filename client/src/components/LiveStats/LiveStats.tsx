@@ -5,12 +5,13 @@ import { crown, egypt } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { handleApiError, makeRequest } from "../../utils";
 import { showPopup } from "../../context/StateManeger";
-import { TypeFrame, User } from "../../types";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { BiErrorAlt } from "react-icons/bi";
+import { User } from "../../types/user";
+import { TypeFrame } from "../../types/frame";
 
 const LiveStats = () => {
   const { currentUser, hiddenLiveStats, onlineUsers, socet } = useAppSelector(

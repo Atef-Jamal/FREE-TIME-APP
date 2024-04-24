@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdCardGiftcard } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
@@ -10,6 +10,7 @@ import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { IoLockClosed } from "react-icons/io5";
+import { useSearchParams } from "react-router-dom";
 
 interface TypeBounusCode {
   _id: string;
@@ -25,7 +26,11 @@ const Rewards = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const bonusCodeRef = useRef<HTMLButtonElement>(null);
   const dispatch = useAppDispatch();
+
+  const searchValue = searchParams.get("to");
 
   const getBonusCode = async () => {
     if (!currentUser) {
@@ -68,6 +73,20 @@ const Rewards = () => {
     }
   };
 
+  const handleRemoveAnimation = (type: string) => {
+    bonusCodeRef.current?.classList.remove("animate-pulse");
+    setSearchParams(() => {
+      searchParams.delete("to", type);
+      return searchParams;
+    });
+  };
+
+  useEffect(() => {
+    if (searchValue) {
+      bonusCodeRef.current?.classList.add("animate-pulse");
+    }
+  }, [searchValue]);
+
   return (
     <div className="flex flex-col bg-[#242438] gap-8 py-6 xs:pt-2 xs:pb-5">
       <div className="flex justify-between items-center bg-[#242438] px-8 sm:flex-col sm:p-4 sm:items-start sm:gap-6">
@@ -82,7 +101,11 @@ const Rewards = () => {
           </h1>
         </div>
         <button
-          onClick={getBonusCode}
+          ref={bonusCodeRef}
+          onClick={() => {
+            handleRemoveAnimation("bonus-code");
+            getBonusCode();
+          }}
           className="relative flex gap-4 items-center bg-[#b6da7cce] py-2 px-4 rounded-md mr-3 border border-gray-600 "
         >
           <span

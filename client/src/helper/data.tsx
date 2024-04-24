@@ -1,9 +1,3 @@
-// import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-// import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
-// import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
-// import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-// import SpeakerGroupOutlinedIcon from "@mui/icons-material/SpeakerGroupOutlined";
-// import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import time from "../assets/timewall-logo.png";
 import lootably from "../assets/lootably-logo.png";
 import ayetLogo from "../assets/ayetLogo.webp";

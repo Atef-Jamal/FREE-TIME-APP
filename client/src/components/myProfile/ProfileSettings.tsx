@@ -10,12 +10,15 @@ import VerifyEmailBox from "./VerifyEmailBox";
 import { handleApiError, makeRequest } from "../../utils";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
+import Spinner from "../Others/Spinner";
 
 const ProfileSettings = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
+  const [loadingName, setLoadingName] = useState<boolean>(false);
+  const [loadingPass, setLoadingPass] = useState<boolean>(false);
   const [openEnterCode, setOpenEnterCode] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
@@ -34,6 +37,7 @@ const ProfileSettings = () => {
     if (!currentUser) {
       return;
     }
+    setLoadingName(true);
     try {
       const response = await makeRequest.post("api/auth/changename", {
         newName,
@@ -54,6 +58,8 @@ const ProfileSettings = () => {
           icon: <BiErrorAlt />,
         })
       );
+    } finally {
+      setLoadingName(false);
     }
   };
 
@@ -61,6 +67,7 @@ const ProfileSettings = () => {
     if (!currentUser) {
       return;
     }
+    setLoadingPass(true);
     try {
       await makeRequest.post("api/auth/changepassword", {
         newPass,
@@ -81,6 +88,8 @@ const ProfileSettings = () => {
           icon: <BiErrorAlt />,
         })
       );
+    } finally {
+      setLoadingPass(false);
     }
   };
 
@@ -90,7 +99,7 @@ const ProfileSettings = () => {
 
   return (
     <div
-      className={`transition-all p-6 sm:p-4 xs:px-2 bg-[#414368] flex  flex-col  gap-4 rounded-lg relative`}
+      className={`transition-all p-6 sm:p-4 xs:px-2 bg-[#414368] flex  flex-col  gap-4 sm:gap-2 rounded-lg relative`}
     >
       <h1 className="text-yellow-500 mx-auto text-2xl font-bold">
         Settings
@@ -101,8 +110,8 @@ const ProfileSettings = () => {
           <IoClose />
         </span>
       </h1>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="name" className="font-bold text-gray-400 w-[120px]">
+      <div className="flex flex-col gap-2 sm:gap-1">
+        <label htmlFor="name" className="font-bold  text-gray-300 w-[120px]">
           Name
         </label>
         <div className="flex items-center gap-4">
@@ -113,18 +122,18 @@ const ProfileSettings = () => {
             name="name"
             id="name"
             autoComplete="off"
-            className="outline-none bg-[#2f2f33] w-[200px] p-2 rounded-md text-gray-300 "
+            className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
           />
           <button
             onClick={handleSaveName}
-            className="px-8 py-[6px] bg-[#47f76d] text-black font-[700] rounded-sm "
+            className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
           >
-            save
+            {loadingName ? <Spinner className="w-4 h-4 mx-auto" /> : "save"}
           </button>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="email" className=" font-bold text-gray-400  w-[120px]">
+      <div className="flex flex-col gap-2 sm:gap-1">
+        <label htmlFor="email" className=" font-bold text-gray-300  w-[120px]">
           Email
         </label>
         <div className="flex items-center gap-4 ">
@@ -135,64 +144,64 @@ const ProfileSettings = () => {
             name="email"
             id="email"
             autoComplete="off"
-            className="outline-none bg-[#2f2f33] w-[200px] p-2 rounded-md text-gray-300"
+            className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
           />
           {currentUser?.emailVerified ? (
-            <button className="px-8 py-[6px] bg-[#47f76d] text-black font-[700] rounded-sm">
+            <button className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm">
               Verified
             </button>
           ) : (
             <button
               onClick={() => setOpenEnterCode(true)}
-              className="px-6 py-[6px] bg-[#47f76d] text-black font-[700] rounded-sm "
+              className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
             >
               Verifiy
             </button>
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-4 ">
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4 sm:gap-1">
+        <div className="flex flex-col gap-2 sm:gap-1">
           <label
             htmlFor="oldpass"
-            className="font-bold text-gray-400 w-[120px]"
+            className="font-bold text-gray-300 w-[120px]"
           >
             old Password
           </label>
           <input
-            type="text"
+            type="password"
             onChange={handleChangeOldPassword}
             placeholder="Enter old Password"
             value={oldPass}
             name="oldpass"
             id="oldpass"
             autoComplete="off"
-            className="outline-none bg-[#2f2f33] w-[200px] p-2 rounded-md text-gray-300 placeholder:text-gray-500"
+            className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
           />
         </div>
-        <div className="flex flex-col gap-2 ">
+        <div className="flex flex-col gap-2 sm:gap-1">
           <label
             htmlFor="newpass"
-            className="font-bold text-gray-400 w-[120px]"
+            className="font-bold text-gray-300 w-[120px]"
           >
             New Password
           </label>
           <div className="flex items-center gap-4">
             <input
-              type="text"
+              type="password"
               onChange={handleChangeNewPassword}
               placeholder="Enter New Password"
               value={newPass}
               name="newpass"
               id="newpass"
               autoComplete="off"
-              className="outline-none bg-[#2f2f33] w-[200px] p-2 rounded-md text-gray-300 placeholder:text-gray-500"
+              className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
             />
             <button
               onClick={handleSavePassword}
-              className="px-8 py-1 bg-[#47f76d] text-black font-[700] rounded-sm "
+              className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
             >
-              save
+              {loadingPass ? <Spinner className="w-5 h-5 mx-auto" /> : "save"}
             </button>
           </div>
         </div>

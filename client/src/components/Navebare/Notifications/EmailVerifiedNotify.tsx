@@ -6,11 +6,11 @@ import {
   collectReward,
   timeAgoFromMongoDBDate,
 } from "../../../context/functions";
-import { TypeEmailVerifiedNotify } from "../../../types";
 import Spinner from "../../Others/Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
 import { handleApiError } from "../../../utils";
+import { TypeEmailVerifiedNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
 

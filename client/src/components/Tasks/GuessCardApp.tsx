@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types";
 import { setCurrentUser } from "../../context/StateManeger";
 import { BsCheck2Circle } from "react-icons/bs";
 import { handleApiError, makeRequest } from "../../utils";
 import { ImSpinner3 } from "react-icons/im";
+import { TypeTaskApp } from "../../types/others";
 
 const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { MdStorefront } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
-import { TypeFrame } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import FrameItem from "../components/MarketPlace/FrameItem";
 import { handleApiError, makeRequest } from "../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { TypeFrame } from "../types/frame";
 
 const MarketPlace = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);

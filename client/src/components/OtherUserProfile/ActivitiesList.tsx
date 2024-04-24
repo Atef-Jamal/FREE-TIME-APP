@@ -1,9 +1,10 @@
 import { FcBusinessman, FcFrame, FcMusic } from "react-icons/fc";
-import { TypeNotifications, User } from "../../types";
 import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
 import verifiedIcon from "../../assets/verified-icon.png";
 import { empty } from "../../assets";
+import { User } from "../../types/user";
+import { TypeNotifications } from "../../types/notification";
 
 const ActivitiesList = ({
   activities,

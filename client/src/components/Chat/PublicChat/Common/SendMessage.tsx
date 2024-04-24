@@ -104,11 +104,6 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
           onChange={(e) => setMessage(e.target.value)}
           readOnly={!currentUser}
           value={message}
-          // onBlur={(e) => {
-          //   if (e.relatedTarget === document.getElementById("sendbutton")) {
-          //     e.target.focus();
-          //   }
-          // }}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
           className={`${
             user ? "pl-[60px]" : "px-4 xs:px-2"

@@ -2,9 +2,9 @@ import { FcCheckmark } from "react-icons/fc";
 import { avatar } from "../../../assets";
 import { useAppSelector } from "../../../context/Hooks";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
-import { TypePrivateMessage } from "../../../types";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RefObject } from "react";
+import { TypePrivateMessage } from "../../../types/privateChat";
 
 const PrivateMessageItem = ({
   messages,

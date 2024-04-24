@@ -5,12 +5,13 @@ import {
   timeAgoFromMongoDBDate,
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeGuessCardNotify } from "../../../types";
 import { useState } from "react";
 import Spinner from "../../Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { handleApiError } from "../../../utils";
+import { TypeGuessCardNotify } from "../../../types/notification";
+
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 
 const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {

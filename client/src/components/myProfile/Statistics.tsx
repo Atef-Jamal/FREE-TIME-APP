@@ -6,7 +6,7 @@ import { BiErrorAlt, BiTask } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { showPopup } from "../../context/StateManeger";
 import { handleApiError, makeRequest } from "../../utils";
-import { TypeNotifications } from "../../types";
+import { TypeNotifications } from "../../types/notification";
 
 const Statistics = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

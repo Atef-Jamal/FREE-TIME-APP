@@ -6,10 +6,10 @@ import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
 
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { TypePublicChatItem } from "../../../../types";
 import { handleApiError, makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
+import { TypePublicChatItem } from "../../../../types/publicChat";
 
 const MobileChat = () => {
   const { hiddenLiveStats, socet } = useAppSelector(

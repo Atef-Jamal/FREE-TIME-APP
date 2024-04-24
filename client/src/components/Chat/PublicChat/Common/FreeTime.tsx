@@ -1,7 +1,7 @@
 import { timeAgoFromMongoDBDate } from "../../../../context/functions";
-import { TypePublicChatFreeTime } from "../../../../types";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../../context/Hooks";
+import { TypePublicChatFreeTime } from "../../../../types/publicChat";
 
 const FreeTime = ({
   singleMessage,

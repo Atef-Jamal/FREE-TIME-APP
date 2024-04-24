@@ -6,11 +6,11 @@ import {
   timeAgoFromMongoDBDate,
 } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeQuizAppNotify } from "../../../types";
 import Spinner from "../../Others/Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
 import { handleApiError } from "../../../utils";
+import { TypeQuizAppNotify } from "../../../types/notification";
 
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 

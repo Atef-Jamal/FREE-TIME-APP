@@ -4,8 +4,8 @@ import App from "./App";
 import { Provider } from "react-redux";
 import { HelmetProvider } from "react-helmet-async";
 import store from "./context/store";
-import { Spinner } from "./components";
 import "./index.css";
+import Spinner from "./components/Others/Spinner";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 

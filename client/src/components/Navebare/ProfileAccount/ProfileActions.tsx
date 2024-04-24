@@ -9,12 +9,12 @@ import { handleApiError, makeRequest } from "../../../utils";
 import notificationSoundSrc from "../../../assets/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
-import { TypeNotifications } from "../../../types";
 import ApplyCoupon from "../../Others/ApplyCoupon";
 import UserImage from "../../Others/UserImage";
 import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
 import { BiErrorAlt } from "react-icons/bi";
+import { TypeNotifications } from "../../../types/notification";
 
 const ProfileActions = () => {
   const { currentUser, openNotification, socet } = useAppSelector(
@@ -71,19 +71,19 @@ const ProfileActions = () => {
   return (
     <>
       {currentUser && (
-        <div className="relative flex items-center gap-4 sm:gap-2 ">
-          <div className=" flex items-center rounded-md  gap-2 xs:gap-1 ">
+        <div className="relative flex items-center gap-4 sm:gap-1 ">
+          <div className=" flex items-center rounded-md  gap-2 xs:gap-1 bg-[#04050a]">
             <button
               onClick={() => {
                 dispatch(
                   openModel({ status: true, children: <ApplyCoupon /> })
                 );
               }}
-              className="text-2xl sm:text-xl text-[#8fee37ee] font-bold flex items-center justify-center bg-[#0c0d16c5] sm:p-[8px] p-[10px] rounded-s-md"
+              className="text-2xl sm:text-xl text-[#8fee37ee] font-bold flex items-center justify-center  sm:p-[8px] p-[10px] rounded-s-md"
             >
               +
             </button>
-            <span className="bg-[#0c0d16c5] whitespace-nowrap sm:text-[10px] p-[14px] tracking-wider font-bold border-l text-[#beababde] rounded-e-md">
+            <span className=" whitespace-nowrap sm:text-[10px] p-[14px] tracking-wider font-bold border-l text-[#beababde] rounded-e-md">
               <span className="text-[#3de21c] mr-[3px]">
                 {currentUser.points}
               </span>

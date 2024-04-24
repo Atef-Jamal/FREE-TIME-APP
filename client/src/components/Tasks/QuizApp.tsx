@@ -1,11 +1,11 @@
 import { MouseEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { handleApiError, makeRequest } from "../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { ImSpinner3 } from "react-icons/im";
+import { TypeTaskApp } from "../../types/others";
 
 interface TypeProps {
   taskApp: TypeTaskApp;

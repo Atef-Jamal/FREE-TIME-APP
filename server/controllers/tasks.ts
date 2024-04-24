@@ -30,7 +30,7 @@ export const getSingaleTask = async (req: Request, res: Response) => {
   }
 };
 
-export const completingTask = async (req: Request, res: Response) => {
+export const completingQuizApp = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const completedTasks = req.user.completedTasks;
   const { quizappId } = req.params;
@@ -107,7 +107,7 @@ export const completingTask = async (req: Request, res: Response) => {
   }
 };
 
-export const completingGame = async (req: Request, res: Response) => {
+export const completingGuessCard = async (req: Request, res: Response) => {
   const { guessCardAppId } = req.params;
   const currentUserId = req.user._id;
   try {

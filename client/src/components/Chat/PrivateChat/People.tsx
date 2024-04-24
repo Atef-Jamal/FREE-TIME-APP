@@ -3,13 +3,15 @@ import UserImage from "../../Others/UserImage";
 import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeFrame, TypePrivateMessage, User } from "../../../types";
 import {
   setRefetchUnReadedMessagesCount,
   showPopup,
 } from "../../../context/StateManeger";
 import { handleApiError, makeRequest } from "../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { TypePrivateMessage } from "../../../types/privateChat";
+import { TypeFrame } from "../../../types/frame";
+import { User } from "../../../types/user";
 
 const People = ({ userInfo }: { userInfo: User }) => {
   const { socet, reFetchThisUserId, onlineUsers } = useAppSelector(

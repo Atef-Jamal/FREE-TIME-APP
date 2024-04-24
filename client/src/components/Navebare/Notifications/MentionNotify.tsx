@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { GoMention } from "react-icons/go";
 import { toggleThisEntity } from "../../../context/StateManeger";
-import { TypeMentionNotify } from "../../../types";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
+import { TypeMentionNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeMentionNotify, "_id" | "type" | "isRead">;
 

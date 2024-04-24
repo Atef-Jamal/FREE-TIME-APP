@@ -7,8 +7,8 @@ import { BiErrorAlt } from "react-icons/bi";
 import { handleApiError, makeRequest } from "../../../utils";
 import { showPopup } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { User } from "../../../types";
 import { empty } from "../../../assets";
+import { User } from "../../../types/user";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);

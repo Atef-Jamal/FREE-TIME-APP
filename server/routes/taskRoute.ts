@@ -2,8 +2,8 @@ import express from "express";
 import {
   getAllTasks,
   getSingaleTask,
-  completingTask,
-  completingGame,
+  completingQuizApp,
+  completingGuessCard,
 } from "../controllers/tasks";
 import protectedRoute from "../middleware";
 const router = express.Router();
@@ -13,12 +13,12 @@ router.get("/:id", protectedRoute, getSingaleTask);
 router.post(
   "/completeguesscardtask/:guessCardAppId",
   protectedRoute,
-  completingGame
+  completingGuessCard
 );
 router.post(
   "/completingquizapptask/:quizappId",
   protectedRoute,
-  completingTask
+  completingQuizApp
 );
 
 export default router;

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
-import { TypeTaskApp } from "../types";
 import { handleApiError, makeRequest } from "../utils";
 import GuessCardApp from "../components/Tasks/GuessCardApp";
 import QuizApp from "../components/Tasks/QuizApp";
 import Spinner from "../components/Others/Spinner";
 import { showPopup } from "../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
+import { TypeTaskApp } from "../types/others";
 
 const Playing = () => {
   const { currentUser, currentUserIsFetched } = useAppSelector(

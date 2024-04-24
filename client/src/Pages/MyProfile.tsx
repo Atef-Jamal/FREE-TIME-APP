@@ -15,16 +15,16 @@ import { FcOk } from "react-icons/fc";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
 import { useSearchParams } from "react-router-dom";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
-import { TypeFrame } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import ProfileSettings from "../components/myProfile/ProfileSettings";
 
 import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
 import { handleApiError, makeRequest } from "../utils";
-import { Spinner } from "../components";
 import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
+import { TypeFrame } from "../types/frame";
+import Spinner from "../components/Others/Spinner";
 
 const MyProfile = () => {
   const { currentUser, allMusics, currentUserIsFetched } = useAppSelector(
@@ -187,13 +187,13 @@ const MyProfile = () => {
   return (
     <div className="bg-[#141523] py-6 sm:py-4 h-full w-full flex items-center justify-center">
       <div className="w-[95%] lg:w-[95%] mx-auto sm:w-[95%]">
-        <div className="flex items-center justify-between px-4 mb-5">
+        <div className="flex items-center justify-between px-4 mb-5 sm:mb-2">
           <span className="text-2xl sm:text-xl font-bold text-[#8df174]">
             My Profile
           </span>
           <button
             onClick={handleOpenSetting}
-            className="flex items-center gap-2 text-[#8df174] font-bold text-xl tracking-wider"
+            className="flex items-center gap-2 text-[#131b2b] font-bold text-xl tracking-wider py-1 sm:py-[2px] px-5 sm:px-3 sm:text-sm rounded-md bg-[#ade66de3] "
           >
             <AiFillSetting />
             Settings

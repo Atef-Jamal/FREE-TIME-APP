@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TypeFrame, TypePrivateMessage, User } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import {
   setAllUnReadedMesseges,
@@ -14,6 +13,9 @@ import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import { BiErrorAlt } from "react-icons/bi";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
+import { TypePrivateMessage } from "../../../types/privateChat";
+import { User } from "../../../types/user";
+import { TypeFrame } from "../../../types/frame";
 
 const ChatBody = () => {
   const { currentUser, socet, onlineUsers } = useAppSelector(

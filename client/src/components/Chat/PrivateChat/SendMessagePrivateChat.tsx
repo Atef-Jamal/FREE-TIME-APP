@@ -2,10 +2,10 @@ import { IoMdSend } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { TypePrivateMessage } from "../../../types";
 import { showPopup } from "../../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
 import { handleApiError, makeRequest } from "../../../utils";
+import { TypePrivateMessage } from "../../../types/privateChat";
 
 const SendMessagePrivateChat = ({
   conversationReaded,
@@ -55,14 +55,6 @@ const SendMessagePrivateChat = ({
   return (
     <div className="w-full flex items-center gap-3 sm:gap-1">
       <input
-        // onBlur={(e) => {
-        //   if (
-        //     e.relatedTarget ===
-        //     document.getElementById("private-chat-send-button")
-        //   ) {
-        //     e.target.focus();
-        //   }
-        // }}
         onChange={(e) => setMessage(e.target.value)}
         value={message}
         name="message"

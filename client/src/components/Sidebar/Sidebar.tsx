@@ -9,9 +9,9 @@ import {
   toggleThisEntity,
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypePrivateMessage } from "../../types";
 import messageSoundSrc from "../../assets/messageSound.wav";
 import { handleApiError, makeRequest } from "../../utils";
+import { TypePrivateMessage } from "../../types/privateChat";
 
 const Sidebar = () => {
   const { resizeSidebare, currentUser, socet, allUnReadedMesseges } =

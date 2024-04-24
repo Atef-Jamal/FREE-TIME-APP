@@ -245,7 +245,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "successfully verified" });
   } catch (error) {
     return res.status(404).json({
-      message: "Can'T verify your email, an error occurred",
+      message: "Can't verify your email, an error occurred",
     });
   }
 };

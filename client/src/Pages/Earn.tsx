@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop } from "react-icons/io5";
@@ -11,7 +11,12 @@ import {
 } from "../assets";
 import { PiExamDuotone } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
-import { IoIosArrowBack } from "react-icons/io";
+import {
+  IoIosArrowBack,
+  IoMdArrowDropdown,
+  IoMdArrowDropup,
+  IoMdSearch,
+} from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
@@ -24,12 +29,25 @@ import OfferParnterCard from "../components/Offers/OfferParnterCard";
 import Skeleton from "../components/Others/Skeleton";
 import { showPopup } from "../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
+import { FaStar } from "react-icons/fa";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
   const [translate, setTranslate] = useState("");
+  const [selectDevice, setSelectDevice] = useState(false);
   const [fetchedTasks, setFetchedTasks] = useState<TypeGame[]>([]);
   const dispatch = useAppDispatch();
+
+  const androidRef = useRef<HTMLSpanElement>(null);
+  const desktopRef = useRef<HTMLSpanElement>(null);
+  const iosRef = useRef<HTMLSpanElement>(null);
+
+  const activeDevice = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    [androidRef, desktopRef, iosRef].forEach((item) =>
+      item.current?.classList.remove("bg-[#4d3f72]")
+    );
+    e.currentTarget.classList.add("bg-[#4d3f72]");
+  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -64,17 +82,67 @@ const Earn = () => {
       <Helmet>
         <title>Earn</title>
       </Helmet>
-      <div className="flex flex-col mt-[6px]">
-        <div className=" flex items-center gap-4 pl-4 mb-2 sm:pl-2 sm:justify-between sm:gap-0">
-          <span className="text-gray-300 text-xl font-bold sm:ml-2 xs:text-lg ">
-            EARN ON
-          </span>
-          <div className="flex items-center pr-3 pl-5 py-[6px] gap-3 bg-[#3e3e42a9] text-white rounded-md ">
-            <IoDesktop className="text-lg" />
-            <DiAndroid className="text-lg" />
-            <SiApple className="text-lg" />
-            <IoIosArrowDown className="text-xl" />
-          </div>
+      <div className="flex items-ceneter flex-wrap gap-4">
+        <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap">
+          <span className="mr-1 text-[#bedf65]">EARN</span> ON
+        </span>
+        <div className=" flex items-center gap-3 bg-[#0b0b22a9] rounded-md px-6 py-2">
+          <IoDesktop className="text-lg" />
+          <DiAndroid className="text-lg" />
+          <SiApple className="text-lg" />
+          <IoIosArrowDown className="text-xl" />
+        </div>
+        <div className="relative sm:w-[280px]">
+          <input
+            type="text"
+            className="w-full h-10 rounded-md bg-[#383847] outline-none pl-4 pr-[53px] py-2 text-sm tracking-wide text-[#72abff]"
+            placeholder="Search"
+          />
+          <button className="absolute top-0 right-0 rounded-md bg-[#9486866c] px-3 h-[95%]">
+            <IoMdSearch className="text-xl" />
+          </button>
+        </div>
+        <div
+          onClick={() => setSelectDevice((prev) => !prev)}
+          className="relative w-[280px] flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2  sm:gap-1"
+        >
+          <FaStar />
+          <span className="text-gray-400 font-bold">Most Popular</span>
+          {selectDevice ? (
+            <IoMdArrowDropup className="text-2xl" />
+          ) : (
+            <IoMdArrowDropdown className="text-2xl" />
+          )}
+          {selectDevice && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-11 z-[1] left-0 bg-[#37354b] w-full flex flex-col py-3 px-1 rounded-md"
+            >
+              <span
+                onClick={(e) => activeDevice(e)}
+                ref={androidRef}
+                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
+              >
+                <DiAndroid className="text-lg" />
+                Android
+              </span>
+              <span
+                onClick={(e) => activeDevice(e)}
+                ref={iosRef}
+                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
+              >
+                <SiApple className="text-lg" />
+                IOS
+              </span>
+              <span
+                onClick={(e) => activeDevice(e)}
+                ref={desktopRef}
+                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm "
+              >
+                <IoDesktop className="text-lg" /> Desktop
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <div className=" bg-[#1c1e31] p-4 rounded-xl flex flex-col gap-5 xs:px-2 overflow-x-hidden border border-gray-800">

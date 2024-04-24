@@ -8,9 +8,9 @@ import Message from "../Common/Message";
 import ChatHeader from "../Common/ChatHeader";
 import SendMessage from "../Common/SendMessage";
 import FreeTime from "../Common/FreeTime";
-import { TypePublicChatItem } from "../../../../types";
 import { handleApiError, makeRequest } from "../../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
+import { TypePublicChatItem } from "../../../../types/publicChat";
 
 const DisktopChat = () => {
   const { isChatOpen, socet } = useAppSelector((state) => state.stateManeger);

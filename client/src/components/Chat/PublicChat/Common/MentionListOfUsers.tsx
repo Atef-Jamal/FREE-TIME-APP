@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { User } from "../../../../types";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { handleApiError, makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
+import { User } from "../../../../types/user";
 
 interface TypeProps {
   setUser: React.Dispatch<

@@ -1,5 +1,5 @@
 import { avatar } from "../../assets";
-import { User } from "../../types";
+import { User } from "../../types/user";
 
 interface TypeProps {
   user: User | null;
