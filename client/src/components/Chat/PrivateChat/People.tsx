@@ -119,7 +119,7 @@ const People = ({ userInfo }: { userInfo: User }) => {
       className={({ isActive }) =>
         `${
           isActive
-            ? " bg-[rgb(29,32,61)] border border-gray-700"
+            ? " bg-[rgb(33,37,70)] border border-gray-700"
             : "bg-[rgba(25,28,53,0.77)]"
         } relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-lg p-2 sm:p-1`
       }

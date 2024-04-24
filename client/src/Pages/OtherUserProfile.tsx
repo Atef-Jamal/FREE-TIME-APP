@@ -1,4 +1,4 @@
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { GiProgression } from "react-icons/gi";
@@ -159,7 +159,17 @@ const OtherUserProfile = () => {
             </div>
           </div>
         </div>
-        <h1 className="flex items-center  gap-3 font-bold text-lg tracking-wide text-[#4de43a] px-1  mt-6">
+        {user && (
+          <div className="-4 py-1">
+            <Link
+              to={`/privatechat/${user._id}`}
+              className="py-[6px] px-8 bg-[#bbb55c] text-[#3a1f1f] rounded-md font-bold"
+            >
+              Chat with {user?.name}
+            </Link>
+          </div>
+        )}
+        <h1 className="flex items-center gap-3 font-bold text-lg tracking-wide text-[#4de43a] px-1  mt-6">
           <GiProgression className="xs:text-sm text-lg" /> Activity
         </h1>
         <div className="w-full mb-2 ">

@@ -8,11 +8,15 @@ import { handleApiError, makeRequest } from "../../../utils";
 import { showPopup } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { User } from "../../../types";
+import { empty } from "../../../assets";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const [loading, setLoading] = useState<boolean>(true);
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [filterVlaue, setFilterValue] = useState<string>("");
+  const [emptyResults, setEmptyResults] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
@@ -50,6 +54,22 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
     }
   }, [socet]);
 
+  useEffect(() => {
+    setEmptyResults(false);
+    if (filterVlaue) {
+      const matchedUsers = users.filter((user) =>
+        user.name.toLocaleLowerCase().includes(filterVlaue.toLocaleLowerCase())
+      );
+      if (matchedUsers.length > 0) {
+        setFilteredUsers(matchedUsers);
+      } else {
+        setEmptyResults(true);
+      }
+    } else if (filterVlaue === "") {
+      setFilteredUsers(users);
+    }
+  }, [filterVlaue]);
+
   return (
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
@@ -64,7 +84,9 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
           type="text"
           id="searc"
           autoComplete="off"
-          className="bg-[#0b0c1a] rounded-sm w-full mx-auto outline-none pl-7 py-3 sm:py-2 text-sm"
+          value={filterVlaue}
+          onChange={(e) => setFilterValue(e.target.value)}
+          className="bg-[#2d2e3b] rounded-md w-full mx-auto outline-none pl-7 py-3 sm:py-2 text-sm"
           placeholder="Search..."
         />
         <div className="absolute top-[10px] left-2 sm:left-1 ">
@@ -79,6 +101,8 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
           </div>
         )}
         {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
           users.length > 0 &&
           users?.map((user: User) => {
             if (user._id === currentUser?._id) return;
@@ -88,6 +112,25 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
               </div>
             );
           })}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length > 0 &&
+          filteredUsers?.map((user: User) => {
+            if (user._id === currentUser?._id) return;
+            return (
+              <div onClick={toggleSidbare} key={user._id} className="w-full">
+                <People userInfo={user} />
+              </div>
+            );
+          })}
+        {emptyResults && (
+          <div className="text-sm text-gray-400 opacity-50 font-bold w-full flex flex-col gap-4 py-5 items-center h-full">
+            <span className="w-16 h-16 sm:w-9 sm:h-9">
+              <img src={empty} className="w-full h-full object-cover" />
+            </span>
+            No People Match your Search
+          </div>
+        )}
       </div>
     </div>
   );

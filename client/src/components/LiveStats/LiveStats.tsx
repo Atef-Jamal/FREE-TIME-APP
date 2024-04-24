@@ -34,7 +34,10 @@ const LiveStats = () => {
         setError("");
         setLoading(true);
         const response = await makeRequest.get("api/users");
-        setUsers(response.data);
+        const sortedUsers = response.data.sort(
+          (a: User, b: User) => b.points - a.points
+        );
+        setUsers(sortedUsers);
       } catch (error) {
         setError("somthing went wrong!");
         dispatch(
