@@ -21,7 +21,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { arrayoffers, tasks } from "../helper/data";
-import { TypeGame } from "../types";
 import { Helmet } from "react-helmet-async";
 import { handleApiError, makeRequest } from "../utils";
 import GameCard from "../components/Offers/GameCard";
@@ -30,6 +29,7 @@ import Skeleton from "../components/Others/Skeleton";
 import { showPopup } from "../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaStar } from "react-icons/fa";
+import { TypeGame } from "../types/others";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
