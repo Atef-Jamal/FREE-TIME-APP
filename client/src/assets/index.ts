@@ -170,6 +170,27 @@ import gamePhoto96 from "./gamesPhotos/gamePhoto-97.jpg";
 import gamePhoto97 from "./gamesPhotos/gamePhoto-98.jpg";
 import gamePhoto98 from "./gamesPhotos/gamePhoto-99.jpg";
 import gamePhoto99 from "./gamesPhotos/gamePhoto-100.jpg";
+import gamePhoto100 from "./game01.jpeg";
+import gamePhoto101 from "./game02.jpeg";
+import gamePhoto102 from "./game03.jpg";
+import gamePhoto103 from "./game04.jpeg";
+import gamePhoto104 from "./game05.jpg";
+import gamePhoto105 from "./game06.jpeg";
+import gamePhoto106 from "./game07.jpeg";
+import gamePhoto107 from "./game08.jpg";
+import gamePhoto108 from "./game09.jpg";
+import gamePhoto109 from "./game10.jpg";
+import gamePhoto110 from "./game11.jpg";
+import gamePhoto111 from "./game12.jpg";
+import gamePhoto112 from "./game13.jpg";
+import gamePhoto113 from "./game14.jpg";
+import gamePhoto114 from "./game15.jpg";
+import gamePhoto115 from "./game16.jpg";
+import gamePhoto116 from "./game17.jpg";
+import gamePhoto117 from "./game18.png";
+import gamePhoto118 from "./game19.jpg";
+import gamePhoto119 from "./game20.jpg";
+import gamePhoto120 from "./game21.jpg";
 
 export {
   imageFrame,
@@ -343,4 +364,25 @@ export {
   gamePhoto97,
   gamePhoto98,
   gamePhoto99,
+  gamePhoto100,
+  gamePhoto101,
+  gamePhoto102,
+  gamePhoto103,
+  gamePhoto104,
+  gamePhoto105,
+  gamePhoto106,
+  gamePhoto107,
+  gamePhoto108,
+  gamePhoto109,
+  gamePhoto110,
+  gamePhoto111,
+  gamePhoto112,
+  gamePhoto113,
+  gamePhoto114,
+  gamePhoto115,
+  gamePhoto116,
+  gamePhoto117,
+  gamePhoto118,
+  gamePhoto119,
+  gamePhoto120,
 };

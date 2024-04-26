@@ -10,7 +10,15 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
 const NavebareBottom = () => {
   const { openSidebarMobile } = useAppSelector((state) => state.stateManeger);
+  // const navbarBottomRef = useRef<HTMLUListElement>(null);
   const dispatch = useAppDispatch();
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     navbarBottomRef.current!.classList.toggle("bg-[#1a1531]");
+  //   }, 10000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     function toggle(e: any) {
@@ -28,7 +36,10 @@ const NavebareBottom = () => {
   }, [openSidebarMobile]);
 
   return (
-    <ul className="hidden sm:flex fixed bottom-0 transition-all duration-700 ease-linear w-full h-[68px] z-[3] bg-[#2a2a50] items-center justify-between py-1 ">
+    <ul
+      // ref={navbarBottomRef}
+      className="mobile-navbar-bottom hidden sm:flex fixed bottom-0 transition-all duration-700 ease-linear w-full h-[68px] z-[3] bg-[#2b2b55] items-center justify-between py-1"
+    >
       <li className="w-[17%] h-full  flex items-center justify-center">
         <FaList
           className="text-2xl"
@@ -40,28 +51,13 @@ const NavebareBottom = () => {
       </li>
       <li className="w-[20%]">
         <NavLink
-          to={"earn"}
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6] h-full"
-                : ""
-            }  flex flex-col items-center gap-2 text-gray-200 text-xs font-[500]  bg-[#2a2a4d] h-full py-2 rounded-md`
-          }
-        >
-          <RiMoneyPoundBoxFill className="text-2xl" />
-          Earn
-        </NavLink>
-      </li>
-      <li className="w-[20%]">
-        <NavLink
           to={"leaderboard"}
           className={({ isActive }) =>
             `${
               isActive
                 ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
                 : ""
-            } flex flex-col items-center rounded-md gap-2 text-gray-200 text-xs  font-[500]  bg-[#33335e] mb-4 py-2 `
+            } flex flex-col items-center rounded-md gap-2 text-gray-200 text-xs font-[500] py-[2px] `
           }
         >
           <MdLeaderboard className="text-xl" />
@@ -72,13 +68,28 @@ const NavebareBottom = () => {
       </li>
       <li className="w-[20%]">
         <NavLink
+          to={"earn"}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6] h-full"
+                : ""
+            }  flex flex-col items-center gap-2 text-gray-200 text-xs font-[500]  bg-[#363663] mb-4 h-full py-2 rounded-md`
+          }
+        >
+          <RiMoneyPoundBoxFill className="text-2xl" />
+          Earn
+        </NavLink>
+      </li>
+      <li className="w-[20%]">
+        <NavLink
           to={"rewards"}
           className={({ isActive }) =>
             `${
               isActive
                 ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6] h-full"
                 : undefined
-            } flex flex-col items-center gap-2 text-gray-200 text-xs  font-[500]  bg-[#2a2a4d] h-full py-2 rounded-md`
+            } flex flex-col items-center gap-2 text-gray-200 text-xs  font-[500]  h-full py-2 rounded-md`
           }
         >
           <GiWantedReward className="text-2xl" />
@@ -93,7 +104,7 @@ const NavebareBottom = () => {
               isActive
                 ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6] h-full"
                 : undefined
-            } flex flex-col items-center gap-2 text-gray-200 text-xs  font-[500]  bg-[#2a2a4d] h-full py-2  rounded-md`
+            } flex flex-col items-center gap-2 text-gray-200 text-xs  font-[500] h-full py-2  rounded-md`
           }
         >
           <IoChatbubblesSharp className="text-2xl" />

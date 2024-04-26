@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
-import DailyStreakRewardCard from "./DailyStreakRewardCard"
+import DailyStreakRewardCard from "./DailyStreakRewardCard";
 import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/desktop-affiliate-banner-bg.png";
@@ -70,7 +70,9 @@ const DailyReward = () => {
           <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
             Earn 1,000 <span className="text-sm">or more</span> coins{" "}
             <span className="text-sm">within </span> 24 hours{" "}
-            <span className="text-sm">to keep you streak week: {5}</span>
+            <span className="text-sm">
+              to keep you streak week: {currentUser?.dailyReward.week || 1}
+            </span>
           </p>
         </div>
         <div

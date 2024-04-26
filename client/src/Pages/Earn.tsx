@@ -24,7 +24,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import {
   arrayoffers,
-  // tasks
 } from "../helper/data";
 import { Helmet } from "react-helmet-async";
 import { handleApiError, makeRequest } from "../utils";
@@ -198,7 +197,7 @@ const Earn = () => {
               <span
                 onClick={(e) => activeFilteringItem(e, "ALL")}
                 ref={allRef}
-                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
+                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
               >
                 <VscExpandAll />
                 All
@@ -206,7 +205,7 @@ const Earn = () => {
               <span
                 onClick={(e) => activeFilteringItem(e, "REWARD")}
                 ref={androidRef}
-                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
+                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
               >
                 <SiFirewalla />
                 Highest Reward
@@ -214,7 +213,7 @@ const Earn = () => {
               <span
                 onClick={(e) => activeFilteringItem(e, "POPULAR")}
                 ref={iosRef}
-                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
+                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
               >
                 <FaHeart />
                 Most Popular
@@ -222,7 +221,7 @@ const Earn = () => {
               <span
                 onClick={(e) => activeFilteringItem(e, "RAITING")}
                 ref={desktopRef}
-                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm "
+                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
               >
                 <FaStar /> Highest Rating
               </span>
@@ -389,7 +388,6 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
   const isCompleted = currentUser?.completedTasks.includes(appDetail._id);
 
   const notActiveStars = 5 - appDetail.rating;
-
   return (
     <>
       <h1 className="text-2xl font-bold text-[#78bd4f] text-center mb-4">

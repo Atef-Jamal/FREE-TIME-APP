@@ -18,6 +18,10 @@ body {
   width: 10px;
 }
 
+.pppppppp {
+  background: linear-gradient(from left #201127 to right rgb(39, 40, 83) 057);
+}
+
 ::-webkit-scrollbar-track {
   background: #886d6d;
 }

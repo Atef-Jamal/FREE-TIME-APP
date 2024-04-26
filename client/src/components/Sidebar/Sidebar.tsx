@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { BsArrowDownShort } from "react-icons/bs";
 import { BiErrorAlt, BiMenu } from "react-icons/bi";
 import { sidebareItems } from "../../helper/data";
 import {
@@ -16,7 +15,6 @@ import { TypePrivateMessage } from "../../types/privateChat";
 const Sidebar = () => {
   const { resizeSidebare, currentUser, socet, allUnReadedMesseges } =
     useAppSelector((state) => state.stateManeger);
-  const [offerExpanded, setOfferExpanded] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -87,11 +85,6 @@ const Sidebar = () => {
           <li key={index}>
             <NavLink
               to={item.path}
-              onClick={() => {
-                if (item.path === "offers") {
-                  setOfferExpanded((prev) => !prev);
-                }
-              }}
               className={({ isActive }) =>
                 `${isActive ? "bg-[#40496975]" : ""}  ${
                   resizeSidebare ? "self-center pl-0" : ""
@@ -119,46 +112,7 @@ const Sidebar = () => {
                   {item.title}
                 </span>
               )}
-              {item.path === "offers" && !resizeSidebare && (
-                <button className="text-2xl ml-auto mr-1 rounded-md px-3">
-                  <BsArrowDownShort />
-                </button>
-              )}
             </NavLink>
-            {item.path === "offers" && (
-              <div
-                className={`transition-all ${
-                  offerExpanded ? "h-[210px] my-2" : "h-0 overflow-hidden"
-                }  border-l-[0.2px] border-[rgb(94,88,88)] flex flex-col items-center gap-2 w-[80%] ml-8 ${
-                  resizeSidebare ? " ml-[10px] border-none" : ""
-                }`}
-              >
-                {item.childern?.map((element, i) => (
-                  <NavLink
-                    key={i}
-                    to={element.path}
-                    className={({ isActive }) =>
-                      `${
-                        isActive
-                          ? "border-l-2 border-yellow-400 bg-gradient-to-r from-[#253f49] to-[#35354e00]"
-                          : ""
-                      } ${
-                        resizeSidebare ? "justify-center" : "px-3"
-                      } hover:bg-gradient-to-r hover:from-[#253f49] hover:to-[#35354e00]  border-l-1 py-2 w-full  lg:px-2 flex items-center gap-2 `
-                    }
-                  >
-                    <span className="">{element.icon}</span>
-                    <span
-                      className={`transition-all ${
-                        resizeSidebare ? "w-0 h-0 overflow-hidden" : "px-3"
-                      } text-sm font-bold text-gray-400`}
-                    >
-                      {element.title}
-                    </span>
-                  </NavLink>
-                ))}
-              </div>
-            )}
           </li>
         ))}
       </ul>

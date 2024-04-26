@@ -14,15 +14,30 @@ export const getAllApps = async (req: Request, res: Response) => {
   try {
     let allApps;
     if (filter === "POPULAR") {
-      allApps = (await Task.find().limit(limitedPerPage)).filter(
-        (item) => item.completedBy.length > 0
-      );
+      allApps = (
+        await Task.find()
+          .limit(limitedPerPage)
+          .populate("completedBy", "name _id profilePicture")
+      ).filter((item) => item.completedBy.length > 0);
     } else if (filter === "REWARD") {
-      allApps = await Task.find({ prize: { $gt: 150 } }).limit(30);
+      allApps = await Task.find({ prize: { $gt: 150 } })
+        .limit(30)
+        .populate("completedBy", "name _id profilePicture");
+      allApps.sort((a, b) => {
+        return b.prize - a.prize;
+      });
     } else if (filter === "RAITING") {
-      allApps = await Task.find({ rating: { $gt: 4 } }).limit(30);
+      allApps = await Task.find({ rating: { $gt: 4 } })
+        .limit(30)
+        .populate("completedBy", "name _id profilePicture");
+      allApps.sort((a, b) => {
+        return b.rating - a.rating;
+      });
     } else {
-      allApps = await Task.find().skip(skip).limit(limitedPerPage);
+      allApps = await Task.find()
+        .skip(skip)
+        .limit(limitedPerPage)
+        .populate("completedBy", "name _id profilePicture");
     }
 
     let noApps = false;
@@ -36,7 +51,7 @@ export const getAllApps = async (req: Request, res: Response) => {
     }
     return res.status(200).json({ apps: allApps, noApps });
   } catch (error) {
-    return res.status(404).json({ error: "can't Load tasks and offere" });
+    return res.status(404).json({ error: "can't Load apps and offers" });
   }
 };
 

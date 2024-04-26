@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { RiCloseFill } from "react-icons/ri";
-import { BsArrowDownShort } from "react-icons/bs";
 import {
   setAllUnReadedMesseges,
   showPopup,
@@ -97,11 +96,6 @@ const MobileSidebare = () => {
                       {allUnReadedMesseges.length}
                     </span>
                   )}
-                {item.path === "offers" && (
-                  <button className="text-2xl ml-auto  rounded-md ">
-                    <BsArrowDownShort />
-                  </button>
-                )}
               </NavLink>
             </div>
           );
