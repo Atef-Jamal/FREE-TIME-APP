@@ -3,19 +3,20 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connecteToMongodb } from "./db/connectToMongodb";
-import authRouter from "./routes/authRout";
-import usersRouter from "./routes/usersRoute";
-import conversationsRoute from "./routes/privateChatRoute";
-import notificationRoute from "./routes/notificationRoute";
-import publicChatRoute from "./routes/publicChatRoute";
-import songRoute from "./routes/songRoute";
-import taskRoute from "./routes/taskRoute";
-import frameRoute from "./routes/frameRoute";
-import testimonialRoute from "./routes/testimonialRoute";
-import couponRoute from "./routes/couponRoute";
+import authRouter from "./routes/authRoutes";
+import usersRouter from "./routes/usersRoutes";
+import conversationsRoute from "./routes/privateChatRoutes";
+import notificationRoute from "./routes/notificationRoutes";
+import publicChatRoute from "./routes/publicChatRoutes";
+import songRoute from "./routes/songRoutes";
+import taskRoute from "./routes/appsRoutes";
+import frameRoute from "./routes/frameRoutes";
+import testimonialRoute from "./routes/testimonialRoutes";
+import couponRoute from "./routes/couponRoutes";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./models/user";
+// import Task from "./models/task";
 // import Task from "./models/task";
 
 dotenv.config();
@@ -41,8 +42,8 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 
-app.get("/", (_, res) => {
-  return res.send("hello ");
+app.get("/api/health", (_, res) => {
+  return res.status(200).json({ message: "OK" });
 });
 
 app.use("/api/users", usersRouter);
@@ -65,13 +66,6 @@ app.use("/api/coupons", couponRoute);
 
 // app.get("/api/example", async (_, res) => {
 //   try {
-//     const response = await Task.updateMany(
-//       { category: "mock" },
-//       {
-//         description:
-//           "open the app and Register for free and reach to level 1 and play within it about 3 minutes ",
-//       }
-//     );
 
 //     return res.status(200).json(response);
 //   } catch (error) {
@@ -80,7 +74,7 @@ app.use("/api/coupons", couponRoute);
 //   }
 // });
 
-app.use("/api/currentdate", (_: Request, res: Response) => {
+app.get("/api/current-date", (_: Request, res: Response) => {
   const date = new Date();
   return res.status(200).json(date);
 });

@@ -24,7 +24,7 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
       setIsLoading(true);
       try {
         const response = await makeRequest.post(
-          "api/coupons/collectdailyreward",
+          "api/coupons/collect-daily-reward",
           {
             day,
           }

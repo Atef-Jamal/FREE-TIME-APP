@@ -35,12 +35,12 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
       if (audioElement.played) {
         audioElement.pause();
         audioElement.src = song.preview;
-        dispatch(toggleThisEntity({entity: 'isPlaying', value: true}));
+        dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
         dispatch(setCurrentSong(song));
         audioElement.play();
       } else {
         audioElement.src = song.preview;
-        dispatch(toggleThisEntity({entity: 'isPlaying', value: true}));
+        dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
 
         dispatch(setCurrentSong(song));
         audioElement.play();
@@ -48,11 +48,10 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
     } else {
       if (isPlaying) {
         audioElement.pause();
-        dispatch(toggleThisEntity({entity: 'isPlaying', value: false}));
-
+        dispatch(toggleThisEntity({ entity: "isPlaying", value: false }));
       } else {
         audioElement.play();
-        dispatch(toggleThisEntity({entity: 'isPlaying', value: true}));
+        dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
       }
     }
   };
@@ -71,7 +70,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
     try {
       setIsLoading(true);
       const response = await makeRequest.post(
-        `api/songs/buysong/${songDetails.id}`,
+        `api/songs/buy-song/${songDetails.id}`,
         {
           musicTitle: songDetails.title,
         }

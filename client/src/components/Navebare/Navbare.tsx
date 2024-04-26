@@ -55,8 +55,14 @@ const Navbare = () => {
     getCurrentUser();
   }, [token]);
 
+  // const func = async () => {
+  //   const response = await makeRequest.get("/api/example");
+  //   console.log(response);
+  // };
+
   return (
     <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-2 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between overflow-hidden ">
+      {/* <button onClick={func}>click</button> */}
       <Link
         to={""}
         className="font-bold text-[1.65rem] tracking-widest italic text-white flex items-center"

@@ -63,7 +63,7 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
       setIsLoading(true);
       try {
         await makeRequest.post(
-          `api/tasks/completeguesscardtask/${taskApp._id}`,
+          `api/tasks/complete-guesscard-app/${taskApp._id}`,
           {
             example: "example",
           }

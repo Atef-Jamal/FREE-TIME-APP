@@ -7,7 +7,7 @@ import {
   getRecentMessage,
   getUnReadedMsgsCount,
   getAllUnReadedMessages,
-} from "../controllers/privateChat";
+} from "../controllers/privateChatController";
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.get(
   protectedRoute,
   getUnReadedMsgsCount
 );
-router.get("/all/allunreadedcount", protectedRoute, getAllUnReadedMessages);
+router.get("/all/all-unreaded-count", protectedRoute, getAllUnReadedMessages);
 router.patch("/:seconduserid", protectedRoute, markAsReaded);
 
 export default router;

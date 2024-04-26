@@ -5,44 +5,56 @@ import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { io, onLineUsers } from "../server";
 
-export const getAllTasks = async (req: Request, res: Response) => {
+export const getAllApps = async (req: Request, res: Response) => {
   const filter = req.query.filter || "ALL";
   const page = parseInt(req.query.page as string) || 1;
   const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 18;
   const skip = (page - 1) * limitedPerPage;
+
   try {
-    let allTasks = [];
+    let allApps;
     if (filter === "POPULAR") {
-      allTasks = (await Task.find()).filter(
+      allApps = (await Task.find().limit(limitedPerPage)).filter(
         (item) => item.completedBy.length > 0
       );
-    } else if (filter === "RAITING") {
-      allTasks = await Task.find({}).sort({ rating: -1 });
     } else if (filter === "REWARD") {
-      allTasks = await Task.find({}).sort({ prize: -1 });
+      allApps = await Task.find({ prize: { $gt: 150 } }).limit(30);
+    } else if (filter === "RAITING") {
+      allApps = await Task.find({ rating: { $gt: 4 } }).limit(30);
     } else {
-      allTasks = await Task.find({}).skip(skip).limit(limitedPerPage);
+      allApps = await Task.find().skip(skip).limit(limitedPerPage);
     }
 
     let noApps = false;
-    if (allTasks.length === 0) {
+    if (
+      allApps.length === 0 ||
+      filter === "RAITING" ||
+      filter === "REWARD" ||
+      filter === "POPULAR"
+    ) {
       noApps = true;
     }
-    return res.status(200).json({ apps: allTasks, noApps });
+    return res.status(200).json({ apps: allApps, noApps });
   } catch (error) {
     return res.status(404).json({ error: "can't Load tasks and offere" });
   }
 };
 
-export const getSingaleTask = async (req: Request, res: Response) => {
+export const getAppDetails = async (req: Request, res: Response) => {
   try {
-    const taskId = req.params.id;
-    const task = await Task.findById(taskId);
+    const appId = req.params.id;
+    const app = await Task.findById(appId);
 
-    if (!task) {
+    if (!app) {
       return res.status(404).json({ error: "offer not found" });
     }
-    return res.status(200).json(task);
+
+    if (app.isAvailable === "UNAVAILABLE") {
+      return res
+        .status(404)
+        .json({ error: "This app is Not Available, try another app" });
+    }
+    return res.status(200).json(app);
   } catch (error) {
     return res
       .status(404)
@@ -56,19 +68,20 @@ export const completingQuizApp = async (req: Request, res: Response) => {
   const { quizappId } = req.params;
   const { answers } = req.body;
   try {
-    const findedTask = await Task.findById(quizappId);
-    if (!findedTask) {
-      return res.status(404).json({ error: "Task Not Found" });
+    const app = await Task.findById(quizappId);
+
+    if (!app) {
+      return res.status(404).json({ error: "App Not Found" });
     }
 
-    if (findedTask.category === "mock") {
+    if (app.isAvailable === "UNAVAILABLE") {
       return res
         .status(404)
         .json({ error: "sorry, this app is not available" });
     }
 
     const isCompletedBefore =
-      findedTask.completedBy.includes(currentUserId) ||
+      app.completedBy.includes(currentUserId) ||
       completedTasks.includes(quizappId);
 
     if (isCompletedBefore) {
@@ -80,8 +93,8 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     let corrects = 0;
     let wrongs = 0;
 
-    for (let index = 0; index < findedTask.quizes.length; index++) {
-      if (answers[index] === findedTask.quizes[index].correctAnswer) {
+    for (let index = 0; index < app.quizes.length; index++) {
+      if (answers[index] === app.quizes[index].correctAnswer) {
         corrects++;
       } else {
         wrongs++;
@@ -96,8 +109,8 @@ export const completingQuizApp = async (req: Request, res: Response) => {
       });
     }
 
-    findedTask.completedBy.push(currentUserId);
-    const savedTask = await findedTask.save();
+    app.completedBy.push(currentUserId);
+    const savedTask = await app.save();
     await User.findByIdAndUpdate(
       currentUserId,
       { $push: { completedTasks: quizappId } },
@@ -138,12 +151,12 @@ export const completingGuessCard = async (req: Request, res: Response) => {
   const { guessCardAppId } = req.params;
   const currentUserId = req.user._id;
   try {
-    const game = await Task.findById(guessCardAppId);
+    const app = await Task.findById(guessCardAppId);
 
-    if (!game) {
+    if (!app) {
       return res.status(404).json({ error: "Game Not Found" });
     }
-    if (game.category === "mock") {
+    if (app.isAvailable === "UNAVAILABLE") {
       return res
         .status(404)
         .json({ error: "sorry, this app is not available" });
@@ -156,8 +169,8 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     }
 
     const isCompleted =
-      user.completedTasks.includes(game._id) ||
-      game.completedBy.includes(user._id);
+      user.completedTasks.includes(app._id) ||
+      app.completedBy.includes(user._id);
 
     if (isCompleted) {
       return res
@@ -165,8 +178,8 @@ export const completingGuessCard = async (req: Request, res: Response) => {
         .json({ error: "Game is already completed, try another" });
     }
 
-    game.completedBy.push(user._id);
-    user.completedTasks.push(game._id);
+    app.completedBy.push(user._id);
+    user.completedTasks.push(app._id);
 
     const createNotification = new Notification({
       belongsTo: user._id,
@@ -192,7 +205,7 @@ export const completingGuessCard = async (req: Request, res: Response) => {
 
     io.emit("public-message", populatedPublicMessage);
     await user.save();
-    await game.save();
+    await app.save();
     return res.status(200).json({ message: "passed sucessfully" });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });

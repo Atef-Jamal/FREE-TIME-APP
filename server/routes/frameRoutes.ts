@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { getAllFrames, buyFrame } from "../controllers/frame";
+import { getAllFrames, buyFrame } from "../controllers/framesController";
 import protectedRoute from "../middleware";
 
 router.get("/", getAllFrames);

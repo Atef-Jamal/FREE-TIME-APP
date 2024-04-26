@@ -2,8 +2,14 @@ import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
   {
-    category: {
+    type: {
       type: String,
+      enum: ["QUIZ_APP", "GAME_APP"],
+      required: true,
+    },
+    isAvailable: {
+      type: String,
+      enum: ["AVAILABLE", "UNAVAILABLE"],
       required: true,
     },
     description: {
@@ -14,7 +20,7 @@ const taskSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    name: {
+    title: {
       type: String,
       required: true,
     },
@@ -39,7 +45,6 @@ const taskSchema = new mongoose.Schema(
           correctAnswer: { type: String },
         },
       ],
-      required: true,
       default: [],
     },
   },

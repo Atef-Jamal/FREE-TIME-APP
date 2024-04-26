@@ -30,7 +30,7 @@ const Sidebar = () => {
       }
       try {
         const response = await makeRequest.get(
-          "api/conversations/all/allunreadedcount"
+          "api/conversations/all/all-unreaded-count"
         );
         dispatch(
           setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })

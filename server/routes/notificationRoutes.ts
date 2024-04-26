@@ -7,7 +7,7 @@ import {
   updateNotify,
   getUserActivities,
   collectReward,
-} from "../controllers/notification";
+} from "../controllers/notificationsController";
 const router = express.Router();
 
 router.get("/:id", getUserActivities);

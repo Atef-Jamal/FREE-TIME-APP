@@ -63,7 +63,7 @@ const QuizApp = ({ taskApp }: TypeProps) => {
       if (error) setError("");
       if (!loading) setLoading(true);
       const response = await makeRequest.post(
-        `api/tasks/completingquizapptask/${taskApp._id}`,
+        `api/tasks/complete-quiz-app/${taskApp._id}`,
         { answers: [...answers, selected] }
       );
       if (response.data.corrects > response.data.wrongs) {
@@ -121,7 +121,7 @@ const QuizApp = ({ taskApp }: TypeProps) => {
         <div className="w-[500px] bg-[#3f3f4dee] p-6 rounded-lg mx-2 ">
           <div className="w-full flex flex-col gap-5">
             <div className=" text-[#e79e9e] font-bold border-b-2 border-gray-400 text-xl sm:text-lg py-3">
-              {taskApp.quizes[activeQuesition].question} ?
+              {taskApp.quizes[activeQuesition].question}
             </div>
             <div id="choices" className="flex flex-col gap-3 w-full ">
               {taskApp.quizes[activeQuesition].choises.map((item, index) => {

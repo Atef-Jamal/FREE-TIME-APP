@@ -14,22 +14,15 @@ export interface TypeSingleQuiz {
 
 export interface TypeTaskApp {
   _id: string;
+  type: "QUIZ_APP" | "GAME_APP";
+  isAvailable: "AVAILABLE" | "UNAVAILABLE";
   quizes: TypeSingleQuiz[];
-  prize: number;
-  name: string;
-  category: "quiz" | "game";
+  title: string;
   image: string;
-  createdAt: Date;
-}
-
-export interface TypeGame {
-  _id: string;
-  name: string;
-  category: string;
   prize: number;
-  description: string;
   rating: number;
   completedBy: User[];
+  description: string;
   createdAt: Date;
-  image: string;
+  updatedAt: Date;
 }

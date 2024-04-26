@@ -1,9 +1,9 @@
 import express from "express";
 import protectedRoute from "../middleware";
-import { buySong } from "../controllers/songs";
+import { buySong } from "../controllers/songsController";
 
 const router = express.Router();
 
-router.post("/buysong/:id", protectedRoute, buySong);
+router.post("/buy-song/:id", protectedRoute, buySong);
 
 export default router;

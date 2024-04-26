@@ -92,11 +92,21 @@ const Playing = () => {
     );
   }
 
-  if (taskApp?.category === "quiz" && currentUser && !error) {
+  if (
+    taskApp?.type === "QUIZ_APP" &&
+    taskApp.isAvailable === "AVAILABLE" &&
+    currentUser &&
+    !error
+  ) {
     return <QuizApp taskApp={taskApp} />;
   }
 
-  if (taskApp?.category === "game" && currentUser && !error) {
+  if (
+    taskApp?.type === "GAME_APP" &&
+    taskApp.isAvailable === "AVAILABLE" &&
+    currentUser &&
+    !error
+  ) {
     return <GuessCardApp taskApp={taskApp} />;
   }
 };

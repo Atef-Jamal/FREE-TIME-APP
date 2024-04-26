@@ -26,7 +26,7 @@ const VerifyEmailBox = () => {
     }
     setLoading(true);
     try {
-      await makeRequest.post(`api/auth/sendverificationemailcode`, {
+      await makeRequest.post(`api/auth/send-verification-email-code`, {
         FOR_CONSISTENCY: "FOR_CONSISTENCY",
       });
       setOpenEnterCode(true);

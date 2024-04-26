@@ -7,6 +7,7 @@ import {
   notikLogo,
   tapresearch,
   AdscendMediaGlow,
+  empty,
   // guessColor,
 } from "../assets";
 import { PiExamDuotone } from "react-icons/pi";
@@ -23,7 +24,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import {
   arrayoffers,
-  gamePhotosArray,
   // tasks
 } from "../helper/data";
 import { Helmet } from "react-helmet-async";
@@ -34,9 +34,10 @@ import Skeleton from "../components/Others/Skeleton";
 import { showPopup } from "../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
 import { FaHeart, FaRegArrowAltCircleDown, FaStar } from "react-icons/fa";
-import { TypeGame } from "../types/others";
+import { TypeTaskApp } from "../types/others";
 import Spinner from "../components/Others/Spinner";
 import { Link } from "react-router-dom";
+import { VscExpandAll } from "react-icons/vsc";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -50,10 +51,11 @@ const Earn = () => {
   >("ALL");
   const [limit] = useState<number>(18);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [fetchedApps, setFetchedApps] = useState<TypeGame[]>([]);
-  const [appDetail, setAppDetail] = useState<TypeGame | null>(null);
+  const [fetchedApps, setFetchedApps] = useState<TypeTaskApp[]>([]);
+  const [appDetail, setAppDetail] = useState<TypeTaskApp | null>(null);
   const dispatch = useAppDispatch();
 
+  const allRef = useRef<HTMLSpanElement>(null);
   const androidRef = useRef<HTMLSpanElement>(null);
   const desktopRef = useRef<HTMLSpanElement>(null);
   const iosRef = useRef<HTMLSpanElement>(null);
@@ -75,11 +77,11 @@ const Earn = () => {
     }
   }, [appDetail]);
 
-  const activeDevice = (
+  const activeFilteringItem = (
     e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-    type: "POPULAR" | "RAITING" | "REWARD"
+    type: "ALL" | "POPULAR" | "RAITING" | "REWARD"
   ) => {
-    [androidRef, desktopRef, iosRef].forEach((item) =>
+    [allRef, androidRef, desktopRef, iosRef].forEach((item) =>
       item.current?.classList.remove("bg-[#4d3f72]")
     );
     e.currentTarget.classList.add("bg-[#4d3f72]");
@@ -90,14 +92,13 @@ const Earn = () => {
     const fetchApps = async () => {
       if (!loadingApps) setLoadingApps(true);
       try {
-        const response: { data: { apps: TypeGame[]; noApps: boolean } } =
+        const response: { data: { apps: TypeTaskApp[]; noApps: boolean } } =
           await makeRequest.get(
             `api/tasks?filter=${filterQuery}&&page=${currentPage}&&limitedPerPage=${limit}`
           );
 
-        if (response.data.noApps) {
-          setNoMoreTasks(true);
-        }
+        setNoMoreTasks(response.data.noApps);
+
         const sorted = response.data.apps.sort((a, b) => {
           if (a.completedBy.length > b.completedBy.length) {
             return -1;
@@ -140,6 +141,7 @@ const Earn = () => {
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
+    setAppDetail(null);
   };
 
   const prev = () => {
@@ -185,7 +187,7 @@ const Earn = () => {
           {selectDevice && (
             <div
               onClick={(e) => e.stopPropagation()}
-              className="absolute top-11 z-[2] left-0 bg-[#37354b] w-full flex flex-col py-3 px-1 rounded-md"
+              className="absolute top-11 z-[1] left-0 bg-[#37354b] w-full flex flex-col py-3 px-1 rounded-md"
             >
               <span
                 onClick={() => setSelectDevice(false)}
@@ -194,7 +196,15 @@ const Earn = () => {
                 x
               </span>
               <span
-                onClick={(e) => activeDevice(e, "REWARD")}
+                onClick={(e) => activeFilteringItem(e, "ALL")}
+                ref={allRef}
+                className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
+              >
+                <VscExpandAll />
+                All
+              </span>
+              <span
+                onClick={(e) => activeFilteringItem(e, "REWARD")}
                 ref={androidRef}
                 className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
               >
@@ -202,7 +212,7 @@ const Earn = () => {
                 Highest Reward
               </span>
               <span
-                onClick={(e) => activeDevice(e, "POPULAR")}
+                onClick={(e) => activeFilteringItem(e, "POPULAR")}
                 ref={iosRef}
                 className="text-gray-300 flex items-center gap-4 p-2 rounded-sm"
               >
@@ -210,7 +220,7 @@ const Earn = () => {
                 Most Popular
               </span>
               <span
-                onClick={(e) => activeDevice(e, "RAITING")}
+                onClick={(e) => activeFilteringItem(e, "RAITING")}
                 ref={desktopRef}
                 className="text-gray-300 flex items-center gap-4 p-2 rounded-sm "
               >
@@ -277,72 +287,17 @@ const Earn = () => {
                     </div>
                   </div>
                 ))}
-              {fetchedApps.map(
-                (
-                  {
-                    name,
-                    description,
-                    category,
-                    _id,
-                    prize,
-                    image,
-                    rating,
-                    completedBy,
-                  },
-                  i
-                ) => {
-                  if (category === "quiz" || category === "game") {
-                    return (
-                      <GameCard
-                        setAppDetail={setAppDetail}
-                        key={_id}
-                        _id={_id}
-                        name={name}
-                        image={image}
-                        description={description}
-                        category={category}
-                        prize={prize}
-                        rating={rating}
-                        completedBy={completedBy}
-                        firstItem={i === 0 ? true : false}
-                      />
-                    );
-                  }
-                  // if (category === "game") {
-                  //   return (
-                  //     <GameCard
-                  //       setAppDetail={setAppDetail}
-                  //       rating={rating}
-                  //       completedBy={completedBy}
-                  //       key={_id}
-                  //       _id={_id}
-                  //       name={name}
-                  //       image={guessColor}
-                  //       description={description}
-                  //       category={category}
-                  //       prize={prize}
-                  //       firstItem={false}
-                  //     />
-                  //   );
-                  // }
-                  if (category === "mock") {
-                    return (
-                      <GameCard
-                        setAppDetail={setAppDetail}
-                        rating={rating}
-                        completedBy={completedBy}
-                        key={_id}
-                        _id={_id}
-                        name={name}
-                        image={gamePhotosArray[i]}
-                        description={description}
-                        category={category}
-                        prize={prize}
-                      />
-                    );
-                  }
-                }
-              )}
+              {fetchedApps.length > 0 &&
+                fetchedApps.map((taskDetail, i) => {
+                  return (
+                    <GameCard
+                      taskDetail={taskDetail}
+                      setAppDetail={setAppDetail}
+                      key={taskDetail._id}
+                      index={i}
+                    />
+                  );
+                })}
             </div>
             {loadMore && (
               <div className="mt-4">
@@ -356,6 +311,16 @@ const Earn = () => {
               >
                 Load More
               </button>
+            )}
+            {fetchedApps.length === 0 && (
+              <div className="opacity-40 w-full h-[300px] flex flex-col items-center justify-center gap-2">
+                <img
+                  src={empty}
+                  alt=""
+                  className="w-12 h-12 object-cover object-center"
+                />{" "}
+                <p>No Apps Matches your Filter Query</p>{" "}
+              </div>
             )}
           </div>
           <div className={`bg-[#1c1e31] w-[50%] `}>
@@ -392,50 +357,24 @@ const Earn = () => {
           <PiExamDuotone />
         </div>
         <div className="flex gap-3 flex-wrap ml-4">
-          <div className="relative bg-gradient-to-b from-[#34353f] to-[#41425c] rounded-lg flex flex-col justify-center px-2 h-56 gap-6">
-            <img alt={""} src={notikLogo} className="w-24 h-12" />
-            <p className="text-white font-bold tracking-wide ">BitLaps</p>
-            <div className="flex gap-1 ">
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-            </div>
-          </div>
-          <div className="relative bg-gradient-to-b from-[#34353f] to-[#41425c] rounded-lg flex flex-col items-center justify-center px-2 h-56 gap-6">
-            <img alt={""} src={AdscendMediaGlow} className="w-24 h-12" />
-            <p className="text-white font-bold tracking-wide mt-4">BitLaps</p>
-            <div className="flex gap-1 mt-2">
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-            </div>
-          </div>
-          <div className="relative bg-gradient-to-b from-[#34353f] to-[#41425c] rounded-lg flex flex-col items-center justify-center px-2 h-56 gap-6">
-            <img alt={""} src={tapresearch} className="w-24 h-12" />
-            <p className="text-white font-bold tracking-wide mt-4">BitLaps</p>
-            <div className="flex gap-1 mt-2">
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-            </div>
-          </div>
-          <div className="relative bg-gradient-to-b from-[#34353f] to-[#41425c] rounded-lg flex flex-col items-center justify-center px-2 h-56 gap-6">
-            <img alt={""} src={tapresearch} className="w-24 h-12" />
-            <p className="text-white font-bold tracking-wide mt-4">BitLaps</p>
-            <div className="flex gap-1 mt-2">
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-              <IoStar />
-            </div>
-          </div>
+          {[notikLogo, AdscendMediaGlow, tapresearch, tapresearch].map(
+            (item, i) => (
+              <div
+                key={item + i}
+                className="relative bg-gradient-to-b from-[#34353f] to-[#41425c] rounded-lg flex flex-col justify-center px-2 h-56 gap-6"
+              >
+                <img alt={""} src={item} className="w-24 h-12" />
+                <p className="text-white font-bold tracking-wide ">BitLaps</p>
+                <div className="flex gap-1 ">
+                  <IoStar />
+                  <IoStar />
+                  <IoStar />
+                  <IoStar />
+                  <IoStar />
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
     </div>
@@ -444,9 +383,10 @@ const Earn = () => {
 
 export default Earn;
 
-const AppDetail = ({ appDetail }: { appDetail: TypeGame }) => {
+const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [expandUsers, setExpandUsers] = useState(false);
+  const isCompleted = currentUser?.completedTasks.includes(appDetail._id);
 
   const notActiveStars = 5 - appDetail.rating;
 
@@ -457,7 +397,7 @@ const AppDetail = ({ appDetail }: { appDetail: TypeGame }) => {
       </h1>
       <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
         <span className="w-full text-[#b9a3a3]">
-          <span className="mr-2 text-[#73f1a8]">Name :</span> {appDetail?.name}
+          <span className="mr-2 text-[#73f1a8]">Name :</span> {appDetail?.title}
         </span>
         <span className="w-full text-[#b9a3a3]">
           <span className="mr-2 text-[#73f1a8]">Description :</span>
@@ -506,30 +446,27 @@ const AppDetail = ({ appDetail }: { appDetail: TypeGame }) => {
           Reward :
           <span className="text-[#6676ff]">{appDetail.prize} Points</span>
         </span>
-        {currentUser?.completedTasks.includes(appDetail._id) ? (
+        {isCompleted && (
           <button
-            className={`w-full py-2  sm:text-xs bg-[#171430d5] text-sm text-white rounded-md border border-gray-700`}
+            className={`w-full py-2 sm:text-xs bg-[#171430d5] text-sm text-white rounded-md border border-gray-700`}
           >
             Completed
           </button>
-        ) : (
-          <>
-            {appDetail.category === ("quiz" || "game") && (
-              <Link
-                to={`/playing/${appDetail._id}`}
-                className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
-              >
-                START NOW
-              </Link>
-            )}
-            {appDetail.category === "mock" && (
-              <button
-                className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
-              >
-                Not Available
-              </button>
-            )}
-          </>
+        )}
+        {!isCompleted && appDetail.isAvailable === "AVAILABLE" && (
+          <Link
+            to={`/playing/${appDetail._id}`}
+            className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
+          >
+            START NOW
+          </Link>
+        )}
+        {appDetail.isAvailable === "UNAVAILABLE" && (
+          <button
+            className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
+          >
+            Not Available
+          </button>
         )}
       </div>
     </>

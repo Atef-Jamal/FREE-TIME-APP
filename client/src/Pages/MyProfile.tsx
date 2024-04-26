@@ -68,7 +68,7 @@ const MyProfile = () => {
     }
     try {
       const response = await makeRequest.get(
-        `api/users/changephotoframe/${frameObject._id}`
+        `api/users/change-photo-frame/${frameObject._id}`
       );
       dispatch(setCurrentUser({ ...currentUser, activeFrame: response.data }));
       dispatch(
@@ -95,7 +95,7 @@ const MyProfile = () => {
     }
     try {
       const response = await makeRequest.get(
-        "api/users/unselectuserphotoframe"
+        "api/users/unselect-user-photoframe"
       );
       if (response.status === 200) {
         dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));

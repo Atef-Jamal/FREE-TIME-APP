@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { RiCloseFill } from "react-icons/ri";
 import { BsArrowDownShort } from "react-icons/bs";
@@ -15,14 +15,13 @@ import { BiErrorAlt } from "react-icons/bi";
 const MobileSidebare = () => {
   const { openSidebarMobile, currentUser, allUnReadedMesseges } =
     useAppSelector((state) => state.stateManeger);
-  const [offerExpanded, setOfferExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getAllUnReadedMsgs = async () => {
       try {
         const response = await makeRequest.get(
-          "api/conversations/all/allunreadedcount"
+          "api/conversations/all/all-unreaded-count"
         );
         dispatch(
           setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })
@@ -76,11 +75,7 @@ const MobileSidebare = () => {
             <div key={index}>
               <NavLink
                 to={item.path}
-                onClick={() => {
-                  if (item.path === "offers") {
-                    setOfferExpanded((prev) => !prev);
-                  }
-                }}
+                onClick={() => {}}
                 className={({ isActive }) =>
                   `${
                     isActive ? "bg-[#40496975]" : ""
@@ -108,29 +103,6 @@ const MobileSidebare = () => {
                   </button>
                 )}
               </NavLink>
-              {item.path === "offers" && (
-                <div
-                  className={`transition-all ${
-                    offerExpanded ? "h-[180px] my-2" : "h-0 overflow-hidden"
-                  }  border-l-[0.2px] border-[rgb(94,88,88)] flex flex-col items-center gap-2 w-[80%] ml-4`}
-                >
-                  {item.childern?.map((element, index) => (
-                    <NavLink
-                      key={index}
-                      to={element.path}
-                      className={({ isActive }) =>
-                        `${
-                          isActive
-                            ? "border-l-2 border-yellow-400 bg-gradient-to-r from-[#253f49] to-[#35354e00]"
-                            : ""
-                        }  px-5 text-sm border-l-1 py-1 w-full font-bold   lg:font-bold text-gray-400 `
-                      }
-                    >
-                      {element.title}
-                    </NavLink>
-                  ))}
-                </div>
-              )}
             </div>
           );
         })}

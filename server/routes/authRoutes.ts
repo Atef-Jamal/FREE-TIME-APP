@@ -7,7 +7,7 @@ import {
   sendEmailVerificationCode,
   verifyEmailCode,
   changeName,
-} from "../controllers/auth";
+} from "../controllers/authController";
 import protectedRoute from "../middleware";
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/currentuser", getCurrentUser);
 router.post(
-  "/sendverificationemailcode",
+  "/send-verification-email-code",
   protectedRoute,
   sendEmailVerificationCode
 );

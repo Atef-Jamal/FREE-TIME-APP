@@ -5,7 +5,7 @@ import {
   createPublicMessage,
   reactToPublicMessage,
   deletePublicMessage,
-} from "../controllers/publicChat";
+} from "../controllers/publicChatController";
 
 const router = express.Router();
 
