@@ -5,7 +5,6 @@ import Affiliates from "./Affiliates";
 import LeaderBoard from "./LeaderBoard";
 import CashOut from "./CashOut";
 import Rewards from "./Rewards";
-import Games from "./Games";
 import MyProfile from "./MyProfile";
 import OtherUserProfile from "./OtherUserProfile";
 import MarketPlace from "./MarketPlace";
@@ -20,7 +19,6 @@ export {
   LeaderBoard,
   CashOut,
   Rewards,
-  Games,
   MyProfile,
   OtherUserProfile,
   MarketPlace,

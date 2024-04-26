@@ -16,7 +16,7 @@ root.render(
         <Suspense
           fallback={
             <div className="w-screen h-screen flex items-center justify-center">
-              <Spinner className="w-28 h-28 sm:w-20 sm:h-20 sm:border-[4px] border-[7px] mx-auto" />
+              <Spinner className="w-28 h-28 sm:w-20 sm:h-20 sm:border-[4px] border-[7px] border-b-yellow-500 border-l-yellow-500 mx-auto" />
             </div>
           }
         >

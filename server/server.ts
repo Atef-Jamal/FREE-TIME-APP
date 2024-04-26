@@ -16,6 +16,7 @@ import couponRoute from "./routes/couponRoute";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./models/user";
+// import Task from "./models/task";
 
 dotenv.config();
 const app = express();
@@ -61,6 +62,23 @@ app.use("/api/frames", frameRoute);
 app.use("/api/testimonials", testimonialRoute);
 
 app.use("/api/coupons", couponRoute);
+
+// app.get("/api/example", async (_, res) => {
+//   try {
+//     const response = await Task.updateMany(
+//       { category: "mock" },
+//       {
+//         description:
+//           "open the app and Register for free and reach to level 1 and play within it about 3 minutes ",
+//       }
+//     );
+
+//     return res.status(200).json(response);
+//   } catch (error) {
+//     console.log(error);
+//     return;
+//   }
+// });
 
 app.use("/api/currentdate", (_: Request, res: Response) => {
   const date = new Date();

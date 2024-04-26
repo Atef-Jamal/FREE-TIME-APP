@@ -5,10 +5,30 @@ import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { io, onLineUsers } from "../server";
 
-export const getAllTasks = async (_: Request, res: Response) => {
+export const getAllTasks = async (req: Request, res: Response) => {
+  const filter = req.query.filter || "ALL";
+  const page = parseInt(req.query.page as string) || 1;
+  const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 18;
+  const skip = (page - 1) * limitedPerPage;
   try {
-    const allTasks = await Task.find();
-    return res.status(200).json(allTasks);
+    let allTasks = [];
+    if (filter === "POPULAR") {
+      allTasks = (await Task.find()).filter(
+        (item) => item.completedBy.length > 0
+      );
+    } else if (filter === "RAITING") {
+      allTasks = await Task.find({}).sort({ rating: -1 });
+    } else if (filter === "REWARD") {
+      allTasks = await Task.find({}).sort({ prize: -1 });
+    } else {
+      allTasks = await Task.find({}).skip(skip).limit(limitedPerPage);
+    }
+
+    let noApps = false;
+    if (allTasks.length === 0) {
+      noApps = true;
+    }
+    return res.status(200).json({ apps: allTasks, noApps });
   } catch (error) {
     return res.status(404).json({ error: "can't Load tasks and offere" });
   }
@@ -40,6 +60,13 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     if (!findedTask) {
       return res.status(404).json({ error: "Task Not Found" });
     }
+
+    if (findedTask.category === "mock") {
+      return res
+        .status(404)
+        .json({ error: "sorry, this app is not available" });
+    }
+
     const isCompletedBefore =
       findedTask.completedBy.includes(currentUserId) ||
       completedTasks.includes(quizappId);
@@ -116,6 +143,12 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     if (!game) {
       return res.status(404).json({ error: "Game Not Found" });
     }
+    if (game.category === "mock") {
+      return res
+        .status(404)
+        .json({ error: "sorry, this app is not available" });
+    }
+
     const user = await User.findById(currentUserId);
 
     if (!user) {

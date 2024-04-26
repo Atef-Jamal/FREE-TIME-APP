@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface TypeDailyReward {
   day: number;
   isCollected: boolean;
@@ -26,6 +28,8 @@ export interface TypeGame {
   category: string;
   prize: number;
   description: string;
+  rating: number;
+  completedBy: User[];
   createdAt: Date;
   image: string;
 }

@@ -27,6 +27,10 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
       default: [],
     },
+    rating: {
+      type: Number,
+      default: 5,
+    },
     quizes: {
       type: [
         {

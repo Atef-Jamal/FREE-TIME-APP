@@ -3,12 +3,8 @@ import UserImage from "../../Others/UserImage";
 import { NavLink } from "react-router-dom";
 import { timeAgoFromMongoDBDate } from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import {
-  setRefetchUnReadedMessagesCount,
-  showPopup,
-} from "../../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../../utils";
-import { BiErrorAlt } from "react-icons/bi";
+import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
+import { makeRequest } from "../../../utils";
 import { TypePrivateMessage } from "../../../types/privateChat";
 import { TypeFrame } from "../../../types/frame";
 import { User } from "../../../types/user";
@@ -31,15 +27,7 @@ const People = ({ userInfo }: { userInfo: User }) => {
         `api/conversations/recentmessage/${user._id}`
       );
       setRecentMessage(response.data);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          status: true,
-          message: handleApiError(error),
-          icon: <BiErrorAlt />,
-        })
-      );
-    }
+    } catch (error) {}
   };
 
   const getUnReadedMessagesCount = async () => {
@@ -49,15 +37,7 @@ const People = ({ userInfo }: { userInfo: User }) => {
       );
 
       setUnReadedCount(response.data.count);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          status: true,
-          message: handleApiError(error),
-          icon: <BiErrorAlt />,
-        })
-      );
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

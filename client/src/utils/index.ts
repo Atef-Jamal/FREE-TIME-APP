@@ -13,7 +13,7 @@ export const makeRequest = axios.create({
 export const handleApiError = (error: any) => {
   let errorMessage = "";
   if (
-    error.response.data.error &&
+    error?.response?.data?.error &&
     typeof error.response.data.error === "string"
   ) {
     errorMessage = error.response.data.error;
