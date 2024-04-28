@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   rank1Desktop,
   rank2Desktop,
@@ -25,12 +25,14 @@ import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frame";
 import Spinner from "../components/Others/Spinner";
+import { countryListAllIsoData } from "../helper/data";
 
 const MyProfile = () => {
   const { currentUser, allMusics, currentUserIsFetched } = useAppSelector(
     (state) => state.stateManeger
   );
   const [searchParams, setSearchParams] = useSearchParams();
+  const [userCountry, setUserCountry] = useState("");
 
   const framesRef = useRef<HTMLDivElement>(null);
   const referralLinkRef = useRef<HTMLDivElement>(null);
@@ -168,6 +170,32 @@ const MyProfile = () => {
     }
   }, [paramValue]);
 
+  useEffect(() => {
+    const getUserCountry = async () => {
+      const response = await makeRequest.get("api/user-location");
+      const location = response.data.location.country;
+      if (!location) {
+        return;
+      }
+      if (location.country.length === 2) {
+        const country = countryListAllIsoData.find(
+          (item) => item.code === location.country
+        );
+        if (country) {
+          setUserCountry(country.name);
+        }
+      } else if (location.country.length === 3) {
+        const country = countryListAllIsoData.find(
+          (item) => item.code3 === location.country
+        );
+        if (country) {
+          setUserCountry(country.name);
+        }
+      }
+    };
+    getUserCountry();
+  }, []);
+
   if (!currentUserIsFetched) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -215,7 +243,9 @@ const MyProfile = () => {
                     src={egypt}
                     className="w-5 h-5 rounded-md sm:w-3 sm:h-3 "
                   />
-                  <span className="sm:text-sm text-[#f75887ee]">EGYPT</span>
+                  <span className="sm:text-sm text-[#f75887ee]">
+                    {userCountry}
+                  </span>
                 </span>
                 <div className="flex flex-col items-center w-[75%]">
                   <div className="relative w-full flex flex-col">

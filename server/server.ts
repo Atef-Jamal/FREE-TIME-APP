@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connecteToMongodb } from "./db/connectToMongodb";
+import gioip from "geoip-lite";
 import authRouter from "./routes/authRoutes";
 import usersRouter from "./routes/usersRoutes";
 import conversationsRoute from "./routes/privateChatRoutes";
@@ -16,8 +17,6 @@ import couponRoute from "./routes/couponRoutes";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./models/user";
-// import Task from "./models/task";
-// import Task from "./models/task";
 
 dotenv.config();
 const app = express();
@@ -77,6 +76,11 @@ app.use("/api/coupons", couponRoute);
 app.get("/api/current-date", (_: Request, res: Response) => {
   const date = new Date();
   return res.status(200).json(date);
+});
+
+app.get("/api/user-location", (req: Request, res: Response) => {
+  const location = gioip.lookup(req.ip || "");
+  return res.status(200).json({ location });
 });
 
 io.on("connection", (socet) => {

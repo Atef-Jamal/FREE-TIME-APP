@@ -3,6 +3,7 @@ import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import MobileChat from "./components/Chat/PublicChat/MobileChat/MobileChat";
 import ChatBody from "./components/Chat/PrivateChat/ChatBody";
+// import { makeRequest } from "./utils";
 
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
@@ -148,6 +149,13 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  // useEffect(() => {
+  //   const getLocation = async () => {
+  //     const response = await makeRequest.get("api/user-location");
+  //     console.log(response);
+  //   };
+  //   getLocation();
+  // }, []);
   return <RouterProvider router={router} />;
 };
 
