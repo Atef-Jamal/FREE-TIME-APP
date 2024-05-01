@@ -21,12 +21,6 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
 
   const dispatch = useAppDispatch();
 
-  const body = {
-    messageText: message,
-    mentioned: user?._id,
-    type: "MESSAGE",
-  };
-
   const sendMessageHandler = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!currentUser) return;
@@ -48,7 +42,11 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
     }
     try {
       setMessage("");
-      const response = await makeRequest.post("api/publicchat", body);
+      const response = await makeRequest.post("api/publicchat", {
+        type: "MESSAGE",
+        messageText: message,
+        mentioned: user?._id,
+      });
       socet?.emit("public-message", response.data);
       if (user) {
         setUser(null);

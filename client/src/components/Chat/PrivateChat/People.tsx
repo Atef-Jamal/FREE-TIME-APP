@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { TypePrivateMessage } from "../../../types/privateChat";
-import { TypeFrame } from "../../../types/frame";
 import { User } from "../../../types/user";
 import { useListenToEvent } from "../../../hooks/hooks";
 
@@ -19,8 +18,28 @@ const People = ({ userInfo }: { userInfo: User }) => {
     null
   );
   const [unReadedCount, setUnReadedCount] = useState<number>(0);
-
   const dispatch = useAppDispatch();
+
+  useListenToEvent<TypePrivateMessage>({
+    eventToListen: "private-message",
+    onUpdate: (data) => {
+      if (data.sender._id === user._id) {
+        setRecentMessage(data);
+        if (location.pathname.includes(user._id) === false) {
+          setUnReadedCount((prev) => prev + 1);
+        }
+      }
+    },
+  });
+
+  useListenToEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
+      if (updatedUser._id === user._id) {
+        setUser(updatedUser);
+      }
+    },
+  });
 
   const getRecentMessage = async () => {
     try {
@@ -53,30 +72,6 @@ const People = ({ userInfo }: { userInfo: User }) => {
       dispatch(setRefetchUnReadedMessagesCount(""));
     }
   }, [reFetchThisUserId]);
-
-  useListenToEvent<TypePrivateMessage>({
-    eventToListen: "private-message",
-    onUpdate: (data) => {
-      if (data.sender._id === user._id) {
-        setRecentMessage(data);
-        if (location.pathname.includes(user._id) === false) {
-          setUnReadedCount((prev) => prev + 1);
-        }
-      }
-    },
-  });
-
-  useListenToEvent<{
-    belongsTo: string;
-    frameObj: TypeFrame;
-  }>({
-    eventToListen: "user-photo-frame-changed",
-    onUpdate: (data) => {
-      if (data.belongsTo === user._id) {
-        setUser((prevUser) => ({ ...prevUser, activeFrame: data.frameObj }));
-      }
-    },
-  });
 
   let date = "";
   if (recentMessage) {

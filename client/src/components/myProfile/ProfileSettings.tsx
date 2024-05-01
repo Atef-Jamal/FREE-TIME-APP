@@ -13,7 +13,7 @@ import { BiErrorAlt } from "react-icons/bi";
 import Spinner from "../Others/Spinner";
 
 const ProfileSettings = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
@@ -50,6 +50,7 @@ const ProfileSettings = () => {
           icon: <FaRegCheckCircle />,
         })
       );
+      socet?.emit("user-updated", { ...currentUser, name: response.data.name });
     } catch (error) {
       dispatch(
         showPopup({

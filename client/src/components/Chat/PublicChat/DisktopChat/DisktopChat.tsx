@@ -27,6 +27,13 @@ const DisktopChat = () => {
   const searchValue = searchParams.get("messageid");
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
 
+  useListenToEvent<TypePublicChatItem>({
+    eventToListen: "public-message",
+    onUpdate: (data) => {
+      setMessages((prev) => [...prev, data]);
+    },
+  });
+
   useEffect(() => {
     const scrollToMessage = () => {
       mentionedMessageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,12 +58,7 @@ const DisktopChat = () => {
     }
   }, [messages]);
 
-  useListenToEvent<TypePublicChatItem>({
-    eventToListen: "public-message",
-    onUpdate: (data) => {
-      setMessages((prev) => [...prev, data]);
-    },
-  });
+
 
   if (error) {
     return (

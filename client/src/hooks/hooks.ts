@@ -76,7 +76,7 @@ export const useFetchUser = ({
     getUserData();
   }, dependencies);
 
-  return { user, loading, error };
+  return { user, setUser, loading, error };
 };
 
 export const useFetchActivities = ({

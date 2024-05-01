@@ -79,7 +79,6 @@ export const register = async (req: Request, res: Response) => {
         );
       }
     }
-    io.emit("new-user-register", savedUser);
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
     return res
@@ -297,7 +296,7 @@ export const changeName = async (req: Request, res: Response) => {
     }
     user.name = newName.toString();
     const savedUser = await user.save();
-    return res.status(200).json(savedUser);
+    return res.status(200).json({ name: savedUser.name });
   } catch (error) {
     return res
       .status(404)

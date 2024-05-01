@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   rank1Desktop,
   rank2Desktop,
@@ -25,14 +25,13 @@ import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frame";
 import Spinner from "../components/Others/Spinner";
-import { countryListAllIsoData } from "../helper/data";
+// import { countryListAllIsoData } from "../helper/data";
 
 const MyProfile = () => {
-  const { currentUser, allMusics, currentUserIsFetched } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, allMusics, currentUserIsFetched, socet } =
+    useAppSelector((state) => state.stateManeger);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [userCountry, setUserCountry] = useState("");
+  // const [userCountry, setUserCountry] = useState("");
 
   const framesRef = useRef<HTMLDivElement>(null);
   const referralLinkRef = useRef<HTMLDivElement>(null);
@@ -70,7 +69,7 @@ const MyProfile = () => {
     }
     try {
       const response = await makeRequest.get(
-        `api/users/change-photo-frame/${frameObject._id}`
+        `api/users/select-myphoto-frame/${frameObject._id}`
       );
       dispatch(setCurrentUser({ ...currentUser, activeFrame: response.data }));
       dispatch(
@@ -80,6 +79,10 @@ const MyProfile = () => {
           icon: <FaRegCheckCircle />,
         })
       );
+      socet?.emit("user-updated", {
+        ...currentUser,
+        activeFrame: response.data,
+      });
     } catch (error) {
       dispatch(
         showPopup({
@@ -96,12 +99,8 @@ const MyProfile = () => {
       return;
     }
     try {
-      const response = await makeRequest.get(
-        "api/users/unselect-user-photoframe"
-      );
-      if (response.status === 200) {
-        dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));
-      }
+      await makeRequest.get("api/users/unselect-myphoto-frame");
+      dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));
       dispatch(
         showPopup({
           status: true,
@@ -109,6 +108,7 @@ const MyProfile = () => {
           icon: <FaRegCheckCircle />,
         })
       );
+      socet?.emit("user-updated", { ...currentUser, activeFrame: null });
     } catch (error) {
       dispatch(
         showPopup({
@@ -170,31 +170,31 @@ const MyProfile = () => {
     }
   }, [paramValue]);
 
-  useEffect(() => {
-    const getUserCountry = async () => {
-      const response = await makeRequest.get("api/user-location");
-      const location = response.data.location.country;
-      if (!location) {
-        return;
-      }
-      if (location.country.length === 2) {
-        const country = countryListAllIsoData.find(
-          (item) => item.code === location.country
-        );
-        if (country) {
-          setUserCountry(country.name);
-        }
-      } else if (location.country.length === 3) {
-        const country = countryListAllIsoData.find(
-          (item) => item.code3 === location.country
-        );
-        if (country) {
-          setUserCountry(country.name);
-        }
-      }
-    };
-    getUserCountry();
-  }, []);
+  // useEffect(() => {
+  //   const getUserCountry = async () => {
+  //     const response = await makeRequest.get("api/user-location");
+  //     const location = response.data.location.country;
+  //     if (!location) {
+  //       return;
+  //     }
+  //     if (location.country.length === 2) {
+  //       const country = countryListAllIsoData.find(
+  //         (item) => item.code === location.country
+  //       );
+  //       if (country) {
+  //         setUserCountry(country.name);
+  //       }
+  //     } else if (location.country.length === 3) {
+  //       const country = countryListAllIsoData.find(
+  //         (item) => item.code3 === location.country
+  //       );
+  //       if (country) {
+  //         setUserCountry(country.name);
+  //       }
+  //     }
+  //   };
+  //   getUserCountry();
+  // }, []);
 
   if (!currentUserIsFetched) {
     return (
@@ -244,7 +244,7 @@ const MyProfile = () => {
                     className="w-5 h-5 rounded-md sm:w-3 sm:h-3 "
                   />
                   <span className="sm:text-sm text-[#f75887ee]">
-                    {userCountry}
+                    {/* {userCountry} */}Egypt
                   </span>
                 </span>
                 <div className="flex flex-col items-center w-[75%]">

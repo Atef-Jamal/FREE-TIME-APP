@@ -11,20 +11,36 @@ import UserImage from "../components/Others/UserImage";
 import ActivitiesList from "../components/OtherUserProfile/ActivitiesList";
 import { OtherUserProfileSkeleton } from "../components/OtherUserProfile/OtherUserProfileSkeleton";
 
-import { useFetchActivities, useFetchUser } from "../hooks/hooks";
+import {
+  useFetchActivities,
+  useFetchUser,
+  useListenToEvent,
+} from "../hooks/hooks";
+import { User } from "../types/user";
 
 const OtherUserProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const { id } = useParams();
 
-  const { user, loading, error } = useFetchUser({
+  const { user, setUser, loading, error } = useFetchUser({
     userId: id,
     initialLoading: true,
     dependencies: [id],
   });
+
   const { activities } = useFetchActivities({
     userId: id,
     initialLoading: true,
+    dependencies: [id],
+  });
+
+  useListenToEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
+      if (updatedUser._id === id) {
+        setUser(updatedUser);
+      }
+    },
     dependencies: [id],
   });
 

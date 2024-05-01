@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 import Frame from "../models/frame";
-import { io } from "../server";
 
 export const allUsers = async (_: Request, res: Response) => {
   try {
@@ -91,10 +90,10 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
       }
     );
 
-    io.emit("user-photo-frame-changed", {
-      belongsTo: currentUserId,
-      frameObj: frame,
-    });
+    // io.emit("user-photo-frame-changed", {
+    //   belongsTo: currentUserId,
+    //   frameObj: frame,
+    // });
 
     return res.status(200).json(frame);
   } catch (error) {
@@ -108,10 +107,10 @@ export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
     await User.findByIdAndUpdate(currentUserId, {
       activeFrame: null,
     });
-    io.emit("user-photo-frame-changed", {
-      belongsTo: currentUserId,
-      frameObj: null,
-    });
+    // io.emit("user-photo-frame-changed", {
+    //   belongsTo: currentUserId,
+    //   frameObj: null,
+    // });
     return res.status(200).json({ message: "suceess" });
   } catch (error) {
     return res.status(404).json({ error: "can't change your Frame" });

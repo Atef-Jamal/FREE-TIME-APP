@@ -49,7 +49,7 @@ const RegisterationForm = () => {
   const [filePercentage, setFilePercentage] = useState<number>(0);
   const [submiting, setSubmiting] = useState(false);
   const [searchParams] = useSearchParams();
-  const { currentUser, isSignIn } = useAppSelector(
+  const { currentUser, isSignIn, socet } = useAppSelector(
     (state) => state.stateManeger
   );
 
@@ -125,6 +125,7 @@ const RegisterationForm = () => {
         );
         if (axiosResponse.status === 201) {
           localStorage.setItem("token", axiosResponse.data.token);
+          socet?.emit("new-user-joined", axiosResponse.data);
         }
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
       } catch (error: any) {
@@ -323,7 +324,9 @@ const RegisterationForm = () => {
           </span>
           <div className="flex gap-5">
             <button
-              onClick={() => dispatch(toggleThisEntity({entity: "isSignIn", value: true}))}
+              onClick={() =>
+                dispatch(toggleThisEntity({ entity: "isSignIn", value: true }))
+              }
               className={`${
                 isSignIn
                   ? " border-b-[#fff]  text-[#f8dcdc] "
@@ -335,7 +338,9 @@ const RegisterationForm = () => {
 
             <button
               onClick={() => {
-                dispatch(toggleThisEntity({entity: "isSignIn", value: false}))
+                dispatch(
+                  toggleThisEntity({ entity: "isSignIn", value: false })
+                );
               }}
               className={`${
                 !isSignIn

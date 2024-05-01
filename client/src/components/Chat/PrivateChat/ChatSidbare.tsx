@@ -16,9 +16,25 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const [emptyResults, setEmptyResults] = useState<boolean>(false);
 
   useListenToEvent<User>({
-    eventToListen: "new-user-register",
-    onUpdate: (data) => {
-      setUsers((prev) => [...prev, data]);
+    eventToListen: "new-user-joined",
+    onUpdate: (newUser) => {
+      setUsers((prev) => [...prev, newUser]);
+    },
+  });
+
+  useListenToEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
+      setUsers((prev) => {
+        const newArry = prev.map((usr) => {
+          if (usr._id === updatedUser._id) {
+            return updatedUser;
+          } else {
+            return usr;
+          }
+        });
+        return newArry;
+      });
     },
   });
 

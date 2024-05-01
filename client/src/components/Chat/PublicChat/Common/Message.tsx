@@ -13,8 +13,8 @@ import { handleApiError, makeRequest } from "../../../../utils";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 import { TypePublicChatMessage } from "../../../../types/publicChat";
-import { TypeFrame } from "../../../../types/frame";
 import { useListenToEvent } from "../../../../hooks/hooks";
+import { User } from "../../../../types/user";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -127,28 +127,24 @@ const Message = ({
 
   useListenToEvent<TypePublicChatMessage>({
     eventToListen: "interact-with-public-message",
-    onUpdate: (data) => {
-      if (data._id === _id) {
-        setMessageItem(data);
+    onUpdate: (updatedMessage) => {
+      if (updatedMessage._id === _id) {
+        setMessageItem(updatedMessage);
       }
     },
   });
 
-  useListenToEvent<{
-    belongsTo: string;
-    frameObj: TypeFrame;
-  }>({
-    eventToListen: "user-photo-frame-changed",
-    onUpdate: (data) => {
-       if (sender._id === data.belongsTo) {
-      setMessageItem((prevMessageItem) => ({
-        ...prevMessageItem,
-        sender: { ...prevMessageItem.sender, activeFrame: data.frameObj },
-      }));
-    }
+  useListenToEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
+      if (sender._id === updatedUser._id) {
+        setMessageItem((prevMessageItem) => ({
+          ...prevMessageItem,
+          sender: updatedUser,
+        }));
+      }
     },
   });
-
 
   return (
     <div

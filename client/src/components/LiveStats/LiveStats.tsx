@@ -8,7 +8,6 @@ import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/user";
-import { TypeFrame } from "../../types/frame";
 import { useFetchAllUsers, useListenToEvent } from "../../hooks/hooks";
 
 const LiveStats = () => {
@@ -24,27 +23,26 @@ const LiveStats = () => {
     { title: "Egypt", lang: "ar" },
   ];
 
-  useListenToEvent<{
-    belongsTo: string;
-    frameObj: TypeFrame;
-  }>({
-    eventToListen: "user-photo-frame-changed",
-    onUpdate: (data) => {
+  useListenToEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
       setUsers((prevUsers) => {
-        prevUsers.forEach((user) => {
-          if (user._id === data.belongsTo) {
-            user.activeFrame = data.frameObj;
+        const newArr = prevUsers.map((userItem) => {
+          if (userItem._id === updatedUser._id) {
+            return updatedUser;
+          } else {
+            return userItem;
           }
         });
-        return prevUsers;
+        return newArr;
       });
     },
   });
 
   useListenToEvent<User>({
-    eventToListen: "new-user-register",
-    onUpdate: (data) => {
-      setUsers((prev) => [...prev, data]);
+    eventToListen: "new-user-joined",
+    onUpdate: (newUser) => {
+      setUsers((prev) => [...prev, newUser]);
     },
   });
 

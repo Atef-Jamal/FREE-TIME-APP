@@ -13,11 +13,11 @@ const router = express.Router();
 
 router.get("/", allUsers);
 router.get(
-  "/change-photo-frame/:frameId",
+  "/select-myphoto-frame/:frameId",
   protectedRoute,
   changeUserPhotoFrame
 );
-router.get("/unselect-user-photoframe", protectedRoute, unselectUserPhotoFrame);
+router.get("/unselect-myphoto-frame", protectedRoute, unselectUserPhotoFrame);
 router.get("/:userId", getUser);
 router.get("/who-visit-me/me", protectedRoute, getWhoVisitMe);
 router.patch("/:userId", protectedRoute, updateUser);

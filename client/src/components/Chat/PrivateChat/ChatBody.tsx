@@ -14,7 +14,6 @@ import { BiErrorAlt } from "react-icons/bi";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import { TypePrivateMessage } from "../../../types/privateChat";
 import { User } from "../../../types/user";
-import { TypeFrame } from "../../../types/frame";
 import {
   useFetchPrivateChatMessages,
   useListenToEvent,
@@ -33,30 +32,6 @@ const ChatBody = () => {
   const [conversationReaded, setConversationReaded] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const scrollToElement = () => {
-      lastMessageRef.current?.scrollIntoView(false);
-    };
-    const getMyLastMessage = messages.filter((item) => {
-      return item.sender._id === currentUser?._id;
-    });
-    const lastOne = getMyLastMessage[getMyLastMessage.length - 1];
-    if (lastOne?.isRead === true) {
-      if (conversationReaded === false) setConversationReaded(true);
-    }
-    scrollToElement();
-  }, [messages]);
-
-  useListenToEvent<TypePrivateMessage>({
-    eventToListen: "private-message",
-    onUpdate: (data) => {
-      if (data.sender._id === id) {
-        setMessages((prev) => [...prev, data]);
-      }
-    },
-    dependencies: [id],
-  });
 
   useListenToEvent<TypePrivateMessage>({
     eventToListen: "private-message",
@@ -81,19 +56,28 @@ const ChatBody = () => {
     dependencies: [id],
   });
 
-  useListenToEvent<{
-    belongsTo: string;
-    frameObj: TypeFrame;
-  }>({
-    eventToListen: "user-photo-frame-changed",
-    onUpdate: (data) => {
-      if (secondUser && data.belongsTo === secondUser._id) {
-        setSecondUser(
-          (prevUser) => ({ ...prevUser, activeFrame: data.frameObj } as User)
-        );
+  useListenToEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
+      if (updatedUser._id === secondUser?._id) {
+        setSecondUser(updatedUser);
       }
     },
   });
+
+  useEffect(() => {
+    const scrollToElement = () => {
+      lastMessageRef.current?.scrollIntoView(false);
+    };
+    const getMyLastMessage = messages.filter((item) => {
+      return item.sender._id === currentUser?._id;
+    });
+    const lastOne = getMyLastMessage[getMyLastMessage.length - 1];
+    if (lastOne?.isRead === true) {
+      if (conversationReaded === false) setConversationReaded(true);
+    }
+    scrollToElement();
+  }, [messages]);
 
   useEffect(() => {
     const markAsReaded = async () => {

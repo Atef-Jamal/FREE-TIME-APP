@@ -39,11 +39,11 @@ export const onLineUsers: any = {};
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth", authRouter);
-
 app.get("/api/health", (_, res) => {
   return res.status(200).json({ message: "OK" });
 });
+
+app.use("/api/auth", authRouter);
 
 app.use("/api/users", usersRouter);
 
@@ -90,12 +90,20 @@ io.on("connection", (socet) => {
   }
   io.emit("online-users", Object.keys(onLineUsers));
 
+  socet.on("new-user-joined", (newUser) => {
+    io.emit("new-user-joined", newUser);
+  });
+
+  socet.on("user-updated", (updatedUser) => {
+    io.emit("user-updated", updatedUser);
+  });
+
   socet.on("public-message", (message) => {
     io.emit("public-message", message);
   });
 
-  socet.on("interact-with-public-message", (data) => {
-    io.emit("interact-with-public-message", data);
+  socet.on("interact-with-public-message", (updatedMessage) => {
+    io.emit("interact-with-public-message", updatedMessage);
   });
 
   socet.on("conversation-readed", (data) => {
@@ -141,12 +149,6 @@ setInterval(async () => {
     }
   });
 }, 24 * 60 * 60 * 1000);
-
-// app.use(express.static(path.join(__dirname, "../../client/dist")));
-
-// app.get("*", (_: Request, res: Response) => {
-//   res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
-// });
 
 server.listen(process.env.PORT, () => {
   connecteToMongodb();
