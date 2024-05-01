@@ -60,7 +60,7 @@ const PrivateMessageItem = ({
             index === messages.length - 1 &&
             message.sender._id === currentUser?._id && (
               <span className="absolute bottom-0 left-0 text-xs text-gray-400  h-fit">
-                <div className="text-xl lg:text-sm rotate-[8deg] -mb-[15px]">
+                <div className="text-xl lg:text-sm rotate-[8deg] lg:-mb-[10px] -mb-[15px]">
                   <FcCheckmark />
                 </div>
                 <div className="text-xl lg:text-sm rotate-[8deg]">
@@ -71,11 +71,11 @@ const PrivateMessageItem = ({
           {!conversationReaded &&
             index === messages.length - 1 &&
             message.sender._id === currentUser?._id && (
-              <span className="absolute bottom-0 left-0 text-xs text-gray-400 h-fit">
-                <div className="text-xl lg:text-sm rotate-[8deg] -mb-[15px] opacity-30">
+              <span className="absolute bottom-0 left-0 text-xs text-gray-400 h-fit opacity-20">
+                <div className="text-xl lg:text-sm rotate-[8deg] lg:-mb-[10px] -mb-[15px] ">
                   <IoCheckmarkOutline />
                 </div>
-                <div className="text-xl lg:text-sm rotate-[8deg] opacity-30">
+                <div className="text-xl lg:text-sm rotate-[8deg] ">
                   <IoCheckmarkOutline />
                 </div>
               </span>

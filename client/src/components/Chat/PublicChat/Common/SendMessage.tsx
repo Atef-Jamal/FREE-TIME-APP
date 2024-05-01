@@ -72,7 +72,9 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       }
     };
     document.addEventListener("click", func);
-    return () => document.removeEventListener("click", func);
+    return () => {
+      document.removeEventListener("click", func);
+    };
   }, [toggleMentionList]);
 
   return (

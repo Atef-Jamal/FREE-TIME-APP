@@ -8,7 +8,6 @@ import {
   tapresearch,
   AdscendMediaGlow,
   empty,
-  // guessColor,
 } from "../assets";
 import { PiExamDuotone } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
@@ -22,9 +21,7 @@ import {
 } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import {
-  arrayoffers,
-} from "../helper/data";
+import { arrayoffers } from "../helper/data";
 import { Helmet } from "react-helmet-async";
 import { handleApiError, makeRequest } from "../utils";
 import GameCard from "../components/Offers/GameCard";
@@ -93,11 +90,9 @@ const Earn = () => {
       try {
         const response: { data: { apps: TypeTaskApp[]; noApps: boolean } } =
           await makeRequest.get(
-            `api/tasks?filter=${filterQuery}&&page=${currentPage}&&limitedPerPage=${limit}`
+            `api/tasks?filter=${filterQuery}&&page=1&&limitedPerPage=${limit}`
           );
-
         setNoMoreTasks(response.data.noApps);
-
         const sorted = response.data.apps.sort((a, b) => {
           if (a.completedBy.length > b.completedBy.length) {
             return -1;

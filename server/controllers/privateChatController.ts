@@ -1,22 +1,31 @@
 import { Request, Response } from "express";
 import Conversation from "../models/conversation";
+import User from "../models/user";
+import { io, onLineUsers } from "../server";
 
 export const getConversationMessages = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const { seconduserid } = req.params;
   try {
-    let getConversation = await Conversation.findOne({
+    const getConversation = await Conversation.findOne({
       participants: { $all: [currentUserId, seconduserid] },
     });
+    const secondUser = await User.findById(seconduserid).select("-password");
+
+    if (!secondUser) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
 
     if (!getConversation) {
-      return res.status(200).json({ messages: [] });
+      return res.status(200).json({ messages: [], secondUser: secondUser });
     }
     const conversation = await getConversation.populate(
       "messages.sender",
       "-password"
     );
-    return res.status(200).json(conversation);
+    return res
+      .status(200)
+      .json({ messages: conversation.messages, secondUser: secondUser });
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }
@@ -47,6 +56,11 @@ export const createMessage = async (req: Request, res: Response) => {
 
     const saveConversation = await getConversation.save();
     const conversation = await saveConversation.populate("lastMessage.sender");
+
+    io.to(onLineUsers[seconduserid]).emit(
+      "private-message",
+      conversation.lastMessage
+    );
 
     return res.status(200).json(conversation.lastMessage);
   } catch (error) {

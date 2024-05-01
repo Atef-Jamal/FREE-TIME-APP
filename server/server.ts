@@ -98,10 +98,6 @@ io.on("connection", (socet) => {
     io.emit("interact-with-public-message", data);
   });
 
-  socet.on("private-message", (data) => {
-    io.to(onLineUsers[data.reciever]).emit("private-message", data.data);
-  });
-
   socet.on("conversation-readed", (data) => {
     io.to(onLineUsers[data.reciever]).emit("conversation-readed", data);
   });

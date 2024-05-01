@@ -2,27 +2,33 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { GiProgression } from "react-icons/gi";
-import { BiErrorAlt, BiTask } from "react-icons/bi";
+import { BiTask } from "react-icons/bi";
 import { BsFillClockFill } from "react-icons/bs";
-import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { useEffect, useState } from "react";
-import { showPopup } from "../context/StateManeger";
-import { handleApiError, makeRequest } from "../utils";
+import { useAppSelector } from "../context/Hooks";
+import { useEffect } from "react";
+import { makeRequest } from "../utils";
 import UserImage from "../components/Others/UserImage";
 import ActivitiesList from "../components/OtherUserProfile/ActivitiesList";
 import { OtherUserProfileSkeleton } from "../components/OtherUserProfile/OtherUserProfileSkeleton";
-import { TypeNotifications } from "../types/notification";
-import { User } from "../types/user";
+
+import { useFetchActivities, useFetchUser } from "../hooks/hooks";
 
 const OtherUserProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const [userActivities, setUserActivities] = useState<TypeNotifications[]>([]);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams();
-  const dispatch = useAppDispatch();
 
-  const fitleredActivities = userActivities.filter(
+  const { user, loading, error } = useFetchUser({
+    userId: id,
+    initialLoading: true,
+    dependencies: [id],
+  });
+  const { activities } = useFetchActivities({
+    userId: id,
+    initialLoading: true,
+    dependencies: [id],
+  });
+
+  const fitleredActivities = activities.filter(
     (item) =>
       item.type === "BUY-FRAME" ||
       item.type === "MUSIC" ||
@@ -32,37 +38,14 @@ const OtherUserProfile = () => {
       item.type === "REFERRER"
   );
 
-  const numberOfCompletedTasks = userActivities.filter(
+  const numberOfCompletedTasks = activities.filter(
     (item) =>
       item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED"
   ).length;
 
-  const numberOfReferredUser = userActivities.filter(
+  const numberOfReferredUser = activities.filter(
     (item) => item.type === "REFERRER"
   ).length;
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (!loading) setLoading(true);
-      try {
-        const response = await makeRequest.get(`api/users/${id}`);
-        const activities = await makeRequest.get(`api/notifications/${id}`);
-        setUser(response.data);
-        setUserActivities(activities.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, [id]);
 
   useEffect(() => {
     const handleVisit = async () => {
@@ -78,9 +61,18 @@ const OtherUserProfile = () => {
     }
   }, [id, currentUser, loading]);
 
+  if (error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        {error}
+      </div>
+    );
+  }
+
   if (loading) {
     return <OtherUserProfileSkeleton />;
   }
+
   if (id === currentUser?._id) {
     return <Navigate to={"/myprofile"} />;
   }

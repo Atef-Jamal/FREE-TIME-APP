@@ -1,59 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-
 import FreeTime from "../Common/FreeTime";
 import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
-
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { handleApiError, makeRequest } from "../../../../utils";
-import { showPopup } from "../../../../context/StateManeger";
-import { BiErrorAlt } from "react-icons/bi";
+import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types/publicChat";
+import {
+  useFetchPublicMessages,
+  useListenToEvent,
+} from "../../../../hooks/hooks";
+import Spinner from "../../../Others/Spinner";
 
 const MobileChat = () => {
-  const { hiddenLiveStats, socet } = useAppSelector(
-    (state) => state.stateManeger
-  );
-  const [messages, setMessages] = useState<TypePublicChatItem[]>([]);
+  const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const mentionedMessageRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
   const searchValue = searchParams.get("messageid");
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const getMessages = await makeRequest.get("api/publicchat");
+  const { messages, setMessages, loading, error } = useFetchPublicMessages();
 
-        setMessages(getMessages.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      }
-    };
-    fetchMessages();
-  }, []);
-
-  const handleMessage = (message: TypePublicChatItem) => {
-    setMessages((prev) => [...prev, message]);
-  };
-
-  useEffect(() => {
-    if (socet) {
-      socet.on("public-message", handleMessage);
-      return () => {
-        socet.off("public-message", handleMessage);
-      };
-    }
-  }, [socet]);
+  useListenToEvent<TypePublicChatItem>({
+    eventToListen: "public-message",
+    onUpdate: (data) => {
+      setMessages((prev) => [...prev, data]);
+    },
+  });
 
   useEffect(() => {
     const scrollToMessage = () => {
@@ -94,6 +67,12 @@ const MobileChat = () => {
       }}
       className="sticky top-[100px] w-full bg-[#202233] hidden sm:flex flex-col items-center"
     >
+      {loading && (
+        <div className="mt-20">
+          <Spinner className="m-auto w-12 h-12" />
+        </div>
+      )}
+      {error && <div className="mt-20">{error}</div>}
       <div className="w-full h-full px-1 pb-1 flex flex-col items-center  gap-[5px] overflow-scroll scrollbar-none">
         {messages?.map((message, index) => {
           if (message.type === "FREETIME") {

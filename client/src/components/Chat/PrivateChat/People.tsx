@@ -8,9 +8,10 @@ import { makeRequest } from "../../../utils";
 import { TypePrivateMessage } from "../../../types/privateChat";
 import { TypeFrame } from "../../../types/frame";
 import { User } from "../../../types/user";
+import { useListenToEvent } from "../../../hooks/hooks";
 
 const People = ({ userInfo }: { userInfo: User }) => {
-  const { socet, reFetchThisUserId, onlineUsers } = useAppSelector(
+  const { reFetchThisUserId, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const [user, setUser] = useState(userInfo);
@@ -53,41 +54,29 @@ const People = ({ userInfo }: { userInfo: User }) => {
     }
   }, [reFetchThisUserId]);
 
-  const handleMessage = (data: TypePrivateMessage) => {
-    if (data.sender._id === user._id) {
-      setRecentMessage(data);
-      if (location.pathname.includes(user._id) === false) {
-        setUnReadedCount((prev) => prev + 1);
+  useListenToEvent<TypePrivateMessage>({
+    eventToListen: "private-message",
+    onUpdate: (data) => {
+      if (data.sender._id === user._id) {
+        setRecentMessage(data);
+        if (location.pathname.includes(user._id) === false) {
+          setUnReadedCount((prev) => prev + 1);
+        }
       }
-    }
-  };
+    },
+  });
 
-  useEffect(() => {
-    if (socet) {
-      socet.on("private-message", handleMessage);
-      return () => {
-        socet.off("private-message", handleMessage);
-      };
-    }
-  }, [socet]);
-
-  const handleAddPhotoFrame = (data: {
+  useListenToEvent<{
     belongsTo: string;
     frameObj: TypeFrame;
-  }) => {
-    if (data.belongsTo === user._id) {
-      setUser((prevUser) => ({ ...prevUser, activeFrame: data.frameObj }));
-    }
-  };
-
-  useEffect(() => {
-    if (socet) {
-      socet.on("user-photo-frame-changed", handleAddPhotoFrame);
-      return () => {
-        socet.off("user-photo-frame-changed", handleAddPhotoFrame);
-      };
-    }
-  }, [socet]);
+  }>({
+    eventToListen: "user-photo-frame-changed",
+    onUpdate: (data) => {
+      if (data.belongsTo === user._id) {
+        setUser((prevUser) => ({ ...prevUser, activeFrame: data.frameObj }));
+      }
+    },
+  });
 
   let date = "";
   if (recentMessage) {

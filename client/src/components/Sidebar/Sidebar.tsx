@@ -11,10 +11,12 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import messageSoundSrc from "../../assets/messageSound.wav";
 import { handleApiError, makeRequest } from "../../utils";
 import { TypePrivateMessage } from "../../types/privateChat";
+import { useListenToEvent } from "../../hooks/hooks";
 
 const Sidebar = () => {
-  const { resizeSidebare, currentUser, socet, allUnReadedMesseges } =
-    useAppSelector((state) => state.stateManeger);
+  const { resizeSidebare, currentUser, allUnReadedMesseges } = useAppSelector(
+    (state) => state.stateManeger
+  );
 
   const dispatch = useAppDispatch();
 
@@ -48,22 +50,17 @@ const Sidebar = () => {
     }
   }, [currentUser?._id]);
 
-  const handleMessage = (data: TypePrivateMessage) => {
-    if (location.pathname.includes(data.sender._id) === false) {
-      dispatch(
-        setAllUnReadedMesseges({ type: "ADD-ONE", userId: data.sender._id })
-      );
-      messageSound.play();
-    }
-  };
-  useEffect(() => {
-    if (socet) {
-      socet.on("private-message", handleMessage);
-      return () => {
-        socet.off("private-message", handleMessage);
-      };
-    }
-  }, [socet]);
+  useListenToEvent<TypePrivateMessage>({
+    eventToListen: "private-message",
+    onUpdate: (data) => {
+      if (location.pathname.includes(data.sender._id) === false) {
+        dispatch(
+          setAllUnReadedMesseges({ type: "ADD-ONE", userId: data.sender._id })
+        );
+        messageSound.play();
+      }
+    },
+  });
 
   return (
     <div

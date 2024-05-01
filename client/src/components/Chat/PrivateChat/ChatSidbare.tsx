@@ -3,56 +3,24 @@ import Spinner from "../../Others/Spinner";
 import { BsSearch } from "react-icons/bs";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useEffect, useState } from "react";
-import { BiErrorAlt } from "react-icons/bi";
-import { handleApiError, makeRequest } from "../../../utils";
-import { showPopup } from "../../../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
+import { useAppSelector } from "../../../context/Hooks";
 import { empty } from "../../../assets";
 import { User } from "../../../types/user";
+import { useFetchAllUsers, useListenToEvent } from "../../../hooks/hooks";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
-  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [users, setUsers] = useState<User[]>([]);
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const { users, setUsers, loading, error } = useFetchAllUsers();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [filterVlaue, setFilterValue] = useState<string>("");
   const [emptyResults, setEmptyResults] = useState<boolean>(false);
 
-  const dispatch = useAppDispatch();
-
-  const handleAddUser = (user: User) => {
-    setUsers((prev) => [...prev, user]);
-  };
-
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await makeRequest.get("api/users");
-        setUsers(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllUsers();
-  }, []);
-
-  useEffect(() => {
-    if (socet) {
-      socet.on("new-user-register", handleAddUser);
-      return () => {
-        socet.off("new-user-register", handleAddUser);
-      };
-    }
-  }, [socet]);
+  useListenToEvent<User>({
+    eventToListen: "new-user-register",
+    onUpdate: (data) => {
+      setUsers((prev) => [...prev, data]);
+    },
+  });
 
   useEffect(() => {
     setEmptyResults(false);
@@ -95,6 +63,7 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
       </div>
       <div className="w-full text-[#81bef0] pl-2">Peoples</div>
       <div className="w-full flex flex-col items-center gap-2 sm:gap-1  h-[100%] overflow-auto lg:scrollbar-thin  overflow-x-hidden">
+        {error && <div className="my-5 text-gray-400 font-bold">{error}</div>}
         {loading && (
           <div className=" w-full h-full flex items-center justify-center">
             <Spinner />

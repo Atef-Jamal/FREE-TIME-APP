@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
@@ -14,6 +14,7 @@ import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 import { TypePublicChatMessage } from "../../../../types/publicChat";
 import { TypeFrame } from "../../../../types/frame";
+import { useListenToEvent } from "../../../../hooks/hooks";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -124,41 +125,30 @@ const Message = ({
     }
   };
 
-  const handleMessage = (message: TypePublicChatMessage) => {
-    if (message._id === _id) {
-      setMessageItem(message);
-    }
-  };
+  useListenToEvent<TypePublicChatMessage>({
+    eventToListen: "interact-with-public-message",
+    onUpdate: (data) => {
+      if (data._id === _id) {
+        setMessageItem(data);
+      }
+    },
+  });
 
-  useEffect(() => {
-    if (socet) {
-      socet.on("interact-with-public-message", handleMessage);
-      return () => {
-        socet.off("interact-with-public-message", handleMessage);
-      };
-    }
-  }, [socet]);
-
-  const handleAddPhotoFrame = (data: {
+  useListenToEvent<{
     belongsTo: string;
     frameObj: TypeFrame;
-  }) => {
-    if (sender._id === data.belongsTo) {
+  }>({
+    eventToListen: "user-photo-frame-changed",
+    onUpdate: (data) => {
+       if (sender._id === data.belongsTo) {
       setMessageItem((prevMessageItem) => ({
         ...prevMessageItem,
         sender: { ...prevMessageItem.sender, activeFrame: data.frameObj },
       }));
     }
-  };
+    },
+  });
 
-  useEffect(() => {
-    if (socet) {
-      socet.on("user-photo-frame-changed", handleAddPhotoFrame);
-      return () => {
-        socet.off("user-photo-frame-changed", handleAddPhotoFrame);
-      };
-    }
-  }, [socet]);
 
   return (
     <div

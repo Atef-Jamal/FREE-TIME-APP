@@ -1,5 +1,5 @@
 import { IoMdSend } from "react-icons/io";
-import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
+import { useAppDispatch } from "../../../context/Hooks";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { showPopup } from "../../../context/StateManeger";
@@ -16,7 +16,7 @@ const SendMessagePrivateChat = ({
   setConversationReaded: React.Dispatch<React.SetStateAction<boolean>>;
   setMessages: React.Dispatch<React.SetStateAction<TypePrivateMessage[]>>;
 }) => {
-  const { socet } = useAppSelector((state) => state.stateManeger);
+  // const { socet } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
 
   const dispatch = useAppDispatch();
@@ -39,7 +39,6 @@ const SendMessagePrivateChat = ({
       });
       setMessage("");
       setMessages((prev) => [...prev, response.data]);
-      socet?.emit("private-message", { reciever: id, data: response.data });
       if (conversationReaded === true) setConversationReaded(false);
     } catch (error) {
       dispatch(

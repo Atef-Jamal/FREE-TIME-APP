@@ -1,39 +1,11 @@
-import { useEffect, useState } from "react";
 import { avatar, dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
-import { showPopup } from "../context/StateManeger";
-import { useAppDispatch } from "../context/Hooks";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
-import { handleApiError, makeRequest } from "../utils";
-import { BiErrorAlt } from "react-icons/bi";
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
-import { User } from "../types/user";
+import { useFetchAllUsers } from "../hooks/hooks";
 
 const LeaderBoard = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const dispatch = useAppDispatch();
-
-  const sortedUseres = users.sort((a, b) => {
-    return a.points + b.points;
-  });
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await makeRequest.get("api/users");
-        setUsers(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      }
-    };
-    fetchUsers();
-  }, []);
+  const { users } = useFetchAllUsers();
 
   return (
     <div className=" bg-[#1d2c35] relative pt-8">
@@ -65,7 +37,7 @@ const LeaderBoard = () => {
           for you this month!
         </div>
         <div className="flex items-center justify-evenly sm:gap-32 gap-24 flex-wrap py-32">
-          {sortedUseres.slice(0, 2).map((usr, index) => {
+          {users.slice(0, 2).map((usr, index) => {
             return <UsersWinnerCard key={index} user={usr} index={index} />;
           })}
         </div>
@@ -92,7 +64,7 @@ const LeaderBoard = () => {
               points
             </span>
           </div>
-          {sortedUseres.map((user, index) => (
+          {users.map((user, index) => (
             <div
               key={user._id}
               className=" w-full flex items-center justify-between bg-[#] rounded-[4px] py-2"

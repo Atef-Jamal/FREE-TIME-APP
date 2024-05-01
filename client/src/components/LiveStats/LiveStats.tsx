@@ -1,65 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, egypt } from "../../assets";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { handleApiError, makeRequest } from "../../utils";
-import { showPopup } from "../../context/StateManeger";
+import { useAppSelector } from "../../context/Hooks";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
-import { BiErrorAlt } from "react-icons/bi";
 import { User } from "../../types/user";
 import { TypeFrame } from "../../types/frame";
+import { useFetchAllUsers, useListenToEvent } from "../../hooks/hooks";
 
 const LiveStats = () => {
-  const { currentUser, hiddenLiveStats, onlineUsers, socet } = useAppSelector(
+  const { currentUser, hiddenLiveStats, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
-  const [toggleLanguage, setToggleLanguage] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const { users, setUsers, loading, error } = useFetchAllUsers();
 
-  const dispatch = useAppDispatch();
+  const [toggleLanguage, setToggleLanguage] = useState(false);
 
   const languages = [
     { title: "Global", lang: "en" },
     { title: "Egypt", lang: "ar" },
   ];
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        setError("");
-        setLoading(true);
-        const response = await makeRequest.get("api/users");
-        const sortedUsers = response.data.sort(
-          (a: User, b: User) => b.points - a.points
-        );
-        setUsers(sortedUsers);
-      } catch (error) {
-        setError("somthing went wrong!");
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllUsers();
-  }, []);
-
-  useEffect(() => {
-    const handleAddPhotoFrame = (data: {
-      belongsTo: string;
-      frameObj: TypeFrame;
-    }) => {
+  useListenToEvent<{
+    belongsTo: string;
+    frameObj: TypeFrame;
+  }>({
+    eventToListen: "user-photo-frame-changed",
+    onUpdate: (data) => {
       setUsers((prevUsers) => {
         prevUsers.forEach((user) => {
           if (user._id === data.belongsTo) {
@@ -68,28 +38,15 @@ const LiveStats = () => {
         });
         return prevUsers;
       });
-    };
+    },
+  });
 
-    if (socet) {
-      socet.on("user-photo-frame-changed", handleAddPhotoFrame);
-      return () => {
-        socet.off("user-photo-frame-changed", handleAddPhotoFrame);
-      };
-    }
-  }, [socet]);
-
-  useEffect(() => {
-    const handleAddUser = (user: User) => {
-      setUsers((prev) => [...prev, user]);
-    };
-
-    if (socet) {
-      socet.on("new-user-register", handleAddUser);
-      return () => {
-        socet.off("new-user-register", handleAddUser);
-      };
-    }
-  }, [socet]);
+  useListenToEvent<User>({
+    eventToListen: "new-user-register",
+    onUpdate: (data) => {
+      setUsers((prev) => [...prev, data]);
+    },
+  });
 
   return (
     <div
@@ -135,49 +92,46 @@ const LiveStats = () => {
           </div>
         )}
 
-        {!loading &&
-          !error &&
-          users.length > 0 &&
-          users.map((user, index) => {
-            const { _id, name, points } = user;
-            const isOnline = onlineUsers.includes(_id);
+        {users.map((user, index) => {
+          const { _id, name, points } = user;
+          const isOnline = onlineUsers.includes(_id);
 
-            return (
-              <Link
-                key={_id}
-                to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
-                className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
-              >
-                {index === 0 && (
-                  <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
-                    <img src={crown} alt="" className="" />
+          return (
+            <Link
+              key={_id}
+              to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
+              className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
+            >
+              {index === 0 && (
+                <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
+                  <img src={crown} alt="" className="" />
+                </span>
+              )}
+              <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
+                <UserImage user={user} />
+              </div>
+              <div className="flex flex-col">
+                <span className="overflow-hidden  font-boldsm:font-[400] text-xs sm:text-[9px] sm:tracking-wide w-[80px] truncate sm:-mb-1 text-[#dddbdb] tracking-wider">
+                  {name}
+                </span>
+
+                {isOnline && (
+                  <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
+                    online
                   </span>
                 )}
-                <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
-                  <UserImage user={user} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="overflow-hidden  font-boldsm:font-[400] text-xs sm:text-[9px] sm:tracking-wide w-[80px] truncate sm:-mb-1 text-[#dddbdb] tracking-wider">
-                    {name}
+                {!isOnline && (
+                  <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
+                    offline
                   </span>
-
-                  {isOnline && (
-                    <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
-                      online
-                    </span>
-                  )}
-                  {!isOnline && (
-                    <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
-                      offline
-                    </span>
-                  )}
-                </div>
-                <span className=" sm:w-8 sm:h-6 w-9 h-8 sm:px-1 sm:text-[9px] flex items-center justify-center rounded-md bg-[#181616]  text-[#c1f018]">
-                  {points}
-                </span>
-              </Link>
-            );
-          })}
+                )}
+              </div>
+              <span className=" sm:w-8 sm:h-6 w-9 h-8 sm:px-1 sm:text-[9px] flex items-center justify-center rounded-md bg-[#181616]  text-[#c1f018]">
+                {points}
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

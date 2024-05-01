@@ -21,16 +21,11 @@ import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiErrorAlt } from "react-icons/bi";
+import { useListenToEvent } from "../hooks/hooks";
 
 const Layout = () => {
-  const {
-    currentUser,
-    resizeSidebare,
-    isChatOpen,
-    hiddenLiveStats,
-    socet,
-    model,
-  } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, resizeSidebare, isChatOpen, hiddenLiveStats, model } =
+    useAppSelector((state) => state.stateManeger);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -76,18 +71,13 @@ const Layout = () => {
     }
   }, [paramValue]);
 
-  const handleOnlineUsers = (data: string[]) => {
-    dispatch(setOnlineUsers(data));
-  };
-
-  useEffect(() => {
-    if (socet) {
-      socet.on("online-users", handleOnlineUsers);
-      return () => {
-        socet.off("online-users", handleOnlineUsers);
-      };
-    }
-  }, [socet]);
+  useListenToEvent<string[]>({
+    eventToListen: "online-users",
+    onUpdate: (data) => {
+      const filtered = data.filter((userId) => userId !== "undefined");
+      dispatch(setOnlineUsers(filtered));
+    },
+  });
 
   useEffect(() => {
     const fechSongs = async () => {

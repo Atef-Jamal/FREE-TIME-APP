@@ -15,9 +15,10 @@ import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
 import { BiErrorAlt } from "react-icons/bi";
 import { TypeNotifications } from "../../../types/notification";
+import { useListenToEvent } from "../../../hooks/hooks";
 
 const ProfileActions = () => {
-  const { currentUser, openNotification, socet } = useAppSelector(
+  const { currentUser, openNotification } = useAppSelector(
     (state) => state.stateManeger
   );
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
@@ -54,19 +55,13 @@ const ProfileActions = () => {
     fetchNotifications();
   }, [currentUser]);
 
-  const handleNewNotification = (notfication: TypeNotifications) => {
-    setNotifications((prev) => [...prev, notfication]);
-    notifySound.play();
-  };
-
-  useEffect(() => {
-    if (socet) {
-      socet.on("new-notification", handleNewNotification);
-      return () => {
-        socet.off("new-notification", handleNewNotification);
-      };
-    }
-  }, [socet]);
+  useListenToEvent<TypeNotifications>({
+    eventToListen: "new-notification",
+    onUpdate: (data) => {
+      setNotifications((prev) => [...prev, data]);
+      notifySound.play();
+    },
+  });
 
   return (
     <>

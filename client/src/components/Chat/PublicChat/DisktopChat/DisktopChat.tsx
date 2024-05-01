@@ -2,19 +2,22 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { showPopup, toggleThisEntity } from "../../../../context/StateManeger";
+import { toggleThisEntity } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import Message from "../Common/Message";
 import ChatHeader from "../Common/ChatHeader";
 import SendMessage from "../Common/SendMessage";
 import FreeTime from "../Common/FreeTime";
-import { handleApiError, makeRequest } from "../../../../utils";
-import { BiErrorAlt } from "react-icons/bi";
+
 import { TypePublicChatItem } from "../../../../types/publicChat";
+import {
+  useFetchPublicMessages,
+  useListenToEvent,
+} from "../../../../hooks/hooks";
+import Spinner from "../../../Others/Spinner";
 
 const DisktopChat = () => {
-  const { isChatOpen, socet } = useAppSelector((state) => state.stateManeger);
-  const [messages, setMessages] = useState<TypePublicChatItem[]>([]);
+  const { isChatOpen } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -22,24 +25,7 @@ const DisktopChat = () => {
   const dispatch = useAppDispatch();
 
   const searchValue = searchParams.get("messageid");
-
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const getMessages = await makeRequest.get("api/publicchat");
-        setMessages(getMessages.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            icon: <BiErrorAlt />,
-          })
-        );
-      }
-    };
-    fetchMessages();
-  }, []);
+  const { messages, setMessages, loading, error } = useFetchPublicMessages();
 
   useEffect(() => {
     const scrollToMessage = () => {
@@ -65,18 +51,27 @@ const DisktopChat = () => {
     }
   }, [messages]);
 
-  const handleMessage = (message: TypePublicChatItem) => {
-    setMessages((prev) => [...prev, message]);
-  };
+  useListenToEvent<TypePublicChatItem>({
+    eventToListen: "public-message",
+    onUpdate: (data) => {
+      setMessages((prev) => [...prev, data]);
+    },
+  });
 
-  useEffect(() => {
-    if (socet) {
-      socet.on("public-message", handleMessage);
-      return () => {
-        socet.off("public-message", handleMessage);
-      };
-    }
-  }, [socet]);
+  if (error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        {error}
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <Spinner className="mx-auto w-8 h-8" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
