@@ -1,0 +1,128 @@
+import { Request, Response } from "express";
+import PublicMessage from "../models/publicMessage";
+import Notification from "../models/notification";
+import { io, onLineUsers } from "../app";
+
+export const getAllPublicMessages = async (_: Request, res: Response) => {
+  try {
+    const messages = await PublicMessage.find({}).populate([
+      { path: "sender", select: "-password" },
+      { path: "mentioned", select: "-password" },
+      { path: "newUserReferred", select: "-password" },
+    ]);
+    return res.status(200).json(messages);
+  } catch (error) {
+    return res.status(404).json({ error: "can't Load public chat" });
+  }
+};
+
+export const createPublicMessage = async (req: Request, res: Response) => {
+  const currentUserId = req.user._id;
+  const { messageText, type, mentioned } = req.body;
+  try {
+    const message = new PublicMessage({
+      sender: currentUserId,
+      message: messageText,
+      mentioned,
+      type,
+    });
+
+    const saveMessage = await message.save();
+    const savedMessage = await saveMessage.populate([
+      { path: "sender", select: "-password" },
+      { path: "mentioned", select: "-password" },
+      { path: "newUserReferred", select: "-password" },
+    ]);
+
+    if (mentioned) {
+      const createNotification = new Notification({
+        belongsTo: mentioned,
+        type: "MENTION",
+        mentionedUser: currentUserId,
+        messageLocation: saveMessage._id,
+      });
+      const saveNotification = await createNotification.save();
+      const savedNotification = await saveNotification.populate(
+        "mentionedUser",
+        "-password"
+      );
+      io.to(onLineUsers[mentioned]).emit("new-notification", savedNotification);
+    }
+    return res.status(200).json(savedMessage);
+  } catch (error) {
+    return res
+      .status(404)
+      .json({ error: "can't send your message, an Error occurred" });
+  }
+};
+
+export const deletePublicMessage = async (req: Request, res: Response) => {
+  const { messageId } = req.params;
+  const currentUserId = req.user._id;
+  try {
+    const deletedMessage = await PublicMessage.findOneAndUpdate(
+      { _id: messageId, sender: currentUserId },
+      {
+        isDeleted: true,
+      },
+      { new: true }
+    ).populate("sender", "-password");
+    return res.status(200).json(deletedMessage);
+  } catch (error) {
+    return res.status(404).json({ error: "can't delete message" });
+  }
+};
+
+export const reactToPublicMessage = async (req: Request, res: Response) => {
+  type TypeFieldName = "loves" | "dislikes" | "likes";
+  const currentUserId = req.user._id;
+  const { fieldName, messageId } = req.params as {
+    fieldName: TypeFieldName;
+    messageId: string;
+  };
+  const allField = ["loves", "likes", "dislikes"];
+  const getOtherTwoFields = allField.filter((item) => item !== fieldName);
+
+  try {
+    const message = await PublicMessage.findById(messageId);
+
+    if (!message) {
+      return res.status(404).json({
+        error: "Message Not Found",
+      });
+    }
+
+    if (message[fieldName].includes(currentUserId)) {
+      const index = message[fieldName].indexOf(currentUserId);
+      message[fieldName].splice(index, 1);
+    } else {
+      message[fieldName].push(currentUserId);
+    }
+
+    if (
+      message[getOtherTwoFields[0] as TypeFieldName].includes(currentUserId)
+    ) {
+      const index =
+        message[getOtherTwoFields[0] as TypeFieldName].indexOf(currentUserId);
+      message[getOtherTwoFields[0] as TypeFieldName].splice(index, 1);
+    }
+
+    if (
+      message[getOtherTwoFields[1] as TypeFieldName].includes(currentUserId)
+    ) {
+      const index =
+        message[getOtherTwoFields[1] as TypeFieldName].indexOf(currentUserId);
+      message[getOtherTwoFields[1] as TypeFieldName].splice(index, 1);
+    }
+
+    const saveMessage = await message.save();
+    const savedMessage = await saveMessage.populate([
+      { path: "sender", select: "-password" },
+      { path: "mentioned", select: "-password" },
+    ]);
+
+    return res.status(200).json(savedMessage);
+  } catch (error) {
+    return res.status(404).json({ error: "an Error occurred, Try again" });
+  }
+};
