@@ -5,7 +5,7 @@ import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
 import DailyStreakRewardCard from "./DailyStreakRewardCard";
 import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
-import desktopAffiliateBannerBg from "../../assets/desktop-affiliate-banner-bg.png";
+import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 
 const DailyReward = () => {
   const { currentUser, currentUserIsLoading, resizeSidebare } = useAppSelector(

@@ -1,11 +1,6 @@
 import { useEffect, useRef } from "react";
-import {
-  rank1Desktop,
-  rank2Desktop,
-  rank3Desktop,
-  egypt,
-  empty,
-} from "../assets";
+import { rank1Desktop, rank2Desktop, rank3Desktop, empty } from "../assets";
+import egypt from "../assets/images/eg.svg";
 import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { RiFileCopyLine } from "react-icons/ri";
@@ -24,21 +19,22 @@ import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frame";
 import Spinner from "../components/Others/Spinner";
-// import { countryListAllIsoData } from "../helper/data";
+import { useFetchMusics } from "../hooks";
 
 const MyProfile = () => {
-  const { currentUser, allMusics, currentUserIsFetched, socet } =
-    useAppSelector((state) => state.stateManeger);
+  const { currentUser, currentAccountRequestFullfiled, socet } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [searchParams, setSearchParams] = useSearchParams();
-  // const [userCountry, setUserCountry] = useState("");
+  const { musics } = useFetchMusics();
+
+  const dispatch = useAppDispatch();
 
   const framesRef = useRef<HTMLDivElement>(null);
   const referralLinkRef = useRef<HTMLDivElement>(null);
   const musicsRef = useRef<HTMLDivElement>(null);
 
   const paramValue = searchParams.get("to");
-
-  const dispatch = useAppDispatch();
 
   let mathLevel: number = currentUser?.points
     ? currentUser.points / 100
@@ -130,7 +126,7 @@ const MyProfile = () => {
     );
   };
 
-  const handleClickLinkDiv = (type: string) => {
+  const handleAnimation = (type: string) => {
     if (type === "referrallink") {
       referralLinkRef.current?.classList.remove("animate-pulse");
     } else if (type === "frames") {
@@ -169,33 +165,7 @@ const MyProfile = () => {
     }
   }, [paramValue]);
 
-  // useEffect(() => {
-  //   const getUserCountry = async () => {
-  //     const response = await makeRequest.get("api/user-location");
-  //     const location = response.data.location.country;
-  //     if (!location) {
-  //       return;
-  //     }
-  //     if (location.country.length === 2) {
-  //       const country = countryListAllIsoData.find(
-  //         (item) => item.code === location.country
-  //       );
-  //       if (country) {
-  //         setUserCountry(country.name);
-  //       }
-  //     } else if (location.country.length === 3) {
-  //       const country = countryListAllIsoData.find(
-  //         (item) => item.code3 === location.country
-  //       );
-  //       if (country) {
-  //         setUserCountry(country.name);
-  //       }
-  //     }
-  //   };
-  //   getUserCountry();
-  // }, []);
-
-  if (!currentUserIsFetched) {
+  if (!currentAccountRequestFullfiled) {
     return (
       <div className="h-full flex items-center justify-center">
         <Spinner className="w-12 h-12 border-4" />
@@ -242,9 +212,7 @@ const MyProfile = () => {
                     src={egypt}
                     className="w-5 h-5 rounded-md sm:w-3 sm:h-3 "
                   />
-                  <span className="sm:text-sm text-[#f75887ee]">
-                    {/* {userCountry} */}Egypt
-                  </span>
+                  <span className="sm:text-sm text-[#f75887ee]">Egypt</span>
                 </span>
                 <div className="flex flex-col items-center w-[75%]">
                   <div className="relative w-full flex flex-col">
@@ -287,7 +255,7 @@ const MyProfile = () => {
         </div>
         <WhoVisitProfile />
         <div
-          onClick={() => handleClickLinkDiv("referrallink")}
+          onClick={() => handleAnimation("referrallink")}
           ref={referralLinkRef}
           className="w-full bg-slate-700 rounded-md py-2 px-4 sm:px-2 sm:mx-auto flex flex-col gap-2 my-7"
         >
@@ -319,7 +287,7 @@ const MyProfile = () => {
           </p>
         </div>
         <div
-          onClick={() => handleClickLinkDiv("frames")}
+          onClick={() => handleAnimation("frames")}
           ref={framesRef}
           className=" mt-5 flex flex-col gap-3 items-center justify-center  bg-[#222339] rounded-md "
         >
@@ -374,7 +342,7 @@ const MyProfile = () => {
           ) : undefined}
         </div>
         <div
-          onClick={() => handleClickLinkDiv("musics")}
+          onClick={() => handleAnimation("musics")}
           ref={musicsRef}
           className=" w-full mt-5 bg-[#222339] py-2 rounded-md"
         >
@@ -382,8 +350,8 @@ const MyProfile = () => {
             My Musics
           </h1>
           <div className="grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2 p-4">
-            {!!allMusics.length &&
-              allMusics
+            {musics.length > 0 &&
+              musics
                 .filter((item) => {
                   if (currentUser?.mySongs?.includes(item.id.toString())) {
                     return item;

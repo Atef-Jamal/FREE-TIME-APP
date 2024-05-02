@@ -11,20 +11,22 @@ import TestimonialSection from "../components/Home/TestimonialSection";
 
 const Home = () => {
   return (
-    <div className="bg-[#222339] flex flex-col items-center pt-8">
-      <div className="w-[85%] sm:w-full lg:w-[88%] ">
+    <div className="bg-[#222339] py-8">
+      <div className="mb-8">
         <HeroSection />
-        <div className="flex flex-col items-center gap-1"></div>
+      </div>
+      <div className="mb-8">
         <HowToStart />
-        <div className="flex justify-center">
-          <span className="bg-red-400 text-black px-6 py-4 mt-8 rounded-md font-[450]">
-            Start Earning
-          </span>
-        </div>
+      </div>
+      <div className="mb-8">
         <WhyIsFreeTime />
       </div>
-      <Faq />
-      <TestimonialSection />
+      <div className="mb-8">
+        <Faq />
+      </div>
+      <div className="mb-8">
+        <TestimonialSection />
+      </div>
     </div>
   );
 };

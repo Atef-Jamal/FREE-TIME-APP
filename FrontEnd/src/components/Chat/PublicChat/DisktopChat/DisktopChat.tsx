@@ -8,12 +8,8 @@ import Message from "../Common/Message";
 import ChatHeader from "../Common/ChatHeader";
 import SendMessage from "../Common/SendMessage";
 import FreeTime from "../Common/FreeTime";
-
 import { TypePublicChatItem } from "../../../../types/publicChat";
-import {
-  useFetchPublicMessages,
-  useListenToEvent,
-} from "../../../../hooks/hooks";
+import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
 
 const DisktopChat = () => {
@@ -57,8 +53,6 @@ const DisktopChat = () => {
       scrollToElement();
     }
   }, [messages]);
-
-
 
   if (error) {
     return (

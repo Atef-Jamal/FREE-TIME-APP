@@ -94,8 +94,8 @@ const TestimonialSection = () => {
   }, []);
 
   return (
-    <div className="w-full py-8 bg-[#1f3346]">
-      <h1 className="text-2xl sm:text-xl tracking-widest font-bold text-center text-[#b0d870] my-5">
+    <div className="w-full py-4 bg-[#1f3346]">
+      <h1 className="text-2xl sm:text-xl tracking-wider font-bold text-center text-[#b0d870]">
         What do our users say?
       </h1>
       <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mb-10 mx-auto ">
@@ -221,7 +221,7 @@ const TestimonialSection = () => {
         </div>
       </form>
       <div className="flex items-center justify-center gap-6 xs:gap-3 my-16">
-        <div className="w-[300px] h-[300px] border-yellow-200 bg-gradient-to-br from-slate-900 to-zinc-800 rounded-lg flex flex-col items-center pt-20 relative">
+        <div className="w-[45%] max-w-[300px] h-[250px] border-yellow-200 bg-gradient-to-br from-slate-900 to-zinc-800 rounded-lg flex flex-col items-center pt-20 relative">
           <p className="text-xl font-bold mb-2 text-center">
             Yesterday Users Cashed Out
           </p>
@@ -231,10 +231,10 @@ const TestimonialSection = () => {
           <img
             alt={""}
             src={moneyHome}
-            className="absolute w-[200px] h-[150px] xs:w-[150px] xs:h-[100px] -bottom-10"
+            className="absolute w-[50%] h-[120px] xs:w-[70%] xs:h-[90px] -bottom-10"
           />
         </div>
-        <div className="w-[300px] h-[300px] rounded-md flex flex-col items-center justify-center bg-[#1d1e31] gap-5 ">
+        <div className="w-[45%] max-w-[300px] h-[250px] rounded-md flex flex-col items-center justify-center bg-[#1d1e31] gap-5 ">
           <h1 className="text-white font-bold w-[80%] text-center sm:text-lg text-xl">
             Sign up now and Start earnig money !
           </h1>

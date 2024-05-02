@@ -1,22 +1,27 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
-import { crown, egypt } from "../../assets";
+import egypt from "../../assets/images/eg.svg";
+import { crown } from "../../assets";
 import { useAppSelector } from "../../context/Hooks";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/user";
-import { useFetchAllUsers, useListenToEvent } from "../../hooks/hooks";
+import {
+  useCloseMenuOnClickOutSide,
+  useFetchAllUsers,
+  useListenToEvent,
+} from "../../hooks";
 
 const LiveStats = () => {
   const { currentUser, hiddenLiveStats, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const { users, setUsers, loading, error } = useFetchAllUsers();
-
   const [toggleLanguage, setToggleLanguage] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
 
   const languages = [
     { title: "Global", lang: "en" },
@@ -46,6 +51,13 @@ const LiveStats = () => {
     },
   });
 
+  useCloseMenuOnClickOutSide({
+    menuRef: langRef,
+    onClose: () => {
+      setToggleLanguage(false);
+    },
+  });
+
   return (
     <div
       className={`${
@@ -54,32 +66,40 @@ const LiveStats = () => {
     >
       <div
         onClick={() => setToggleLanguage(!toggleLanguage)}
-        className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md my-1"
+        ref={langRef}
+        className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md my-1 relative"
       >
         <MdLanguage />
         <IoIosArrowDown />
+        {toggleLanguage && (
+          <div className="select__languages absolute top-[60px] lg:top-[64px] sm:top-[45px] left-3 sm:left-1 rounded-md w-56 sm:w-40  bg-[#33334d] flex flex-col justify-center py-1">
+            {languages.map((item) => (
+              <button
+                key={item.lang}
+                onClick={(e) => e.stopPropagation()}
+                className="flex gap-4 items-center hover:bg-slate-500 py-1 pl-2"
+              >
+                {item.title === "Global" ? (
+                  <MdLanguage className="xs:text-sm text-xl" />
+                ) : (
+                  <img
+                    alt={""}
+                    src={egypt}
+                    className="xs:w-4 xs:h-4 w-5 h-5 rounded-full"
+                  />
+                )}
+                <span className="xs:text-xs font-[500] text-gray-300">
+                  {item.title}
+                </span>
+                <span className="text-xs font-[500] text-gray-300">
+                  ( {item.lang.toUpperCase()} )
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {toggleLanguage && (
-        <div className="select__languages absolute top-[70px] lg:top-[68px] sm:top-[50px] left-3 rounded-lg w-56 sm:w-40 sm:h-16 bg-[#33334d] flex flex-col py-4 justify-center ">
-          {languages.map((item) => (
-            <button
-              key={item.lang}
-              onClick={() => {}}
-              className="flex gap-4 items-center rounded-lg mx-2 px-4 py-2 sm:py-1 hover:bg-slate-500"
-            >
-              {item.title === "Global" ? (
-                <MdLanguage />
-              ) : (
-                <img alt={""} src={egypt} className="w-4 h-4 rounded-full" />
-              )}
-              <span className="text-[11px] font-[500] text-gray-300">
-                {item.title}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
       <div className="w-full flex items-center gap-2 xs:gap-[6px] overflow-y-scroll scrollbar-none pl-2  py-2 sm:py-1">
         {loading && <LiveStatsSkeleton />}
 

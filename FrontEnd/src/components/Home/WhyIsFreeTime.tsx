@@ -8,16 +8,19 @@ import {
 } from "../../assets";
 const WhyIsFreeTime = () => {
   return (
-    <>
-      <div className="mt-12">
-        <h1 className="font-bold tracking-widest text-3xl text-gray-300 text-center sm:text-xl sm:tracking-wide mx-4">
-          Why is Freetime the #1 site to make money?
-        </h1>
-        <p className="text-center opacity-[.4] mt-4 sm:w-[80%] sm:mx-auto sm:text-sm sm:text-[#b39beb]">
-          A list with all the advantages and features that made us become the #1
-        </p>
+    <div className="py-3">
+      <div className="flex justify-center mb-4">
+        <span className="bg-red-400 text-black px-6 py-2 rounded-md font-bold">
+          Start Earning
+        </span>
       </div>
-      <div className=" w-[60%] grid grid-cols-2 gap-8 mx-auto mt-12 mb-12 sm:w-[90%] lg:w-[75%] sm:gap-3 sm:mb-4">
+      <h1 className="font-bold tracking-widest text-3xl text-gray-300 text-center sm:text-xl sm:tracking-wide mx-4">
+        Why is Freetime the #1 site to make money?
+      </h1>
+      <p className="text-center opacity-[.4] sm:w-[80%] sm:mx-auto sm:text-sm sm:text-[#b39beb] mb-6">
+        A list with all the advantages and features that made us become the #1
+      </p>
+      <div className=" w-[60%] grid grid-cols-2 gap-8 mx-auto sm:w-[90%] lg:w-[75%] sm:gap-3">
         <div className=" sm:col-span-2 flex flex-col items-center py-4 gap-6 bg-[#282942] rounded-md">
           <img alt={""} src={moneyBag} />
           <span className="text-sm">Cashouts starting at $0.50</span>
@@ -45,7 +48,7 @@ const WhyIsFreeTime = () => {
           <span>24/7 Support</span>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

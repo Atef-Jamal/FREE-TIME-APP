@@ -5,10 +5,7 @@ import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types/publicChat";
-import {
-  useFetchPublicMessages,
-  useListenToEvent,
-} from "../../../../hooks/hooks";
+import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
 
 const MobileChat = () => {

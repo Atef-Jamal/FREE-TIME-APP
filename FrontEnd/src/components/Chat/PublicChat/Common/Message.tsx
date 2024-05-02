@@ -4,14 +4,14 @@ import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
-import verifiedIcon from "../../../../assets/verified-icon.png";
+import {verifiedIcon} from "../../../../assets";
 import { timeAgoFromMongoDBDate } from "../../../../context/functions";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
 import { handleApiError, makeRequest } from "../../../../utils";
 import { TypePublicChatMessage } from "../../../../types/publicChat";
-import { useListenToEvent } from "../../../../hooks/hooks";
+import { useListenToEvent } from "../../../../hooks";
 import { User } from "../../../../types/user";
 
 interface TypeMessageProp {

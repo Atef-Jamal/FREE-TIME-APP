@@ -1,0 +1,180 @@
+import { useEffect, useState } from "react";
+import { showPopup } from "../context/StateManeger";
+import { useAppDispatch } from "../context/Hooks";
+import { handleApiError, makeRequest } from "../utils";
+import { TypeNotifications } from "../types/notification";
+import { User } from "../types/user";
+
+export const useFetchAllUsers = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    const getUsersData = async () => {
+      setError(null);
+      setLoading(true);
+      try {
+        const response = await makeRequest.get(`/api/users`);
+        const data = response.data;
+        setUsers(data);
+      } catch (error) {
+        const err = handleApiError(error);
+        setError(err);
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            type: "ERROR_GENERAL",
+          })
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUsersData();
+  }, []);
+
+  return { users, setUsers, loading, error };
+};
+
+export const useFetchUser = ({
+  userId,
+  initialLoading = false,
+  dependencies = [],
+}: {
+  userId: string | undefined;
+  initialLoading: boolean;
+  dependencies?: any[];
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(initialLoading);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      if (!userId) return;
+      setError(null);
+      setLoading(true);
+      try {
+        const response = await makeRequest.get(`/api/users/${userId}`);
+        const data = response.data;
+        setUser(data);
+      } catch (error) {
+        const err = handleApiError(error);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUserData();
+  }, dependencies);
+
+  return { user, setUser, loading, error };
+};
+
+export const useCloseMenuOnClickOutSide = ({
+  menuRef,
+  onClose,
+}: {
+  menuRef: React.RefObject<HTMLElement>;
+  onClose: () => void;
+}) => {
+  useEffect(() => {
+    const func = (event: globalThis.MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("click", func);
+    return () => document.removeEventListener("click", func);
+  }, []);
+};
+
+export const useFetchActivities = ({
+  userId,
+  initialLoading = false,
+  dependencies = [],
+}: {
+  userId: string | undefined;
+  initialLoading?: boolean;
+  dependencies?: any[];
+}) => {
+  const [activities, setActivities] = useState<TypeNotifications[]>([]);
+  const [loading, setLoading] = useState<boolean>(initialLoading);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const getUserActivities = async () => {
+      if (!userId) return;
+      setError(null);
+      setLoading(true);
+      try {
+        const response = await makeRequest.get(`/api/notifications/${userId}`);
+        const data = response.data;
+        setActivities(data);
+      } catch (error) {
+        const err = handleApiError(error);
+        setError(err);
+        dispatch(
+          showPopup({
+            status: true,
+            message: handleApiError(error),
+            type: "ERROR_GENERAL",
+          })
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUserActivities();
+  }, dependencies);
+
+  return { activities, loading, error };
+};
+
+export const useFetchMusics = () => {
+  const [musics, setMusics] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchMusics = async () => {
+      if (error) setError(null);
+      if (!loading) setLoading(true);
+      const url =
+        "https://deezerdevs-deezer.p.rapidapi.com/search?q=amr%20diab";
+      const options = {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key":
+            "ea97c9aa5amsh33c80843d253d57p13e60ejsn31e5ff47a85c",
+          "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
+        },
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        setMusics(result.data);
+      } catch (error) {
+        setError("an Error occurred");
+        dispatch(
+          showPopup({
+            status: true,
+            message: "Failed to Load Musics, try again Later",
+            type: "ERROR_GENERAL",
+          })
+        );
+      } finally {
+        if (loading) setLoading(false);
+      }
+    };
+
+    fetchMusics();
+  }, []);
+
+  return { musics, loading, error };
+};

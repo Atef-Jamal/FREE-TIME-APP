@@ -5,8 +5,8 @@ import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 
 const HowToStart = () => {
   return (
-    <>
-      <div className="flex sm:flex-col items-center justify-center mt-16 sm:mt-4 sm:gap-2 mx-3">
+    <div className="">
+      <div className="flex sm:flex-col items-center justify-center sm:gap-2 mx-3">
         <div className="bg-[#101127] sm:rounded-t-lg sm:w-full w-[320px] flex flex-col items-center justify-center h-[110px] border-r-gray-100 border-r-[0.2px] sm:border-none">
           <div className="flex items-center gap-4 mr-6 sm:mr-[60px]">
             <MdOutlineWatchLater />
@@ -115,7 +115,7 @@ const HowToStart = () => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

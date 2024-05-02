@@ -7,7 +7,7 @@ import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { TypePrivateMessage } from "../../../types/privateChat";
 import { User } from "../../../types/user";
-import { useListenToEvent } from "../../../hooks/hooks";
+import { useListenToEvent } from "../../../hooks";
 
 const People = ({ userInfo }: { userInfo: User }) => {
   const { reFetchThisUserId, onlineUsers } = useAppSelector(

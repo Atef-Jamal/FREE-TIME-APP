@@ -1,5 +1,5 @@
 import React from "react";
-import uploadIcon from "../../../assets/upload-icon.png";
+import uploadIcon from "../../../assets/images/upload-icon.png";
 import Spinner from "../../Others/Spinner";
 
 interface TypeProps {

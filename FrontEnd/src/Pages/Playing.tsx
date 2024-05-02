@@ -5,10 +5,10 @@ import GuessCardApp from "../components/Tasks/GuessCardApp";
 import QuizApp from "../components/Tasks/QuizApp";
 import Spinner from "../components/Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
-import { useFetchTaskApp, useFetchUser } from "../hooks/hooks";
+import { useFetchTaskApp, useFetchUser } from "../hooks";
 
 const Playing = () => {
-  const { currentUser, currentUserIsFetched } = useAppSelector(
+  const { currentUser, currentAccountRequestFullfiled } = useAppSelector(
     (state) => state.stateManeger
   );
   const { id } = useParams();
@@ -41,7 +41,7 @@ const Playing = () => {
     }
   }
 
-  if (loadingUser || loadingTaskApp || !currentUserIsFetched) {
+  if (loadingUser || loadingTaskApp || !currentAccountRequestFullfiled) {
     return (
       <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
         <Spinner className="w-20 h-20" />

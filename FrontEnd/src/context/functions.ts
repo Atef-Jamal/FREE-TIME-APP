@@ -1,15 +1,3 @@
-import {
-  DocumentData,
-  DocumentSnapshot,
-  Timestamp,
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../firebase";
-
 import { makeRequest } from "../utils";
 
 export const validation = (
@@ -41,76 +29,6 @@ export const validation = (
     return (result = "");
   }
   return result.split("-").reverse().join("");
-};
-
-export const formateTimestampDate = (
-  createdAt: Timestamp,
-  dateOrTime?: "DATEONLY" | "TIMEONLY"
-) => {
-  const newTime = createdAt.toDate().toLocaleTimeString("en-us");
-  const newDate = createdAt
-    .toDate()
-    .toLocaleDateString("en-us")
-    .split("/")
-    .join("-");
-  const pmoram = newTime.slice(-3);
-  const finalTime = newTime.split(" ")[0].slice(0, -3);
-
-  if (dateOrTime === "DATEONLY") {
-    return `${newDate}`;
-  }
-  if (dateOrTime === "TIMEONLY") {
-    return `${
-      finalTime.split(":")[0].length === 2 ? finalTime : 0 + finalTime
-    } ${pmoram}`;
-  }
-  return `${
-    finalTime.split(":")[0].length === 2 ? finalTime : 0 + finalTime
-  } ${pmoram}  ${newDate}`;
-};
-
-export const formateStringDate = (
-  createdAt: string,
-  dateOrTime?: "DATEONLY" | "TIMEONLY"
-) => {
-  const date = createdAt.split(",")[0].split("/").join("-");
-  const pmoram = createdAt.split(",")[1].slice(-3);
-  const finalTime = createdAt.split(",")[1].split(" ")[1].slice(0, -3);
-  if (dateOrTime === "DATEONLY") {
-    return `${date}`;
-  }
-  if (dateOrTime === "TIMEONLY") {
-    return `${finalTime} ${pmoram}`;
-  }
-  return `${finalTime} ${pmoram} ${date}`;
-};
-
-export const shuffle = (array: string[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
-export const getUserData = async (id: string) => {
-  const response: DocumentSnapshot<DocumentData, DocumentData> = await getDoc(
-    doc(db, "users", id)
-  );
-  return response;
-};
-
-export const addDocument = async (collectionName: string, dataObject: any) => {
-  const response = await addDoc(collection(db, collectionName), dataObject);
-  return response;
-};
-
-export const updateDocument = async (
-  collectionName: string,
-  docId: string,
-  dataObject: any
-) => {
-  await updateDoc(doc(db, collectionName, docId), dataObject);
 };
 
 export const timeAgoFromMongoDBDate = (dateArg: string): string => {

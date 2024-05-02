@@ -7,9 +7,8 @@ import ChatSidbare from "../components/Chat/PrivateChat/ChatSidbare";
 
 const PrivateChat = () => {
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
-  const { currentUser, currentUserIsFetched, hiddenLiveStats } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
+    useAppSelector((state) => state.stateManeger);
   const { id } = useParams();
 
   const toggleSidbare = () => {
@@ -21,7 +20,7 @@ const PrivateChat = () => {
     setOpenSidbare(true);
   };
 
-  if (!currentUserIsFetched) {
+  if (!currentAccountRequestFullfiled) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <Spinner className="w-12 h-12 border-3" />

@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../../../context/Hooks";
 import { User } from "../../../../types/user";
-import { useFetchAllUsers } from "../../../../hooks/hooks";
+import { useFetchAllUsers } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
 
 interface TypeProps {

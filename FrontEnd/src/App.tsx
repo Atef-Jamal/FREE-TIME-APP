@@ -3,7 +3,6 @@ import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import MobileChat from "./components/Chat/PublicChat/MobileChat/MobileChat";
 import ChatBody from "./components/Chat/PrivateChat/ChatBody";
-// import { makeRequest } from "./utils";
 
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
@@ -13,7 +12,7 @@ const LeaderBoard = lazy(() => import("./Pages/LeaderBoard"));
 const CashOut = lazy(() => import("./Pages/CashOut"));
 const Rewards = lazy(() => import("./Pages/Rewards"));
 const MyProfile = lazy(() => import("./Pages/MyProfile"));
-const OtherUserProfile = lazy(() => import("./Pages/OtherUserProfile"));
+const PublicUserProfile = lazy(() => import("./Pages/PublicUserProfile"));
 const MarketPlace = lazy(() => import("./Pages/MarketPlace"));
 const PrivateChat = lazy(() => import("./Pages/PrivateChat"));
 const Playing = lazy(() => import("./Pages/Playing"));
@@ -126,7 +125,7 @@ const router = createBrowserRouter([
         path: "user/:id",
         element: (
           <Suspense>
-            <OtherUserProfile />
+            <PublicUserProfile />
           </Suspense>
         ),
       },

@@ -8,7 +8,7 @@ import {
 } from "../../context/StateManeger";
 import { CgPushDown } from "react-icons/cg";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
-import bonusImage from "../../assets/Bonus-Code.png";
+import bonusImage from "../../assets/images/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { handleApiError, makeRequest } from "../../utils";

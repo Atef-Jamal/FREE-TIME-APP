@@ -10,7 +10,7 @@ export interface TypePopup {
 export interface TypeInitialState {
   currentUser: User | null;
   currentUserIsLoading: boolean;
-  currentUserIsFetched: boolean;
+  currentAccountRequestFullfiled: boolean;
   openRegisterForm: boolean;
   openNotification: boolean;
   isChatOpen: boolean;
@@ -21,7 +21,6 @@ export interface TypeInitialState {
   hiddenLiveStats: boolean;
   openMusicModal: boolean;
   isPlaying: boolean;
-  allMusics: any[];
   currentSong: {
     artist: { name: string };
     id: string;

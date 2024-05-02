@@ -1,5 +1,5 @@
 import { useState } from "react";
-import VerifiedIcon from "../../../assets/verified-icon.png";
+import VerifiedIcon from "../../../assets/images/verified-icon.png";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import {

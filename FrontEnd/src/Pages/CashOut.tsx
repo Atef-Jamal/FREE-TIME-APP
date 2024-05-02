@@ -1,4 +1,5 @@
-import { moneyActive, ReportGmailerrorredIcon } from "../assets";
+import { BiSolidReport } from "react-icons/bi";
+import { moneyActive } from "../assets";
 import { withdrawCash, withdrawGiftCards, withdrawSkins } from "../helper/data";
 
 const CashOut = () => {
@@ -11,7 +12,7 @@ const CashOut = () => {
         </h1>
       </div>
       <div className="flex gap-4 justify-center bg-[#0703033b] rounded-md w-[60%] sm:w-full py-8 px-4 border border-gray-700">
-        <ReportGmailerrorredIcon className="text-4xl min-w-fit" />
+        <BiSolidReport className="text-4xl min-w-fit" />
         <p className="text-xs text-[#785f9ee0]">
           Use your earned coins on Freetime.com to withdraw PayPal, Bitcoin,
           VISA, Amazon & much more! Crypto withdrawals start from $0.50, Stake

@@ -6,7 +6,7 @@ import { handleApiError, makeRequest } from "../../utils";
 import { TypeFrame } from "../../types/frame";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
-  const { currentUser, currentUserIsFetched } = useAppSelector(
+  const { currentUser, currentAccountRequestFullfiled } = useAppSelector(
     (state) => state.stateManeger
   );
   const purshasedByCurrentUser = !!currentUser?.myFrames.find(
@@ -84,7 +84,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
         </span>
       </div>
 
-      {currentUserIsFetched && purshasedByCurrentUser && (
+      {currentAccountRequestFullfiled && purshasedByCurrentUser && (
         <button
           onClick={() =>
             dispatch(
@@ -100,7 +100,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
           Purshased
         </button>
       )}
-      {currentUserIsFetched && !purshasedByCurrentUser && (
+      {currentAccountRequestFullfiled && !purshasedByCurrentUser && (
         <button
           onClick={() => buyNow(singleFrame._id)}
           className="text-sm  border border-gray-500 bg-[#65e661] rounded-md py-[6px] mt-3 font-bold"
@@ -113,7 +113,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
         </button>
       )}
 
-      {!currentUserIsFetched && (
+      {!currentAccountRequestFullfiled && (
         <span className="text-sm  border border-gray-500 rounded-md py-1 mt-3 font-bold">
           <Spinner className="w-5 h-5 mx-auto border-t-[#533a70] border-r-[#533a70]" />
         </span>

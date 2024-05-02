@@ -13,10 +13,7 @@ import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import { TypePrivateMessage } from "../../../types/privateChat";
 import { User } from "../../../types/user";
-import {
-  useFetchPrivateChatMessages,
-  useListenToEvent,
-} from "../../../hooks/hooks";
+import { useFetchPrivateChatMessages, useListenToEvent } from "../../../hooks";
 
 const ChatBody = () => {
   const { currentUser, socet, onlineUsers } = useAppSelector(

@@ -8,10 +8,10 @@ import {
   toggleThisEntity,
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import messageSoundSrc from "../../assets/messageSound.wav";
+import messageSoundSrc from "../../assets/images/messageSound.wav";
 import { handleApiError, makeRequest } from "../../utils";
 import { TypePrivateMessage } from "../../types/privateChat";
-import { useListenToEvent } from "../../hooks/hooks";
+import { useListenToEvent } from "../../hooks";
 
 const Sidebar = () => {
   const { resizeSidebare, currentUser, allUnReadedMesseges } = useAppSelector(

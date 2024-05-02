@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import io from "socket.io-client";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import {
-  setAllMusics,
   setOnlineUsers,
   setSocet,
   showPopup,
@@ -19,11 +18,17 @@ import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
 import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
-import { useListenToEvent } from "../hooks/hooks";
+import { useListenToEvent } from "../hooks";
 
 const Layout = () => {
-  const { currentUser, resizeSidebare, isChatOpen, hiddenLiveStats, model } =
-    useAppSelector((state) => state.stateManeger);
+  const {
+    currentUser,
+    currentAccountRequestFullfiled,
+    resizeSidebare,
+    isChatOpen,
+    hiddenLiveStats,
+    model,
+  } = useAppSelector((state) => state.stateManeger);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -32,14 +37,28 @@ const Layout = () => {
   const searchValue = searchParams.get("ref");
 
   useEffect(() => {
-    const establishSocet = () => {
+    const establishSocetConnection = () => {
       const socet = io(import.meta.env.VITE_BASE_URL, {
         query: { userId: currentUser?._id },
       });
       dispatch(setSocet(socet));
     };
-    establishSocet();
+    establishSocetConnection();
   }, [currentUser?._id]);
+
+  useListenToEvent<string[]>({
+    eventToListen: "online-users",
+    onUpdate: (data) => {
+      const filtered = data.filter((userId) => userId !== "undefined");
+      dispatch(setOnlineUsers(filtered));
+    },
+  });
+
+  useEffect(() => {
+    if (searchValue && !currentUser && currentAccountRequestFullfiled) {
+      dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
+    }
+  }, [dispatch, searchValue, currentUser, currentAccountRequestFullfiled]);
 
   useEffect(() => {
     if (paramValue) {
@@ -68,52 +87,6 @@ const Layout = () => {
       }
     }
   }, [paramValue]);
-
-  useListenToEvent<string[]>({
-    eventToListen: "online-users",
-    onUpdate: (data) => {
-      const filtered = data.filter((userId) => userId !== "undefined");
-      dispatch(setOnlineUsers(filtered));
-    },
-  });
-
-  useEffect(() => {
-    const fechSongs = async () => {
-      const url =
-        "https://deezerdevs-deezer.p.rapidapi.com/search?q=amr%20diab";
-      const options = {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key":
-            "ea97c9aa5amsh33c80843d253d57p13e60ejsn31e5ff47a85c",
-          "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
-        },
-      };
-
-      try {
-        const response = await fetch(url, options);
-        const result = await response.json();
-        dispatch(setAllMusics(result.data));
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: "Failed to Load Musics, try again Later",
-            type: "ERROR_GENERAL",
-          })
-        );
-        console.error(error);
-      }
-    };
-
-    fechSongs();
-  }, []);
-
-  useEffect(() => {
-    if (searchValue && !currentUser) {
-      dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
-    }
-  }, [dispatch, searchValue, currentUser]);
 
   return (
     <div className="flex flex-col items-center justify-center relative">

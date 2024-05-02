@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import {
   showPopup,
@@ -6,7 +6,7 @@ import {
   toggleThisEntity,
 } from "../../../context/StateManeger";
 import { handleApiError, makeRequest } from "../../../utils";
-import notificationSoundSrc from "../../../assets/notificationSound.wav";
+import notificationSoundSrc from "../../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
 import ApplyCoupon from "../../Others/ApplyCoupon";
@@ -14,7 +14,7 @@ import UserImage from "../../Others/UserImage";
 import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
 import { TypeNotifications } from "../../../types/notification";
-import { useListenToEvent } from "../../../hooks/hooks";
+import { useCloseMenuOnClickOutSide, useListenToEvent } from "../../../hooks";
 
 const ProfileActions = () => {
   const { currentUser, openNotification } = useAppSelector(
@@ -23,6 +23,7 @@ const ProfileActions = () => {
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [notifications, setNotifications] = useState<TypeNotifications[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -62,10 +63,15 @@ const ProfileActions = () => {
     },
   });
 
+  useCloseMenuOnClickOutSide({
+    menuRef: profileMenuRef,
+    onClose: () => setOpenProfileMenu(false),
+  });
+
   return (
     <>
       {currentUser && (
-        <div className="relative flex items-center gap-4 sm:gap-1 ">
+        <div className="relative flex items-center gap-4 sm:gap-1">
           <div className=" flex items-center rounded-md  gap-2 xs:gap-1 bg-[#04050a]">
             <button
               onClick={() => {
@@ -86,7 +92,8 @@ const ProfileActions = () => {
           </div>
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
-            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md sm:h-[40px] h-[50px] cursor-pointer z-[1]"
+            ref={profileMenuRef}
+            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md sm:h-[40px] h-[50px] cursor-pointer"
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />
@@ -95,6 +102,14 @@ const ProfileActions = () => {
               {currentUser.name}
             </span>
             <BsArrowDown className="sm:text-sm" />
+            {openProfileMenu && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#32324c] absolute top-14 sm:top-12 right-0 w-[65%] rounded-lg "
+              >
+                <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
+              </div>
+            )}
           </div>
           <div
             onClick={() => {
@@ -117,10 +132,6 @@ const ProfileActions = () => {
             )}
             <IoMdNotifications className="cursor-pointer text-2xl" />
           </div>
-
-          {openProfileMenu && (
-            <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
-          )}
         </div>
       )}
       {openNotification && (

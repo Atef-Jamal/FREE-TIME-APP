@@ -38,7 +38,6 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
       } else {
         audioElement.src = song.preview;
         dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
-
         dispatch(setCurrentSong(song));
         audioElement.play();
       }

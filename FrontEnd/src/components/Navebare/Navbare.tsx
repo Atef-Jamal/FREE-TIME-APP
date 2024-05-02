@@ -3,13 +3,13 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { useEffect } from "react";
 import {
   setCurrentUser,
-  setCurrentUserIsFetched,
+  setCurrentAccountRequestFullfiled,
   setCurrentUserIsLoading,
   showPopup,
 } from "../../context/StateManeger";
 import { handleApiError, makeRequest } from "../../utils";
 import MusicPlayer from "../Music/MusicPlayer";
-import ProfileSkeleton from "../Others/ProfileSkeleton";
+import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
 import RegisterButtons from "../Navebare/Registration/RegisterButtons";
 import RegisterationForm from "./Registration/RegisterationForm";
@@ -17,7 +17,7 @@ const Navbare = () => {
   const {
     currentUser,
     currentUserIsLoading,
-    currentUserIsFetched,
+    currentAccountRequestFullfiled,
     openRegisterForm,
     openMusicModal,
   } = useAppSelector((state) => state.stateManeger);
@@ -45,7 +45,7 @@ const Navbare = () => {
       } finally {
         dispatch(setCurrentUserIsLoading(false));
         const timout = setTimeout(() => {
-          dispatch(setCurrentUserIsFetched(true));
+          dispatch(setCurrentAccountRequestFullfiled(true));
         }, 1500);
         return () => clearTimeout(timout);
       }
@@ -54,14 +54,8 @@ const Navbare = () => {
     getCurrentUser();
   }, [token]);
 
-  // const func = async () => {
-  //   const response = await makeRequest.get("/api/example");
-  //   console.log(response);
-  // };
-
   return (
-    <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-2 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between overflow-hidden ">
-      {/* <button onClick={func}>click</button> */}
+    <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-2 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between">
       <Link
         to={""}
         className="font-bold text-[1.65rem] tracking-widest italic text-white flex items-center"
@@ -79,9 +73,9 @@ const Navbare = () => {
         <MusicPlayer />
       </div>
 
-      {!currentUserIsLoading && !currentUser && currentUserIsFetched && (
-        <RegisterButtons />
-      )}
+      {!currentUserIsLoading &&
+        !currentUser &&
+        currentAccountRequestFullfiled && <RegisterButtons />}
       {openRegisterForm && !currentUser && <RegisterationForm />}
       {currentUserIsLoading && <ProfileSkeleton />}
       {currentUser && <ProfileActions />}

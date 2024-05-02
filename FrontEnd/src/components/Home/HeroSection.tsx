@@ -34,28 +34,31 @@ const HeroSection = () => {
 
   return (
     <div
-      className={`flex ${
-        !isTokenExists ? "justify-between " : "justify-center "
-      } sm:px-0 sm:flex-col lg:flex-col lg:items-center sm:w-full sm:gap-4 sm:py-8`}
+      className={`w-[90%] xl:w-full max-w-[1400px] mx-auto flex ${
+        !isTokenExists ? "justify-between" : "justify-center"
+      } lg:flex-col lg:items-center px-16 lg:px-0`}
     >
-      <div
-        className={`flex flex-col items-start sm:items-center gap-4 pt-10 sm:pt-0 `}
-      >
-        <h1 className="font-bold text-5xl text-[#c99d81] mb-4 tracking-wider sm:text-center sm:text-2xl sm:mx-auto">
-          Get paid for
-          {/* {t("getpaidfor")} */}
+      <div className={`flex flex-col items-start sm:items-center`}>
+        <h1 className="font-bold text-5xl text-[#c99d81] tracking-wider sm:text-center sm:text-3xl sm:mx-auto mb-6">
+          Get Paid For
         </h1>
-        <p className="text-3xl text-white font-[300] tracking-wider pb-4 sm:text-xl ">
+        <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-2">
           opening up bank accounts
         </p>
-        <p className="text-white text-sm mb-4 ">
+        <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-2 ">
+          Refer Your Friends
+        </p>
+        <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-6">
+          complete Tasks and apps, offers
+        </p>
+        <p className="text-white text-sm mb-1">
           Earn up to <span className="text-red-400">$2.05</span> per offer 20
           Offers available
         </p>
-        <p className=" text-white text-sm tracking-widest ">
+        <p className=" text-white text-sm tracking-widest  mb-6">
           See our 33,225 reviews on Trustpilot
         </p>
-        <div className="flex gap-1 rounded-sm mb-4">
+        <div className="flex gap-1 rounded-sm mb-6">
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />

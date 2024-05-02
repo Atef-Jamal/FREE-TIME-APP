@@ -47,17 +47,17 @@ body {
 }
 
 .sing-up-free {
-  background-image: url(./assets/signuporfree.png);
+  background-image: url(./assets/images/signuporfree.png);
   background-size: cover;
 }
 
 .select__languages::before {
   content: "";
   position: absolute;
-  top: -8px;
+  top: -6px;
   left: 30px;
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   background-color: #33334d;
   rotate: 45deg;
 }
@@ -110,7 +110,7 @@ body {
 }
 
 .affiliate__background__left {
-  background-image: url("./assets/coins-gray-left.png");
+  background-image: url("./assets/images/coins-gray-left.png");
   background-position: left top;
   background-repeat: no-repeat;
   background-size: 300px;
@@ -118,14 +118,14 @@ body {
 
 @media (max-width: 760px) {
   .affiliate__background__left {
-    background-image: url("./assets/coins-gray-left.png");
+    background-image: url("./assets/images/coins-gray-left.png");
     background-position: top;
     background-repeat: no-repeat;
     background-size: 400px;
   }
 }
 .stars__background {
-  background-image: url(./assets/stars.svg);
+  background-image: url("./assets/images/stars.svg");
   background-position: center;
   background-repeat: no-repeat;
 }

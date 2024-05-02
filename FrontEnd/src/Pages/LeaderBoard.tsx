@@ -2,7 +2,7 @@ import { avatar, dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
-import { useFetchAllUsers } from "../hooks/hooks";
+import { useFetchAllUsers } from "../hooks";
 
 const LeaderBoard = () => {
   const { users } = useFetchAllUsers();

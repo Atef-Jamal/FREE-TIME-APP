@@ -1,75 +1,59 @@
-import paypalShopLogo from "./paypalShopLogo.svg";
-import amazonShopLogo from "./amazonShopLogo.svg";
-import appleShopLogo from "./appleShopLogo.svg";
-import bitcoinShopLogo from "./bitcoinShopLogo.svg";
-import googleplayShopLogo from "./googleplayShopLogo.svg";
-import fortniteShopLogo from "./fortniteShopLogo.svg";
-import blizzardShopLogo from "./blizzardShopLogo.svg";
-import netflixShopLogo from "./netflixShopLogo.svg";
-import lolShopLogo from "./lolShopLogo.svg";
-import nintendoShopLogo from "./nintendoShopLogo.svg";
-import achShopLogo from "./achShopLogo.svg";
-import csgoShopLogo from "./csgoShopLogo.svg";
-import dogecoinShopLogo from "./dogecoinShopLogo.svg";
-import ethereumShopLogo from "./ethereumShopLogo.svg";
-import justEatShopLogo from "./justEatShopLogo.svg";
-import ubereatsShopLogo from "./ubereatsShopLogo.png";
-import steamShopLogo from "./steamShopLogo.svg";
-import robloxShopLogo from "./robloxShopLogo.svg";
-import doorDashShopLogo from "./doorDashShopLogo.svg";
-import visaShopLogo from "./visaShopLogo.svg";
-import playstationShopLogo from "./playstationShopLogo.png";
-import zalandoShopLogo from "./zalandoShopLogo.svg";
-import valorantShopBg from "./valorantShopBg.svg";
-import xboxliveShopLogo from "./xboxliveShopLogo.svg";
-import faucet from "./faucet-logo.png";
-import moneyActive from "./money-active.svg";
-import { TbReport as ReportGmailerrorredIcon } from "react-icons/tb";
-import ezgifLogo from "./ezgifLogo.png";
-import stashLogo from "./stashLogo.png";
-import chooseTask from "./chooseTask.png";
-import check from "./check.png";
-import moneyBag from "./moneyBag.png";
-import paypal from "./paypal.png";
-import dollarInHand from "./dollarInHand.png";
-import support from "./support.png";
-import timers from "./timers.png";
-import moneyHome from "./moneyHome.png";
-import affiliateExplained from "./affiliate-explained.png";
-import howItWorksLeft from "./how-it-works-left.png";
-import howItWorksRight from "./how-it-works-right.png";
-import affiliateBag from "./affiliate-bag.png";
-import rank1Desktop from "./rank-1-desktop.png";
-import rank2Desktop from "./rank-2-desktop.png";
-import rank3Desktop from "./rank-3-desktop.png";
-import avatar from "./avatar.jpeg";
-import desktopAffiliateGraphicRight from "./desktop-affiliate-graphic-right.png";
-import eg from "./eg.svg";
-import notikLogo from "./notik_logo.png";
-import tapresearch from "./tapresearch-logo.png";
-import AdscendMediaGlow from "./AdscendMediaGlow.webp";
-import leaderboard_place1_winnings from "./leaderboard_place1_winnings.png";
-import leaderboard_place3_winnings from "./leaderboard_place3_winnings.png";
-import crown from "./crown.png";
-import egypt from "./eg.svg";
-import empty from "./empty.png";
-import dailyleaderboard from "./daily-leaderboard.png";
-import pictur from "./image.jpg";
-import image from "./image.jpg";
-import personalImage from "./personal-image.jpg";
-import imageFrame from "./frame-0.jpg";
-import imageFrameOne from "./frame-01.jpeg";
-import imageFrameTwo from "./frame-02.jpeg";
-import imageFrameThree from "./frame-03.jpg";
-import imageFrameFour from "./frame-04.jpeg";
-import imageFrameFive from "./frame-05.jpg";
-import imageFrameSix from "./frame-06.jpeg";
-import quizImage from "./quiz-image.jpg";
-import guessColor from "./guess-color.png";
-import dailyMoneyClipart from "./dailly-money-clipart.jpg";
-import chatNow from "./chat-now.webp";
-import music from "./music.mp3";
-
+import paypalShopLogo from "./images/paypalShopLogo.svg";
+import amazonShopLogo from "./images/amazonShopLogo.svg";
+import appleShopLogo from "./images/appleShopLogo.svg";
+import bitcoinShopLogo from "./images/bitcoinShopLogo.svg";
+import googleplayShopLogo from "./images/googleplayShopLogo.svg";
+import fortniteShopLogo from "./images/fortniteShopLogo.svg";
+import blizzardShopLogo from "./images/blizzardShopLogo.svg";
+import netflixShopLogo from "./images/netflixShopLogo.svg";
+import lolShopLogo from "./images/lolShopLogo.svg";
+import nintendoShopLogo from "./images/nintendoShopLogo.svg";
+import achShopLogo from "./images/achShopLogo.svg";
+import csgoShopLogo from "./images/csgoShopLogo.svg";
+import dogecoinShopLogo from "./images/dogecoinShopLogo.svg";
+import ethereumShopLogo from "./images/ethereumShopLogo.svg";
+import justEatShopLogo from "./images/justEatShopLogo.svg";
+import ubereatsShopLogo from "./images/ubereatsShopLogo.png";
+import steamShopLogo from "./images/steamShopLogo.svg";
+import robloxShopLogo from "./images/robloxShopLogo.svg";
+import doorDashShopLogo from "./images/doorDashShopLogo.svg";
+import visaShopLogo from "./images/visaShopLogo.svg";
+import playstationShopLogo from "./images/playstationShopLogo.png";
+import zalandoShopLogo from "./images/zalandoShopLogo.svg";
+import valorantShopBg from "./images/valorantShopBg.svg";
+import xboxliveShopLogo from "./images/xboxliveShopLogo.svg";
+import faucet from "./images/faucet-logo.png";
+import moneyActive from "./images/money-active.svg";
+import ezgifLogo from "./images/ezgifLogo.png";
+import stashLogo from "./images/stashLogo.png";
+import chooseTask from "./images/chooseTask.png";
+import check from "./images/check.png";
+import moneyBag from "./images/moneyBag.png";
+import paypal from "./images/paypal.png";
+import dollarInHand from "./images/dollarInHand.png";
+import support from "./images/support.png";
+import timers from "./images/timers.png";
+import moneyHome from "./images/moneyHome.png";
+import affiliateExplained from "./images/affiliate-explained.png";
+import howItWorksLeft from "./images/how-it-works-left.png";
+import howItWorksRight from "./images/how-it-works-right.png";
+import affiliateBag from "./images/affiliate-bag.png";
+import rank1Desktop from "./images/rank-1-desktop.png";
+import rank2Desktop from "./images/rank-2-desktop.png";
+import rank3Desktop from "./images/rank-3-desktop.png";
+import avatar from "./images/avatar.jpeg";
+import desktopAffiliateGraphicRight from "./images/desktop-affiliate-graphic-right.png";
+import notikLogo from "./images/notik_logo.png";
+import tapresearch from "./images/tapresearch-logo.png";
+import AdscendMediaGlow from "./images/AdscendMediaGlow.webp";
+import leaderboard_place1_winnings from "./images/leaderboard_place1_winnings.png";
+import leaderboard_place3_winnings from "./images/leaderboard_place3_winnings.png";
+import crown from "./images/crown.png";
+import empty from "./images/empty.png";
+import dailyleaderboard from "./images/daily-leaderboard.png";
+import guessColor from "./images/guess-color.png";
+import dailyMoneyClipart from "./images/dailly-money-clipart.jpg";
+import verifiedIcon from "./images/verified-icon.png";
 import gamePhoto0 from "./gamesPhotos/gamePhoto-1.jpg";
 import gamePhoto1 from "./gamesPhotos/gamePhoto-2.jpg";
 import gamePhoto2 from "./gamesPhotos/gamePhoto-3.jpg";
@@ -170,40 +154,29 @@ import gamePhoto96 from "./gamesPhotos/gamePhoto-97.jpg";
 import gamePhoto97 from "./gamesPhotos/gamePhoto-98.jpg";
 import gamePhoto98 from "./gamesPhotos/gamePhoto-99.jpg";
 import gamePhoto99 from "./gamesPhotos/gamePhoto-100.jpg";
-import gamePhoto100 from "./game01.jpeg";
-import gamePhoto101 from "./game02.jpeg";
-import gamePhoto102 from "./game03.jpg";
-import gamePhoto103 from "./game04.jpeg";
-import gamePhoto104 from "./game05.jpg";
-import gamePhoto105 from "./game06.jpeg";
-import gamePhoto106 from "./game07.jpeg";
-import gamePhoto107 from "./game08.jpg";
-import gamePhoto108 from "./game09.jpg";
-import gamePhoto109 from "./game10.jpg";
-import gamePhoto110 from "./game11.jpg";
-import gamePhoto111 from "./game12.jpg";
-import gamePhoto112 from "./game13.jpg";
-import gamePhoto113 from "./game14.jpg";
-import gamePhoto114 from "./game15.jpg";
-import gamePhoto115 from "./game16.jpg";
-import gamePhoto116 from "./game17.jpg";
-import gamePhoto117 from "./game18.png";
-import gamePhoto118 from "./game19.jpg";
-import gamePhoto119 from "./game20.jpg";
-import gamePhoto120 from "./game21.jpg";
+import gamePhoto100 from "./gamesPhotos/gamePhoto-101.jpeg";
+import gamePhoto101 from "./gamesPhotos/gamePhoto-102.jpeg";
+import gamePhoto102 from "./gamesPhotos/gamePhoto-103.jpg";
+import gamePhoto103 from "./gamesPhotos/gamePhoto-104.jpeg";
+import gamePhoto104 from "./gamesPhotos/gamePhoto-105.jpg";
+import gamePhoto105 from "./gamesPhotos/gamePhoto-106.jpeg";
+import gamePhoto106 from "./gamesPhotos/gamePhoto-107.jpeg";
+import gamePhoto107 from "./gamesPhotos/gamePhoto-108.jpg";
+import gamePhoto108 from "./gamesPhotos/gamePhoto-109.jpg";
+import gamePhoto109 from "./gamesPhotos/gamePhoto-110.jpg";
+import gamePhoto110 from "./gamesPhotos/gamePhoto-111.jpg";
+import gamePhoto111 from "./gamesPhotos/gamePhoto-112.jpg";
+import gamePhoto112 from "./gamesPhotos/gamePhoto-113.jpg";
+import gamePhoto113 from "./gamesPhotos/gamePhoto-114.jpg";
+import gamePhoto114 from "./gamesPhotos/gamePhoto-115.jpg";
+import gamePhoto115 from "./gamesPhotos/gamePhoto-16.jpg";
+import gamePhoto116 from "./gamesPhotos/gamePhoto-117.jpg";
+import gamePhoto117 from "./gamesPhotos/gamePhoto-118.png";
+import gamePhoto118 from "./gamesPhotos/gamePhoto-119.jpg";
+import gamePhoto119 from "./gamesPhotos/gamePhoto-120.jpg";
+import gamePhoto120 from "./gamesPhotos/gamePhoto-121.jpg";
 
 export {
-  imageFrame,
-  imageFrameOne,
-  imageFrameTwo,
-  imageFrameThree,
-  imageFrameFour,
-  imageFrameFive,
-  imageFrameSix,
-  personalImage,
-  image,
-  pictur,
-  quizImage,
   guessColor,
   dailyleaderboard,
   paypalShopLogo,
@@ -232,7 +205,6 @@ export {
   xboxliveShopLogo,
   faucet,
   moneyActive,
-  ReportGmailerrorredIcon,
   ezgifLogo,
   stashLogo,
   chooseTask,
@@ -244,6 +216,7 @@ export {
   timers,
   moneyHome,
   affiliateExplained,
+  verifiedIcon,
   howItWorksLeft,
   howItWorksRight,
   affiliateBag,
@@ -258,12 +231,11 @@ export {
   leaderboard_place1_winnings,
   leaderboard_place3_winnings,
   crown,
-  eg,
-  egypt,
   empty,
   dailyMoneyClipart,
-  chatNow,
-  music,
+};
+
+export {
   gamePhoto0,
   gamePhoto1,
   gamePhoto2,

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
 import { empty } from "../../../assets";
 import { User } from "../../../types/user";
-import { useFetchAllUsers, useListenToEvent } from "../../../hooks/hooks";
+import { useFetchAllUsers, useListenToEvent } from "../../../hooks";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

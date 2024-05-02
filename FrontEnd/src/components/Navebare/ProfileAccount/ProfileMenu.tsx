@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { toggleThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
 import { MdContactSupport } from "react-icons/md";
@@ -25,67 +24,65 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
     dispatch(toggleThisEntity({ entity: "hiddenLiveStats" }));
   };
 
+  // useCloseMenuOnClickOutSide({
+  //   menuRef: profileMenuRef,
+  //   onClose: () => setOpenProfileMenu(false),
+  // });
+
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-[#00000018] ">
-      <div
-        onClick={() => setOpenProfileMenu((previos) => !previos)}
-        className="w-full h-full"
-      ></div>
-      <div className=" absolute top-[70px] sm:top-[55px] right-5 w-[300px] xs:w-[200px] sm:w-[250px] rounded-lg flex flex-col items-center bg-[#32324c] p-2 ">
-        <Link
-          to={"myprofile"}
-          onClick={() => setOpenProfileMenu((previos) => !previos)}
-          className="flex items-center hover:bg-[#3a6186ee] gap-4 sm:gap-[10px] w-full p-2 rounded-md  "
+    <div>
+      <Link
+        to={"myprofile"}
+        // onClick={() => setOpenProfileMenu((previos) => !previos)}
+        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full pt-2 px-4"
+      >
+        <IoPersonCircle style={{ fontSize: "18px" }} />
+        <span className=" text-gray-400 font-bold">My profile</span>
+      </Link>
+      <Link
+        to={"affiliates"}
+        // onClick={() => setOpenProfileMenu((previos) => !previos)}
+        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full pt-2 px-4"
+      >
+        <MdOutlineDiversity3 style={{ fontSize: "18px" }} />
+        <span className=" text-gray-400 font-bold ">Affiliate</span>
+      </Link>
+      <Link
+        to={""}
+        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full pt-2 px-4"
+      >
+        <MdContactSupport style={{ fontSize: "18px" }} />
+        <span className=" text-gray-400 font-bold ">Support</span>
+      </Link>
+      <Link
+        to={""}
+        onClick={handleLogOut}
+        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full pt-2 px-4 pb-4 border-b mb-4"
+      >
+        <LuLogOut style={{ fontSize: "18px" }} />
+        <span className=" text-gray-400 font-bold ">Log out</span>
+      </Link>
+      <span className="text-gray-400 font-bold mb-2  w-full flex items-center justify-between px-2">
+        Live Stats
+        <button
+          onClick={handleToggleLiveStats}
+          className={`${
+            hiddenLiveStats ? "bg-[#2c2424]" : "bg-[#362c2cf6]"
+          } w-12 h-5 p-[1px] rounded-full flex items-center `}
         >
-          <IoPersonCircle style={{ fontSize: "18px" }} />
-          <span className="font-[500] text-gray-400 ">My profile</span>
-        </Link>
-        <Link
-          to={"affiliates"}
-          onClick={() => setOpenProfileMenu((previos) => !previos)}
-          className="flex items-center hover:bg-[#3a6186ee]  gap-4 sm:gap-[10px] w-full p-2 rounded-md  font-[500] text-gray-400 hover:text-gray-200 "
-        >
-          <MdOutlineDiversity3 style={{ fontSize: "18px" }} />
-          <span className="font-[500] text-gray-400 ">Affiliate</span>
-        </Link>
-        <Link
-          to={""}
-          onClick={() => setOpenProfileMenu((previos) => !previos)}
-          className="flex items-center hover:bg-[#3a6186ee] gap-4 sm:gap-[10px] w-full p-2 rounded-md  "
-        >
-          <MdContactSupport style={{ fontSize: "18px" }} />
-          <span className="font-[500] text-gray-400 ">Support</span>
-        </Link>
-        <Link
-          to={""}
-          onClick={handleLogOut}
-          className="flex items-center hover:bg-[#3a6186ee] gap-4 sm:gap-[10px] w-full p-2 pb-4 border-b mb-4 font-[500] "
-        >
-          <LuLogOut style={{ fontSize: "18px" }} />
-          <span className="font-[500] text-gray-400 ">Log out</span>
-        </Link>
-        <span className="text-gray-400 font-bold mb-2  w-full flex items-center justify-between">
-          Live Stats
-          <button
-            onClick={handleToggleLiveStats}
+          <span
             className={`${
-              hiddenLiveStats ? "bg-[#2c2424]" : "bg-[#362c2cf6]"
-            } w-12 h-5 p-[1px] rounded-full flex items-center `}
-          >
-            <span
-              className={`${
-                hiddenLiveStats ? " ml-auto bg-[#53eb53]" : " bg-[#a0b1a0]"
-              } w-5 h-full rounded-full`}
-            ></span>
-          </button>
-        </span>
-        <span className="text-gray-400 font-bold mb-2 w-full flex items-center justify-between">
-          Show USD
-          <button className="w-12 h-5 p-[1px] rounded-full flex items-center bg-[#2c2424]">
-            <span className="w-5 h-full rounded-full bg-[#a0b1a0]"></span>
-          </button>
-        </span>
-      </div>
+              hiddenLiveStats ? " ml-auto bg-[#53eb53]" : " bg-[#a0b1a0]"
+            } w-5 h-full rounded-full`}
+          ></span>
+        </button>
+      </span>
+      <span className="text-gray-400 font-bold mb-2 w-full flex items-center justify-between px-2">
+        Show USD
+        <button className="w-12 h-5 p-[1px] rounded-full flex items-center bg-[#2c2424]">
+          <span className="w-5 h-full rounded-full bg-[#a0b1a0]"></span>
+        </button>
+      </span>
     </div>
   );
 };

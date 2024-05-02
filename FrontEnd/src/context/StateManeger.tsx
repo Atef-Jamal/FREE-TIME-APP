@@ -6,7 +6,7 @@ import { User } from "../types/user";
 const initialState: TypeInitialState = {
   currentUser: null,
   currentUserIsLoading: false,
-  currentUserIsFetched: false,
+  currentAccountRequestFullfiled: false,
   openNotification: false,
   openPopup: {
     status: false,
@@ -22,7 +22,6 @@ const initialState: TypeInitialState = {
   openMusicModal: false,
   isPlaying: false,
   currentSong: null,
-  allMusics: [],
   socet: null,
   onlineUsers: [],
   reFetchThisUserId: "",
@@ -58,8 +57,8 @@ const StateManegerSlice = createSlice({
     setCurrentUserIsLoading(state, action: PayloadAction<boolean>) {
       state.currentUserIsLoading = action.payload;
     },
-    setCurrentUserIsFetched(state, action: PayloadAction<boolean>) {
-      state.currentUserIsFetched = action.payload;
+    setCurrentAccountRequestFullfiled(state, action: PayloadAction<boolean>) {
+      state.currentAccountRequestFullfiled = action.payload;
     },
     setRefetchUnReadedMessagesCount(state, action) {
       state.reFetchThisUserId = action.payload;
@@ -92,9 +91,7 @@ const StateManegerSlice = createSlice({
     resetCurrentSong(state) {
       state.currentSong = null;
     },
-    setAllMusics(state, action: PayloadAction<any>) {
-      state.allMusics = action.payload;
-    },
+
     setSocet(state, action: PayloadAction<any>) {
       state.socet = action.payload;
     },
@@ -127,11 +124,10 @@ const StateManegerSlice = createSlice({
 export const {
   setCurrentUser,
   setCurrentUserIsLoading,
-  setCurrentUserIsFetched,
+  setCurrentAccountRequestFullfiled,
   showPopup,
   resetPopup,
   setCurrentSong,
-  setAllMusics,
   resetCurrentSong,
   setSocet,
   setOnlineUsers,
