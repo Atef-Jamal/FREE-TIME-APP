@@ -14,7 +14,7 @@ import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-} from "firebase/storage";
+} from "@firebase/storage";
 import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
