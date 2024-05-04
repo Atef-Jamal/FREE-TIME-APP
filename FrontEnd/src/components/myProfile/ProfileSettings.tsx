@@ -7,7 +7,9 @@ import {
   showPopup,
 } from "../../context/StateManeger";
 import VerifyEmailBox from "./VerifyEmailBox";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+
 import Spinner from "../Others/Spinner";
 
 const ProfileSettings = () => {

@@ -7,7 +7,9 @@ import {
   setCurrentUserIsLoading,
   showPopup,
 } from "../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+
 import MusicPlayer from "../Music/MusicPlayer";
 import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";

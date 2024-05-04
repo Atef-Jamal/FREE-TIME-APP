@@ -5,7 +5,9 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { BiTask } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { showPopup } from "../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+
 import { TypeNotifications } from "../../types/notification";
 
 const Statistics = () => {

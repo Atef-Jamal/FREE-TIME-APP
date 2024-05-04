@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { showPopup } from "../context/StateManeger";
-import { handleApiError, makeRequest } from "../utils";
+import { makeRequest } from "../utils";
+import { handleApiError } from "../utils/common";
+
 import { useAppDispatch } from "../context/Hooks";
-import { TypeTaskApp } from "../types/others";
+import { TypeTaskApp } from "../types/earn";
 
 export const useFetchAllApps = ({
   initialLoading = false,

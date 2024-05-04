@@ -9,7 +9,9 @@ import {
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import messageSoundSrc from "../../assets/images/messageSound.wav";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+
 import { TypePrivateMessage } from "../../types/privateChat";
 import { useListenToEvent } from "../../hooks";
 

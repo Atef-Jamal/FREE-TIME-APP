@@ -12,7 +12,9 @@ import GuessCardNotify from "./GuessCardNotify";
 import MentionNotify from "./MentionNotify";
 import NotificationBuyMusic from "./BuyMusicNotify";
 import EmailVerifiedNotify from "./EmailVerifiedNotify";
-import { handleApiError, makeRequest } from "../../../utils";
+import { makeRequest } from "../../../utils";
+import { handleApiError } from "../../../utils/common";
+
 import Spinner from "../../Others/Spinner";
 import { TypeNotifications } from "../../../types/notification";
 

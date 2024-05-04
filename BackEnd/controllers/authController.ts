@@ -13,8 +13,9 @@ export const register = async (req: Request, res: Response) => {
   const referrerUser = req.query.ref;
 
   if (!name || !email || !password || !confirmPassword) {
-    return res.status(408).json({ error: "all field required" });
+    return res.status(404).json({ error: "all field required" });
   }
+
   try {
     const userExisted = await User.findOne({ email });
 

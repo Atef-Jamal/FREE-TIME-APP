@@ -4,15 +4,15 @@ import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
-import {verifiedIcon} from "../../../../assets";
-import { timeAgoFromMongoDBDate } from "../../../../context/functions";
+import { verifiedIcon } from "../../../../assets";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
-import { handleApiError, makeRequest } from "../../../../utils";
+import { makeRequest } from "../../../../utils";
 import { TypePublicChatMessage } from "../../../../types/publicChat";
 import { useListenToEvent } from "../../../../hooks";
 import { User } from "../../../../types/user";
+import { formateDate, handleApiError } from "../../../../utils/common";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -45,12 +45,11 @@ const Message = ({
     likes,
     loves,
     mentioned,
-    // pending,
   } = messageItem;
 
   const dispatch = useAppDispatch();
 
-  const date = timeAgoFromMongoDBDate(createdAt.toString());
+  const date = formateDate(createdAt.toString());
 
   const deleteMessage = async (messageId: string) => {
     setIsDeleting(true);
@@ -144,22 +143,24 @@ const Message = ({
     },
   });
 
+  const handleRemoveAnimation = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (searchParams.get("messageid") === _id) {
+      event.currentTarget.classList.remove(
+        "border",
+        "animate-pulse",
+        "border-gray-400"
+      );
+      setSearchParams(() => {
+        searchParams.delete("messageid");
+        return searchParams;
+      });
+    }
+  };
+
   return (
     <div
       ref={messageRef}
-      onClick={(e) => {
-        e.currentTarget.classList.remove(
-          "border",
-          "animate-pulse",
-          "border-gray-400"
-        );
-        if (searchParams.get("messageid") === singleMessage._id) {
-          setSearchParams(() => {
-            searchParams.delete("messageid");
-            return searchParams;
-          });
-        }
-      }}
+      onClick={handleRemoveAnimation}
       className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex ">

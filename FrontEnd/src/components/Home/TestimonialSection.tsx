@@ -1,8 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { showPopup } from "../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { timeAgoFromMongoDBDate } from "../../context/functions";
+import { formateDate, handleApiError } from "../../utils/common";
 import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
 import { avatar, moneyHome } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -126,7 +126,7 @@ const TestimonialSection = () => {
                       </span>
                       {item.createdAt && (
                         <span className="text-xs text-[#9ba89aee]">
-                          {timeAgoFromMongoDBDate(item.createdAt.toString())}
+                          {formateDate(item.createdAt.toString())}
                         </span>
                       )}
                       <div className="flex items-center gap-1">

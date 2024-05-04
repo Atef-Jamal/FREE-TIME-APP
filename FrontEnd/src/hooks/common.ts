@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { showPopup } from "../context/StateManeger";
 import { useAppDispatch } from "../context/Hooks";
-import { handleApiError, makeRequest } from "../utils";
+import { makeRequest } from "../utils";
+import { handleApiError } from "../utils/common";
+
 import { TypeNotifications } from "../types/notification";
 import { User } from "../types/user";
 

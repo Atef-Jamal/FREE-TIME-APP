@@ -92,6 +92,7 @@ const Playing = () => {
   if (taskApp?.type === "GAME_APP" && taskApp.isAvailable === "AVAILABLE") {
     return <GuessCardApp taskApp={taskApp} />;
   }
+  return null;
 };
 
 export default Playing;

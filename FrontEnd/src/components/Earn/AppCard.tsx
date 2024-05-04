@@ -3,7 +3,7 @@ import { AiFillAndroid } from "react-icons/ai";
 import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types/others";
+import { TypeTaskApp } from "../../types/earn";
 import { gamePhotosArray } from "../../helper/data";
 
 interface TypeAppCard {

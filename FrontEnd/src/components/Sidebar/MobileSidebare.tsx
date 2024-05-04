@@ -8,7 +8,8 @@ import {
 } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
 
 const MobileSidebare = () => {
   const { openSidebarMobile, currentUser, allUnReadedMesseges } =

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types/others";
+import { TypeTaskApp } from "../../types/earn";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";

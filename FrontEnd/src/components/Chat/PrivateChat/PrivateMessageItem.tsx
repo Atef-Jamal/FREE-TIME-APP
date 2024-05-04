@@ -1,7 +1,7 @@
 import { FcCheckmark } from "react-icons/fc";
 import { avatar } from "../../../assets";
 import { useAppSelector } from "../../../context/Hooks";
-import { timeAgoFromMongoDBDate } from "../../../context/functions";
+import { formateDate } from "../../../utils/common";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RefObject } from "react";
 import { TypePrivateMessage } from "../../../types/privateChat";
@@ -20,7 +20,7 @@ const PrivateMessageItem = ({
   index: number;
 }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const date = timeAgoFromMongoDBDate(message.createdAt.toString());
+  const date = formateDate(message.createdAt.toString());
   return (
     <div
       style={{

@@ -1,7 +1,7 @@
 import React from "react";
 import { FaPauseCircle } from "react-icons/fa";
 import { IoMdPlay } from "react-icons/io";
-import UploadImage from "./UploadImage"
+import UploadImage from "./UploadImage";
 
 interface TypeProps {
   profilePicture: string | undefined;
@@ -9,7 +9,7 @@ interface TypeProps {
   filePercentage: number;
   uploading: boolean;
   handleCancelUploading: () => void;
-  isSignIn: boolean;
+  isSignInMode: boolean;
   paused: boolean;
   handlePuase: () => void;
   handleResume: () => void;
@@ -24,11 +24,11 @@ const LeftSide = ({
   paused,
   handlePuase,
   handleResume,
-  isSignIn,
+  isSignInMode,
 }: TypeProps) => {
   return (
     <div className="flex flex-col w-[40%] sm:hidden ">
-      {!isSignIn && (
+      {!isSignInMode && (
         <>
           <UploadImage
             paused={paused}

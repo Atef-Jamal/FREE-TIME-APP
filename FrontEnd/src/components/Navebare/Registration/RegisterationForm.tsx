@@ -7,32 +7,25 @@ import { GrClose } from "react-icons/gr";
 import { IoMdPlay } from "react-icons/io";
 import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
 import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
-import { validation } from "../../../context/functions";
 import { storage } from "../../../firebase";
 import {
+  ref,
   UploadTask,
   getDownloadURL,
-  ref,
   uploadBytesResumable,
 } from "@firebase/storage";
 import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
-import { handleApiError, makeRequest } from "../../../utils";
-
-export interface TypeFormData {
-  name: string;
-  password: string;
-  confirmPassword: string;
-  email: string;
-  profilePicture?: string;
-}
+import { handleApiError, validation } from "../../../utils/common";
+import { login, register } from "../../../utils/auth";
+import { TypeFormData } from "../../../types/others";
 
 const initialValue = {
   name: "",
+  email: "",
   password: "",
   confirmPassword: "",
-  email: "",
   profilePicture: "",
 };
 
@@ -47,13 +40,13 @@ const RegisterationForm = () => {
   const [filePercentage, setFilePercentage] = useState<number>(0);
   const [submiting, setSubmiting] = useState(false);
   const [searchParams] = useSearchParams();
-  const { currentUser, isSignIn, socet } = useAppSelector(
+  const { currentUser, isSignInMode, socet } = useAppSelector(
     (state) => state.stateManeger
   );
 
   const dispatch = useAppDispatch();
 
-  const searchValue = searchParams.get("ref");
+  const queryParam = searchParams.get("ref");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((previous) => {
@@ -66,44 +59,47 @@ const RegisterationForm = () => {
 
   const handleSubmite = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (currentUser) return;
     setSubmiting(true);
-    if (currentUser) {
+
+    const { name, email, password, confirmPassword, profilePicture } = formData;
+
+    let errorMessage;
+
+    if (isSignInMode) {
+      errorMessage = validation([email, password], true);
+    } else {
+      errorMessage = validation(
+        [name, email, password, confirmPassword],
+        false,
+        agreePrivacy
+      );
+    }
+    if (errorMessage) {
+      dispatch(
+        showPopup({
+          status: true,
+          message: errorMessage,
+          type: "ERROR_GENERAL",
+        })
+      );
+      setSubmiting(false);
       return;
     }
-    if (!isSignIn) {
-      try {
-        if (
-          validation(
-            [
-              formData.name,
-              formData.email,
-              formData.password,
-              formData.confirmPassword,
-            ],
-            isSignIn,
-            agreePrivacy
-          )
-        ) {
-          const errorMessage = validation(
-            [
-              formData.name,
-              formData.email,
-              formData.password,
-              formData.confirmPassword,
-            ],
-            isSignIn,
-            agreePrivacy
-          );
-          dispatch(
-            showPopup({
-              status: true,
-              message: errorMessage,
-              type: "ERROR_GENERAL",
-            })
-          );
-          setSubmiting(false);
-          return;
-        }
+
+    try {
+      if (isSignInMode) {
+        dispatch(
+          showPopup({
+            status: true,
+            message: "Logging In....",
+            type: "LOADING",
+          })
+        );
+        const response = await login({ email, password });
+        localStorage.setItem("token", response.data.token);
+        window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+      } else {
         dispatch(
           showPopup({
             status: true,
@@ -111,83 +107,24 @@ const RegisterationForm = () => {
             type: "LOADING",
           })
         );
-        const axiosResponse = await makeRequest.post(
-          `api/auth/register?ref=${searchValue || ""}`,
-          {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            profilePicture: formData.profilePicture,
-            confirmPassword: formData.confirmPassword,
-          }
+        const response = await register(
+          { name, email, password, confirmPassword, profilePicture },
+          queryParam
         );
-        if (axiosResponse.status === 201) {
-          localStorage.setItem("token", axiosResponse.data.token);
-          socet?.emit("new-user-joined", axiosResponse.data);
-        }
+        localStorage.setItem("token", response.data.token);
+        socet?.emit("new-user-joined", response.data);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
-      } catch (error: any) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-        setSubmiting(false);
       }
-    } else {
-      try {
-        if (
-          validation(
-            [formData.email, formData.password],
-            isSignIn,
-            agreePrivacy
-          )
-        ) {
-          const errorMessage = validation(
-            [formData.email, formData.password],
-            isSignIn,
-            agreePrivacy
-          );
-          dispatch(
-            showPopup({
-              status: true,
-              message: errorMessage,
-              type: "ERROR_GENERAL",
-            })
-          );
-
-          setSubmiting(false);
-
-          return;
-        }
-        dispatch(
-          showPopup({
-            status: true,
-            message: "Loging In...",
-            type: "LOADING",
-          })
-        );
-
-        const axiosResponse = await makeRequest.post(`api/auth/login`, {
-          email: formData.email,
-          password: formData.password,
-        });
-        if (axiosResponse.status === 200) {
-          localStorage.setItem("token", axiosResponse.data.token);
-        }
-        window.location.href = `${window.location.origin}/?redirectedfrom=login`;
-      } catch (error: any) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-        setSubmiting(false);
-      }
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          type: "ERROR_GENERAL",
+        })
+      );
+    } finally {
+      setSubmiting(false);
     }
   };
 
@@ -295,11 +232,11 @@ const RegisterationForm = () => {
   };
 
   useEffect(() => {
-    if (isSignIn) {
+    if (isSignInMode) {
       handleCancelUploading();
     }
     setFormData(initialValue);
-  }, [isSignIn]);
+  }, [isSignInMode]);
 
   const showPassword = () => {
     setHidePassword((previous) => !previous);
@@ -323,10 +260,12 @@ const RegisterationForm = () => {
           <div className="flex gap-5">
             <button
               onClick={() =>
-                dispatch(toggleThisEntity({ entity: "isSignIn", value: true }))
+                dispatch(
+                  toggleThisEntity({ entity: "isSignInMode", value: true })
+                )
               }
               className={`${
-                isSignIn
+                isSignInMode
                   ? " border-b-[#fff]  text-[#f8dcdc] "
                   : " text-gray-600"
               } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
@@ -337,11 +276,11 @@ const RegisterationForm = () => {
             <button
               onClick={() => {
                 dispatch(
-                  toggleThisEntity({ entity: "isSignIn", value: false })
+                  toggleThisEntity({ entity: "isSignInMode", value: false })
                 );
               }}
               className={`${
-                !isSignIn
+                !isSignInMode
                   ? "pacity-25 border-b-[#fff] text-[#f8dcdc] "
                   : "text-gray-600"
               }  sm:text-md  font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
@@ -362,7 +301,7 @@ const RegisterationForm = () => {
         </div>
         <div className="flex justify-center px-4 ">
           <LeftSide
-            isSignIn={isSignIn}
+            isSignInMode={isSignInMode}
             uploading={uploading}
             handleCancelUploading={handleCancelUploading}
             paused={paused}
@@ -373,7 +312,7 @@ const RegisterationForm = () => {
             profilePicture={formData.profilePicture}
           />
           <div className="w-[60%] sm:w-full">
-            {!isSignIn && (
+            {!isSignInMode && (
               <div className="hidden sm:flex ">
                 <div className=" flex flex-col items-center justify-center gap-2">
                   <span className="tracking-wider font-bold text-[#c1c5be] px-3 py-2 bg-[#beff270e]">
@@ -416,7 +355,7 @@ const RegisterationForm = () => {
               className="flex flex-col gap-4 sm:gap-3 sm:mt-2"
               autoComplete="off"
             >
-              {!isSignIn && (
+              {!isSignInMode && (
                 <Input
                   type="text"
                   label="Name"
@@ -446,7 +385,7 @@ const RegisterationForm = () => {
                 placeholder="Enter Your Password"
                 showPassword={showPassword}
               />
-              {!isSignIn && (
+              {!isSignInMode && (
                 <Input
                   type="password"
                   label="Confirm Your Paaword"
@@ -457,7 +396,7 @@ const RegisterationForm = () => {
                   placeholder="Confirm Your Paaword"
                 />
               )}
-              {!isSignIn && (
+              {!isSignInMode && (
                 <div className="flex items-center justify-between p-4 h-6 ">
                   <button
                     type="button"
@@ -480,7 +419,7 @@ const RegisterationForm = () => {
                 onClick={handleSubmite}
                 disabled={submiting || uploading}
               >
-                {!isSignIn
+                {!isSignInMode
                   ? `${submiting ? "Submiting" : "SIGN UP"} `
                   : `${submiting ? "Submiting" : "SIGN IN"} `}
               </button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserImage from "../../Others/UserImage";
 import { NavLink } from "react-router-dom";
-import { timeAgoFromMongoDBDate } from "../../../context/functions";
+import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
@@ -75,7 +75,7 @@ const People = ({ userInfo }: { userInfo: User }) => {
 
   let date = "";
   if (recentMessage) {
-    date = timeAgoFromMongoDBDate(recentMessage.createdAt.toString());
+    date = formateDate(recentMessage.createdAt.toString());
   }
 
   return (

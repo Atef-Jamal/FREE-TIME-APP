@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
 
 const EnterVerificationCode = () => {
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);

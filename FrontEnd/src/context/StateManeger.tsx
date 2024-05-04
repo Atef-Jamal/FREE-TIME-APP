@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { TypeInitialState, TypePopup } from "../types/redux";
+import { TypeInitialState, TypePopup } from "../types/context";
 import { User } from "../types/user";
 
 const initialState: TypeInitialState = {
@@ -15,7 +15,7 @@ const initialState: TypeInitialState = {
   },
   openRegisterForm: false,
   isChatOpen: false,
-  isSignIn: false,
+  isSignInMode: false,
   openSidebarMobile: false,
   resizeSidebare: window.innerWidth < 1300 ? true : false,
   hiddenLiveStats: false,
@@ -33,7 +33,7 @@ export interface TypeTogglActionPayload {
   entity:
     | "openRegisterForm"
     | "openNotification"
-    | "isSignIn"
+    | "isSignInMode"
     | "hiddenLiveStats"
     | "isChatOpen"
     | "openSidebarMobile"

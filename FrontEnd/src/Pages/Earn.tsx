@@ -11,7 +11,7 @@ import { arrayoffers } from "../helper/data";
 import { Helmet } from "react-helmet-async";
 import { makeRequest } from "../utils";
 import { FaHeart, FaStar } from "react-icons/fa";
-import { TypeTaskApp } from "../types/others";
+import { TypeTaskApp } from "../types/earn";
 import Spinner from "../components/Others/Spinner";
 import { VscExpandAll } from "react-icons/vsc";
 import { useCloseMenuOnClickOutSide, useFetchAllApps } from "../hooks";

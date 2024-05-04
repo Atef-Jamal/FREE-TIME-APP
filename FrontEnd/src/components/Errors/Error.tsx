@@ -16,7 +16,7 @@ const Error = ({ generalError }: { generalError?: boolean }) => {
                 dispatch(
                   toggleThisEntity({ entity: "openRegisterForm", value: true })
                 );
-                dispatch(toggleThisEntity({ entity: "isSignIn", value: true }));
+                dispatch(toggleThisEntity({ entity: "isSignInMode", value: true }));
               }}
               className="underline text-[#fd6d6d]"
             >

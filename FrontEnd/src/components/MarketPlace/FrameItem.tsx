@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+
 import { TypeFrame } from "../../types/frame";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {

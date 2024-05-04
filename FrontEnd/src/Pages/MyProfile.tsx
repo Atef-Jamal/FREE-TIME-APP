@@ -14,7 +14,9 @@ import ProfileSettings from "../components/myProfile/ProfileSettings";
 
 import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
-import { handleApiError, makeRequest } from "../utils";
+import { makeRequest } from "../utils";
+import { handleApiError } from "../utils/common";
+
 import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frame";
@@ -34,7 +36,7 @@ const MyProfile = () => {
   const referralLinkRef = useRef<HTMLDivElement>(null);
   const musicsRef = useRef<HTMLDivElement>(null);
 
-  const paramValue = searchParams.get("to");
+  const queryParam = searchParams.get("to");
 
   let mathLevel: number = currentUser?.points
     ? currentUser.points / 100
@@ -141,21 +143,21 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
-    if (paramValue === "frames") {
+    if (queryParam === "frames") {
       framesRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
       framesRef.current?.classList.add("animate-pulse");
       return () => framesRef.current?.classList.remove("animate-pulse");
-    } else if (paramValue === "musics") {
+    } else if (queryParam === "musics") {
       musicsRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
       musicsRef.current?.classList.add("animate-pulse");
       return () => musicsRef.current?.classList.remove("animate-pulse");
-    } else if (paramValue === "referrallink") {
+    } else if (queryParam === "referrallink") {
       referralLinkRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "center",
@@ -163,7 +165,7 @@ const MyProfile = () => {
       referralLinkRef.current?.classList.add("animate-pulse");
       return () => referralLinkRef.current?.classList.remove("animate-pulse");
     }
-  }, [paramValue]);
+  }, [queryParam]);
 
   if (!currentAccountRequestFullfiled) {
     return (

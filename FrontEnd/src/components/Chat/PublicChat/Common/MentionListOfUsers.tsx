@@ -7,9 +7,10 @@ interface TypeProps {
   setUser: React.Dispatch<
     React.SetStateAction<{ _id: string; name: string } | null>
   >;
+  setOpenMentionList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MentionListOfUsers = ({ setUser }: TypeProps) => {
+const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const { users, loading, error } = useFetchAllUsers();
 
@@ -18,7 +19,10 @@ const MentionListOfUsers = ({ setUser }: TypeProps) => {
   }
 
   return (
-    <div className="bg-[#141a36] w-full h-full flex flex-col items-center justify-center py-2 gap-1 overflow-scroll scrollbar-none">
+    <div
+      onClick={() => setOpenMentionList(false)}
+      className="bg-[#141a36] w-full h-full flex flex-col items-center justify-center py-2 gap-1 overflow-auto scrollbar-thin"
+    >
       {error && <div className="w-full my-4">{error}</div>}
       {loading && (
         <div className="w-full my-4">

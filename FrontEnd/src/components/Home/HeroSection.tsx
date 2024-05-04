@@ -5,7 +5,7 @@ import { VscGithub } from "react-icons/vsc";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
 import Input from "../Navebare/Registration/Input";
-import { handleApiError } from "../../utils";
+import { handleApiError } from "../../utils/common";
 
 const HeroSection = () => {
   const [email, setEmail] = useState<string>("");

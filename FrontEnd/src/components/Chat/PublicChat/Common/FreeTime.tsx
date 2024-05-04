@@ -1,4 +1,4 @@
-import { timeAgoFromMongoDBDate } from "../../../../context/functions";
+import { formateDate } from "../../../../utils/common";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatFreeTime } from "../../../../types/publicChat";
@@ -11,7 +11,7 @@ const FreeTime = ({
   messageRef: React.RefObject<HTMLDivElement> | null;
 }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const date = timeAgoFromMongoDBDate(singleMessage.createdAt.toString());
+  const date = formateDate(singleMessage.createdAt.toString());
   return (
     <div
       ref={messageRef}

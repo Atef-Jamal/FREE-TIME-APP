@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { GoMention } from "react-icons/go";
 import { toggleThisEntity } from "../../../context/StateManeger";
-import { timeAgoFromMongoDBDate } from "../../../context/functions";
+import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeMentionNotify } from "../../../types/notification";
 
@@ -16,7 +16,7 @@ const MentionNotify = ({
   const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const date = timeAgoFromMongoDBDate(createdAt.toString());
+  const date = formateDate(createdAt.toString());
 
   return (
     <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">

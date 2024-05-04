@@ -11,7 +11,9 @@ import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import bonusImage from "../../assets/images/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { handleApiError, makeRequest } from "../../utils";
+import {  makeRequest } from "../../utils";
+import {  handleApiError } from "../../utils/common";
+
 import { Link } from "react-router-dom";
 import Spinner from "./Spinner";
 

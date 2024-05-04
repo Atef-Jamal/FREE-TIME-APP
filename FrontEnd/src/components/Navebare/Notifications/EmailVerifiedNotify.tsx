@@ -2,12 +2,12 @@ import { useState } from "react";
 import VerifiedIcon from "../../../assets/images/verified-icon.png";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
-import {
-  collectReward,
-  timeAgoFromMongoDBDate,
-} from "../../../context/functions";
 import Spinner from "../../Others/Spinner";
-import { handleApiError } from "../../../utils";
+import {
+  handleApiError,
+  formateDate,
+  collectReward,
+} from "../../../utils/common";
 import { TypeEmailVerifiedNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
@@ -56,7 +56,7 @@ const EmailVerifiedNotify = ({
     }
   };
 
-  const date = timeAgoFromMongoDBDate(createdAt.toString());
+  const date = formateDate(createdAt.toString());
 
   return (
     <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">

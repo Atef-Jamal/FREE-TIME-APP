@@ -10,7 +10,8 @@ import {
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Spinner from "../Others/Spinner";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const { currentUser, currentSong, isPlaying } = useAppSelector(

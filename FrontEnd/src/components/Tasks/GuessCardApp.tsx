@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser } from "../../context/StateManeger";
 import { BsCheck2Circle } from "react-icons/bs";
-import { handleApiError, makeRequest } from "../../utils";
-import { ImSpinner3 } from "react-icons/im";
-import { TypeTaskApp } from "../../types/others";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
 
-const GuessCardApp = ({ taskApp }: { taskApp: TypeTaskApp }) => {
+import { ImSpinner3 } from "react-icons/im";
+import { TypeGameApp } from "../../types/earn";
+
+const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");

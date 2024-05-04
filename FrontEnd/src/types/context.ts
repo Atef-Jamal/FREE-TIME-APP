@@ -14,7 +14,7 @@ export interface TypeInitialState {
   openRegisterForm: boolean;
   openNotification: boolean;
   isChatOpen: boolean;
-  isSignIn: boolean;
+  isSignInMode: boolean;
   openSidebarMobile: boolean;
   openPopup: TypePopup;
   resizeSidebare: boolean;

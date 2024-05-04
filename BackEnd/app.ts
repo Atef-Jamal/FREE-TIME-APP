@@ -24,17 +24,17 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_BASE_URL!, "http://localhost:5173"],
+    origin: [process.env.CLIENT_BASE_URL!],
   })
 );
 
 export const io = new Server(server, {
   cors: {
-    origin: [process.env.CLIENT_BASE_URL!, "http://localhost:5173"],
+    origin: [process.env.CLIENT_BASE_URL!],
   },
 });
 
-export const onLineUsers: any = {};
+export const onLineUsers: { [key: string]: string } = {};
 
 app.use(express.json());
 app.use(cookieParser());
@@ -62,16 +62,6 @@ app.use("/api/frames", frameRoute);
 app.use("/api/testimonials", testimonialRoute);
 
 app.use("/api/coupons", couponRoute);
-
-// app.get("/api/example", async (_, res) => {
-//   try {
-
-//     return res.status(200).json(response);
-//   } catch (error) {
-//     console.log(error);
-//     return;
-//   }
-// });
 
 app.get("/api/current-date", (_: Request, res: Response) => {
   const date = new Date();

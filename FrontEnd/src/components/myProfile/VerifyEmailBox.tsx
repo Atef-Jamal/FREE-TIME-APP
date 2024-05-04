@@ -4,7 +4,8 @@ import { CgClose } from "react-icons/cg";
 import { resetModel, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
 import EnterVerificationCode from "./EnterVerificationCode";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
 
 const VerifyEmailBox = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

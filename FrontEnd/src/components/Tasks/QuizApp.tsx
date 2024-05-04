@@ -2,12 +2,14 @@ import { MouseEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+
 import { ImSpinner3 } from "react-icons/im";
-import { TypeTaskApp } from "../../types/others";
+import { TypeQuizApp } from "../../types/earn";
 
 interface TypeProps {
-  taskApp: TypeTaskApp;
+  taskApp: TypeQuizApp;
 }
 
 const QuizApp = ({ taskApp }: TypeProps) => {

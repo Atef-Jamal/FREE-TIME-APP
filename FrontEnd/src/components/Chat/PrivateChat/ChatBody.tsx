@@ -6,7 +6,8 @@ import {
   setRefetchUnReadedMessagesCount,
   showPopup,
 } from "../../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../../utils";
+import { makeRequest } from "../../../utils";
+import { handleApiError } from "../../../utils/common";
 import Spinner from "../../Others/Spinner";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";

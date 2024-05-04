@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
-import { handleApiError, makeRequest } from "../../utils";
+import { makeRequest } from "../../utils";
 import Spinner from "../Others/Spinner";
 import { avatar, empty } from "../../assets";
 import { Link } from "react-router-dom";
-import { timeAgoFromMongoDBDate } from "../../context/functions";
+import { formateDate, handleApiError } from "../../utils/common";
 
 const WhoVisitProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -100,7 +100,7 @@ const WhoVisitProfile = () => {
                 </Link>
               </div>
               <span className="text-[#918080d5] text-sm">
-                {timeAgoFromMongoDBDate(item.createdAt.toString())}
+                {formateDate(item.createdAt.toString())}
               </span>
             </div>
           ))}

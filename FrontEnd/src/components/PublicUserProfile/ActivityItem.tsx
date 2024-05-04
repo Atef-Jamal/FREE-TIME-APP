@@ -1,4 +1,4 @@
-import { timeAgoFromMongoDBDate } from "../../context/functions";
+import { formateDate } from "../../utils/common";
 
 const ActivityItem = ({
   message,
@@ -15,7 +15,7 @@ const ActivityItem = ({
   price?: number;
   icon: React.ReactNode;
 }) => {
-  const date = timeAgoFromMongoDBDate(time.toString());
+  const date = formateDate(time.toString());
   return (
     <div
       className={`${

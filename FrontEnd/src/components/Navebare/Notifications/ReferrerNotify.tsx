@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { FcConferenceCall } from "react-icons/fc";
-import {
-  collectReward,
-  timeAgoFromMongoDBDate,
-} from "../../../context/functions";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
 import Spinner from "../../Others/Spinner";
-import { handleApiError } from "../../../utils";
+import {
+  handleApiError,
+  formateDate,
+  collectReward,
+} from "../../../utils/common";
 import { TypeReferrerNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
@@ -58,7 +58,7 @@ const ReferrerNotify = ({
     }
   };
 
-  const date = timeAgoFromMongoDBDate(createdAt.toString());
+  const date = formateDate(createdAt.toString());
 
   return (
     <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">

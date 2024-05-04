@@ -1,5 +1,5 @@
 import { TypeFrame } from "./frame";
-import { TypeDailyReward } from "./others";
+import { TypeDailyReward } from "./rewards";
 
 export interface User {
   _id: string;

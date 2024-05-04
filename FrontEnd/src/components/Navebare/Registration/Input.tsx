@@ -71,9 +71,9 @@ const Input = ({
             +
           </span>
           {progress && (
-            <div className="transition-all  relative h-[6px] w-[85%] self-center bg-white rounded-full overflow-hidden mb-2 ">
+            <div className="transition-all relative h-[6px] w-[85%] self-center bg-white rounded-full overflow-hidden mb-2 ">
               <div
-                className={`transition-all  h-[6px] w-[${progress}%] bg-[#3e4edd]`}
+                className={`transition-all h-[6px] w-[${progress}%] bg-[#3e4edd]`}
               ></div>
             </div>
           )}

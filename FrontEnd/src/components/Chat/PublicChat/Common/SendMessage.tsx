@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
-import { handleApiError, makeRequest } from "../../../../utils";
+import { makeRequest } from "../../../../utils";
+import { handleApiError } from "../../../../utils/common";
+import { useCloseMenuOnClickOutSide } from "../../../../hooks";
 
 interface typeProps {
   stopScrolling: boolean;
@@ -14,9 +16,10 @@ interface typeProps {
 const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
   const [loading, setLoading] = useState<boolean>(false);
-  const [toggleMentionList, settoggleMentionList] = useState<boolean>(false);
+  const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
+  const mentionListRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -62,17 +65,13 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    const func = () => {
-      if (toggleMentionList) {
-        settoggleMentionList((prev) => !prev);
-      }
-    };
-    document.addEventListener("click", func);
-    return () => {
-      document.removeEventListener("click", func);
-    };
-  }, [toggleMentionList]);
+
+  useCloseMenuOnClickOutSide({
+    menuRef: mentionListRef,
+    onClose: () => {
+      setOpenMentionList(false);
+    },
+  });
 
   return (
     <div className="relative w-full h-[70px] bg-[#0a071670] flex items-center py-8">
@@ -84,12 +83,15 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
           SIGN IN TO UNLOCK
         </div>
       )}
-      {toggleMentionList && (
+      {openMentionList && (
         <div
-          id="mentionlist"
+          ref={mentionListRef}
           className="absolute -top-[152px] left-2 w-[95%] h-[150px] border border-gray-500"
         >
-          <MentionListOfUsers setUser={setUser} />
+          <MentionListOfUsers
+            setUser={setUser}
+            setOpenMentionList={setOpenMentionList}
+          />
         </div>
       )}
       <form
@@ -120,7 +122,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
           id="mentionbutton"
           onClick={(e) => {
             e.stopPropagation();
-            settoggleMentionList((prev) => !prev);
+            setOpenMentionList((prev) => !prev);
           }}
           className="relative py-[4px] px-3 rounded-md bg-[#542ba06e] "
         >

@@ -3,7 +3,9 @@ import { useAppDispatch } from "../../../context/Hooks";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { showPopup } from "../../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../../utils";
+import { makeRequest } from "../../../utils";
+import { handleApiError } from "../../../utils/common";
+
 import { TypePrivateMessage } from "../../../types/privateChat";
 
 const SendMessagePrivateChat = ({

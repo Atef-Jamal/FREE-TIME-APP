@@ -5,7 +5,9 @@ import {
   openModel,
   toggleThisEntity,
 } from "../../../context/StateManeger";
-import { handleApiError, makeRequest } from "../../../utils";
+import { makeRequest } from "../../../utils";
+import { handleApiError } from "../../../utils/common";
+
 import notificationSoundSrc from "../../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";

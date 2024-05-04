@@ -31,7 +31,7 @@ export const validation = (
   return result.split("-").reverse().join("");
 };
 
-export const timeAgoFromMongoDBDate = (dateArg: string): string => {
+export const formateDate = (dateArg: string): string => {
   const mongoDBDate = new Date(dateArg);
   const now: Date = new Date();
   const timestampDate: Date = new Date(mongoDBDate);
@@ -58,6 +58,19 @@ export const timeAgoFromMongoDBDate = (dateArg: string): string => {
         : " minutes ago")
     );
   }
+};
+
+export const handleApiError = (error: any) => {
+  let errorMessage = "";
+  if (
+    error?.response?.data?.error &&
+    typeof error.response.data.error === "string"
+  ) {
+    errorMessage = error.response.data.error;
+  } else {
+    errorMessage = "An unexpected Error occurred";
+  }
+  return errorMessage;
 };
 
 export const collectReward = async (notificationId: string) => {

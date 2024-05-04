@@ -3,7 +3,9 @@ import { MdStorefront } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import FrameItem from "../components/MarketPlace/FrameItem";
-import { handleApiError, makeRequest } from "../utils";
+import { makeRequest } from "../utils";
+import { handleApiError } from "../utils/common";
+
 import { TypeFrame } from "../types/frame";
 
 const MarketPlace = () => {

@@ -3,21 +3,15 @@ import { MdCardGiftcard } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
 import { BiCopy } from "react-icons/bi";
-import { handleApiError, makeRequest } from "../utils";
+import { makeRequest } from "../utils";
+import { handleApiError } from "../utils/common";
+
 import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
 import { useSearchParams } from "react-router-dom";
-
-interface TypeBounusCode {
-  _id: string;
-  code: string;
-  prize: number;
-  expirationDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { TypeBounusCode } from "../types/rewards";
 
 const Rewards = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -28,7 +22,7 @@ const Rewards = () => {
   const bonusCodeRef = useRef<HTMLButtonElement>(null);
   const dispatch = useAppDispatch();
 
-  const searchValue = searchParams.get("to");
+  const queryParam = searchParams.get("to");
 
   const getBonusCode = async () => {
     if (!currentUser) {
@@ -80,10 +74,10 @@ const Rewards = () => {
   };
 
   useEffect(() => {
-    if (searchValue) {
+    if (queryParam) {
       bonusCodeRef.current?.classList.add("animate-pulse");
     }
-  }, [searchValue]);
+  }, [queryParam]);
 
   return (
     <div className="flex flex-col bg-[#242438] gap-8 py-6 xs:pt-2 xs:pb-5">
