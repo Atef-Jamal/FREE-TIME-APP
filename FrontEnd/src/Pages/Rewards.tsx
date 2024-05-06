@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdCardGiftcard } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
@@ -12,17 +12,24 @@ import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
 import { useSearchParams } from "react-router-dom";
 import { TypeBounusCode } from "../types/rewards";
+import { useInteractWithElement } from "../hooks/common";
 
 const Rewards = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const bonusCodeRef = useRef<HTMLButtonElement>(null);
+  const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
   const queryParam = searchParams.get("to");
+
+  const { goToElement, removeAnimation } = useInteractWithElement();
+
+  useEffect(() => {
+    if (!queryParam) return;
+    goToElement();
+  }, [queryParam]);
 
   const getBonusCode = async () => {
     if (!currentUser) {
@@ -65,20 +72,6 @@ const Rewards = () => {
     }
   };
 
-  const handleRemoveAnimation = (type: string) => {
-    bonusCodeRef.current?.classList.remove("animate-pulse");
-    setSearchParams(() => {
-      searchParams.delete("to", type);
-      return searchParams;
-    });
-  };
-
-  useEffect(() => {
-    if (queryParam) {
-      bonusCodeRef.current?.classList.add("animate-pulse");
-    }
-  }, [queryParam]);
-
   return (
     <div className="flex flex-col bg-[#242438] gap-8 py-6 xs:pt-2 xs:pb-5">
       <div className="flex justify-between items-center bg-[#242438] px-8 sm:flex-col sm:p-4 sm:items-start sm:gap-6">
@@ -93,9 +86,9 @@ const Rewards = () => {
           </h1>
         </div>
         <button
-          ref={bonusCodeRef}
-          onClick={() => {
-            handleRemoveAnimation("bonus-code");
+          id={"bonus-code"}
+          onClick={(event) => {
+            removeAnimation(event);
             getBonusCode();
           }}
           className="relative flex gap-4 items-center bg-[#b6da7cce] py-2 px-4 rounded-md mr-3 border border-gray-600 "

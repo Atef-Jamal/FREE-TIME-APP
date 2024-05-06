@@ -60,6 +60,7 @@ export interface TypeGuessCardNotify {
 export interface TypeMusicNotify {
   _id: string;
   type: "MUSIC";
+  musicId: string;
   musicTitle: string;
   price: number;
   createdAt: Date;

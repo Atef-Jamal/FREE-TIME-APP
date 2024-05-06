@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
@@ -13,6 +13,7 @@ import { TypePublicChatMessage } from "../../../../types/publicChat";
 import { useListenToEvent } from "../../../../hooks";
 import { User } from "../../../../types/user";
 import { formateDate, handleApiError } from "../../../../utils/common";
+import { useInteractWithElement } from "../../../../hooks/common";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -31,7 +32,6 @@ const Message = ({
 }: TypeMessageProp) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [messageItem, setMessageItem] =
     useState<TypePublicChatMessage>(singleMessage);
 
@@ -50,6 +50,8 @@ const Message = ({
   const dispatch = useAppDispatch();
 
   const date = formateDate(createdAt.toString());
+
+  const { removeAnimation } = useInteractWithElement();
 
   const deleteMessage = async (messageId: string) => {
     setIsDeleting(true);
@@ -102,6 +104,7 @@ const Message = ({
         ? prev[otherFieldTow].filter((item) => item !== currentUser._id)
         : prev[otherFieldTow],
     });
+
     setMessageItem(updateMessage);
     try {
       const response = await makeRequest.patch(
@@ -143,24 +146,11 @@ const Message = ({
     },
   });
 
-  const handleRemoveAnimation = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (searchParams.get("messageid") === _id) {
-      event.currentTarget.classList.remove(
-        "border",
-        "animate-pulse",
-        "border-gray-400"
-      );
-      setSearchParams(() => {
-        searchParams.delete("messageid");
-        return searchParams;
-      });
-    }
-  };
-
   return (
     <div
       ref={messageRef}
-      onClick={handleRemoveAnimation}
+      id={_id}
+      onClick={removeAnimation}
       className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex ">

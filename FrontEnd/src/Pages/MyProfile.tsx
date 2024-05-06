@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { rank1Desktop, rank2Desktop, rank3Desktop, empty } from "../assets";
 import egypt from "../assets/images/eg.svg";
 import { AiFillSetting } from "react-icons/ai";
@@ -22,19 +22,16 @@ import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frame";
 import Spinner from "../components/Others/Spinner";
 import { useFetchMusics } from "../hooks";
+import { useInteractWithElement } from "../hooks/common";
 
 const MyProfile = () => {
   const { currentUser, currentAccountRequestFullfiled, socet } = useAppSelector(
     (state) => state.stateManeger
   );
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { musics } = useFetchMusics();
 
   const dispatch = useAppDispatch();
-
-  const framesRef = useRef<HTMLDivElement>(null);
-  const referralLinkRef = useRef<HTMLDivElement>(null);
-  const musicsRef = useRef<HTMLDivElement>(null);
 
   const queryParam = searchParams.get("to");
 
@@ -128,44 +125,11 @@ const MyProfile = () => {
     );
   };
 
-  const handleAnimation = (type: string) => {
-    if (type === "referrallink") {
-      referralLinkRef.current?.classList.remove("animate-pulse");
-    } else if (type === "frames") {
-      framesRef.current?.classList.remove("animate-pulse");
-    } else if (type === "musics") {
-      musicsRef.current?.classList.remove("animate-pulse");
-    }
-    setSearchParams(() => {
-      searchParams.delete("to", type);
-      return searchParams;
-    });
-  };
+  const { goToElement, removeAnimation } = useInteractWithElement();
 
   useEffect(() => {
-    if (queryParam === "frames") {
-      framesRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      framesRef.current?.classList.add("animate-pulse");
-      return () => framesRef.current?.classList.remove("animate-pulse");
-    } else if (queryParam === "musics") {
-      musicsRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      musicsRef.current?.classList.add("animate-pulse");
-      return () => musicsRef.current?.classList.remove("animate-pulse");
-    } else if (queryParam === "referrallink") {
-      referralLinkRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      referralLinkRef.current?.classList.add("animate-pulse");
-      return () => referralLinkRef.current?.classList.remove("animate-pulse");
-    }
-  }, [queryParam]);
+    goToElement();
+  }, [queryParam, musics]);
 
   if (!currentAccountRequestFullfiled) {
     return (
@@ -257,8 +221,8 @@ const MyProfile = () => {
         </div>
         <WhoVisitProfile />
         <div
-          onClick={() => handleAnimation("referrallink")}
-          ref={referralLinkRef}
+          id={"referrallink"}
+          onClick={removeAnimation}
           className="w-full bg-slate-700 rounded-md py-2 px-4 sm:px-2 sm:mx-auto flex flex-col gap-2 my-7"
         >
           <div className="flex items-center sm:gap-2 justify-between sm:flex-col">
@@ -269,12 +233,12 @@ const MyProfile = () => {
                 name="referrallink"
                 className="bg-[#1b243fcb] outline-none w-full text-gray-400 py-1"
                 readOnly={true}
-                value={`${window.location.origin}/?ref=${currentUser._id}`}
+                value={`${window.location.origin}/?referrerUser=${currentUser._id}`}
               />
               <span
                 onClick={() =>
                   copyReferralLink(
-                    `${window.location.origin}/?ref=${currentUser._id}`
+                    `${window.location.origin}/?referrerUser=${currentUser._id}`
                   )
                 }
                 className="relative w-[15%] h-5 flex items-center justify-center"
@@ -288,11 +252,7 @@ const MyProfile = () => {
             points as a Reward
           </p>
         </div>
-        <div
-          onClick={() => handleAnimation("frames")}
-          ref={framesRef}
-          className=" mt-5 flex flex-col gap-3 items-center justify-center  bg-[#222339] rounded-md "
-        >
+        <div className=" mt-5 flex flex-col gap-3 items-center justify-center  bg-[#222339] rounded-md ">
           <span className="text-[#7dec73] font-bold ">Change My Frame</span>
           <div
             className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2 p-3 `}
@@ -302,6 +262,8 @@ const MyProfile = () => {
                 return (
                   <div
                     key={item._id}
+                    id={item._id}
+                    onClick={removeAnimation}
                     className="flex flex-col items-center w-full justify-center gap-3 px-2 py-3 bg-[#5b667a42] rounded-md"
                   >
                     <div className="relative w-full flex items-center justify-center">
@@ -343,11 +305,7 @@ const MyProfile = () => {
             </div>
           ) : undefined}
         </div>
-        <div
-          onClick={() => handleAnimation("musics")}
-          ref={musicsRef}
-          className=" w-full mt-5 bg-[#222339] py-2 rounded-md"
-        >
+        <div className=" w-full mt-5 bg-[#222339] py-2 rounded-md">
           <h1 className="text-[#a0e965ee] font-bold text-center my-4">
             My Musics
           </h1>
@@ -360,7 +318,11 @@ const MyProfile = () => {
                   }
                 })
                 .map((element) => (
-                  <MusicCard key={element.id} songDetails={element} />
+                  <MusicCard
+                    key={element.id}
+                    songDetails={element}
+                    handleRemoveAnimation={removeAnimation}
+                  />
                 ))}
           </div>
           {currentUser?.mySongs?.length === 0 && (

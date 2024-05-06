@@ -6,6 +6,7 @@ import { handleApiError } from "../utils/common";
 
 import { TypeNotifications } from "../types/notification";
 import { User } from "../types/user";
+import { useSearchParams } from "react-router-dom";
 
 export const useFetchAllUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -179,4 +180,31 @@ export const useFetchMusics = () => {
   }, []);
 
   return { musics, loading, error };
+};
+
+export const useInteractWithElement = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const styles = ["border", "border-gray-400", "animate-pulse"];
+  const queryParam = searchParams.get("to");
+
+  const goToElement = () => {
+    if (!queryParam) return;
+    const element = document.getElementById(queryParam);
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    element?.classList.add(...styles);
+    return () => element?.classList.remove(...styles);
+  };
+
+  const removeAnimation = (event: React.MouseEvent) => {
+    event.currentTarget.classList.remove(...styles);
+    if (queryParam === event.currentTarget.id) {
+      setSearchParams((prev) => {
+        prev.delete("to", queryParam);
+        return prev;
+      });
+    }
+  };
+
+  return { goToElement, removeAnimation };
 };

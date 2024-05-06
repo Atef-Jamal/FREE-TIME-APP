@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { useAppSelector } from "../context/Hooks";
-import Welcome from "../components/Chat/PrivateChat/Welcome";
+import Welcome from "../components/Chats/PrivateChat/Welcome";
 import Spinner from "../components/Others/Spinner";
-import ChatSidbare from "../components/Chat/PrivateChat/ChatSidbare";
+import ChatSidbare from "../components/Chats/PrivateChat/ChatSidbare";
 
 const PrivateChat = () => {
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);

@@ -1,9 +1,9 @@
-import express, { Response, Request } from "express";
+import express from "express";
 import dotenv from "dotenv";
+import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connecteToMongodb } from "./db/connectToMongodb";
-import gioip from "geoip-lite";
 import authRouter from "./routes/authRoutes";
 import usersRouter from "./routes/usersRoutes";
 import conversationsRoute from "./routes/privateChatRoutes";
@@ -39,6 +39,8 @@ export const onLineUsers: { [key: string]: string } = {};
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/uploads", express.static(path.join("uploads")));
+
 app.get("/api/health", (_, res) => {
   return res.status(200).json({ message: "OK" });
 });
@@ -63,14 +65,8 @@ app.use("/api/testimonials", testimonialRoute);
 
 app.use("/api/coupons", couponRoute);
 
-app.get("/api/current-date", (_: Request, res: Response) => {
-  const date = new Date();
-  return res.status(200).json(date);
-});
-
-app.get("/api/user-location", (req: Request, res: Response) => {
-  const location = gioip.lookup(req.ip || "");
-  return res.status(200).json({ location });
+app.get("/api/atef", (req) => {
+  console.log(req.body);
 });
 
 io.on("connection", (socet) => {

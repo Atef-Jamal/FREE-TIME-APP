@@ -7,14 +7,14 @@ import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types/publicChat";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
+import { useInteractWithElement } from "../../../../hooks/common";
 
 const MobileChat = () => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  const mentionedMessageRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
-  const searchValue = searchParams.get("messageid");
+  const queryParam = searchParams.get("to");
 
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
 
@@ -25,33 +25,23 @@ const MobileChat = () => {
     },
   });
 
-  useEffect(() => {
-    const scrollToMessage = () => {
-      mentionedMessageRef.current?.scrollIntoView({
-        block: "start",
-        behavior: "smooth",
-      });
+  const { goToElement } = useInteractWithElement();
 
-      mentionedMessageRef.current?.classList.add(
-        "animate-pulse",
-        "border",
-        "border-gray-400"
-      );
-    };
-    if (searchValue) {
+  useEffect(() => {
+    if (queryParam) {
       const timeOut = setTimeout(() => {
-        scrollToMessage();
+        goToElement();
       }, 0);
       return () => clearTimeout(timeOut);
     }
-  }, [searchValue, messages]);
+  }, [queryParam, messages]);
 
   useEffect(() => {
-    const scrollToElement = () => {
+    const scrollToLastMessage = () => {
       lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     };
     if (!stopScrolling) {
-      scrollToElement();
+      scrollToLastMessage();
     }
   }, [messages]);
 
@@ -89,13 +79,7 @@ const MobileChat = () => {
               setStopScrolling={setStopScrolling}
               stopScrolling={stopScrolling}
               singleMessage={message}
-              messageRef={
-                searchValue === message._id
-                  ? mentionedMessageRef
-                  : index === messages.length - 1
-                  ? lastMessageRef
-                  : null
-              }
+              messageRef={index === messages.length - 1 ? lastMessageRef : null}
             />
           );
         })}

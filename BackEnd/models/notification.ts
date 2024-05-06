@@ -56,6 +56,9 @@ const notificationSchema = new mongoose.Schema(
     musicTitle: {
       type: String,
     },
+    musicId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

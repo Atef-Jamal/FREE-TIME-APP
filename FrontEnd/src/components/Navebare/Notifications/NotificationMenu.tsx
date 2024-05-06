@@ -182,6 +182,7 @@ const NotificationMenu = ({
                       musicTitle={item.musicTitle}
                       createdAt={item.createdAt}
                       price={item.price}
+                      musicId={item.musicId}
                     />
                   );
                 }

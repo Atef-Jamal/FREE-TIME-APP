@@ -10,7 +10,6 @@ import { handleApiError } from "../../utils/common";
 const HeroSection = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [hidePassword, setHidePassword] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const isTokenExists = !!localStorage.getItem("token");
 
@@ -26,10 +25,6 @@ const HeroSection = () => {
         })
       );
     }
-  };
-
-  const showPassword = () => {
-    setHidePassword((previous) => !previous);
   };
 
   return (
@@ -127,7 +122,6 @@ const HeroSection = () => {
               value={email}
               type={"email"}
               name={"email"}
-              home={true}
             />
             <Input
               label={"Password"}
@@ -135,10 +129,8 @@ const HeroSection = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder={"Enter Password"}
               value={password}
-              type={hidePassword ? "password" : "text"}
+              type={"password"}
               name={"password"}
-              home={true}
-              showPassword={showPassword}
             />
             <div className="text-center mt-8 sm:mt-4">
               <button

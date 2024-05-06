@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
-import { FaPauseCircle } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
-import { IoMdPlay } from "react-icons/io";
 import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
 import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
-import { storage } from "../../../firebase";
-import {
-  ref,
-  UploadTask,
-  getDownloadURL,
-  uploadBytesResumable,
-} from "@firebase/storage";
 import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
@@ -26,18 +17,12 @@ const initialValue = {
   email: "",
   password: "",
   confirmPassword: "",
-  profilePicture: "",
+  profilePicture: null,
 };
 
 const RegisterationForm = () => {
   const [formData, setFormData] = useState<TypeFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
-  const [hidePassword, setHidePassword] = useState<boolean>(true);
-  const [uploadedTask, setUploadedTask] = useState<UploadTask | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [paused, setPaused] = useState<boolean>(false);
-  const [getFile, setGetFile] = useState<File | null>(null);
-  const [filePercentage, setFilePercentage] = useState<number>(0);
   const [submiting, setSubmiting] = useState(false);
   const [searchParams] = useSearchParams();
   const { currentUser, isSignInMode, socet } = useAppSelector(
@@ -46,7 +31,7 @@ const RegisterationForm = () => {
 
   const dispatch = useAppDispatch();
 
-  const queryParam = searchParams.get("ref");
+  const queryParam = searchParams.get("referrerUser");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((previous) => {
@@ -107,15 +92,20 @@ const RegisterationForm = () => {
             type: "LOADING",
           })
         );
-        const response = await register(
-          { name, email, password, confirmPassword, profilePicture },
-          queryParam
-        );
+        const formDtaa = new FormData();
+        formDtaa.append("name", name);
+        formDtaa.append("email", email);
+        formDtaa.append("password", password);
+        formDtaa.append("confirmPassword", confirmPassword);
+        formDtaa.append("profilePicture", profilePicture as File);
+
+        const response = await register(formDtaa, queryParam);
         localStorage.setItem("token", response.data.token);
-        socet?.emit("new-user-joined", response.data);
+        socet?.emit("new-user-joined", response.data._doc);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
       }
     } catch (error) {
+      console.log(error);
       dispatch(
         showPopup({
           status: true,
@@ -144,106 +134,8 @@ const RegisterationForm = () => {
     }
   };
 
-  useEffect(() => {
-    const uploadFile = () => {
-      if (getFile) {
-        if (getFile.size > 2 * 1024 * 1024) {
-          dispatch(
-            showPopup({
-              status: true,
-              message: `image size expected to be less than 2 MB`,
-              type: "ERROR_GENERAL",
-            })
-          );
-          setGetFile(null);
-          return;
-        }
-        const name: string = new Date().getTime() + getFile.name;
-        const storageRef = ref(storage, `users-profile-images/${name}`);
-        const uploadTask = uploadBytesResumable(storageRef, getFile);
-        setUploadedTask(uploadTask);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setFilePercentage(progress);
-            setUploading(true);
-            switch (snapshot.state) {
-              case "paused":
-                setPaused(true);
-                break;
-              case "running":
-                setPaused(false);
-                break;
-              default:
-                break;
-            }
-          },
-          (err) => {
-            dispatch(
-              showPopup({
-                status: true,
-                message:
-                  err.code === "storage/canceled"
-                    ? "You Canceled Uploading "
-                    : err.code === "storage/unauthorized"
-                    ? "Image size must be less than 2 MB"
-                    : "an Error occured, try again",
-                type: "ERROR_GENERAL",
-              })
-            );
-            setUploading(false);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setFormData((previous) => {
-                return { ...previous, profilePicture: downloadURL };
-              });
-              setUploading(false);
-            });
-          }
-        );
-      }
-    };
-
-    uploadFile();
-  }, [getFile]);
-
-  const handleCancelUploading = () => {
-    if (uploadedTask) {
-      uploadedTask.cancel();
-      setFilePercentage(0);
-      setUploading(false);
-      setGetFile(null);
-    }
-  };
-
-  const handlePuase = () => {
-    if (uploadedTask) {
-      uploadedTask.pause();
-    }
-  };
-
-  const handleResume = () => {
-    if (uploadedTask) {
-      uploadedTask.resume();
-    }
-  };
-
-  useEffect(() => {
-    if (isSignInMode) {
-      handleCancelUploading();
-    }
-    setFormData(initialValue);
-  }, [isSignInMode]);
-
-  const showPassword = () => {
-    setHidePassword((previous) => !previous);
-  };
-
   return (
-    <div className="fixed top-0 left-0 w-full h-[100dvh] flex items-center justify-center z-[5] ">
+    <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-[5] ">
       <div
         onClick={() => {
           dispatch(
@@ -252,7 +144,7 @@ const RegisterationForm = () => {
         }}
         className="fixed top-0 left-0 w-full h-full bg-[#00000075] sm:hidden "
       ></div>
-      <div className="absolute top-16 sm:top-0 w-[55%] h-[79%] lg:w-[82%] sm:w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-scroll scrollbar-none">
+      <div className="absolute top-16 xl:top-9 sm:top-0 w-[60%] max-w-[1300px] min-w-[650px]  h-[75%] sm:min-w-full sm:max-w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-auto ">
         <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-0 ">
           <span className="text-white text-2xl font-bold sm:hidden">
             Welcome
@@ -299,56 +191,18 @@ const RegisterationForm = () => {
             <GrClose />
           </button>
         </div>
-        <div className="flex justify-center px-4 ">
-          <LeftSide
-            isSignInMode={isSignInMode}
-            uploading={uploading}
-            handleCancelUploading={handleCancelUploading}
-            paused={paused}
-            handlePuase={handlePuase}
-            handleResume={handleResume}
-            setGetFile={setGetFile}
-            filePercentage={filePercentage}
-            profilePicture={formData.profilePicture}
-          />
-          <div className="w-[60%] sm:w-full">
+        <div className="flex justify-center">
+          <div className="w-[39%] sm:hidden">
+            <LeftSide
+              isSignInMode={isSignInMode}
+              formData={formData}
+              setFormData={setFormData}
+            />
+          </div>
+          <div className="w-[60%] sm:w-full sm:px-4 mt-1">
             {!isSignInMode && (
-              <div className="hidden sm:flex ">
-                <div className=" flex flex-col items-center justify-center gap-2">
-                  <span className="tracking-wider font-bold text-[#c1c5be] px-3 py-2 bg-[#beff270e]">
-                    Profile Picture
-                  </span>
-                  {uploading && (
-                    <div className="w-full p-2 bg-[#61a3223b] rounded-md flex flex-col items-center gap-3 ">
-                      <span className="flex items-center justify-evenly w-full">
-                        Uploading...
-                        {paused && (
-                          <button onClick={handleResume}>
-                            <IoMdPlay className="text-xl" />
-                          </button>
-                        )}
-                        {!paused && (
-                          <button onClick={handlePuase}>
-                            <FaPauseCircle className="text-xl" />
-                          </button>
-                        )}
-                      </span>
-                      <button
-                        onClick={handleCancelUploading}
-                        className="w-full bg-[#71c04d] rounded-md"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <UploadImage
-                  paused={paused}
-                  uploading={uploading}
-                  setGetFile={setGetFile}
-                  profilePicture={formData.profilePicture}
-                  filePercentage={filePercentage}
-                />
+              <div className="hidden sm:flex items-center justify-center">
+                <UploadImage formData={formData} setFormData={setFormData} />
               </div>
             )}
             <form
@@ -376,14 +230,13 @@ const RegisterationForm = () => {
                 placeholder="Enter Your E-Email"
               />
               <Input
-                type={hidePassword ? "password" : "text"}
+                type={"password"}
                 label="Password"
                 name="password"
                 id="password"
                 value={formData.password}
                 onChange={handleFormChange}
                 placeholder="Enter Your Password"
-                showPassword={showPassword}
               />
               {!isSignInMode && (
                 <Input
@@ -397,17 +250,19 @@ const RegisterationForm = () => {
                 />
               )}
               {!isSignInMode && (
-                <div className="flex items-center justify-between p-4 h-6 ">
-                  <button
-                    type="button"
-                    onClick={() => setAgreePrivacy((previous) => !previous)}
-                    className={`transition-all ${
-                      agreePrivacy
-                        ? "border-b border-r rotate-[32deg] border-yellow-500 w-[12px] h-[25px]"
-                        : "w-[22px] h-[22px] border-gray-400 border"
-                    }`}
-                  ></button>
-                  <p className="text-sm font-[600] sm:text-[10px] text-[#97b4a2] max-w-[85%]">
+                <div className="flex items-center  h-7">
+                  <div className="w-6 h-6">
+                    <button
+                      type="button"
+                      onClick={() => setAgreePrivacy((previous) => !previous)}
+                      className={`transition-all ${
+                        agreePrivacy
+                          ? "border-b border-r rotate-[32deg] border-yellow-500 w-[12px] h-[25px]"
+                          : "w-[22px] h-[22px] border-gray-400 border"
+                      }`}
+                    ></button>
+                  </div>
+                  <p className="text-sm font-[600] sm:text-[10px] text-[#97b4a2] max-w-[85%] ml-4">
                     By Signing Up You Are Agreeing of our privacy Policy and
                     Terms of Service
                   </p>
@@ -417,7 +272,7 @@ const RegisterationForm = () => {
                 type="submit"
                 className=" disabled:opacity-60 bg-[#05BA6B] text-black py-2 w-[35%] font-[600] rounded-md border-[0.2px] border-white mt-2 sm:w-[90%] sm:mx-auto"
                 onClick={handleSubmite}
-                disabled={submiting || uploading}
+                disabled={submiting}
               >
                 {!isSignInMode
                   ? `${submiting ? "Submiting" : "SIGN UP"} `

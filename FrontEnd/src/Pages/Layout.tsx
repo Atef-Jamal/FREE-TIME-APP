@@ -13,7 +13,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import MobileSidebare from "../components/Sidebar/MobileSidebare";
 import Navbare from "../components/Navebare/Navbare";
 import Footer from "../components/Footer/Footer";
-import DisktopChat from "../components/Chat/PublicChat/DisktopChat/DisktopChat";
+import DisktopChat from "../components/Chats/PublicChat/DisktopChat/DisktopChat";
 import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
 import OpenPopup from "../components/Others/OpenPopup";
@@ -33,8 +33,8 @@ const Layout = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const paramValue = searchParams.get("redirectedfrom");
-  const searchValue = searchParams.get("ref");
+  const redirectQuery = searchParams.get("redirectedfrom");
+  const referreQuery = searchParams.get("referrerUser");
 
   useEffect(() => {
     const establishSocetConnection = () => {
@@ -55,21 +55,21 @@ const Layout = () => {
   });
 
   useEffect(() => {
-    if (searchValue && !currentUser && currentAccountRequestFullfiled) {
+    if (referreQuery && !currentUser && currentAccountRequestFullfiled) {
       dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
     }
-  }, [dispatch, searchValue, currentUser, currentAccountRequestFullfiled]);
+  }, [dispatch, referreQuery, currentUser, currentAccountRequestFullfiled]);
 
   useEffect(() => {
-    if (paramValue) {
+    if (redirectQuery) {
       let popupMessage = "";
-      if (paramValue === "logout") {
+      if (redirectQuery === "logout") {
         popupMessage = "Logout successfull";
       }
-      if (paramValue === "login") {
+      if (redirectQuery === "login") {
         popupMessage = "Login successfull";
       }
-      if (paramValue === "signup") {
+      if (redirectQuery === "signup") {
         popupMessage = "Sign Up successfull";
       }
       if (popupMessage) {
@@ -81,12 +81,12 @@ const Layout = () => {
           })
         );
         setSearchParams(() => {
-          searchParams.delete("redirectedfrom", paramValue);
+          searchParams.delete("redirectedfrom", redirectQuery);
           return searchParams;
         });
       }
     }
-  }, [paramValue]);
+  }, [redirectQuery]);
 
   return (
     <div className="flex flex-col items-center justify-center relative">

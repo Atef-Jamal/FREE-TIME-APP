@@ -7,7 +7,12 @@ import { TypeMusicNotify } from "../../../types/notification";
 
 type PropType = Omit<TypeMusicNotify, "_id" | "isRead" | "type">;
 
-const BuyMusicNotify = ({ musicTitle, createdAt, price }: PropType) => {
+const BuyMusicNotify = ({
+  musicTitle,
+  createdAt,
+  price,
+  musicId,
+}: PropType) => {
   const dispatch = useAppDispatch();
   const date = formateDate(createdAt.toString());
 
@@ -29,7 +34,7 @@ const BuyMusicNotify = ({ musicTitle, createdAt, price }: PropType) => {
         <span className="text-sm text-[#696cf3] mx-1">{price}</span> points
       </p>
       <Link
-        to={"/myprofile?to=musics"}
+        to={`/myprofile?to=${musicId}`}
         onClick={() => {
           dispatch(
             toggleThisEntity({ entity: "openNotification", value: false })

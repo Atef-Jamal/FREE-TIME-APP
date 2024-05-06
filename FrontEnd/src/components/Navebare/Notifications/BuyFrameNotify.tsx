@@ -23,17 +23,9 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
       </div>
       <p className="text-sm w-full text-[#bbc6d1]">
         congratulation! for buying
-        <Link
-          to={"/myprofile?to=frames"}
-          onClick={() =>
-            dispatch(
-              toggleThisEntity({ entity: "openNotification", value: false })
-            )
-          }
-          className="text-sm text-[#696cf3] mx-1 underline "
-        >
+        <span className="text-sm text-[#696cf3] mx-1 underline ">
           {frame.title}
-        </Link>
+        </span>
         for
         <span className="text-sm text-[#696cf3] mx-1 font-bold">
           {frame.price}
@@ -41,7 +33,7 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
         points
       </p>
       <Link
-        to={"/myprofile?to=frames"}
+        to={`/myprofile?to=${frame._id}`}
         onClick={() => {
           dispatch(
             toggleThisEntity({ entity: "openNotification", value: false })

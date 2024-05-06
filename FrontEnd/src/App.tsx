@@ -1,8 +1,8 @@
 import { Suspense, lazy } from "react";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import MobileChat from "./components/Chat/PublicChat/MobileChat/MobileChat";
-import ChatBody from "./components/Chat/PrivateChat/ChatBody";
+import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
+import ChatBody from "./components/Chats/PrivateChat/ChatBody";
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
 const Earn = lazy(() => import("./Pages/Earn"));

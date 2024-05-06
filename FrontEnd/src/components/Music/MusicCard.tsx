@@ -13,7 +13,13 @@ import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
-const MusicCard = ({ songDetails }: { songDetails: any }) => {
+const MusicCard = ({
+  songDetails,
+  handleRemoveAnimation,
+}: {
+  songDetails: any;
+  handleRemoveAnimation: (event: React.MouseEvent) => void;
+}) => {
   const { currentUser, currentSong, isPlaying } = useAppSelector(
     (state) => state.stateManeger
   );
@@ -101,7 +107,11 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
   };
 
   return (
-    <div className="relative p-2 flex items-center justify-between flex-col h-[200px] bg-[#354253ee] rounded-md overflow-hidden">
+    <div
+      id={songDetails.id.toString()}
+      onClick={handleRemoveAnimation}
+      className="relative p-2 flex items-center justify-between flex-col h-[200px] bg-[#354253ee] rounded-md overflow-hidden"
+    >
       {isPurshased && location.pathname !== "/myprofile" && (
         <span className="absolute z-[1] top-5 -left-10 -rotate-45 bg-[#94d34b] font-extrabold text-sm xs:text-xs text-zinc-700 w-[90%] text-center py-1">
           My Music

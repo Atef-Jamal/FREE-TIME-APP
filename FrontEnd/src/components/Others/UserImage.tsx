@@ -23,7 +23,7 @@ const UserImage = ({ user }: TypeProps) => {
                 ? "top-[15%] left-[14%] w-[70%] h-[70%] rounded-sm"
                 : "w-full h-full rounded-md "
             } `}
-            src={user.profilePicture}
+            src={`http://localhost:3000/${user.profilePicture}`}
             alt="user img"
           />
         </div>

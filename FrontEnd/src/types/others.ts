@@ -3,5 +3,5 @@ export interface TypeFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  profilePicture?: string;
+  profilePicture: File | null;
 }

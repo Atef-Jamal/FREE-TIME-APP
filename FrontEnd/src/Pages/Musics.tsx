@@ -29,7 +29,11 @@ const Musics = () => {
           ))}
 
         {musics.map((song: any) => (
-          <MusicCard key={song.id} songDetails={song} />
+          <MusicCard
+            key={song.id}
+            songDetails={song}
+            handleRemoveAnimation={() => {}}
+          />
         ))}
       </div>
       {error && <div className="text-center mx-auto my-8">{error}</div>}

@@ -1,14 +1,11 @@
 import { makeRequest } from ".";
 import { TypeFormData } from "../types/others";
 
-export const register = async (
-  formData: TypeFormData,
-  referrerUser?: string | null
-) => {
+export const register = async (formData: any, referrerUser?: string | null) => {
   let response;
   if (referrerUser) {
     response = await makeRequest.post(
-      `api/auth/register?ref=${referrerUser}`,
+      `api/auth/register?referrerUser=${referrerUser}`,
       formData
     );
   } else {

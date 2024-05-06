@@ -37,6 +37,7 @@ const Navbare = () => {
           dispatch(setCurrentUser(response.data));
         }
       } catch (error) {
+        console.log(error);
         dispatch(
           showPopup({
             status: true,

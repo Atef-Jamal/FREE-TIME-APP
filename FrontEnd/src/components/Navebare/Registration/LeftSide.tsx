@@ -1,64 +1,20 @@
-import React from "react";
-import { FaPauseCircle } from "react-icons/fa";
-import { IoMdPlay } from "react-icons/io";
+import { SetStateAction } from "react";
 import UploadImage from "./UploadImage";
+import { TypeFormData } from "../../../types/others";
 
 interface TypeProps {
-  profilePicture: string | undefined;
-  setGetFile: React.Dispatch<any>;
-  filePercentage: number;
-  uploading: boolean;
-  handleCancelUploading: () => void;
+  formData: TypeFormData;
+  setFormData: React.Dispatch<SetStateAction<TypeFormData>>;
   isSignInMode: boolean;
-  paused: boolean;
-  handlePuase: () => void;
-  handleResume: () => void;
 }
 
-const LeftSide = ({
-  profilePicture,
-  setGetFile,
-  filePercentage,
-  uploading,
-  handleCancelUploading,
-  paused,
-  handlePuase,
-  handleResume,
-  isSignInMode,
-}: TypeProps) => {
+const LeftSide = ({ formData, setFormData, isSignInMode }: TypeProps) => {
   return (
-    <div className="flex flex-col w-[40%] sm:hidden ">
+    <div className="flex flex-col">
       {!isSignInMode && (
-        <>
-          <UploadImage
-            paused={paused}
-            uploading={uploading}
-            setGetFile={setGetFile}
-            profilePicture={profilePicture}
-            filePercentage={filePercentage}
-          />
-          {uploading && (
-            <div className="py-1 px-2 self-center mb-8 bg-[#61a3223b] rounded-md flex items-center justify-between border border-gray-500 w-[80%]">
-              Uploading...
-              {paused && (
-                <button onClick={handleResume}>
-                  <IoMdPlay className="text-xl" />
-                </button>
-              )}
-              {!paused && (
-                <button onClick={handlePuase}>
-                  <FaPauseCircle className="text-xl" />
-                </button>
-              )}
-              <button
-                onClick={handleCancelUploading}
-                className="py-1 px-2 bg-[#71c04d] rounded-md"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </>
+        <div className="w-full p-1 flex items-center justify-center mb-4">
+          <UploadImage formData={formData} setFormData={setFormData} />
+        </div>
       )}
       <span className="relative sign__up__bonus overflow-hidden tracking-wider bg-[#807f7fc0] text-[#d6d45b] flex items-center justify-center text-xl lg:text-sm h-12 mb-4">
         Sign Up Bonus

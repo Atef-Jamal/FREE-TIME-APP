@@ -7,19 +7,25 @@ import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
+import fs from "fs";
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password, confirmPassword, profilePicture } = req.body;
-  const referrerUser = req.query.ref;
+  const { name, email, password, confirmPassword } = req.body;
+  const referrerUser = req.query.referrerUser;
 
   if (!name || !email || !password || !confirmPassword) {
+    if (req.file) {
+      fs.unlink(req.file.path, () => {});
+    }
     return res.status(404).json({ error: "all field required" });
   }
-
   try {
     const userExisted = await User.findOne({ email });
 
     if (userExisted) {
+      if (req.file) {
+        fs.unlink(req.file.path, () => {});
+      }
       return res
         .status(404)
         .json({ error: "User already existed, Try Log in" });
@@ -31,12 +37,15 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture,
+      profilePicture: req.file ? req.file.path : "",
     });
 
     const savedUser = await newUser.save();
 
     if (!process.env.JWT_SECRET_KEY) {
+      if (req.file) {
+        fs.unlink(req.file.path, () => {});
+      }
       return res
         .status(404)
         .json({ error: "an Error occurred, try again later" });
@@ -82,6 +91,9 @@ export const register = async (req: Request, res: Response) => {
     }
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
+    if (req.file) {
+      fs.unlink(req.file.path, () => {});
+    }
     return res
       .status(404)
       .json({ error: "an Error occurred, Try again Later" });

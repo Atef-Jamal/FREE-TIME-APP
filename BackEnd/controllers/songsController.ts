@@ -37,6 +37,7 @@ export const buySong = async (req: Request, res: Response) => {
       type: "MUSIC",
       price: 10,
       musicTitle,
+      musicId: songId,
     });
 
     const createPublicMessage = new PublicMessage({

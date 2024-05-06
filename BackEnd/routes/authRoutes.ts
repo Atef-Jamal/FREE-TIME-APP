@@ -9,10 +9,11 @@ import {
   changeName,
 } from "../controllers/authController";
 import protectedRoute from "../middleware";
+import { fileUpload } from "../middleware/fileUpload";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/register", fileUpload.single("profilePicture"), register);
 router.post("/login", login);
 router.get("/currentuser", getCurrentUser);
 router.post(

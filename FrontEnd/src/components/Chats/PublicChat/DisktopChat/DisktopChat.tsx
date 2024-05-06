@@ -11,16 +11,16 @@ import FreeTime from "../Common/FreeTime";
 import { TypePublicChatItem } from "../../../../types/publicChat";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
+import { useInteractWithElement } from "../../../../hooks/common";
 
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  const mentionedMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
-  const searchValue = searchParams.get("messageid");
+  const queryParam = searchParams.get("to");
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
 
   useListenToEvent<TypePublicChatItem>({
@@ -30,27 +30,21 @@ const DisktopChat = () => {
     },
   });
 
-  useEffect(() => {
-    const scrollToMessage = () => {
-      mentionedMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-      mentionedMessageRef.current?.classList.add(
-        "animate-pulse",
-        "border",
-        "border-gray-400"
-      );
-    };
-    if (searchValue) {
-      scrollToMessage();
-    }
-  }, [searchValue]);
+  const { goToElement } = useInteractWithElement();
 
   useEffect(() => {
-    const scrollToElement = () => {
+    if (queryParam) {
+      goToElement();
+    }
+  }, [queryParam]);
+
+  useEffect(() => {
+    const scrollToLastMessage = () => {
       lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     if (!stopScrolling) {
-      scrollToElement();
+      scrollToLastMessage();
     }
   }, [messages]);
 
@@ -99,15 +93,11 @@ const DisktopChat = () => {
             return (
               <Message
                 key={message._id}
+                singleMessage={message}
                 setStopScrolling={setStopScrolling}
                 stopScrolling={stopScrolling}
-                singleMessage={message}
                 messageRef={
-                  searchValue === message._id
-                    ? mentionedMessageRef
-                    : index === messages.length - 1
-                    ? lastMessageRef
-                    : null
+                  index === messages.length - 1 ? lastMessageRef : null
                 }
               />
             );
