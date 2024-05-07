@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import FreeTime from "../Common/FreeTime";
 import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
@@ -7,16 +6,18 @@ import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types/publicChat";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
-import { useInteractWithElement } from "../../../../hooks/common";
+import { useScrollToElement } from "../../../../hooks/common";
+import { useSearchParams } from "react-router-dom";
 
 const MobileChat = () => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
+  const { messages, setMessages, loading, error } = useFetchPublicMessages();
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("to");
 
-  const { messages, setMessages, loading, error } = useFetchPublicMessages();
+  useScrollToElement([messages]);
 
   useListenToEvent<TypePublicChatItem>({
     eventToListen: "public-message",
@@ -25,22 +26,11 @@ const MobileChat = () => {
     },
   });
 
-  const { goToElement } = useInteractWithElement();
-
-  useEffect(() => {
-    if (queryParam) {
-      const timeOut = setTimeout(() => {
-        goToElement();
-      }, 0);
-      return () => clearTimeout(timeOut);
-    }
-  }, [queryParam, messages]);
-
   useEffect(() => {
     const scrollToLastMessage = () => {
       lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-    if (!stopScrolling) {
+    if (!stopScrolling && !queryParam) {
       scrollToLastMessage();
     }
   }, [messages]);

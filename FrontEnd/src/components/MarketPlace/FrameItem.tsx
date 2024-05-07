@@ -54,9 +54,11 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
       setIsLoading(false);
     }
   };
-
   return (
-    <div className="flex flex-col justify-center p-2 bg-[#5b667a42] rounded-md ">
+    <div
+      id={singleFrame._id}
+      className="flex flex-col justify-center p-2 bg-[#5b667a42] rounded-md "
+    >
       <div className="relative">
         <img
           src={singleFrame.image}

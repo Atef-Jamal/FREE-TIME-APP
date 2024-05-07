@@ -24,6 +24,7 @@ const PublicUserProfile = () => {
     dependencies: [id],
   });
 
+
   const { activities } = useFetchActivities({
     userId: id,
     initialLoading: true,
@@ -92,7 +93,9 @@ const PublicUserProfile = () => {
   return (
     <div className="bg-transparent flex items-center justify-center ">
       <div className="w-[80%] flex flex-col gap-4 pb-12 pt-6 lg:w-[95%]">
-        <h1 className="text-2xl font-bold text-[#86f38c] ">Profile</h1>
+        <h1 className="text-2xl font-bold text-[#86f38c] ">
+          Profile
+        </h1>
         <div className="flex gap-8 items-center sm:flex-col">
           <div className=" flex items-center justify-between p-8 w-full bg-[#1d1d2e] rounded-lg h-[200px] ">
             <div className="w-[110px] h-[90px] sm:w-[90px] sm:h-[90px]">

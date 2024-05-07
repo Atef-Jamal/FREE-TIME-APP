@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { toggleThisEntity } from "../../../../context/StateManeger";
@@ -11,16 +10,13 @@ import FreeTime from "../Common/FreeTime";
 import { TypePublicChatItem } from "../../../../types/publicChat";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
-import { useInteractWithElement } from "../../../../hooks/common";
 
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
-  const [searchParams] = useSearchParams();
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
-  const queryParam = searchParams.get("to");
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
 
   useListenToEvent<TypePublicChatItem>({
@@ -29,14 +25,6 @@ const DisktopChat = () => {
       setMessages((prev) => [...prev, data]);
     },
   });
-
-  const { goToElement } = useInteractWithElement();
-
-  useEffect(() => {
-    if (queryParam) {
-      goToElement();
-    }
-  }, [queryParam]);
 
   useEffect(() => {
     const scrollToLastMessage = () => {

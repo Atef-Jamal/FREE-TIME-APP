@@ -13,7 +13,6 @@ import { TypePublicChatMessage } from "../../../../types/publicChat";
 import { useListenToEvent } from "../../../../hooks";
 import { User } from "../../../../types/user";
 import { formateDate, handleApiError } from "../../../../utils/common";
-import { useInteractWithElement } from "../../../../hooks/common";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -50,8 +49,6 @@ const Message = ({
   const dispatch = useAppDispatch();
 
   const date = formateDate(createdAt.toString());
-
-  const { removeAnimation } = useInteractWithElement();
 
   const deleteMessage = async (messageId: string) => {
     setIsDeleting(true);
@@ -150,7 +147,6 @@ const Message = ({
     <div
       ref={messageRef}
       id={_id}
-      onClick={removeAnimation}
       className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex ">

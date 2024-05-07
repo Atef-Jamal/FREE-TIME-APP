@@ -2,9 +2,11 @@ import { FcMusic } from "react-icons/fc";
 import MusicCard from "../components/Music/MusicCard";
 import Skeleton from "../components/Others/Skeleton";
 import { useFetchMusics } from "../hooks";
+import { useScrollToElement } from "../hooks/common";
 
 const Musics = () => {
   const { musics, loading, error } = useFetchMusics();
+  useScrollToElement([musics]);
 
   return (
     <div className="p-6 xs:p-3">
@@ -29,11 +31,7 @@ const Musics = () => {
           ))}
 
         {musics.map((song: any) => (
-          <MusicCard
-            key={song.id}
-            songDetails={song}
-            handleRemoveAnimation={() => {}}
-          />
+          <MusicCard key={song.id} songDetails={song} />
         ))}
       </div>
       {error && <div className="text-center mx-auto my-8">{error}</div>}

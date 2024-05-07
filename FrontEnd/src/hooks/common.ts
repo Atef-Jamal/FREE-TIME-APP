@@ -182,23 +182,21 @@ export const useFetchMusics = () => {
   return { musics, loading, error };
 };
 
-export const useInteractWithElement = () => {
+export const useScrollToElement = (dependencies: any[] = []) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const styles = ["border", "border-gray-400", "animate-pulse"];
+  const styles = "activeElement";
   const queryParam = searchParams.get("to");
 
-  const goToElement = () => {
-    if (!queryParam) return;
-    const element = document.getElementById(queryParam);
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
-    element?.classList.add(...styles);
-    return () => element?.classList.remove(...styles);
-  };
+  let element: HTMLElement | null = null;
+  if (queryParam) {
+    element = document.getElementById(queryParam);
+  }
 
-  const removeAnimation = (event: React.MouseEvent) => {
-    event.currentTarget.classList.remove(...styles);
-    if (queryParam === event.currentTarget.id) {
+  const handleRemoveAnimation = (event: MouseEvent) => {
+    const targetElement = event.currentTarget as HTMLElement;
+    targetElement.classList.remove(styles);
+    if (queryParam === targetElement.id) {
       setSearchParams((prev) => {
         prev.delete("to", queryParam);
         return prev;
@@ -206,5 +204,15 @@ export const useInteractWithElement = () => {
     }
   };
 
-  return { goToElement, removeAnimation };
+  useEffect(() => {
+    if (!element) return;
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.classList.add(styles);
+    element.addEventListener("click", handleRemoveAnimation);
+
+    return () => {
+      element?.classList.remove(styles);
+      element?.removeEventListener("click", handleRemoveAnimation);
+    };
+  }, [element, ...dependencies]);
 };

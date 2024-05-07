@@ -151,22 +151,16 @@ body {
   rotate: -70deg;
 }
 
-/* .publicchatclass {
-  height: calc(100dvh - 75px);
-} */
-
-/* .spinner-animation {
-  animation: spinner 600ms linear infinite;
+.activeElement {
+  border: 1px solid #ffffff;
+  animation: activeElementAnimation 1100ms infinite linear;
 }
 
-@keyframes spinner {
-  from {
-    rotate: 0deg;
-  }
+@keyframes activeElementAnimation {
   to {
-    rotate: 360deg;
+    opacity: 0.3;
   }
-} */
+}
 .skeleton-animation {
   animation: skeleton 900ms linear infinite;
 }

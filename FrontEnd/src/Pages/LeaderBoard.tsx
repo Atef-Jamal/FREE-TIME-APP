@@ -1,4 +1,4 @@
-import { avatar, dailyleaderboard } from "../assets";
+import { dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
@@ -83,7 +83,7 @@ const LeaderBoard = () => {
               >
                 <span className="xs:w-5 xs:h-5 w-7 h-7 rounded-full min-w-fit min-h-fit">
                   <img
-                    src={user.profilePicture || avatar}
+                    src={`http://localhost:3000/${user.profilePicture}`}
                     alt=""
                     className="w-full h-full rounded-full object-cover"
                   />

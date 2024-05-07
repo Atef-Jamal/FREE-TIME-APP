@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { rank1Desktop, rank2Desktop, rank3Desktop, empty } from "../assets";
 import egypt from "../assets/images/eg.svg";
 import { AiFillSetting } from "react-icons/ai";
@@ -7,7 +6,6 @@ import { RiFileCopyLine } from "react-icons/ri";
 
 import { FcOk } from "react-icons/fc";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
-import { useSearchParams } from "react-router-dom";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import ProfileSettings from "../components/myProfile/ProfileSettings";
@@ -16,24 +14,20 @@ import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
-
 import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frame";
 import Spinner from "../components/Others/Spinner";
 import { useFetchMusics } from "../hooks";
-import { useInteractWithElement } from "../hooks/common";
+import { useScrollToElement } from "../hooks/common";
 
 const MyProfile = () => {
   const { currentUser, currentAccountRequestFullfiled, socet } = useAppSelector(
     (state) => state.stateManeger
   );
-  const [searchParams] = useSearchParams();
   const { musics } = useFetchMusics();
-
   const dispatch = useAppDispatch();
-
-  const queryParam = searchParams.get("to");
+  useScrollToElement();
 
   let mathLevel: number = currentUser?.points
     ? currentUser.points / 100
@@ -125,12 +119,6 @@ const MyProfile = () => {
     );
   };
 
-  const { goToElement, removeAnimation } = useInteractWithElement();
-
-  useEffect(() => {
-    goToElement();
-  }, [queryParam, musics]);
-
   if (!currentAccountRequestFullfiled) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -221,8 +209,7 @@ const MyProfile = () => {
         </div>
         <WhoVisitProfile />
         <div
-          id={"referrallink"}
-          onClick={removeAnimation}
+          id={"my-referral-link"}
           className="w-full bg-slate-700 rounded-md py-2 px-4 sm:px-2 sm:mx-auto flex flex-col gap-2 my-7"
         >
           <div className="flex items-center sm:gap-2 justify-between sm:flex-col">
@@ -263,7 +250,6 @@ const MyProfile = () => {
                   <div
                     key={item._id}
                     id={item._id}
-                    onClick={removeAnimation}
                     className="flex flex-col items-center w-full justify-center gap-3 px-2 py-3 bg-[#5b667a42] rounded-md"
                   >
                     <div className="relative w-full flex items-center justify-center">
@@ -318,11 +304,7 @@ const MyProfile = () => {
                   }
                 })
                 .map((element) => (
-                  <MusicCard
-                    key={element.id}
-                    songDetails={element}
-                    handleRemoveAnimation={removeAnimation}
-                  />
+                  <MusicCard key={element.id} songDetails={element} />
                 ))}
           </div>
           {currentUser?.mySongs?.length === 0 && (

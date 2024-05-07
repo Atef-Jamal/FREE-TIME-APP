@@ -30,7 +30,7 @@ const DailyReward = () => {
     getOtherDays();
   }, [currentUser]);
   return (
-    <div className="flex flex-col gap-4 w-[68%] max-w-[1500px] sm:w-full  ">
+    <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
         <img
           src={desktopAffiliateBannerBg}
@@ -76,6 +76,7 @@ const DailyReward = () => {
           </p>
         </div>
         <div
+          id="daily-reward"
           className={`gap-2 grid ${
             resizeSidebare ? "grid-cols-4 " : "grid-cols-3 lg:grid-cols-2"
           }  sm:grid-cols-3 xs:grid-cols-2`}

@@ -19,6 +19,7 @@ import AppDetail from "../components/Earn/AppDetail";
 import AppSkeleton from "../components/Earn/AppSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
 import AppCard from "../components/Earn/AppCard";
+import { useScrollToElement } from "../hooks/common";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -46,6 +47,8 @@ const Earn = () => {
     dependencies: [filterQuery],
     initialLoading: true,
   });
+
+  useScrollToElement([apps]);
 
   const fetchMoreApps = async () => {
     setLoadMore(true);

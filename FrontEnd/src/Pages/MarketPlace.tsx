@@ -7,10 +7,12 @@ import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
 import { TypeFrame } from "../types/frame";
+import { useScrollToElement } from "../hooks/common";
 
 const MarketPlace = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
   const [frames, setFrames] = useState<TypeFrame[]>([]);
+  useScrollToElement([frames]);
 
   const dispatch = useAppDispatch();
 

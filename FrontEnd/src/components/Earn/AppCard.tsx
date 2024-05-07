@@ -20,9 +20,12 @@ const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
     taskDetail;
 
   const isCompleted = currentUser?.completedTasks.includes(_id);
+
   if (currentUserIsLoading) return;
+
   return (
     <div
+      id={taskDetail._id}
       onClick={() => setAppDetail(taskDetail)}
       className={` ${
         index === 0 ? "col-span-2" : ""

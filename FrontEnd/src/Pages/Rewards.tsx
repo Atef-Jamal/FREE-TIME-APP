@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdCardGiftcard } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { showPopup } from "../context/StateManeger";
@@ -10,26 +10,17 @@ import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
-import { useSearchParams } from "react-router-dom";
 import { TypeBounusCode } from "../types/rewards";
-import { useInteractWithElement } from "../hooks/common";
+import { useScrollToElement } from "../hooks/common";
 
 const Rewards = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
-  const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
-  const queryParam = searchParams.get("to");
-
-  const { goToElement, removeAnimation } = useInteractWithElement();
-
-  useEffect(() => {
-    if (!queryParam) return;
-    goToElement();
-  }, [queryParam]);
+  useScrollToElement();
 
   const getBonusCode = async () => {
     if (!currentUser) {
@@ -87,10 +78,7 @@ const Rewards = () => {
         </div>
         <button
           id={"bonus-code"}
-          onClick={(event) => {
-            removeAnimation(event);
-            getBonusCode();
-          }}
+          onClick={getBonusCode}
           className="relative flex gap-4 items-center bg-[#b6da7cce] py-2 px-4 rounded-md mr-3 border border-gray-600 "
         >
           <span
@@ -105,7 +93,7 @@ const Rewards = () => {
             </span>
           </span>
           <MdCardGiftcard />
-          <span className="text-white w-24">
+          <span id="bonus-code" className="text-white w-24">
             {loading ? (
               <Spinner className="w-5 h-5 mx-auto border-b-blue-800 border-l-blue-800" />
             ) : (
@@ -114,8 +102,10 @@ const Rewards = () => {
           </span>
         </button>
       </div>
-      <div className="flex gap-4 bg-[#242438] px-6 lg:px-2  rounded-b-lg sm:rounded-none sm:flex-col sm:px-3 ">
-        <DailyReward />
+      <div className="flex gap-4 bg-[#242438] px-6 lg:px-2 rounded-b-lg sm:rounded-none sm:flex-col sm:px-3 ">
+        <div className="w-[68%] max-w-[1500px] sm:w-full">
+          <DailyReward />
+        </div>
         <Ladder />
       </div>
     </div>
