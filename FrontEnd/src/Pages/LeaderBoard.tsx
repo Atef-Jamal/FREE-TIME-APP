@@ -83,7 +83,9 @@ const LeaderBoard = () => {
               >
                 <span className="xs:w-5 xs:h-5 w-7 h-7 rounded-full min-w-fit min-h-fit">
                   <img
-                    src={`http://localhost:3000/${user.profilePicture}`}
+                    src={`${import.meta.env.VITE_BASE_URL}/${
+                      user.profilePicture
+                    }`}
                     alt=""
                     className="w-full h-full rounded-full object-cover"
                   />

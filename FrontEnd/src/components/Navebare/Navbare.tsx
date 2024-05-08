@@ -6,6 +6,7 @@ import {
   setCurrentAccountRequestFullfiled,
   setCurrentUserIsLoading,
   showPopup,
+  openModel,
 } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
@@ -15,6 +16,8 @@ import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
 import RegisterButtons from "../Navebare/Registration/RegisterButtons";
 import RegisterationForm from "./Registration/RegisterationForm";
+import { BiSearch } from "react-icons/bi";
+import Search from "../Search/Search";
 const Navbare = () => {
   const {
     currentUser,
@@ -37,7 +40,6 @@ const Navbare = () => {
           dispatch(setCurrentUser(response.data));
         }
       } catch (error) {
-        console.log(error);
         dispatch(
           showPopup({
             status: true,
@@ -69,11 +71,23 @@ const Navbare = () => {
         <span className="text-[1.65rem] text-gray-300 sm:hidden">TIME</span>
       </Link>
       <div
-        className={`z-[3] transition-all h-full ${
+        className={`absolute top-0 -left-0 z-[3] transition-all h-full mr-auto  ${
           openMusicModal ? "block" : "hidden"
         }`}
       >
         <MusicPlayer />
+      </div>
+      <div
+        onClick={() =>
+          dispatch(openModel({ status: true, children: <Search /> }))
+        }
+        className="border rounded-md w-[700px] xl:w-[25%] sm:w-[35%] xs:w-[10%] h-[50px] sm:h-[40px] mr-2 ml-auto flex items-center cursor-pointer border-gray-700 bg-[#287fb11e] px-2 xs:px-0"
+      >
+        <BiSearch className="text-3xl sm:text-xl opacity-50 min-w-fit xs:mx-auto" />
+        <span className="h-full border-l border-gray-700 mx-2 sm:hidden"></span>
+        <span className="text-gray-400 text-lg truncate xs:hidden sm:text-sm">
+          Search For Everything, Features, users, apps, frames, ect..
+        </span>
       </div>
 
       {!currentUserIsLoading &&

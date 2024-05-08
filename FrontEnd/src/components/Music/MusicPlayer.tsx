@@ -61,8 +61,8 @@ const MusicPlayer = () => {
   return (
     <div
       className={`transition-all ${
-        !expand ? "translate-x-0" : "-translate-x-[90%]"
-      } w-[260px] sm:w-[230px] h-[80%] sm:h-full rounded-lg xs:rounded-s-none xs:absolute left-0 top-0 flex items-center justify-between  bg-[#476872] mt-2 sm:mt-0 `}
+        !expand ? "translate-x-0" : "-translate-x-[92%] sm:-translate-x-[90%]"
+      } w-[360px] sm:w-[260px] h-full sm:h-full rounded-lg xs:rounded-s-none xs:absolute left-0 top-0 flex items-center justify-between  bg-[#3d4174c0]`}
     >
       <div className="flex justify-between h-full w-full xs:px-1 px-3 ">
         <div className=" w-full flex justify-between items-center gap-2 ">
@@ -86,7 +86,7 @@ const MusicPlayer = () => {
               </span>
               <span
                 onClick={handleClose}
-                className="xs:hidden w-5 h-5 flex items-center justify-center bg-[#c96d6d] border border-gray-400 ml-1"
+                className="hidden w-5 h-5  items-center justify-center bg-[#c96d6d] border border-gray-400 ml-1"
               >
                 <MdClose />
               </span>
@@ -131,7 +131,7 @@ const MusicPlayer = () => {
         </div>
         <audio
           onEnded={() => {
-            dispatch(toggleThisEntity({entity: 'isPlaying', value: false}));
+            dispatch(toggleThisEntity({ entity: "isPlaying", value: false }));
           }}
           id="audioid"
           src={undefined}
@@ -139,7 +139,7 @@ const MusicPlayer = () => {
       </div>
       <span
         onClick={() => setExpand((prev) => !prev)}
-        className="hidden h-full bg-[#5aec7f] w-[30px] xs:flex flex-col items-center justify-center"
+        className=" h-full bg-[#5aec7f] w-[30px] flex flex-col items-center justify-center"
       >
         <span
           onClick={handleClose}

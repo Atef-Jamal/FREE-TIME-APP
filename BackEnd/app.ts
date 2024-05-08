@@ -14,6 +14,7 @@ import taskRoute from "./routes/appsRoutes";
 import frameRoute from "./routes/frameRoutes";
 import testimonialRoute from "./routes/testimonialRoutes";
 import couponRoute from "./routes/couponRoutes";
+import searchRoute from "./routes/searchRoute";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./models/user";
@@ -64,6 +65,8 @@ app.use("/api/frames", frameRoute);
 app.use("/api/testimonials", testimonialRoute);
 
 app.use("/api/coupons", couponRoute);
+
+app.use("/api/search", searchRoute);
 
 app.get("/api/atef", (req) => {
   console.log(req.body);

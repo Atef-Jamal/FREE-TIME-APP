@@ -217,7 +217,7 @@ const MyProfile = () => {
             <div className=" bg-[#1f2742] w-[50%] lg:w-[70%] sm:w-full rounded-sm px-2 flex items-center gap-1">
               <input
                 type="text"
-                name="referrallink"
+                name="referral-link"
                 className="bg-[#1b243fcb] outline-none w-full text-gray-400 py-1"
                 readOnly={true}
                 value={`${window.location.origin}/?referrerUser=${currentUser._id}`}

@@ -79,7 +79,7 @@ const Sidebar = () => {
         <BiMenu className="text-2xl" />
       </div>
 
-      <ul className="flex flex-col w-full h-[75vh] overflow-scroll scrollbar-none">
+      <ul className="flex flex-col px-1 gap-1 w-full h-[75vh] overflow-scroll scrollbar-none">
         {sidebareItems.map((item, index) => (
           <li key={index}>
             <NavLink
@@ -87,7 +87,7 @@ const Sidebar = () => {
               className={({ isActive }) =>
                 `${isActive ? "bg-[#40496975]" : ""}  ${
                   resizeSidebare ? "self-center pl-0" : ""
-                } transition-all hover:bg-[#40496975] flex items-center gap-1 py-2 mx-2 rounded-md mb-1 overflow-hidden`
+                } transition-all hover:bg-[#40496975] flex items-center gap-1 py-2 rounded-md overflow-hidden`
               }
             >
               <span
