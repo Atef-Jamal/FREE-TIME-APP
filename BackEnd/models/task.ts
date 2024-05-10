@@ -45,7 +45,6 @@ const taskSchema = new mongoose.Schema(
           correctAnswer: { type: String },
         },
       ],
-      default: [],
     },
   },
   {

@@ -3,6 +3,8 @@ import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
 import ChatBody from "./components/Chats/PrivateChat/ChatBody";
+// import { makeRequest } from "./utils";
+// import { makeRequest } from "./utils";
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
 const Earn = lazy(() => import("./Pages/Earn"));
@@ -147,6 +149,13 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  // useEffect(() => {
+  //   const ggg = async () => {
+  //     const res = await makeRequest.get("/api/apps/modify");
+  //     console.log(res);
+  //   };
+  //   ggg();
+  // }, []);
   return <RouterProvider router={router} />;
 };
 

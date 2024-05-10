@@ -5,6 +5,10 @@ import Spinner from "../Others/Spinner";
 import { Link } from "react-router-dom";
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
+import { CgClose } from "react-icons/cg";
+import { resetModel } from "../../context/StateManeger";
+import { useAppDispatch } from "../../context/Hooks";
+import { FcRedo } from "react-icons/fc";
 
 export interface TypeSearchItem {
   _id: string;
@@ -77,6 +81,7 @@ const Search = () => {
   const [results, setResults] = useState<TypeSearchResults | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
@@ -112,9 +117,9 @@ const Search = () => {
   }, [searchQ]);
 
   return (
-    <div className="border border-gray-500 w-[700px] sm:w-[90%] max-h-[90%]  overflow-auto absolute top-20 sm:top-14 translate-x-[-50%]  bg-[#191624]">
-      <div className="sticky top-0 p-4 sm:p-2 bg-[#241d38]">
-        <div className=" border border-gray-600 rounded-lg">
+    <div className="border border-gray-600 w-[700px] sm:w-[90%] max-h-[90%]  overflow-auto absolute top-20 sm:top-14 translate-x-[-50%]  bg-[#19181b] rounded-lg">
+      <div className="sticky top-0 p-2  bg-[#29223d] flex">
+        <div className="w-full border border-gray-600 rounded-lg">
           <input
             type="text"
             onChange={handleChange}
@@ -122,6 +127,12 @@ const Search = () => {
             className="outline-none rounded-md bg-[#1a0808e3] placeholder:text-gray-600 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg  font-bold p-2 sm:p-1 w-full"
           />
         </div>
+        <button
+          onClick={() => dispatch(resetModel())}
+          className="w-10 h-11 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center"
+        >
+          <CgClose className="text-2xl sm:text-lg" />
+        </button>
       </div>
       <div className="border-gray-600">
         {loading && (
@@ -157,8 +168,11 @@ const Search = () => {
               return (
                 <div
                   key={item._id}
-                  className="py-1 px-2 flex items-center justify-between"
+                  className="py-1 px-2 flex items-center gap-2"
                 >
+                  <span className="w-6 h-6 rounded-lg">
+                    <FcRedo className="text-xl" />
+                  </span>
                   <Link to={item.link} className="underline">
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>
@@ -216,8 +230,13 @@ const Search = () => {
               return (
                 <div
                   key={item._id}
-                  className="py-1 px-2 flex items-center justify-between"
+                  className="py-1 px-2 flex items-center gap-2"
                 >
+                  <img
+                    alt=""
+                    src={`${import.meta.env.VITE_BASE_URL}/${item.image}`}
+                    className="w-7 h-7 sm:w-5 sm:h-5 object-contain rounded-full"
+                  />
                   <Link to={item.link} className="underline">
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>
@@ -245,6 +264,14 @@ const Search = () => {
                   key={item._id}
                   className="py-1 px-2 flex items-center justify-between"
                 >
+                  <div className="relative w-7 h-7 sm:w-5 sm:h-5">
+                    <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#353052]"></span>
+                    <img
+                      alt=""
+                      src={item.image}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                   <Link to={item.link} className="underline">
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>

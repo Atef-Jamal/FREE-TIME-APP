@@ -226,6 +226,7 @@ const Earn = () => {
             >
               {loading &&
                 [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
+
               {apps.map((taskDetail, i) => {
                 return (
                   <AppCard

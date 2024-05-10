@@ -4,7 +4,6 @@ import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types/earn";
-import { gamePhotosArray } from "../../helper/data";
 
 interface TypeAppCard {
   taskDetail: TypeTaskApp;
@@ -42,11 +41,7 @@ const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
         <div className="w-full mx-auto  overflow-hidden">
           <img
             alt={""}
-            src={
-              taskDetail.isAvailable === "AVAILABLE"
-                ? image
-                : gamePhotosArray[index]
-            }
+            src={`${import.meta.env.VITE_BASE_URL}/${image}`}
             className={`w-full h-[95px] rounded-sm  object-cover object-center `}
           />
         </div>
