@@ -23,7 +23,9 @@ const UsersWinnerCard = ({ user, index }: TypeProps) => {
         <img alt={""} src={crown} className="w-20 h-20" />
         <span className="mt-[-20px] w-20 h-20 rounded-full bg-[#1f1f30] border-2">
           <img
-            src={`${import.meta.env.VITE_BASE_URL}/${user.profilePicture}`}
+            src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
+              user.profilePicture
+            }`}
             alt="user profile image"
             className="w-full h-full rounded-full"
           />

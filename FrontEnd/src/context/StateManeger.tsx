@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { TypeInitialState, TypePopup } from "../types/context";
+import { TypeInitialState, TypeMusicInfo, TypePopup } from "../types/context";
 import { User } from "../types/user";
 
 const initialState: TypeInitialState = {
@@ -20,8 +20,11 @@ const initialState: TypeInitialState = {
   resizeSidebare: window.innerWidth < 1300 ? true : false,
   hiddenLiveStats: false,
   openMusicModal: false,
-  isPlaying: false,
-  currentSong: null,
+  musicIsPlaying: false,
+  activeMusic: {
+    audio: new Audio(),
+    musicInfo: null,
+  },
   socet: null,
   onlineUsers: [],
   reFetchThisUserId: "",
@@ -39,7 +42,7 @@ export interface TypeTogglActionPayload {
     | "openSidebarMobile"
     | "resizeSidebare"
     | "openMusicModal"
-    | "isPlaying";
+    | "musicIsPlaying";
   value?: boolean;
 }
 
@@ -85,11 +88,28 @@ const StateManegerSlice = createSlice({
       state.openPopup.type = null;
       state.openPopup.message = "";
     },
-    setCurrentSong(state, action: PayloadAction<any>) {
-      state.currentSong = action.payload;
+    handleAddMusic(state, action: PayloadAction<TypeMusicInfo>) {
+      state.activeMusic.audio.src = action.payload.musicSrc;
+      state.activeMusic.musicInfo = action.payload;
+      state.activeMusic.audio.play();
+      state.musicIsPlaying = true;
     },
-    resetCurrentSong(state) {
-      state.currentSong = null;
+    handleCloseMusic(state) {
+      state.activeMusic.audio.src = "";
+      state.activeMusic.musicInfo = null;
+      state.musicIsPlaying = false;
+    },
+    handlePlayMusic(state) {
+      // if (state.activeMusic.audio.src) {
+      state.activeMusic.audio.play();
+      state.musicIsPlaying = true;
+      // }
+    },
+    handlePauseMusic(state) {
+      // if (state.activeMusic.audio.src) {
+      state.activeMusic.audio.pause();
+      state.musicIsPlaying = false;
+      // }
     },
 
     setSocet(state, action: PayloadAction<any>) {
@@ -127,8 +147,10 @@ export const {
   setCurrentAccountRequestFullfiled,
   showPopup,
   resetPopup,
-  setCurrentSong,
-  resetCurrentSong,
+  handleAddMusic,
+  handleCloseMusic,
+  handlePlayMusic,
+  handlePauseMusic,
   setSocet,
   setOnlineUsers,
   setRefetchUnReadedMessagesCount,

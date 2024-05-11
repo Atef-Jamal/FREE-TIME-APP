@@ -202,7 +202,9 @@ const Search = () => {
                 >
                   <img
                     alt=""
-                    src={`${import.meta.env.VITE_BASE_URL}/${item.image}`}
+                    src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
+                      item.image
+                    }`}
                     className="w-7 h-7 sm:w-5 sm:h-5 object-contain rounded-full"
                   />
                   <Link to={item.link} className="underline">
@@ -234,7 +236,9 @@ const Search = () => {
                 >
                   <img
                     alt=""
-                    src={`${import.meta.env.VITE_BASE_URL}/${item.image}`}
+                    src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
+                      item.image
+                    }`}
                     className="w-7 h-7 sm:w-5 sm:h-5 object-contain rounded-full"
                   />
                   <Link to={item.link} className="underline">

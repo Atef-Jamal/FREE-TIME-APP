@@ -7,6 +7,14 @@ export interface TypePopup {
   message: string;
 }
 
+export interface TypeMusicInfo {
+  id: string;
+  artist: string;
+  cover: string;
+  title: string;
+  musicSrc: string;
+}
+
 export interface TypeInitialState {
   currentUser: User | null;
   currentUserIsLoading: boolean;
@@ -20,13 +28,11 @@ export interface TypeInitialState {
   resizeSidebare: boolean;
   hiddenLiveStats: boolean;
   openMusicModal: boolean;
-  isPlaying: boolean;
-  currentSong: {
-    artist: { name: string };
-    id: string;
-    title: string;
-    album: { cover: string };
-  } | null;
+  musicIsPlaying: boolean;
+  activeMusic: {
+    audio: HTMLAudioElement;
+    musicInfo: TypeMusicInfo | null;
+  };
   socet: Socket | null;
   onlineUsers: string[];
   reFetchThisUserId: string;

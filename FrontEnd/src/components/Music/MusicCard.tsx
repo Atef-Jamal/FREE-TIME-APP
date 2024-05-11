@@ -2,7 +2,9 @@ import { FaPlay } from "react-icons/fa6";
 import { IoIosPause } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
-  setCurrentSong,
+  handleAddMusic,
+  handlePauseMusic,
+  handlePlayMusic,
   setCurrentUser,
   showPopup,
   toggleThisEntity,
@@ -14,9 +16,8 @@ import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
-  const { currentUser, currentSong, isPlaying } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, activeMusic, musicIsPlaying, openMusicModal } =
+    useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
   const [isPurshased, setIsPurshased] = useState(
     !!currentUser?.mySongs.includes(songDetails.id.toString())
@@ -24,34 +25,6 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
 
   const dispatch = useAppDispatch();
   const location = useLocation();
-
-  const handleClick = (song: any) => {
-    dispatch(toggleThisEntity({ entity: "openMusicModal", value: true }));
-    const audioElement = document.getElementById("audioid") as HTMLAudioElement;
-
-    if (currentSong?.id !== song.id) {
-      if (audioElement.played) {
-        audioElement.pause();
-        audioElement.src = song.preview;
-        dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
-        dispatch(setCurrentSong(song));
-        audioElement.play();
-      } else {
-        audioElement.src = song.preview;
-        dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
-        dispatch(setCurrentSong(song));
-        audioElement.play();
-      }
-    } else {
-      if (isPlaying) {
-        audioElement.pause();
-        dispatch(toggleThisEntity({ entity: "isPlaying", value: false }));
-      } else {
-        audioElement.play();
-        dispatch(toggleThisEntity({ entity: "isPlaying", value: true }));
-      }
-    }
-  };
 
   const buySong = async () => {
     if (!currentUser) {
@@ -100,6 +73,21 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
     }
   };
 
+  const handleAdd = () => {
+    if (!openMusicModal) {
+      dispatch(toggleThisEntity({ entity: "openMusicModal", value: true }));
+    }
+    dispatch(
+      handleAddMusic({
+        id: songDetails.id.toString(),
+        musicSrc: songDetails.preview,
+        title: songDetails.title,
+        cover: songDetails.album.cover,
+        artist: songDetails.artist.name,
+      })
+    );
+  };
+
   return (
     <div
       id={songDetails.id.toString()}
@@ -112,13 +100,16 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
       )}
       <span
         className={`${
-          isPlaying && currentSong?.id === songDetails.id ? "animate-spin" : ""
+          musicIsPlaying &&
+          activeMusic.musicInfo?.id === songDetails.id.toString()
+            ? "animate-spin"
+            : ""
         } w-[80px] h-[80px] rounded-full border-2 border-l-[#cef03a] border-t-[#222770] border-r-[#cef03a] border-b-[#222770]`}
       >
         <img
           src={songDetails.album.cover}
           alt=""
-          className="w-full h-full rounded-full"
+          className="w-full h-full rounded-full object-contain"
         />
       </span>
       <div className="flex flex-col gap-1">
@@ -160,23 +151,37 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
         </button>
       )}
       {isPurshased && (
-        <button
-          onClick={() => {
-            handleClick(songDetails);
-          }}
-          className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center"
-        >
-          {isPlaying && currentSong?.id === songDetails.id ? (
-            <span className=" px-3 py-1">
-              <IoIosPause />
-            </span>
-          ) : (
-            <span className=" px-3 py-1">
+        <>
+          {musicIsPlaying &&
+            activeMusic.musicInfo?.id === songDetails.id.toString() && (
+              <button
+                onClick={() => dispatch(handlePauseMusic())}
+                className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+              >
+                <IoIosPause />
+                Pause
+              </button>
+            )}
+          {!musicIsPlaying &&
+            activeMusic.musicInfo?.id === songDetails.id.toString() && (
+              <button
+                onClick={() => dispatch(handlePlayMusic())}
+                className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+              >
+                <FaPlay />
+                Play
+              </button>
+            )}
+          {activeMusic.musicInfo?.id !== songDetails.id.toString() && (
+            <button
+              onClick={handleAdd}
+              className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+            >
               <FaPlay />
-            </span>
+              Play
+            </button>
           )}
-          play
-        </button>
+        </>
       )}
     </div>
   );

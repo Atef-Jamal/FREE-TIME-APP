@@ -1,10 +1,9 @@
 import { Suspense, lazy } from "react";
 import "./App.css";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
 import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
 import ChatBody from "./components/Chats/PrivateChat/ChatBody";
-// import { makeRequest } from "./utils";
-// import { makeRequest } from "./utils";
+import LoadingWebsite from "./components/Others/LoadingWebsite";
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
 const Earn = lazy(() => import("./Pages/Earn"));
@@ -23,19 +22,47 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: (
+      <div className="w-screen h-screen flex flex-col items-center justify-center">
+        <span className="text-[150px] font-bold sm:text-[50px] text-[#56c760]">
+          404
+        </span>
+        <span className="text-3xl font-bold text-[#56c760]">
+          Page Not Found!
+        </span>
+        <div className="flex items-center gap-3 mt-2">
+          <Link
+            to={"/"}
+            className="bg-[#4fca74] py-1 px-4 rounded-md text-black font-bold"
+          >
+            GO TO HOMEPAGE
+          </Link>
+          <button
+            onClick={() =>
+              (window.location.href = import.meta.env.VITE_CLIENT_BASE_URL)
+            }
+            className="bg-[#4fca74] py-1 px-4 rounded-md text-black font-bold"
+          >
+            RELOAD APP
+          </button>
+        </div>
+      </div>
+    ),
     children: [
       {
         path: "",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <Home />
           </Suspense>
         ),
       },
       {
         path: "earn",
+        errorElement: <div className="w-full h-full">Page Not Foundddd</div>,
+
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <Earn />
           </Suspense>
         ),
@@ -43,7 +70,7 @@ const router = createBrowserRouter([
       {
         path: "affiliates",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <Affiliates />
           </Suspense>
         ),
@@ -51,7 +78,7 @@ const router = createBrowserRouter([
       {
         path: "marketplace",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <MarketPlace />
           </Suspense>
         ),
@@ -59,7 +86,7 @@ const router = createBrowserRouter([
       {
         path: "leaderboard",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <LeaderBoard />
           </Suspense>
         ),
@@ -67,7 +94,7 @@ const router = createBrowserRouter([
       {
         path: "cashout",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <CashOut />
           </Suspense>
         ),
@@ -75,7 +102,7 @@ const router = createBrowserRouter([
       {
         path: "rewards",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <Rewards />
           </Suspense>
         ),
@@ -83,7 +110,7 @@ const router = createBrowserRouter([
       {
         path: "myprofile",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <MyProfile />
           </Suspense>
         ),
@@ -91,7 +118,7 @@ const router = createBrowserRouter([
       {
         path: "musics",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <Musics />
           </Suspense>
         ),
@@ -99,7 +126,7 @@ const router = createBrowserRouter([
       {
         path: "chat",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <MobileChat />
           </Suspense>
         ),
@@ -107,7 +134,7 @@ const router = createBrowserRouter([
       {
         path: "privatechat",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <PrivateChat />
           </Suspense>
         ),
@@ -115,7 +142,7 @@ const router = createBrowserRouter([
           {
             path: ":id",
             element: (
-              <Suspense>
+              <Suspense fallback={<LoadingWebsite />}>
                 <ChatBody />
               </Suspense>
             ),
@@ -125,19 +152,18 @@ const router = createBrowserRouter([
       {
         path: "user/:id",
         element: (
-          <Suspense>
+          <Suspense fallback={<LoadingWebsite />}>
             <PublicUserProfile />
           </Suspense>
         ),
       },
       {
         path: "playing",
-
         children: [
           {
             path: ":id",
             element: (
-              <Suspense>
+              <Suspense fallback={<LoadingWebsite />}>
                 <Playing />
               </Suspense>
             ),
