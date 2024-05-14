@@ -4,9 +4,9 @@ import { BsSearch } from "react-icons/bs";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
-import { empty } from "../../../assets";
 import { User } from "../../../types/user";
 import { useFetchAllUsers, useListenToEvent } from "../../../hooks";
+import Empty from "../../Others/Empty";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -108,14 +108,7 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
               </div>
             );
           })}
-        {emptyResults && (
-          <div className="text-sm text-gray-400 opacity-50 font-bold w-full flex flex-col gap-4 py-5 items-center h-full">
-            <span className="w-16 h-16 sm:w-9 sm:h-9">
-              <img src={empty} className="w-full h-full object-cover" />
-            </span>
-            No People Match your Search
-          </div>
-        )}
+        {emptyResults && <Empty emptyText="Empty" imgWidthHeight="w-8 h-8" />}
       </div>
     </div>
   );

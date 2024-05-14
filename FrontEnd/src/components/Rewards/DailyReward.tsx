@@ -12,6 +12,7 @@ const DailyReward = () => {
     (state) => state.stateManeger
   );
   const [otherDays, setOtherDays] = useState<number[]>([]);
+
   const getOtherDays = () => {
     if (currentUser) {
       let dayes = [];
@@ -29,6 +30,7 @@ const DailyReward = () => {
   useEffect(() => {
     getOtherDays();
   }, [currentUser]);
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
@@ -101,48 +103,19 @@ const DailyReward = () => {
               />
             );
           })}
-          {!currentUser && !currentUserIsLoading && (
-            <>
+          {!currentUser &&
+            !currentUserIsLoading &&
+            [...Array(7).keys()].map((item) => (
               <DailyStreakRewardCard
-                day={1}
+                key={item}
+                day={item + 1}
                 isMock={true}
                 isCollected={false}
               />
-              <DailyStreakRewardCard
-                day={2}
-                isMock={true}
-                isCollected={false}
-              />
-              <DailyStreakRewardCard
-                day={3}
-                isMock={true}
-                isCollected={false}
-              />
-              <DailyStreakRewardCard
-                day={4}
-                isMock={true}
-                isCollected={false}
-              />
-              <DailyStreakRewardCard
-                day={5}
-                isMock={true}
-                isCollected={false}
-              />
-              <DailyStreakRewardCard
-                day={6}
-                isMock={true}
-                isCollected={false}
-              />
-              <DailyStreakRewardCard
-                day={7}
-                isMock={true}
-                isCollected={false}
-              />
-            </>
-          )}
+            ))}
         </div>
         <div className="flex items-center gap-2 text-orange-400 text-sm bg-[#a5a5a425] px-4 py-2 rounded-md">
-          <MdOutlineGppMaybe />
+          <MdOutlineGppMaybe className="w-10 h-10 opacity-70" />
           Earn 1000 more coins today to keep your streak! Time left d
         </div>
       </div>

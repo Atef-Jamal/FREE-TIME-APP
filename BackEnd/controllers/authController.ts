@@ -37,7 +37,7 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture: req.file ? req.file.path : "",
+      profilePicture: req.file ? req.file.path : "uploads/avatar.jpeg",
     });
 
     const savedUser = await newUser.save();

@@ -72,7 +72,7 @@ const userSchema = new mongoose.Schema(
             ref: "User",
             required: true,
           },
-          profilPicture: { type: String, default: "" },
+          profilPicture: { type: String, default: "uploads/avatar.jpeg" },
           createdAt: { type: Date, default: new Date() },
         },
       ],

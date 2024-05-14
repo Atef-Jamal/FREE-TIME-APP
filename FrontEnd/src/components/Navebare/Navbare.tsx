@@ -18,6 +18,7 @@ import RegisterButtons from "../Navebare/Registration/RegisterButtons";
 import RegisterationForm from "./Registration/RegisterationForm";
 import { BiSearch } from "react-icons/bi";
 import Search from "../Search/Search";
+
 const Navbare = () => {
   const {
     currentUser,
@@ -63,12 +64,12 @@ const Navbare = () => {
     <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-2 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between">
       <Link
         to={""}
-        className="font-bold text-[1.65rem] tracking-widest italic text-white flex items-center"
+        className="sm:hidden font-bold text-[1.65rem] tracking-widest italic text-white flex items-center"
       >
-        <span className="text-[1.65rem] tracking-widest text-[#01D676] sm:hidden">
+        <span className="text-[1.65rem] tracking-widest text-[#01D676]">
           FREE
         </span>
-        <span className="text-[1.65rem] text-gray-300 sm:hidden">TIME</span>
+        <span className="text-[1.65rem] text-gray-300">TIME</span>
       </Link>
       <div
         className={`absolute top-0 -left-0 z-[3] transition-all h-full mr-auto  ${

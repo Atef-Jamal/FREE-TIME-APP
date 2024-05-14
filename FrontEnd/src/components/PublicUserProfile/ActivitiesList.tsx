@@ -2,9 +2,9 @@ import { FcBusinessman, FcFrame, FcMusic } from "react-icons/fc";
 import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
 import verifiedIcon from "../../assets/images/verified-icon.png";
-import { empty } from "../../assets";
 import { User } from "../../types/user";
 import { TypeNotifications } from "../../types/notification";
+import Empty from "../Others/Empty";
 
 const ActivitiesList = ({
   activities,
@@ -84,17 +84,11 @@ const ActivitiesList = ({
             />
           );
       })}
-      {activities.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 p-2">
-          <img alt={""} src={empty} />
-          <span className="text-gray-400 tracking-wider font-bold sm:text-sm ">
-            Empty
-          </span>
-          <span className="text-gray-400 tracking-wider sm:text-sm ">
-            {`${user?.name || "this person"} Has No Activity Right Now`}
-          </span>
+      {activities.length === 0 && (
+        <div className="my-5">
+          <Empty emptyText={`${user?.name} have No Activities right now`} />
         </div>
-      ) : undefined}
+      )}
     </div>
   );
 };

@@ -8,17 +8,23 @@ import { TypeNotifications } from "../types/notification";
 import { User } from "../types/user";
 import { useSearchParams } from "react-router-dom";
 
-export const useFetchAllUsers = () => {
+export const useFetchAllUsers = (page?: number) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     const getUsersData = async () => {
       setError(null);
       setLoading(true);
       try {
-        const response = await makeRequest.get(`/api/users`);
+        let response;
+        if (page) {
+          response = await makeRequest.get(`/api/users?page=${page}`);
+        } else {
+          response = await makeRequest.get(`/api/users`);
+        }
         const data = response.data;
         setUsers(data);
       } catch (error) {
@@ -36,7 +42,7 @@ export const useFetchAllUsers = () => {
       }
     };
     getUsersData();
-  }, []);
+  }, [page]);
 
   return { users, setUsers, loading, error };
 };
@@ -182,13 +188,15 @@ export const useFetchMusics = () => {
   return { musics, loading, error };
 };
 
-export const useScrollToElement = (dependencies: any[] = []) => {
+export const useScrollToElement = (
+  dependencies: any[] = [],
+  scrollPosition: "center" | "start" | "end" | "nearest" = "center"
+) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const styles = "activeElement";
   const queryParam = searchParams.get("to");
-
+  const styles = "activeElement";
   let element: HTMLElement | null = null;
+
   if (queryParam) {
     element = document.getElementById(queryParam);
   }
@@ -206,7 +214,7 @@ export const useScrollToElement = (dependencies: any[] = []) => {
 
   useEffect(() => {
     if (!element) return;
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.scrollIntoView({ behavior: "smooth", block: scrollPosition });
     element.classList.add(styles);
     element.addEventListener("click", handleRemoveAnimation);
 

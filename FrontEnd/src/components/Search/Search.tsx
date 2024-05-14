@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import ResultItem from "./ResultItem";
-import { empty } from "../../assets";
 import Spinner from "../Others/Spinner";
 import { Link } from "react-router-dom";
 import { handleApiError } from "../../utils/common";
@@ -9,6 +8,7 @@ import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { FcRedo } from "react-icons/fc";
+import Empty from "../Others/Empty";
 
 export interface TypeSearchItem {
   _id: string;
@@ -117,7 +117,7 @@ const Search = () => {
   }, [searchQ]);
 
   return (
-    <div className="border border-gray-600 w-[700px] sm:w-[90%] max-h-[90%]  overflow-auto absolute top-20 sm:top-14 translate-x-[-50%]  bg-[#19181b] rounded-lg">
+    <div className="border border-gray-600 w-[700px] sm:w-[90%] max-h-[90%] sm:max-h-[81%]  overflow-auto absolute top-20 sm:top-11 translate-x-[-50%]  bg-[#19181b] rounded-lg">
       <div className="sticky top-0 p-2  bg-[#29223d] flex">
         <div className="w-full border border-gray-600 rounded-lg">
           <input
@@ -149,20 +149,14 @@ const Search = () => {
         )}
         {!loading && results && (
           <div className="p-2">
-            <h1 className="text-gray-400 font-bold text-center border border-gray-700 mb-3">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3">
               Feartures
             </h1>
             {results.features.length === 0 && (
-              <div className="flex items-center justify-center gap-3 py-2">
-                <img
-                  alt=""
-                  src={empty}
-                  className="w-9 h-9 sm:w-6 sm:h-6 object-contain"
-                />
-                <div className="text-center text-gray-500 sm:text-sm">
-                  No Results Founded
-                </div>
-              </div>
+              <Empty
+                emptyText="No Features Founded"
+                imgWidthHeight="xs:w-6 xs:h-6"
+              />
             )}
             {results.features.map((item) => {
               return (
@@ -179,20 +173,14 @@ const Search = () => {
                 </div>
               );
             })}
-            <h1 className="text-gray-400 font-bold text-center border border-gray-700 mb-3 mt-2">
-              Users
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3 mt-2">
+              People
             </h1>
             {results.users.length === 0 && (
-              <div className="flex items-center justify-center gap-3 py-2">
-                <img
-                  alt=""
-                  src={empty}
-                  className="w-9 h-9 sm:w-6 sm:h-6 object-contain"
-                />
-                <div className="text-center text-gray-500 sm:text-sm">
-                  No Results Founded
-                </div>
-              </div>
+              <Empty
+                emptyText="No People Founded"
+                imgWidthHeight="xs:w-6 xs:h-6"
+              />
             )}
             {results.users.map((item) => {
               return (
@@ -213,20 +201,14 @@ const Search = () => {
                 </div>
               );
             })}
-            <h1 className="text-gray-400 font-bold text-center border border-gray-700 mb-3 mt-2">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3 mt-2">
               Apps
             </h1>
             {results.apps.length === 0 && (
-              <div className="flex items-center justify-center gap-3 py-2">
-                <img
-                  alt=""
-                  src={empty}
-                  className="w-9 h-9 sm:w-6 sm:h-6 object-contain"
-                />
-                <div className="text-center text-gray-500 sm:text-sm">
-                  No Results Founded
-                </div>
-              </div>
+              <Empty
+                emptyText="No Apps Founded"
+                imgWidthHeight="xs:w-6 xs:h-6"
+              />
             )}
             {results.apps.map((item) => {
               return (
@@ -247,20 +229,14 @@ const Search = () => {
                 </div>
               );
             })}
-            <h1 className="text-gray-400 font-bold text-center border border-gray-700 mb-3 mt-2">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3 mt-2">
               Frames
             </h1>
             {results.frames.length === 0 && (
-              <div className="flex items-center justify-center gap-3 py-2">
-                <img
-                  alt=""
-                  src={empty}
-                  className="w-9 h-9 sm:w-6 sm:h-6 object-contain"
-                />
-                <div className="text-center text-gray-500 sm:text-sm">
-                  No Results Founded
-                </div>
-              </div>
+              <Empty
+                emptyText="No Frames Founded"
+                imgWidthHeight="xs:w-6 xs:h-6"
+              />
             )}
             {results.frames.map((item) => {
               return (

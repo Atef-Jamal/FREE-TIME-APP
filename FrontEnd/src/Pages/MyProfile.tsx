@@ -1,4 +1,4 @@
-import { rank1Desktop, rank2Desktop, rank3Desktop, empty } from "../assets";
+import { rank1Desktop, rank2Desktop, rank3Desktop } from "../assets";
 import egypt from "../assets/images/eg.svg";
 import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
@@ -20,6 +20,8 @@ import { TypeFrame } from "../types/frame";
 import Spinner from "../components/Others/Spinner";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/common";
+import Empty from "../components/Others/Empty";
+import { MdOutlineEventNote } from "react-icons/md";
 
 const MyProfile = () => {
   const { currentUser, currentAccountRequestFullfiled, socet } = useAppSelector(
@@ -27,7 +29,7 @@ const MyProfile = () => {
   );
   const { musics } = useFetchMusics();
   const dispatch = useAppDispatch();
-  useScrollToElement();
+  useScrollToElement([musics]);
 
   let mathLevel: number = currentUser?.points
     ? currentUser.points / 100
@@ -239,84 +241,64 @@ const MyProfile = () => {
             points as a Reward
           </p>
         </div>
-        <div className=" mt-5 flex flex-col gap-3 items-center justify-center  bg-[#222339] rounded-md ">
-          <span className="text-[#7dec73] font-bold ">Change My Frame</span>
+        <div className=" mt-5 flex flex-col gap-2 p-2 items-center justify-center bg-[#222339] rounded-md">
+          <span className="text-[#7dec73] font-bold">My Frames</span>
           <div
-            className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2 p-3 `}
+            className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2`}
           >
-            {currentUser?.myFrames.length > 0 &&
-              currentUser?.myFrames?.map((item: TypeFrame) => {
-                return (
-                  <div
-                    key={item._id}
-                    id={item._id}
-                    className="flex flex-col items-center w-full justify-center gap-3 px-2 py-3 bg-[#5b667a42] rounded-md"
-                  >
-                    <div className="relative w-full flex items-center justify-center">
-                      <img
-                        src={item.image}
-                        alt=""
-                        className="w-[70%] lg:w-full h-[120px] sm:h-[90px] lg:h-[110px] rounded-md mb-3"
-                      />
-                      <span className="absolute bg-[#222339] top-[16%] lg:top-[18%] left-[29%] lg:left-[22%] w-[43%] lg:w-[55%] sm:w-[55%] lg:h-[52%] h-[59%]"></span>
-                    </div>
-                    {currentUser?.activeFrame?._id === item._id ? (
-                      <button
-                        onClick={unselectPhotoFrame}
-                        className="rounded-md font-bold bg-[#2d704ad8] w-[80%] xs:w-[95%] py-1 text-center mx-auto"
-                      >
-                        unselect
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => changeFrame(item)}
-                        className=" rounded-md font-bold bg-[#467cce71] w-[80%] xs:w-[95%]  py-1 text-center mx-auto"
-                      >
-                        select
-                      </button>
-                    )}
+            {currentUser?.myFrames?.map((item: TypeFrame) => {
+              return (
+                <div
+                  key={item._id}
+                  id={item._id}
+                  className="flex flex-col items-center w-full justify-center gap-3 px-2 py-3 bg-[#5b667a42] rounded-md"
+                >
+                  <div className="relative w-full flex items-center justify-center">
+                    <img
+                      src={item.image}
+                      alt=""
+                      className="w-[70%] lg:w-full h-[120px] sm:h-[90px] lg:h-[110px] rounded-md mb-3"
+                    />
+                    <span className="absolute bg-[#222339] top-[16%] lg:top-[18%] left-[29%] lg:left-[22%] w-[43%] lg:w-[55%] sm:w-[55%] lg:h-[52%] h-[59%]"></span>
                   </div>
-                );
-              })}
+                  {currentUser?.activeFrame?._id === item._id ? (
+                    <button
+                      onClick={unselectPhotoFrame}
+                      className="rounded-md font-bold bg-[#2d704ad8] w-[80%] xs:w-[95%] py-1 text-center mx-auto"
+                    >
+                      unselect
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => changeFrame(item)}
+                      className=" rounded-md font-bold bg-[#467cce71] w-[80%] xs:w-[95%]  py-1 text-center mx-auto"
+                    >
+                      select
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          {currentUser.myFrames.length <= 0 ? (
-            <div className="flex flex-col items-center justify-center mb-5 mx-auto ">
-              <img alt={""} src={empty} />
-              <span className="text-gray-400 tracking-wider font-bold my-4 sm:text-sm ">
-                Empty
-              </span>
-              <span className="text-gray-400 tracking-wider sm:text-sm ">
-                {`You Have No Burshased Frames Right Now`}
-              </span>
-            </div>
-          ) : undefined}
+          {currentUser.myFrames.length === 0 && (
+            <Empty emptyText="No Frames Buyed" />
+          )}
         </div>
-        <div className=" w-full mt-5 bg-[#222339] py-2 rounded-md">
-          <h1 className="text-[#a0e965ee] font-bold text-center my-4">
-            My Musics
-          </h1>
-          <div className="grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2 p-4">
-            {musics.length > 0 &&
-              musics
-                .filter((item) => {
-                  if (currentUser?.mySongs?.includes(item.id.toString())) {
-                    return item;
-                  }
-                })
-                .map((element) => (
-                  <MusicCard key={element.id} songDetails={element} />
-                ))}
+        <div className=" w-full flex flex-col items-center gap-2 mt-5 bg-[#222339] p-2 rounded-md">
+          <h1 className="text-[#a0e965ee] font-bold text-center ">My Musics</h1>
+          <div className="w-full grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2">
+            {musics
+              .filter((item) => {
+                if (currentUser?.mySongs?.includes(item.id.toString())) {
+                  return item;
+                }
+              })
+              .map((element) => (
+                <MusicCard key={element.id} songDetails={element} />
+              ))}
           </div>
           {currentUser?.mySongs?.length === 0 && (
-            <div className="flex flex-col items-center justify-center mb-5 mx-auto">
-              <img alt={""} src={empty} />
-              <span className="text-gray-400 tracking-wider font-bold my-4 sm:text-sm ">
-                Empty
-              </span>
-              <span className="text-gray-400 tracking-wider sm:text-sm text-center ">
-                {`You Have No Burshased Musics Right Now`}
-              </span>
-            </div>
+            <Empty emptyText="No Musics Buyed" />
           )}
         </div>
 
@@ -338,20 +320,17 @@ const MyProfile = () => {
           </span>
         </div>
         <div className="flex gap-6 items-center mt-8 sm:w-[95%] sm:gap-3  mx-auto">
-          <BsFillExclamationOctagonFill />
+          <MdOutlineEventNote className="w-16 h-16 sm:w-10 sm:h-10 opacity-60 min-w-fit" />
           <p className="text-md text-[#a19bad]">
             Reach the next Tier to earn a higher commission from your
             affiliates.
           </p>
         </div>
-        <div className="mt-7 flex items-center flex-wrap gap-4 justify-center">
+        <div className="mt-7 grid grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-2">
           {[...Array(20).keys()].map((item) => (
-            <div
-              key={item}
-              className="w-[350px] h-[180px] lg:w-[310px] sm:w-[360px]  p-4 rounded-lg bg-[#1c1e2e]"
-            >
+            <div key={item} className="h-[180px] p-2 rounded-lg bg-[#1c1e2e]">
               <div className="flex justify-between items-center py-4 mb-4 border-b border-[#635a5a]">
-                <div className="flex items-center gap-3 text-gray-300 font-bold ">
+                <div className="flex items-center gap-2 text-gray-300 font-bold ">
                   <RiNumbersFill /> Tier 2
                 </div>
                 <span className=" text-gray-300 text-sm">7% Commissions</span>

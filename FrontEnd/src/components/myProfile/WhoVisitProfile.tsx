@@ -4,15 +4,15 @@ import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
 import { makeRequest } from "../../utils";
 import Spinner from "../Others/Spinner";
-import { avatar, empty } from "../../assets";
 import { Link } from "react-router-dom";
 import { formateDate, handleApiError } from "../../utils/common";
+import Empty from "../Others/Empty";
 
 const WhoVisitProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<
-    { _id: string; createdAt: Date; profilPicture: string; name: string }[]
+    { _id: string; createdAt: Date; profilePicture: string; name: string }[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
@@ -87,7 +87,9 @@ const WhoVisitProfile = () => {
               <div className="flex items-center justify-center gap-3">
                 <div className="w-8 h-8 rounded-full">
                   <img
-                    src={item.profilPicture || avatar}
+                    src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
+                      item.profilePicture
+                    }`}
                     alt=""
                     className="object-contain rounded-full"
                   />
@@ -105,12 +107,7 @@ const WhoVisitProfile = () => {
             </div>
           ))}
         {!isLoading && !error && usersVisitsMyProfile.length === 0 && (
-          <div className="w-full flex flex-col items-center gap-2 justify-center py-2">
-            <img src={empty} alt="" className="w-14 h-14 object-contain" />
-            <p className="text-sm text-[#685d5dd3]">
-              No One View your Profile Until Now
-            </p>
-          </div>
+          <Empty emptyText="No One View your profile until Now" />
         )}
       </div>
     </div>

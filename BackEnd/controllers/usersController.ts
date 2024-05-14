@@ -2,9 +2,17 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import Frame from "../models/frame";
 
-export const allUsers = async (_: Request, res: Response) => {
+export const allUsers = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string);
+  const limit = 20;
+  const skip = (page - 1) * limit;
   try {
-    const users = await User.find({}).select("-password");
+    let users;
+    if (page) {
+      users = await User.find().skip(skip).limit(limit).select("-password");
+    } else {
+      users = await User.find().select("-password");
+    }
     return res.status(200).json(users);
   } catch (error) {
     return res.status(404).json({ error: "Can't Load all peoples" });
@@ -30,20 +38,20 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
-    const updatedBody = req.body;
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedBody, {
-      new: true,
-    });
-    if (updatedUser) {
-      return res.status(200).json(updatedUser);
-    }
-  } catch (error) {
-    return res.status(404).json({ error: "an Error occurred" });
-  }
-};
+// export const updateUser = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params;
+//     const updatedBody = req.body;
+//     const updatedUser = await User.findByIdAndUpdate(userId, updatedBody, {
+//       new: true,
+//     });
+//     if (updatedUser) {
+//       return res.status(200).json(updatedUser);
+//     }
+//   } catch (error) {
+//     return res.status(404).json({ error: "an Error occurred" });
+//   }
+// };
 
 export const userVisited = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;

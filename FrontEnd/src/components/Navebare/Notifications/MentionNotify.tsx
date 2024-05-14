@@ -49,7 +49,7 @@ const MentionNotify = ({
           dispatch(
             toggleThisEntity({ entity: "openNotification", value: false })
           );
-          if (!isChatOpen) {
+          if (!isChatOpen && window.innerWidth > 867) {
             dispatch(toggleThisEntity({ entity: "isChatOpen" }));
           }
         }}

@@ -8,7 +8,7 @@ const HowToStart = () => {
     <div className="">
       <div className="flex sm:flex-col items-center justify-center sm:gap-2 mx-3">
         <div className="bg-[#101127] sm:rounded-t-lg sm:w-full w-[320px] flex flex-col items-center justify-center h-[110px] border-r-gray-100 border-r-[0.2px] sm:border-none">
-          <div className="flex items-center gap-4 mr-6 sm:mr-[60px]">
+          <div className="flex items-center gap-4 ">
             <MdOutlineWatchLater />
             <span className="text-green-400 font-bold"> 0h 17m 16s</span>
           </div>
@@ -17,7 +17,7 @@ const HowToStart = () => {
           </p>
         </div>
         <div className="bg-[#101127] sm:w-full w-[320px] flex flex-col items-center justify-center h-[110px] border-r-gray-100 border-r-[0.2px] sm:border-none">
-          <div className="flex items-center gap-4 mr-6 sm:mr-[90px]">
+          <div className="flex items-center gap-4">
             <FaMoneyBillWave />
             <span className="text-green-400 font-bold"> $ 10.32</span>
           </div>
@@ -26,7 +26,7 @@ const HowToStart = () => {
           </p>
         </div>
         <div className="bg-[#101127] sm:rounded-b-lg sm:w-full w-[320px]  flex flex-col items-center justify-center h-[110px]">
-          <div className="flex items-center gap-4 mr-6 sm:gap-2">
+          <div className="flex items-center gap-4">
             <MdOutlineAccountBalanceWallet />
             <span className="text-green-400 font-bold"> $ 32,539,299.52</span>
           </div>

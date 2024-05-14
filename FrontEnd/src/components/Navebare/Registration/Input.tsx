@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BiSolidHide } from "react-icons/bi";
+import { IoMdEye } from "react-icons/io";
 
 interface TypeInput {
   label: string;
@@ -39,7 +39,7 @@ const Input = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`w-full outline-none py-2 px-4 text-[#7295f7] bg-[#0d0d22b9] sm:text-sm rounded-md`}
+          className={`w-full outline-none py-2 px-4 text-[#7295f7] bg-[#0d0d22b9] placeholder:opacity-50 sm:text-sm rounded-md`}
         />
         {name === "password" && (
           <button
@@ -47,7 +47,7 @@ const Input = ({
             onClick={handleShowPassword}
             className="absolute right-2 top-[6px]"
           >
-            <BiSolidHide className="text-xl" />
+            <IoMdEye className="text-xl" />
           </button>
         )}
       </div>

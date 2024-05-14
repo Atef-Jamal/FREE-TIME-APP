@@ -1,5 +1,4 @@
 import { FcCheckmark } from "react-icons/fc";
-import { avatar } from "../../../assets";
 import { useAppSelector } from "../../../context/Hooks";
 import { formateDate } from "../../../utils/common";
 import { IoCheckmarkOutline } from "react-icons/io5";
@@ -32,7 +31,9 @@ const PrivateMessageItem = ({
       <div className="w-8 h-8 sm:w-6 sm:h-6 rounded-full">
         <img
           alt="profile-image"
-          src={message.sender.profilePicture || avatar}
+          src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
+            message.sender.profilePicture
+          }`}
           className="w-full h-full rounded-full "
         />
       </div>

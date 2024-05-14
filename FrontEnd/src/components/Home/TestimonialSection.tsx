@@ -4,7 +4,7 @@ import { makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { formateDate, handleApiError } from "../../utils/common";
 import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
-import { avatar, moneyHome } from "../../assets";
+import {  moneyHome } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { User } from "../../types/user";
@@ -140,7 +140,7 @@ const TestimonialSection = () => {
                     </div>
                     <div className="w-16 h-16 xs:w-9 xs:h-9 rounded-full border border-yellow-500">
                       <img
-                        src={item.user.profilePicture || avatar}
+                        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${item.user.profilePicture}`}
                         alt=""
                         className="w-full h-full rounded-full"
                       />

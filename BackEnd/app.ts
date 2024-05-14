@@ -68,9 +68,20 @@ app.use("/api/coupons", couponRoute);
 
 app.use("/api/search", searchRoute);
 
-app.get("/api/atef", (req) => {
-  console.log(req.body);
-});
+// app.get("/api/atef", async (_, res: Response) => {
+//   try {
+//     const newUsers = [...Array(60).keys()].map((item) => ({
+//       name: `Anounymous${item}`,
+//       email: `Anounymous${item}@gmail.com`,
+//       password: `Anounymous${item}`,
+//       profilePicture: "uploads/avatar.jpeg",
+//     }));
+//     const response = await User.insertMany(newUsers);
+//     return res.status(200).json(response);
+//   } catch (error) {
+//     return res.status(404).json({ error: "error" });
+//   }
+// });
 
 io.on("connection", (socet) => {
   const userId = socet.handshake.query.userId;

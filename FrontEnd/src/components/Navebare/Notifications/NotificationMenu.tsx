@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { empty } from "../../../assets";
 import { CgCloseR } from "react-icons/cg";
 import { MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
@@ -17,6 +16,7 @@ import { handleApiError } from "../../../utils/common";
 
 import Spinner from "../../Others/Spinner";
 import { TypeNotifications } from "../../../types/notification";
+import Empty from "../../Others/Empty";
 
 const NotificationMenu = ({
   notifications,
@@ -96,49 +96,6 @@ const NotificationMenu = ({
               <Spinner className="w-7 h-7" />
             </div>
           )}
-          {/* {loadingNotifications && (
-            <>
-              <div className="w-full  p-2 flex flex-col items-center gap-2 bg-[#1010308e] rounded-md mb-2">
-                <div className="flex flex-col gap-1 w-full">
-                  <div className="flex items-center gap-2 w-full">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <div className="flex flex-col gap-1">
-                      <Skeleton className="h-2 w-[150px] rounded-sm" />
-                      <Skeleton className="h-2 w-[120px] rounded-sm" />
-                    </div>
-                  </div>
-                  <Skeleton className="w-[80%] mx-auto h-2 rounded-sm" />
-                  <Skeleton className="w-[80%] mx-auto h-2 rounded-sm" />
-                </div>
-              </div>
-              <div className="w-full  p-2 flex flex-col items-center gap-2 bg-[#1010308e] rounded-md mb-2">
-                <div className="flex flex-col gap-1 w-full">
-                  <div className="flex items-center gap-2 w-full">
-                    <Skeleton className="h-8 w-8  rounded-full" />
-                    <div className="flex flex-col gap-1">
-                      <Skeleton className="h-2 w-[150px] rounded-sm" />
-                      <Skeleton className="h-2 w-[120px] rounded-sm" />
-                    </div>
-                  </div>
-                  <Skeleton className="w-[80%] mx-auto h-2 rounded-sm" />
-                  <Skeleton className="w-[80%] mx-auto h-2 rounded-sm" />
-                </div>
-              </div>
-              <div className="w-full  p-2 flex flex-col items-center gap-2 bg-[#1010308e] rounded-md">
-                <div className="flex flex-col gap-1 w-full">
-                  <div className="flex items-center gap-2 w-full">
-                    <Skeleton className="h-8 w-8  rounded-full" />
-                    <div className="flex flex-col  gap-1">
-                      <Skeleton className="h-2 w-[150px] rounded-sm" />
-                      <Skeleton className="h-2 w-[120px] rounded-sm" />
-                    </div>
-                  </div>
-                  <Skeleton className="w-[80%] mx-auto h-2 rounded-sm" />
-                  <Skeleton className="w-[80%] mx-auto h-2 rounded-sm" />
-                </div>
-              </div>
-            </>
-          )} */}
           {!loadingNotifications &&
             notifications.length > 0 &&
             notifications
@@ -232,15 +189,16 @@ const NotificationMenu = ({
               .reverse()}
         </div>
         {notifications.length === 0 && (
-          <div className="flex flex-col items-center justify-center w-[90%] mb-4 ">
-            <img alt={""} src={empty} className="w-[40px]" />
-            <span className="text-gray-500 tracking-wider font-extrabold mt-4 text-sm">
-              Empty
-            </span>
-            <span className="text-gray-500 tracking-wider font-bold text-sm ">
-              You have No Notifications
-            </span>
-          </div>
+          <Empty emptyText="Empty Notifications" />
+          // <div className="flex flex-col items-center justify-center w-[90%] mb-4 ">
+          //   <img alt={""} src={empty} className="w-[40px]" />
+          //   <span className="text-gray-500 tracking-wider font-extrabold mt-4 text-sm">
+          //     Empty
+          //   </span>
+          //   <span className="text-gray-500 tracking-wider font-bold text-sm ">
+          //     You have No Notifications
+          //   </span>
+          // </div>
         )}
       </div>
     </>

@@ -3,7 +3,7 @@ import { SiApple, SiFirewalla } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop, IoFilter } from "react-icons/io5";
 import { DiAndroid } from "react-icons/di";
-import { notikLogo, tapresearch, AdscendMediaGlow, empty } from "../assets";
+import { notikLogo, tapresearch, AdscendMediaGlow } from "../assets";
 import { IoIosArrowBack, IoMdArrowDropdown, IoMdSearch } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
@@ -20,6 +20,7 @@ import AppSkeleton from "../components/Earn/AppSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
 import AppCard from "../components/Earn/AppCard";
 import { useScrollToElement } from "../hooks/common";
+import Empty from "../components/Others/Empty";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -110,84 +111,85 @@ const Earn = () => {
   };
 
   return (
-    <div className="flex flex-col p-4 lg:p-3 xs:p-2 xs:py-6 gap-4 bg-[#21223a]">
+    <div className="flex flex-col p-4 lg:p-3 xs:p-2 gap-4 bg-[#21223a]">
       <Helmet>
         <title>Earn</title>
       </Helmet>
-      <div className="flex items-ceneter flex-wrap gap-2">
-        <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap">
-          <span className="mr-1 text-[#bedf65]">EARN</span> ON
-        </span>
-        <div className=" flex items-center gap-3 bg-[#0b0b22a9] rounded-md px-6 py-2">
-          <IoDesktop className="text-lg" />
-          <DiAndroid className="text-lg" />
-          <SiApple className="text-lg" />
+      <div className="flex items-ceneter sm:flex-col gap-2">
+        <div className="flex justify-between w-[35%] sm:w-full">
+          <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap">
+            <span className="mr-1 text-[#bedf65]">EARN</span> ON
+          </span>
+          <div className=" flex items-center gap-4 bg-[#0b0b22a9] rounded-md px-8 py-2">
+            <IoDesktop className="text-lg" />
+            <DiAndroid className="text-lg" />
+            <SiApple className="text-lg" />
+          </div>
         </div>
-        <div className="relative sm:w-[280px]">
-          <input
-            type="text"
-            className="w-full h-10 rounded-md bg-[#383847] outline-none pl-4 pr-[53px] py-2 text-sm tracking-wide text-[#72abff]"
-            placeholder="Search"
-          />
-          <button className="absolute top-0 right-0 rounded-md bg-[#9486866c] px-3 h-[95%]">
-            <IoMdSearch className="text-xl" />
-          </button>
-        </div>
-        <div
-          onClick={() => setOpenFilterMenu((prev) => !prev)}
-          ref={filterMenuRef}
-          className="relative w-[280px] flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2  sm:gap-1"
-        >
-          <IoFilter />
-
-          <span className="text-gray-400 font-bold">{filterQuery}</span>
-
-          <IoMdArrowDropdown className="text-2xl" />
-
-          {openFilterMenu && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="absolute top-11 z-[1] left-0 bg-[#37354b] w-full flex flex-col py-3 px-1 rounded-md"
-            >
-              <span
-                onClick={() => setOpenFilterMenu(false)}
-                className="absolute top-[2px] right-[2px] px-3 rounded-sm bg-[#555050c4]"
+        <div className="flex xs:flex-col justify-between w-[65%] gap-2 sm:w-full ">
+          <div className="relative w-full">
+            <input
+              type="text"
+              className="w-full h-10 rounded-md bg-[#383847] outline-none pl-4 pr-[53px] py-2 xs:text-sm tracking-wide text-[#72abff]"
+              placeholder="Search"
+            />
+            <button className="absolute top-0 right-0 rounded-md bg-[#9486866c] px-3 h-[95%]">
+              <IoMdSearch className="text-xl" />
+            </button>
+          </div>
+          <div
+            onClick={() => setOpenFilterMenu((prev) => !prev)}
+            ref={filterMenuRef}
+            className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2  sm:gap-1"
+          >
+            <IoFilter />
+            <span className="text-gray-400 font-bold">{filterQuery}</span>
+            <IoMdArrowDropdown className="text-2xl" />
+            {openFilterMenu && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-11 z-[1] left-0 bg-[#37354b] w-full flex flex-col py-3 px-1 rounded-md"
               >
-                x
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "ALL")}
-                ref={allRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <VscExpandAll />
-                All
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "REWARD")}
-                ref={androidRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <SiFirewalla />
-                Highest Reward
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "POPULAR")}
-                ref={iosRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <FaHeart />
-                Most Popular
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "RAITING")}
-                ref={desktopRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <FaStar /> Highest Rating
-              </span>
-            </div>
-          )}
+                <span
+                  onClick={() => setOpenFilterMenu(false)}
+                  className="absolute top-[2px] right-[2px] px-3 rounded-sm bg-[#555050c4]"
+                >
+                  x
+                </span>
+                <span
+                  onClick={(e) => activeFilteringItem(e, "ALL")}
+                  ref={allRef}
+                  className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
+                >
+                  <VscExpandAll />
+                  All
+                </span>
+                <span
+                  onClick={(e) => activeFilteringItem(e, "REWARD")}
+                  ref={androidRef}
+                  className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
+                >
+                  <SiFirewalla />
+                  Highest Reward
+                </span>
+                <span
+                  onClick={(e) => activeFilteringItem(e, "POPULAR")}
+                  ref={iosRef}
+                  className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
+                >
+                  <FaHeart />
+                  Most Popular
+                </span>
+                <span
+                  onClick={(e) => activeFilteringItem(e, "RAITING")}
+                  ref={desktopRef}
+                  className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
+                >
+                  <FaStar /> Highest Rating
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className=" bg-[#1c1e31] p-4 rounded-xl flex flex-col gap-5 xs:px-2 overflow-x-hidden border border-gray-800">
@@ -257,14 +259,10 @@ const Earn = () => {
               </button>
             )}
             {apps.length === 0 && (
-              <div className="opacity-40 w-full h-[300px] flex flex-col items-center justify-center gap-2">
-                <img
-                  src={empty}
-                  alt=""
-                  className="w-12 h-12 object-cover object-center"
-                />
-                <p>No Apps Matches your Filter Query</p>
-              </div>
+              <Empty
+                emptyText="No Apps Matches your Filter Query"
+                imgWidthHeight=""
+              />
             )}
           </div>
           <div className={`bg-[#1c1e31] w-[50%] `}>

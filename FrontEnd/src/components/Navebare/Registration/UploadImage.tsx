@@ -38,7 +38,7 @@ const UploadImage = ({
   return (
     <div
       onClick={handleClick}
-      className="w-[150px] h-[100px] sm:w-[100px] lg:h-[50px]"
+      className="w-[150px] h-[120px] lg:w-[120px] lg:h-[80px]"
     >
       <input
         ref={inputRef}
@@ -49,7 +49,7 @@ const UploadImage = ({
       <img
         src={imagePreview || UploadIcon}
         alt=""
-        className="object-contain w-full h-full "
+        className={`object-fill w-full h-full ${imagePreview && "border"}`}
       />
     </div>
   );

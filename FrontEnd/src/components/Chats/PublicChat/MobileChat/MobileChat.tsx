@@ -17,7 +17,7 @@ const MobileChat = () => {
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("to");
 
-  useScrollToElement([messages]);
+  useScrollToElement([messages], "end");
 
   useListenToEvent<TypePublicChatItem>({
     eventToListen: "public-message",

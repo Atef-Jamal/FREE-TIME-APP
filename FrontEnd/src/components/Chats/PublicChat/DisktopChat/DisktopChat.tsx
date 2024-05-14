@@ -10,14 +10,16 @@ import FreeTime from "../Common/FreeTime";
 import { TypePublicChatItem } from "../../../../types/publicChat";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
+import { useScrollToElement } from "../../../../hooks/common";
 
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
+
+  useScrollToElement([messages], "end");
 
   useListenToEvent<TypePublicChatItem>({
     eventToListen: "public-message",
