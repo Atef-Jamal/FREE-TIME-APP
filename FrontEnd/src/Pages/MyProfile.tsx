@@ -1,5 +1,9 @@
-import { rank1Desktop, rank2Desktop, rank3Desktop } from "../assets";
-import egypt from "../assets/images/eg.svg";
+import {
+  rank1Desktop,
+  rank2Desktop,
+  rank3Desktop,
+  verifiedImage,
+} from "../assets";
 import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { RiFileCopyLine } from "react-icons/ri";
@@ -162,14 +166,16 @@ const MyProfile = () => {
                 <span className="text-lg font-bold sm:text-sm text-[#ab9df8ee]">
                   {currentUser.name}
                 </span>
-                <span className="flex items-center gap-4 sm:gap-2 ">
-                  <img
-                    alt={""}
-                    src={egypt}
-                    className="w-5 h-5 rounded-md sm:w-3 sm:h-3 "
-                  />
-                  <span className="sm:text-sm text-[#f75887ee]">Egypt</span>
-                </span>
+                {currentUser.emailVerified && (
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={verifiedImage}
+                      alt=""
+                      className="w-8 h-8 object-cover"
+                    />
+                    <span className="text-gray-400">Verified</span>
+                  </div>
+                )}
                 <div className="flex flex-col items-center w-[75%]">
                   <div className="relative w-full flex flex-col">
                     <div

@@ -175,13 +175,6 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  // useEffect(() => {
-  //   const ggg = async () => {
-  //     const res = await makeRequest.get("/api/apps/modify");
-  //     console.log(res);
-  //   };
-  //   ggg();
-  // }, []);
   return <RouterProvider router={router} />;
 };
 

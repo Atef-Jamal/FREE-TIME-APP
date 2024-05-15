@@ -4,7 +4,6 @@ import { IoMdPlay } from "react-icons/io";
 import { IoPlaySkipBackSharp } from "react-icons/io5";
 import { IoPlaySkipForward } from "react-icons/io5";
 import { useEffect, useState } from "react";
-import { avatar } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
   handleCloseMusic,
@@ -64,7 +63,7 @@ const MusicPlayer = () => {
           } w-10 h-10 rounded-full border-2 border-l-[#ffae45] border-t-[#222770] border-r-[#cef03a] border-b-[#192461]`}
         >
           <img
-            src={activeMusic.musicInfo?.cover || avatar}
+            src={activeMusic.musicInfo?.cover || ""}
             alt=""
             className="w-full h-full rounded-full"
           />

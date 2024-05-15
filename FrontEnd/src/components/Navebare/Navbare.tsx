@@ -82,10 +82,10 @@ const Navbare = () => {
         onClick={() =>
           dispatch(openModel({ status: true, children: <Search /> }))
         }
-        className="border rounded-md w-[700px] xl:w-[25%] sm:w-[35%] xs:w-[10%] h-[50px] sm:h-[40px] mr-2 xs:mr-1 ml-auto flex items-center cursor-pointer border-gray-700 bg-[#3f90be38] px-2 xs:px-0"
+        className="border rounded-md w-[700px] xl:w-[25%] sm:w-[35%] xs:w-[10%] h-[47px] sm:h-[40px] mr-2 xs:mr-1 ml-auto flex items-center cursor-pointer border-gray-700 bg-[#333b3fcb] px-2 xs:px-0"
       >
         <BiSearch className="text-3xl sm:text-xl opacity-50 min-w-fit xs:mx-auto" />
-        <span className="h-full border-l border-gray-700 mx-2 sm:hidden"></span>
+        <span className="h-full border-l border-gray-700 mx-2 xs:hidden"></span>
         <span className="text-gray-400 text-lg truncate xs:hidden sm:text-sm">
           Search For Everything, Features, users, apps, frames, ect..
         </span>

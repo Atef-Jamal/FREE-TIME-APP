@@ -1,5 +1,4 @@
 import { useState } from "react";
-import VerifiedIcon from "../../../assets/images/verified-icon.png";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import Spinner from "../../Others/Spinner";
@@ -9,6 +8,7 @@ import {
   collectReward,
 } from "../../../utils/common";
 import { TypeEmailVerifiedNotify } from "../../../types/notification";
+import { verifiedImage } from "../../../assets";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
 
@@ -62,7 +62,7 @@ const EmailVerifiedNotify = ({
     <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">
       <div className="flex gap-2 w-full">
         <span className="w-8 h-6 rounded-lg bg-[#7aec2e25] flex items-center justify-center">
-          <img src={VerifiedIcon} alt="" className="w-6 h-6" />
+          <img src={verifiedImage} alt="" className="w-6 h-6 object-cover" />
         </span>
         <h1 className="text-[#d67d54]">VERIFYING</h1>
         <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>

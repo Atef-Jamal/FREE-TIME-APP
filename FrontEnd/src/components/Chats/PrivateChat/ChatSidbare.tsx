@@ -10,7 +10,7 @@ import Empty from "../../Others/Empty";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const { users, setUsers, loading, error } = useFetchAllUsers();
+  const { users, setUsers, loading, error } = useFetchAllUsers(1);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [filterVlaue, setFilterValue] = useState<string>("");
   const [emptyResults, setEmptyResults] = useState<boolean>(false);

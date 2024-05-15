@@ -1,10 +1,10 @@
 import { FcBusinessman, FcFrame, FcMusic } from "react-icons/fc";
 import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
-import verifiedIcon from "../../assets/images/verified-icon.png";
 import { User } from "../../types/user";
 import { TypeNotifications } from "../../types/notification";
 import Empty from "../Others/Empty";
+import { verifiedImage } from "../../assets";
 
 const ActivitiesList = ({
   activities,
@@ -66,7 +66,13 @@ const ActivitiesList = ({
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<img src={verifiedIcon} alt="" className="w-5 h-5" />}
+              icon={
+                <img
+                  src={verifiedImage}
+                  alt=""
+                  className="w-4 h-4 object-cover"
+                />
+              }
               time={item.createdAt}
               message="Verified His Email successfully"
               prize={item.prize}

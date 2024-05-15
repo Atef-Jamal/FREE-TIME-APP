@@ -32,7 +32,6 @@ const DisktopChat = () => {
     const scrollToLastMessage = () => {
       lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-
     if (!stopScrolling) {
       scrollToLastMessage();
     }
@@ -57,12 +56,12 @@ const DisktopChat = () => {
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
       <span
         onClick={() => dispatch(toggleThisEntity({ entity: "isChatOpen" }))}
-        className="absolute top-[10%] -left-[38px] px-[9px] py-1 bg-[#513d80f8] rounded-sm"
+        className="w-10 h-10 absolute top-[7%] -left-[42px] bg-[#513d80f8] rounded-sm flex items-center justify-center cursor-pointer"
       >
         {isChatOpen ? (
-          <MdArrowForwardIos style={{ fontSize: "20px" }} />
+          <MdArrowForwardIos className="text-3xl" />
         ) : (
-          <MdArrowBackIosNew style={{ fontSize: "20px" }} />
+          <MdArrowBackIosNew className="text-3xl" />
         )}
       </span>
       <ChatHeader />

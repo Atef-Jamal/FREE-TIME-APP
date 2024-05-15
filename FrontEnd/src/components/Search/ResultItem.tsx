@@ -1,13 +1,10 @@
+import { TypeSearchItem } from "../../types/others";
+
 const ResultItem = ({
   searchElement,
   searchQuery,
 }: {
-  searchElement: {
-    _id: string;
-    title: string;
-    description: string;
-    link: string;
-  };
+  searchElement: TypeSearchItem;
   searchQuery: string;
 }) => {
   const slices = searchElement.title.split(

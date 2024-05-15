@@ -17,10 +17,17 @@ import couponRoute from "./routes/couponRoutes";
 import searchRoute from "./routes/searchRoute";
 import http from "http";
 import { Server } from "socket.io";
-import User from "./models/user";
+import cron from "node-cron";
+import moment from "moment-timezone";
+import { grantRewardsToAllUsers } from "./utils";
 
 dotenv.config();
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+
 const server = http.createServer(app);
 
 app.use(
@@ -36,15 +43,6 @@ export const io = new Server(server, {
 });
 
 export const onLineUsers: { [key: string]: string } = {};
-
-app.use(express.json());
-app.use(cookieParser());
-
-app.use("/uploads", express.static(path.join("uploads")));
-
-app.get("/api/health", (_, res) => {
-  return res.status(200).json({ message: "OK" });
-});
 
 app.use("/api/auth", authRouter);
 
@@ -68,20 +66,22 @@ app.use("/api/coupons", couponRoute);
 
 app.use("/api/search", searchRoute);
 
-// app.get("/api/atef", async (_, res: Response) => {
-//   try {
-//     const newUsers = [...Array(60).keys()].map((item) => ({
-//       name: `Anounymous${item}`,
-//       email: `Anounymous${item}@gmail.com`,
-//       password: `Anounymous${item}`,
-//       profilePicture: "uploads/avatar.jpeg",
-//     }));
-//     const response = await User.insertMany(newUsers);
-//     return res.status(200).json(response);
-//   } catch (error) {
-//     return res.status(404).json({ error: "error" });
-//   }
-// });
+app.use("/uploads", express.static(path.join("uploads")));
+
+connecteToMongodb();
+
+cron.schedule("*/1 * * * *", () => {
+  http.get(process.env.SERVER_BASE_URL!, () => {
+    console.log("success");
+  });
+});
+
+const scheduleTime = moment
+  .tz("12:00", "HH:mm", "Africa/Cairo")
+  .tz("EET")
+  .format("m H * * *");
+
+cron.schedule(scheduleTime, grantRewardsToAllUsers);
 
 io.on("connection", (socet) => {
   const userId = socet.handshake.query.userId;
@@ -117,49 +117,6 @@ io.on("connection", (socet) => {
   });
 });
 
-setInterval(() => {
-  const grantRewardsToAllUsers = async () => {
-    const users = await User.find().select("dailyReward");
-
-    users.forEach(async (user) => {
-      if (user.dailyReward.days.length === 7) {
-        if (
-          !user.dailyReward.days.some((item: any) => item.isCollected === false)
-        ) {
-          user.dailyReward = {
-            week: user.dailyReward.week + 1,
-            days: [{ day: 1, isCollected: false, reward: 50 }],
-          };
-
-          await user.save();
-        }
-      } else {
-        const previosDay =
-          user.dailyReward.days[user.dailyReward.days.length - 1];
-        const newObj = {
-          day: previosDay.day + 1,
-          isCollected: false,
-          reward: previosDay.day * 50,
-        };
-        user.dailyReward = {
-          ...user.dailyReward,
-          days: [...user.dailyReward.days, newObj],
-        };
-
-        await user.save();
-      }
-    });
-  };
-  grantRewardsToAllUsers();
-}, 24 * 60 * 60 * 1000);
-
-setInterval(() => {
-  http.get(process.env.SERVER_BASE_URL!, () => {
-    console.log("success");
-  });
-}, 14 * 60 * 1000);
-
 server.listen(process.env.PORT, () => {
-  connecteToMongodb();
   console.log(`success server Running on port: ${process.env.PORT}`);
 });

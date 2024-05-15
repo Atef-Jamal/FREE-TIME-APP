@@ -66,20 +66,23 @@ const Sidebar = () => {
 
   return (
     <div
+      style={{
+        height: `calc(100dvh - 76px)`,
+      }}
       className={`transition-all bg-[#29293a] ${
         resizeSidebare ? "w-[80px]" : "w-[250px]"
-      } h-[92vh] sticky top-[75px] sm:hidden py-4 border-r border-r-gray-700 `}
+      } sticky top-[75px] sm:hidden py-4 border-r border-r-gray-700`}
     >
       <div
         onClick={() => dispatch(toggleThisEntity({ entity: "resizeSidebare" }))}
         className={`${
           !resizeSidebare ? "ml-auto mr-1" : "mx-auto"
-        }  p-[10px] w-[65px] flex items-center justify-center rounded-md mb-2 hover:bg-[#40496975] `}
+        } p-[10px] w-[65px] flex items-center justify-center rounded-md mb-2 hover:bg-[#40496975] `}
       >
         <BiMenu className="text-2xl" />
       </div>
 
-      <ul className="flex flex-col px-1 gap-1 w-full h-[75vh] overflow-scroll scrollbar-none">
+      <ul className="flex flex-col px-1 gap-1 w-full overflow-scroll scrollbar-none">
         {sidebareItems.map((item, index) => (
           <li key={index}>
             <NavLink

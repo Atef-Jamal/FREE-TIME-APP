@@ -2,6 +2,7 @@ import { formateDate } from "../../../../utils/common";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatFreeTime } from "../../../../types/publicChat";
+import { verifiedImage } from "../../../../assets";
 
 const FreeTime = ({
   singleMessage,
@@ -47,10 +48,15 @@ const FreeTime = ({
         </p>
       )}
       {singleMessage.typeOfTask === "EMAIL-VERIFIED" && (
-        <p className="text-sm text-[#d9dfdb] mr-auto">
-          <span className="text-xs text-[#6385e2ee] font-bold mr-2 underline">
+        <p className="text-sm text-[#d9dfdb] mr-auto flex items-center">
+          <span className="text-xs text-[#6385e2ee] font-bold underline">
             {singleMessage.sender.name}
           </span>
+          <img
+            src={verifiedImage}
+            alt=""
+            className="w-4 h-4 object-cover mx-2 "
+          />
           verified his Email Now
         </p>
       )}

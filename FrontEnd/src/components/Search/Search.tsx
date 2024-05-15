@@ -9,74 +9,9 @@ import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import Empty from "../Others/Empty";
 import { MdOutlineWeb } from "react-icons/md";
-
-export interface TypeSearchItem {
-  _id: string;
-  title: string;
-  link: string;
-  description: string;
-  image: string;
-}
-
-export interface TypeSearchResults {
-  features: TypeSearchItem[];
-  users: TypeSearchItem[];
-  apps: TypeSearchItem[];
-  frames: TypeSearchItem[];
-}
+import { TypeSearchResults } from "../../types/others";
 
 const Search = () => {
-  //   const example = {
-  //     features: [
-  //       {
-  //         _id: "feature1",
-  //         title: "how can i get bonus code",
-  //         description: "how can i get bonus code description",
-  //         image: "",
-  //         link: "/rewards",
-  //       },
-  //       {
-  //         _id: "feature2",
-  //         title: "my refferal link",
-  //         description: "my refferal link description",
-  //         image: "",
-  //         link: "/myprofile",
-  //       },
-  //     ],
-  //     apps: [
-  //       {
-  //         _id: "app1",
-  //         title: "pubge app",
-  //         description: "pubge app description",
-  //         image: "",
-  //         link: "/earn",
-  //       },
-  //       {
-  //         _id: "app2",
-  //         title: "fortinite app",
-  //         description: "fortinite app description",
-  //         image: "",
-  //         link: "/earn",
-  //       },
-  //     ],
-  //     users: [
-  //       {
-  //         _id: "user1",
-  //         title: "atef gamal",
-  //         description: "user description",
-  //         image: "",
-  //         link: "/user/1",
-  //       },
-  //       {
-  //         _id: "user2",
-  //         title: "ali ahmed",
-  //         description: "user description",
-  //         image: "",
-  //         link: "/user/2",
-  //       },
-  //     ],
-  //   };
-
   const [searchQ, setSearchQ] = useState("");
   const [results, setResults] = useState<TypeSearchResults | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -119,12 +54,12 @@ const Search = () => {
   return (
     <div className="border border-gray-600 w-[700px] sm:w-[90%] max-h-[90%] sm:max-h-[81%]  overflow-auto absolute top-20 sm:top-11 translate-x-[-50%]  bg-[#19181b] rounded-lg">
       <div className="sticky top-0 p-2  bg-[#29223d] flex">
-        <div className="w-full border border-gray-600 rounded-lg">
+        <div className="w-full border border-gray-700 rounded-md">
           <input
             type="text"
             onChange={handleChange}
-            placeholder="search for Features, users, tasks and apps, anything"
-            className="outline-none rounded-md bg-[#1a0808e3] placeholder:text-gray-600 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg  font-bold p-2 sm:p-1 w-full"
+            placeholder="Search For EveryThing"
+            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-50 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg  font-bold py-2 px-4 sm:py-1 sm:px-2 w-full"
           />
         </div>
         <button

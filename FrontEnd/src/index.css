@@ -15,28 +15,19 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-}
-
-.pppppppp {
-  background: linear-gradient(from left #201127 to right rgb(39, 40, 83) 057);
+  width: 13px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #886d6d;
+  background: #454547;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c9bcbc;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  background: #1cc74f;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e9e0e0;
-}
-.highlight {
-  background-color: rgb(112, 112, 86);
+  background: #a1e424;
 }
 
 .outlete {

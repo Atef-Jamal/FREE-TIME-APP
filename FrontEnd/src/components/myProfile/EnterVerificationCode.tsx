@@ -39,7 +39,7 @@ const EnterVerificationCode = () => {
 
   if (successfullyVerified) {
     return (
-      <div className="w-full h-[70px] p-4 flex items-center justify-center text-xl text-[#a7f1b7]">
+      <div className="w-full xs:w-[95%] sm:text-sm mx-2 h-[70px] p-4 flex items-center justify-center text-xl text-[#a7f1b7] bg-[#433175] text-center rounded-lg">
         successfully verified go to your notifications and collect the Reward
       </div>
     );

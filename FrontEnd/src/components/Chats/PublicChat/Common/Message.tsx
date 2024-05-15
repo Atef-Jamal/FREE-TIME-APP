@@ -4,7 +4,6 @@ import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import { FcLike } from "react-icons/fc";
-import { verifiedIcon } from "../../../../assets";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
@@ -13,6 +12,7 @@ import { TypePublicChatMessage } from "../../../../types/publicChat";
 import { useListenToEvent } from "../../../../hooks";
 import { User } from "../../../../types/user";
 import { formateDate, handleApiError } from "../../../../utils/common";
+import { verifiedImage } from "../../../../assets";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -171,7 +171,11 @@ const Message = ({
           )}
         </Link>
         {sender?.emailVerified && (
-          <img alt="" src={verifiedIcon} className="w-5 h-5 ml-3" />
+          <img
+            src={verifiedImage}
+            alt=""
+            className="w-4 h-4 object-cover mx-2 "
+          />
         )}
         {currentUser?._id === sender._id && !isDeleted && (
           <button

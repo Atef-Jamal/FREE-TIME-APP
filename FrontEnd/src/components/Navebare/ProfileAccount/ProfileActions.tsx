@@ -73,19 +73,19 @@ const ProfileActions = () => {
   return (
     <>
       {currentUser && (
-        <div className="relative flex items-center gap-4 sm:gap-1">
-          <div className=" flex items-center rounded-md  gap-2 xs:gap-1 bg-[#04050a]">
+        <div className="relative flex items-center gap-3 sm:gap-[3px]">
+          <div className=" flex items-center rounded-md bg-[#04050a] h-[47px] sm:h-[40px]">
             <button
               onClick={() => {
                 dispatch(
                   openModel({ status: true, children: <ApplyCoupon /> })
                 );
               }}
-              className="text-2xl sm:text-xl text-[#8fee37ee] font-bold flex items-center justify-center  sm:p-[8px] p-[10px] rounded-s-md"
+              className="h-full text-2xl sm:text-xl text-[#8fee37ee] font-bold flex items-center justify-center px-4 lg:px-2 rounded-s-md"
             >
               +
             </button>
-            <span className=" whitespace-nowrap sm:text-[10px] p-[14px] tracking-wider font-bold border-l text-[#beababde] rounded-e-md">
+            <span className="h-full px-2 flex items-center justify-center sm:text-[10px] tracking-wider font-bold border-l text-[#beababde]">
               <span className="text-[#3de21c] mr-[3px]">
                 {currentUser.points}
               </span>
@@ -95,7 +95,7 @@ const ProfileActions = () => {
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
             ref={profileMenuRef}
-            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md sm:h-[40px] h-[50px] cursor-pointer"
+            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md sm:h-[40px] h-[47px] cursor-pointer"
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />
@@ -125,7 +125,7 @@ const ProfileActions = () => {
                 );
               }
             }}
-            className="flex items-center justify-center relative cursor-pointer sm:h-[38px] h-[45px] w-[45px] rounded-md bg-[#3a3e5877]"
+            className="flex items-center justify-center relative cursor-pointer sm:h-[40px] h-[47px] w-[45px] rounded-md bg-[#3a3e5877]"
           >
             {numUnReaded > 0 && (
               <span className="w-[18px] h-[18px] flex items-center justify-center absolute top-1 right-1 rounded-full bg-red-600 text-xs">

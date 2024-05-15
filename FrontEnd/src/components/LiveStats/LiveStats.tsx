@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import egypt from "../../assets/images/eg.svg";
-import { crown } from "../../assets";
+import { crown, verifiedImage } from "../../assets";
 import { useAppSelector } from "../../context/Hooks";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
@@ -111,7 +111,7 @@ const LiveStats = () => {
         )}
 
         {users.map((user, index) => {
-          const { _id, name, points } = user;
+          const { _id, name, points, emailVerified } = user;
           const isOnline = onlineUsers.includes(_id);
 
           return (
@@ -132,17 +132,25 @@ const LiveStats = () => {
                 <span className="overflow-hidden  font-boldsm:font-[400] text-xs sm:text-[9px] sm:tracking-wide w-[80px] truncate sm:-mb-1 text-[#dddbdb] tracking-wider">
                   {name}
                 </span>
-
-                {isOnline && (
-                  <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
-                    online
-                  </span>
-                )}
-                {!isOnline && (
-                  <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
-                    offline
-                  </span>
-                )}
+                <div className="flex items-center gap-8">
+                  {isOnline && (
+                    <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
+                      online
+                    </span>
+                  )}
+                  {!isOnline && (
+                    <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
+                      offline
+                    </span>
+                  )}
+                  {emailVerified && (
+                    <img
+                      src={verifiedImage}
+                      alt=""
+                      className="w-4 h-4 sm:w-3 sm:h-3 object-contain -mt-[2px]"
+                    />
+                  )}
+                </div>
               </div>
               <span className=" sm:w-8 sm:h-6 w-9 h-8 sm:px-1 sm:text-[9px] flex items-center justify-center rounded-md bg-[#181616]  text-[#c1f018]">
                 {points}
