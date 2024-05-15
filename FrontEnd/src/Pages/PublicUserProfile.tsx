@@ -24,7 +24,6 @@ const PublicUserProfile = () => {
     dependencies: [id],
   });
 
-
   const { activities } = useFetchActivities({
     userId: id,
     initialLoading: true,
@@ -93,9 +92,7 @@ const PublicUserProfile = () => {
   return (
     <div className="bg-transparent flex items-center justify-center ">
       <div className="w-[80%] flex flex-col gap-4 pb-12 pt-6 lg:w-[95%]">
-        <h1 className="text-2xl font-bold text-[#86f38c] ">
-          Profile
-        </h1>
+        <h1 className="text-2xl font-bold text-[#86f38c] ">Profile</h1>
         <div className="flex gap-8 items-center sm:flex-col">
           <div className=" flex items-center justify-between p-8 w-full bg-[#1d1d2e] rounded-lg h-[200px] ">
             <div className="w-[110px] h-[90px] sm:w-[90px] sm:h-[90px]">
@@ -177,8 +174,8 @@ const PublicUserProfile = () => {
             </Link>
           </div>
         )}
-        <h1 className="flex items-center gap-3 font-bold text-lg tracking-wide text-[#4de43a] px-1  mt-6">
-          <GiProgression className="xs:text-sm text-lg" /> Activity
+        <h1 className="flex items-center gap-2 font-bold text-lg tracking-wide text-[#4de43a] px-1 mt-6">
+          <GiProgression className="xs:text-sm text-lg" /> Activities
         </h1>
         <div className="w-full mb-2 ">
           <div className="flex items-center justify-between p-[6px] h-[40px] border-b mb-2">

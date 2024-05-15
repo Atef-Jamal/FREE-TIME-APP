@@ -61,7 +61,7 @@ const Navbare = () => {
   }, [token]);
 
   return (
-    <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-2 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between">
+    <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-1 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between">
       <Link
         to={""}
         className="sm:hidden font-bold text-[1.65rem] tracking-widest italic text-white flex items-center"
@@ -82,7 +82,7 @@ const Navbare = () => {
         onClick={() =>
           dispatch(openModel({ status: true, children: <Search /> }))
         }
-        className="border rounded-md w-[700px] xl:w-[25%] sm:w-[35%] xs:w-[10%] h-[50px] sm:h-[40px] mr-2 ml-auto flex items-center cursor-pointer border-gray-700 bg-[#287fb11e] px-2 xs:px-0"
+        className="border rounded-md w-[700px] xl:w-[25%] sm:w-[35%] xs:w-[10%] h-[50px] sm:h-[40px] mr-2 xs:mr-1 ml-auto flex items-center cursor-pointer border-gray-700 bg-[#3f90be38] px-2 xs:px-0"
       >
         <BiSearch className="text-3xl sm:text-xl opacity-50 min-w-fit xs:mx-auto" />
         <span className="h-full border-l border-gray-700 mx-2 sm:hidden"></span>

@@ -7,8 +7,8 @@ import { makeRequest } from "../../utils";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
-import { FcRedo } from "react-icons/fc";
 import Empty from "../Others/Empty";
+import { MdOutlineWeb } from "react-icons/md";
 
 export interface TypeSearchItem {
   _id: string;
@@ -149,7 +149,7 @@ const Search = () => {
         )}
         {!loading && results && (
           <div className="p-2">
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
               Feartures
             </h1>
             {results.features.length === 0 && (
@@ -162,18 +162,22 @@ const Search = () => {
               return (
                 <div
                   key={item._id}
-                  className="py-1 px-2 flex items-center gap-2"
+                  className="py-1 px-2 flex items-center gap-3"
                 >
-                  <span className="w-6 h-6 rounded-lg">
-                    <FcRedo className="text-xl" />
+                  <span className="rounded-lg">
+                    <MdOutlineWeb className="text-3xl sm:text-2xl" />
                   </span>
-                  <Link to={item.link} className="underline">
+                  <Link
+                    to={item.link}
+                    onClick={() => dispatch(resetModel())}
+                    className="underline"
+                  >
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>
                 </div>
               );
             })}
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3 mt-2">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               People
             </h1>
             {results.users.length === 0 && (
@@ -186,22 +190,26 @@ const Search = () => {
               return (
                 <div
                   key={item._id}
-                  className="py-1 px-2 flex items-center gap-2"
+                  className="py-1 px-2 flex items-center gap-3"
                 >
                   <img
                     alt=""
                     src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
                       item.image
                     }`}
-                    className="w-7 h-7 sm:w-5 sm:h-5 object-contain rounded-full"
+                    className="w-9 h-9 sm:w-6 sm:h-6 object-fill rounded-full "
                   />
-                  <Link to={item.link} className="underline">
+                  <Link
+                    to={item.link}
+                    onClick={() => dispatch(resetModel())}
+                    className="underline"
+                  >
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>
                 </div>
               );
             })}
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3 mt-2">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               Apps
             </h1>
             {results.apps.length === 0 && (
@@ -214,22 +222,26 @@ const Search = () => {
               return (
                 <div
                   key={item._id}
-                  className="py-1 px-2 flex items-center gap-2"
+                  className="py-1 px-2 flex items-center gap-3"
                 >
                   <img
                     alt=""
                     src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
                       item.image
                     }`}
-                    className="w-7 h-7 sm:w-5 sm:h-5 object-contain rounded-full"
+                    className="w-9 h-9 sm:w-6 sm:h-6 object-fill rounded-full "
                   />
-                  <Link to={item.link} className="underline">
+                  <Link
+                    to={item.link}
+                    onClick={() => dispatch(resetModel())}
+                    className="underline"
+                  >
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>
                 </div>
               );
             })}
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-3 mt-2">
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               Frames
             </h1>
             {results.frames.length === 0 && (
@@ -242,9 +254,9 @@ const Search = () => {
               return (
                 <div
                   key={item._id}
-                  className="py-1 px-2 flex items-center justify-between"
+                  className="py-1 px-2 flex items-center gap-3"
                 >
-                  <div className="relative w-7 h-7 sm:w-5 sm:h-5">
+                  <div className="relative w-9 h-9 sm:w-6 sm:h-6 object-fill ">
                     <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#353052]"></span>
                     <img
                       alt=""
@@ -252,7 +264,11 @@ const Search = () => {
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <Link to={item.link} className="underline">
+                  <Link
+                    to={item.link}
+                    onClick={() => dispatch(resetModel())}
+                    className="underline"
+                  >
                     <ResultItem searchElement={item} searchQuery={searchQ} />
                   </Link>
                 </div>

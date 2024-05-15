@@ -7,6 +7,7 @@ import MentionListOfUsers from "./MentionListOfUsers";
 import { makeRequest } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
 import { useCloseMenuOnClickOutSide } from "../../../../hooks";
+import { RiBaseStationLine } from "react-icons/ri";
 
 interface typeProps {
   stopScrolling: boolean;
@@ -14,7 +15,9 @@ interface typeProps {
 }
 
 const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
-  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socet, onlineUsers } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -75,6 +78,11 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
 
   return (
     <div className="relative w-full h-[70px] bg-[#0a071670] flex items-center py-8">
+      <span className="hidden sm:flex absolute top-0 left-4 text-xs text-[#a2a345]">
+        <RiBaseStationLine className="opacity-70" />
+        <span className="text-[#7ff349] mx-2">{onlineUsers.length}</span> Online
+        Now
+      </span>
       {!currentUser && (
         <div className="absolute w-full h-full left-0 flex items-center  justify-center gap-4 text-md text-[#68f14d] font-bold pr-4 ">
           <span className="py-1 px-2 rounded-md bg-[#05050a]">
@@ -96,7 +104,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       )}
       <form
         className={`${
-          !currentUser ? " blur-sm" : ""
+          !currentUser && " blur-sm"
         } relative flex items-center gap-1 justify-between px-3 xs:px-1 w-full `}
       >
         <input

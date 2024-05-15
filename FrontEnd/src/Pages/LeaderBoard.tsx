@@ -41,7 +41,7 @@ const LeaderBoard = () => {
             return <UsersWinnerCard key={index} user={usr} index={index} />;
           })}
         </div>
-        <div className="flex flex-col sm:w-[98%] w-[90%] max-w-[1400px] mx-auto">
+        <div className="flex flex-col sm:w-[98%] w-[90%] max-w-[1400px] mx-auto mb-10">
           <PeopleList />
         </div>
       </div>
