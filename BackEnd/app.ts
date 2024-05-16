@@ -68,14 +68,6 @@ app.use("/api/search", searchRoute);
 
 app.use("/uploads", express.static(path.join("uploads")));
 
-connecteToMongodb();
-
-// cron.schedule("*/1 * * * *", () => {
-//   http.get(process.env.SERVER_BASE_URL!, () => {
-//     console.log("success");
-//   });
-// });
-
 const scheduleTime = moment
   .tz("12:00", "HH:mm", "Africa/Cairo")
   .tz("EET")
@@ -118,5 +110,6 @@ io.on("connection", (socet) => {
 });
 
 server.listen(process.env.PORT, () => {
+  connecteToMongodb();
   console.log(`success server Running on port: ${process.env.PORT}`);
 });

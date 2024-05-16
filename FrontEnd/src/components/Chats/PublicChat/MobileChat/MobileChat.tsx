@@ -38,19 +38,19 @@ const MobileChat = () => {
   return (
     <div
       style={{
-        height: hiddenLiveStats
-          ? `calc(100dvh - 123px)`
-          : `calc(100dvh - 163px)`,
+        height: hiddenLiveStats ? `calc(100vh - 123px)` : `calc(100vh - 166px)`,
       }}
-      className="sticky top-[100px] w-full bg-[#202233] hidden sm:flex flex-col items-center"
+      className={`hidden sm:flex flex-col items-center fixed ${
+        hiddenLiveStats ? "top-[55px]" : "top-[98px]"
+      } w-full bg-[#202233]`}
     >
-      {loading && (
-        <div className="mt-20">
-          <Spinner className="m-auto w-12 h-12" />
-        </div>
-      )}
-      {error && <div className="mt-20">{error}</div>}
-      <div className="w-full h-full px-1 pb-1 flex flex-col items-center  gap-[5px] overflow-scroll scrollbar-none">
+      <div className="w-full h-full px-1 pb-1 flex flex-col items-center gap-[5px] overflow-scroll scrollbar-none">
+        {loading && <Spinner className="m-auto w-12 h-12 border-[4px]" />}
+        {error && (
+          <div className="m-auto w-full text-center text-gray-400">
+            {error}an eror
+          </div>
+        )}
         {messages?.map((message, index) => {
           if (message.type === "FREETIME") {
             return (
@@ -74,10 +74,12 @@ const MobileChat = () => {
           );
         })}
       </div>
-      <SendMessage
-        stopScrolling={stopScrolling}
-        setStopScrolling={setStopScrolling}
-      />
+      <div className="w-full">
+        <SendMessage
+          stopScrolling={stopScrolling}
+          setStopScrolling={setStopScrolling}
+        />
+      </div>
     </div>
   );
 };

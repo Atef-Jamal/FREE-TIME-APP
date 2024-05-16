@@ -77,15 +77,15 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
   });
 
   return (
-    <div className="relative w-full h-[70px] bg-[#0a071670] flex items-center py-8">
-      <span className="hidden sm:flex absolute top-0 left-4 text-xs text-[#a2a345]">
+    <div className="relative w-full h-[67px] bg-[#0a071670] flex items-center">
+      <span className="hidden sm:flex absolute top-1 left-4 text-xs text-[#a2a345]">
         <RiBaseStationLine className="opacity-70" />
         <span className="text-[#7ff349] mx-2">{onlineUsers.length}</span> Online
         Now
       </span>
       {!currentUser && (
-        <div className="absolute w-full h-full left-0 flex items-center  justify-center gap-4 text-md text-[#68f14d] font-bold pr-4 ">
-          <span className="py-1 px-2 rounded-md bg-[#05050a]">
+        <div className="absolute w-full h-full left-0 flex items-center justify-center gap-4 text-md text-[#62f744] font-bold pr-4 ">
+          <span className="py-1 px-2 rounded-md bg-[#000000]">
             <FcLock className="text-xl" />
           </span>
           SIGN IN TO UNLOCK
@@ -105,14 +105,13 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       <form
         className={`${
           !currentUser && " blur-sm"
-        } relative flex items-center gap-1 justify-between px-3 xs:px-1 w-full `}
+        } relative flex items-center gap-1 justify-between px-3 xs:px-1 w-full mt-auto mb-2`}
       >
         <input
           name="send"
           type="text"
           onChange={(e) => setMessage(e.target.value)}
           readOnly={!currentUser}
-          autoFocus
           value={message}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
           className={`${
@@ -152,18 +151,3 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
 };
 
 export default SendMessage;
-
-// const initializeMessage = (messageText: string) => {
-//   const messagesDiv = document.getElementById("all-messages-div");
-//   const created = document.createElement("div");
-//   created.classList.add(
-//     "w-full",
-//     "h-[60px]",
-//     "border",
-//     "text-sm",
-//     "text-gray-300",
-//     "text-center"
-//   );
-//   created.textContent = messageText;
-//   messagesDiv?.appendChild(created);
-// };

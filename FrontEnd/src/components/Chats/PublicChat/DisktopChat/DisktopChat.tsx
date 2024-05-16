@@ -53,7 +53,7 @@ const DisktopChat = () => {
   }
 
   return (
-    <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full ">
+    <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full">
       <span
         onClick={() => dispatch(toggleThisEntity({ entity: "isChatOpen" }))}
         className="w-10 h-10 absolute top-[7%] -left-[42px] bg-[#513d80f8] rounded-sm flex items-center justify-center cursor-pointer"
