@@ -107,7 +107,7 @@ const ProfileActions = () => {
             {openProfileMenu && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-[#32324c] absolute top-14 sm:top-12 right-0 w-[65%] rounded-lg "
+                className="bg-[#32324c] absolute top-14 sm:top-12 right-0 w-[65%] rounded-lg"
               >
                 <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
               </div>

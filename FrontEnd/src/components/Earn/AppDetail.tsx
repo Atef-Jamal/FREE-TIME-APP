@@ -4,6 +4,7 @@ import { TypeTaskApp } from "../../types/earn";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
+import { empty } from "../../assets";
 
 const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -26,7 +27,7 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
         </span>
         <div
           onClick={() => setExpandUsers((prev) => !prev)}
-          className="w-full bg-[#230d259f] rounded-md flex item.center justify-between pr-2 py-[3px]"
+          className="w-full bg-[#272627] rounded-md flex item.center justify-between px-3 py-[3px]"
         >
           <span className="text-[#73f1a8]">People who completed this app</span>
           <FaRegArrowAltCircleDown className="opacity-50 text-xl" />
@@ -37,8 +38,9 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
           }`}
         >
           {appDetail.completedBy.length === 0 && (
-            <span className="text-gray-400 text-sm block w-full text-center">
-              No one complete this app before
+            <span className="text-gray-400 text-sm w-full flex items-center justify-center gap-2">
+              <img src={empty} alt="" className="w-5 h-5 object-cover" /> No one
+              complete this app before
             </span>
           )}
           {appDetail.completedBy.length > 0 &&

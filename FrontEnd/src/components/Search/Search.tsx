@@ -60,7 +60,7 @@ const Search = () => {
             onChange={handleChange}
             autoFocus
             placeholder="Search For EveryThing"
-            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-50 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg  font-bold py-2 px-4 sm:py-1 sm:px-2 w-full"
+            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-30 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg  font-bold py-2 px-4 sm:py-1 sm:px-2 w-full"
           />
         </div>
         <button

@@ -10,14 +10,14 @@ import {
 } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-
 import MusicPlayer from "../Music/MusicPlayer";
 import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
 import RegisterButtons from "../Navebare/Registration/RegisterButtons";
 import RegisterationForm from "./Registration/RegisterationForm";
-import { BiSearch } from "react-icons/bi";
 import Search from "../Search/Search";
+import SearchBar from "../Search/SearchBar";
+import { BiSearch } from "react-icons/bi";
 
 const Navbare = () => {
   const {
@@ -82,15 +82,22 @@ const Navbare = () => {
         onClick={() =>
           dispatch(openModel({ status: true, children: <Search /> }))
         }
-        className="border rounded-md w-[700px] xl:w-[25%] sm:w-[35%] xs:w-[10%] h-[47px] sm:h-[40px] mr-2 xs:mr-1 ml-auto flex items-center cursor-pointer border-gray-700 bg-[#333b3fcb] px-2 xs:px-0"
+        className="xs:hidden w-[600px] xl:w-[30%] sm:w-[35%] xs:w-[10%] h-[47px] sm:h-[40px] ml-auto mx-auto rounded-md overflow-hidden cursor-pointer"
       >
-        <BiSearch className="text-3xl sm:text-xl opacity-50 min-w-fit xs:mx-auto" />
-        <span className="h-full border-l border-gray-700 mx-2 xs:hidden"></span>
-        <span className="text-gray-400 text-lg truncate xs:hidden sm:text-sm">
-          Search For Everything, Features, users, apps, frames, ect..
-        </span>
+        <SearchBar
+          placeholder="search EveryThing..."
+          onChange={() => {}}
+          readOnly
+        />
       </div>
-
+      <button
+        onClick={() =>
+          dispatch(openModel({ status: true, children: <Search /> }))
+        }
+        className="hidden xs:flex items-center justify-center min-w-[40px] min-h-[40px] bg-[#383847] ml-auto mr-2 rounded-md overflow-hidden"
+      >
+        <BiSearch className=" text-xl opacity-70" />
+      </button>
       {!currentUserIsLoading &&
         !currentUser &&
         currentAccountRequestFullfiled && <RegisterButtons />}

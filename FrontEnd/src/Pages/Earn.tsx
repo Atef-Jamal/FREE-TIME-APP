@@ -4,7 +4,7 @@ import { ImFire } from "react-icons/im";
 import { IoDesktop, IoFilter } from "react-icons/io5";
 import { DiAndroid } from "react-icons/di";
 import { notikLogo, tapresearch, AdscendMediaGlow } from "../assets";
-import { IoIosArrowBack, IoMdArrowDropdown, IoMdSearch } from "react-icons/io";
+import { IoIosArrowBack, IoMdArrowDropdown } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
@@ -21,6 +21,7 @@ import ParnterCard from "../components/Earn/ParnterCard";
 import AppCard from "../components/Earn/AppCard";
 import { useScrollToElement } from "../hooks/common";
 import Empty from "../components/Others/Empty";
+import SearchBar from "../components/Search/SearchBar";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -72,7 +73,7 @@ const Earn = () => {
       const timout = setTimeout(() => {
         window.scrollTo({
           top:
-            window.innerWidth < 500 ? 180 : window.innerWidth < 867 ? 130 : 0,
+            window.innerWidth < 500 ? 155 : window.innerWidth < 867 ? 110 : 0,
         });
       }, 500);
       return () => clearTimeout(timout);
@@ -127,15 +128,11 @@ const Earn = () => {
           </div>
         </div>
         <div className="flex xs:flex-col justify-between w-[65%] gap-2 sm:w-full ">
-          <div className="relative w-full">
-            <input
-              type="text"
-              className="w-full h-10 rounded-md bg-[#383847] outline-none pl-4 pr-[53px] py-2 xs:text-sm tracking-wide text-[#72abff]"
-              placeholder="Search"
+          <div className="w-full h-10  rounded-md overflow-hidden">
+            <SearchBar
+              placeholder="search apps and offers..."
+              onChange={() => {}}
             />
-            <button className="absolute top-0 right-0 rounded-md bg-[#9486866c] px-3 h-[95%]">
-              <IoMdSearch className="text-xl" />
-            </button>
           </div>
           <div
             onClick={() => setOpenFilterMenu((prev) => !prev)}

@@ -99,7 +99,6 @@ const LiveStats = () => {
           </div>
         )}
       </div>
-
       <div className="w-full flex items-center gap-2 xs:gap-[6px] overflow-y-scroll scrollbar-none pl-2  py-2 sm:py-1">
         {loading && <LiveStatsSkeleton />}
 

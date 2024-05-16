@@ -32,17 +32,24 @@ export const useFetchAllApps = ({
         const response = await makeRequest.get(
           `api/tasks?filter=${filterQuery}&&page=1&&limitedPerPage=${limit}`
         );
-        const data = response.data;
+        const data: { apps: TypeTaskApp[]; noApps: boolean } = response.data;
         setNoMoreTasks(data.noApps);
-        const sorted = response.data.apps.sort(
-          (a: TypeTaskApp, b: TypeTaskApp) => {
-            if (a.completedBy.length > b.completedBy.length) {
-              return -1;
-            }
+        data.apps.sort((a, b) => {
+          if (
+            a.isAvailable === "AVAILABLE" &&
+            b.isAvailable === "UNAVAILABLE"
+          ) {
+            return -1;
+          } else if (
+            a.isAvailable === "UNAVAILABLE" &&
+            b.isAvailable === "AVAILABLE"
+          ) {
             return 1;
+          } else {
+            return 0;
           }
-        );
-        setApps(sorted);
+        });
+        setApps(data.apps);
       } catch (error) {
         const err = handleApiError(error);
         setError(err);

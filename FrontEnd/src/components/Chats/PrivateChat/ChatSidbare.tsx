@@ -1,12 +1,12 @@
 import People from "./People";
 import Spinner from "../../Others/Spinner";
-import { BsSearch } from "react-icons/bs";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
 import { User } from "../../../types/user";
 import { useFetchAllUsers, useListenToEvent } from "../../../hooks";
 import Empty from "../../Others/Empty";
+import SearchBar from "../../Search/SearchBar";
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -54,6 +54,10 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
     }
   }, [filterVlaue]);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterValue(event.target.value);
+  };
+
   return (
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
@@ -62,20 +66,8 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
       >
         <MdKeyboardDoubleArrowRight className="text-2xl" />
       </span>
-
-      <div className={`w-full relative text-center mt-2`}>
-        <input
-          type="text"
-          id="searc"
-          autoComplete="off"
-          value={filterVlaue}
-          onChange={(e) => setFilterValue(e.target.value)}
-          className="bg-[#2d2e3b] rounded-md w-full mx-auto outline-none pl-7 py-3 sm:py-2 text-sm"
-          placeholder="Search..."
-        />
-        <div className="absolute top-[10px] left-2 sm:left-1 ">
-          <BsSearch className="" />
-        </div>
+      <div className="w-full h-12 sm:h-10 mt-3 rounded-md overflow-hidden">
+        <SearchBar placeholder="search people..." onChange={handleChange} />
       </div>
       <div className="w-full text-[#81bef0] pl-2">Peoples</div>
       <div className="w-full flex flex-col items-center gap-2 sm:gap-1  h-[100%] overflow-auto lg:scrollbar-thin  overflow-x-hidden">
