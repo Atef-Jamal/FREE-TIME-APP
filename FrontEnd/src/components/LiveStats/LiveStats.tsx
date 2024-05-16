@@ -109,54 +109,55 @@ const LiveStats = () => {
           </div>
         )}
 
-        {users.map((user, index) => {
-          const { _id, name, points, emailVerified } = user;
-          const isOnline = onlineUsers.includes(_id);
+        {!error &&
+          users.map((user, index) => {
+            const { _id, name, points, emailVerified } = user;
+            const isOnline = onlineUsers.includes(_id);
 
-          return (
-            <Link
-              key={_id}
-              to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
-              className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
-            >
-              {index === 0 && (
-                <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
-                  <img src={crown} alt="" className="" />
-                </span>
-              )}
-              <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
-                <UserImage user={user} />
-              </div>
-              <div className="flex flex-col">
-                <span className="overflow-hidden  font-boldsm:font-[400] text-xs sm:text-[9px] sm:tracking-wide w-[80px] truncate sm:-mb-1 text-[#dddbdb] tracking-wider">
-                  {name}
-                </span>
-                <div className="flex items-center gap-8">
-                  {isOnline && (
-                    <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
-                      online
-                    </span>
-                  )}
-                  {!isOnline && (
-                    <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
-                      offline
-                    </span>
-                  )}
-                  {emailVerified && (
-                    <img
-                      src={verifiedImage}
-                      alt=""
-                      className="w-4 h-4 sm:w-3 sm:h-3 object-contain -mt-[2px]"
-                    />
-                  )}
+            return (
+              <Link
+                key={_id}
+                to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
+                className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
+              >
+                {index === 0 && (
+                  <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
+                    <img src={crown} alt="" className="" />
+                  </span>
+                )}
+                <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
+                  <UserImage user={user} />
                 </div>
-              </div>
-              <span className=" sm:w-8 sm:h-6 w-9 h-8 sm:px-1 sm:text-[9px] flex items-center justify-center rounded-md bg-[#181616]  text-[#c1f018]">
-                {points}
-              </span>
-            </Link>
-          );
-        })}
+                <div className="flex flex-col">
+                  <span className="overflow-hidden  font-boldsm:font-[400] text-xs sm:text-[9px] sm:tracking-wide w-[80px] truncate sm:-mb-1 text-[#dddbdb] tracking-wider">
+                    {name}
+                  </span>
+                  <div className="flex items-center gap-8">
+                    {isOnline && (
+                      <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
+                        online
+                      </span>
+                    )}
+                    {!isOnline && (
+                      <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
+                        offline
+                      </span>
+                    )}
+                    {emailVerified && (
+                      <img
+                        src={verifiedImage}
+                        alt=""
+                        className="w-4 h-4 sm:w-3 sm:h-3 object-contain -mt-[2px]"
+                      />
+                    )}
+                  </div>
+                </div>
+                <span className=" sm:w-8 sm:h-6 w-9 h-8 sm:px-1 sm:text-[9px] flex items-center justify-center rounded-md bg-[#181616]  text-[#c1f018]">
+                  {points}
+                </span>
+              </Link>
+            );
+          })}
       </div>
     </div>
   );
