@@ -38,7 +38,9 @@ const MobileChat = () => {
   return (
     <div
       style={{
-        height: hiddenLiveStats ? `calc(100vh - 123px)` : `calc(100vh - 166px)`,
+        height: hiddenLiveStats
+          ? `calc(100dvh - 123px)`
+          : `calc(100dvh - 166px)`,
       }}
       className={`hidden sm:flex flex-col items-center fixed ${
         hiddenLiveStats ? "top-[55px]" : "top-[98px]"
