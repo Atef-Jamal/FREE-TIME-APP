@@ -21,7 +21,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
   return (
     <div
       onClick={() => setOpenMentionList(false)}
-      className="bg-[#141a36] w-full h-full flex flex-col items-center py-1 gap-1 overflow-auto scrollbar-thin"
+      className="bg-[#141a36] w-full h-full flex flex-col items-center p-1 gap-1 overflow-auto scrollbar-thin"
     >
       {error && <div className="w-full my-4">{error}</div>}
       {loading && (
