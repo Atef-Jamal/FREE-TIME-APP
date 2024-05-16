@@ -17,7 +17,6 @@ const SendMessagePrivateChat = ({
   setConversationReaded: React.Dispatch<React.SetStateAction<boolean>>;
   setMessages: React.Dispatch<React.SetStateAction<TypePrivateMessage[]>>;
 }) => {
-  // const { socet } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
 
   const dispatch = useAppDispatch();
@@ -57,6 +56,7 @@ const SendMessagePrivateChat = ({
       <input
         onChange={(e) => setMessage(e.target.value)}
         value={message}
+        autoFocus
         name="message"
         className="ml-1 outline-none rounded-md grow py-3 sm:py-2 px-4  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm "
         placeholder="Enter a message"

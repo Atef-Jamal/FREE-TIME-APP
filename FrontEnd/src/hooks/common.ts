@@ -193,20 +193,23 @@ export const useScrollToElement = (
   scrollPosition: "center" | "start" | "end" | "nearest" = "center"
 ) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const queryParam = searchParams.get("to");
+  const [element, setElement] = useState<HTMLElement | null>(null);
   const styles = "activeElement";
-  let element: HTMLElement | null = null;
 
-  if (queryParam) {
-    element = document.getElementById(queryParam);
-  }
+  useEffect(() => {
+    const queryParam = searchParams.get("to");
+    if (queryParam) {
+      const targetElement = document.getElementById(queryParam);
+      setElement(targetElement);
+    }
+  }, [searchParams, ...dependencies]);
 
   const handleRemoveAnimation = (event: MouseEvent) => {
     const targetElement = event.currentTarget as HTMLElement;
     targetElement.classList.remove(styles);
-    if (queryParam === targetElement.id) {
+    if (element?.id === targetElement.id) {
       setSearchParams((prev) => {
-        prev.delete("to", queryParam);
+        prev.delete("to");
         return prev;
       });
     }
@@ -222,5 +225,5 @@ export const useScrollToElement = (
       element?.classList.remove(styles);
       element?.removeEventListener("click", handleRemoveAnimation);
     };
-  }, [element, ...dependencies]);
+  }, [element]);
 };

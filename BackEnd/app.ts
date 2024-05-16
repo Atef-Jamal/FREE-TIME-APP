@@ -70,11 +70,11 @@ app.use("/uploads", express.static(path.join("uploads")));
 
 connecteToMongodb();
 
-cron.schedule("*/1 * * * *", () => {
-  http.get(process.env.SERVER_BASE_URL!, () => {
-    console.log("success");
-  });
-});
+// cron.schedule("*/1 * * * *", () => {
+//   http.get(process.env.SERVER_BASE_URL!, () => {
+//     console.log("success");
+//   });
+// });
 
 const scheduleTime = moment
   .tz("12:00", "HH:mm", "Africa/Cairo")

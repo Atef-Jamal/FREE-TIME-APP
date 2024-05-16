@@ -112,6 +112,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
           type="text"
           onChange={(e) => setMessage(e.target.value)}
           readOnly={!currentUser}
+          autoFocus
           value={message}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
           className={`${
