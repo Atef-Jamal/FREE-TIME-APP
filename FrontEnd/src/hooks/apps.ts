@@ -14,7 +14,15 @@ export const useFetchAllApps = ({
   limit,
 }: {
   initialLoading?: boolean;
-  filterQuery: "ALL" | "POPULAR" | "RAITING" | "REWARD";
+  filterQuery:
+    | "ALLDEVICES"
+    | "DESKTOP"
+    | "ANDROID"
+    | "MAC"
+    | "ALL"
+    | "REWARD"
+    | "POPULAR"
+    | "RAITING";
   limit: number;
   setNoMoreTasks: React.Dispatch<React.SetStateAction<boolean>>;
   dependencies?: any[];

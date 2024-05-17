@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import ResultItem from "./ResultItem";
-import Spinner from "../Others/Spinner";
 import { Link } from "react-router-dom";
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
@@ -10,6 +9,7 @@ import { useAppDispatch } from "../../context/Hooks";
 import Empty from "../Others/Empty";
 import { MdOutlineWeb } from "react-icons/md";
 import { TypeSearchResults } from "../../types/others";
+import SearchSkeleton from "./SearchSkeleton";
 
 const Search = () => {
   const [searchQ, setSearchQ] = useState("");
@@ -21,7 +21,7 @@ const Search = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
     if (searchTerm.trim() === "") {
-      setResults(null);
+      if (results !== null) setResults(null);
       return;
     }
     setSearchQ(searchTerm);
@@ -52,7 +52,7 @@ const Search = () => {
   }, [searchQ]);
 
   return (
-    <div className="border border-gray-600 w-[700px] sm:w-[90%] max-h-[90%] sm:max-h-[81%]  overflow-auto absolute top-20 sm:top-11 translate-x-[-50%]  bg-[#19181b] rounded-lg">
+    <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[81%]  overflow-auto absolute top-20 sm:top-11 translate-x-[-50%]  bg-[#19181b] rounded-lg">
       <div className="sticky top-0 p-2  bg-[#29223d] flex">
         <div className="w-full border border-gray-700 rounded-md">
           <input
@@ -60,7 +60,7 @@ const Search = () => {
             onChange={handleChange}
             autoFocus
             placeholder="Search For EveryThing"
-            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-30 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg  font-bold py-2 px-4 sm:py-1 sm:px-2 w-full"
+            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-30 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg py-2 px-4 sm:px-2 w-full"
           />
         </div>
         <button
@@ -71,11 +71,8 @@ const Search = () => {
         </button>
       </div>
       <div className="border-gray-600">
-        {loading && (
-          <div className="w-full py-10">
-            <Spinner className="w-10 h-10 sm:w-6 sm:h-6 mx-auto border-b-yellow-500 border-l-yellow-500" />
-          </div>
-        )}
+        {loading && <SearchSkeleton />}
+
         {!results && !loading && (
           <div className="flex flex-col items-center justify-center gap-3 py-10">
             <div className="text-center text-gray-500 font-bold">
@@ -83,6 +80,7 @@ const Search = () => {
             </div>
           </div>
         )}
+
         {!loading && results && (
           <div className="p-2">
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
@@ -91,7 +89,7 @@ const Search = () => {
             {results.features.length === 0 && (
               <Empty
                 emptyText="No Features Founded"
-                imgWidthHeight="xs:w-6 xs:h-6"
+                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
             {results.features.map((item) => {
@@ -119,7 +117,7 @@ const Search = () => {
             {results.users.length === 0 && (
               <Empty
                 emptyText="No People Founded"
-                imgWidthHeight="xs:w-6 xs:h-6"
+                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
             {results.users.map((item) => {
@@ -151,7 +149,7 @@ const Search = () => {
             {results.apps.length === 0 && (
               <Empty
                 emptyText="No Apps Founded"
-                imgWidthHeight="xs:w-6 xs:h-6"
+                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
             {results.apps.map((item) => {
@@ -183,7 +181,7 @@ const Search = () => {
             {results.frames.length === 0 && (
               <Empty
                 emptyText="No Frames Founded"
-                imgWidthHeight="xs:w-6 xs:h-6"
+                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
             {results.frames.map((item) => {

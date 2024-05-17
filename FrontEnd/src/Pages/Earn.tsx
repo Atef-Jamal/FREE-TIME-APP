@@ -22,25 +22,54 @@ import AppCard from "../components/Earn/AppCard";
 import { useScrollToElement } from "../hooks/common";
 import Empty from "../components/Others/Empty";
 import SearchBar from "../components/Search/SearchBar";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
+
   const [translate, setTranslate] = useState("");
+  const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const [noMoreTasks, setNoMoreTasks] = useState(false);
   const [filterQuery, setFilterQuery] = useState<
-    "ALL" | "POPULAR" | "RAITING" | "REWARD"
+    | "ALLDEVICES"
+    | "DESKTOP"
+    | "ANDROID"
+    | "MAC"
+    | "ALL"
+    | "REWARD"
+    | "POPULAR"
+    | "RAITING"
   >("ALL");
   const [limit] = useState<number>(18);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [appDetail, setAppDetail] = useState<TypeTaskApp | null>(null);
 
+  const deviceMenuRef = useRef<HTMLDivElement>(null);
   const filterMenuRef = useRef<HTMLDivElement>(null);
+
+  const allDevicesRef = useRef<HTMLDivElement>(null);
+  const desktopRef = useRef<HTMLDivElement>(null);
+  const androidRef = useRef<HTMLDivElement>(null);
+  const macRef = useRef<HTMLDivElement>(null);
+
   const allRef = useRef<HTMLSpanElement>(null);
-  const androidRef = useRef<HTMLSpanElement>(null);
-  const desktopRef = useRef<HTMLSpanElement>(null);
-  const iosRef = useRef<HTMLSpanElement>(null);
+  const popularRef = useRef<HTMLSpanElement>(null);
+  const heighestRewardRef = useRef<HTMLSpanElement>(null);
+  const heighestRatingRef = useRef<HTMLSpanElement>(null);
+
+  // useEffect(() => {
+  //   const fetchAp = async () => {
+  //     try {
+  //       const res = await makeRequest.get("/api/atef");
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchAp();
+  // }, []);
 
   const { apps, setApps, loading, error } = useFetchAllApps({
     filterQuery,
@@ -85,17 +114,37 @@ const Earn = () => {
     onClose: () => setOpenFilterMenu(false),
   });
 
+  useCloseMenuOnClickOutSide({
+    menuRef: deviceMenuRef,
+    onClose: () => setSelectDevice(false),
+  });
+
   const selectApp = () => {
     setTranslate("-translate-x-[0%]");
   };
 
   const activeFilteringItem = (
     e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type: "ALL" | "POPULAR" | "RAITING" | "REWARD"
+    type:
+      | "ALLDEVICES"
+      | "ALL"
+      | "POPULAR"
+      | "RAITING"
+      | "REWARD"
+      | "DESKTOP"
+      | "ANDROID"
+      | "MAC"
   ) => {
-    [allRef, androidRef, desktopRef, iosRef].forEach((item) =>
-      item.current?.classList.remove("bg-[#4d3f72]")
-    );
+    [
+      allDevicesRef,
+      allRef,
+      heighestRewardRef,
+      popularRef,
+      heighestRatingRef,
+      desktopRef,
+      androidRef,
+      macRef,
+    ].forEach((item) => item.current?.classList.remove("bg-[#4d3f72]"));
     e.currentTarget.classList.add("bg-[#4d3f72]");
     setFilterQuery(type);
   };
@@ -116,18 +165,118 @@ const Earn = () => {
       <Helmet>
         <title>Earn</title>
       </Helmet>
-      <div className="flex items-ceneter sm:flex-col gap-2">
-        <div className="flex justify-between w-[35%] sm:w-full">
-          <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap">
-            <span className="mr-1 text-[#bedf65]">EARN</span> ON
-          </span>
-          <div className=" flex items-center gap-4 bg-[#0b0b22a9] rounded-md px-8 py-2">
-            <IoDesktop className="text-lg" />
-            <DiAndroid className="text-lg" />
-            <SiApple className="text-lg" />
+      <div className="flex items-ceneter sm:flex-col sm:gap-1 gap-2">
+        <div className="relative w-[40%] sm:w-full">
+          <div className=" flex justify-between">
+            <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap mr-1">
+              <span className="mr-1 text-[#bedf65]">EARN</span> ON
+            </span>
+            <div
+              ref={deviceMenuRef}
+              onClick={() => setSelectDevice((prev) => !prev)}
+              className="flex items-center justify-center gap-4 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 py-[11px]"
+            >
+              <IoDesktop className="text-lg" />
+              <DiAndroid className="text-lg" />
+              <SiApple className="text-lg" />
+            </div>
+          </div>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`transition-shadow ${
+              selectDevice
+                ? "border border-[#3c4053] p-2 xs:p-1"
+                : "overflow-hidden p-0 h-0"
+            } sm:relative ml-auto absolute right-0 z-[1] w-[200px] xs:w-full bg-[#161033] rounded-md mt-1 flex flex-col items-center justify-center `}
+          >
+            <div
+              ref={allDevicesRef}
+              onClick={(e) => activeFilteringItem(e, "ALLDEVICES")}
+              className={`${
+                filterQuery === "ALLDEVICES" && "bg-[#3d34647e]"
+              } w-full flex items-center justify-between p-2 sm:p-1  rounded-sm`}
+            >
+              <div className="flex items-center gap-3">
+                <GiHamburgerMenu className="text-lg" />
+
+                <span className="text-gray-400">ALL DEVICES</span>
+              </div>
+              <span
+                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+              >
+                <span
+                  className={`${
+                    filterQuery === "ALLDEVICES" && "bg-[#43da63]"
+                  } w-full h-full rounded-full`}
+                ></span>
+              </span>
+            </div>
+            <div
+              ref={desktopRef}
+              onClick={(e) => activeFilteringItem(e, "DESKTOP")}
+              className={`${
+                filterQuery === "DESKTOP" && "bg-[#3d34647e]"
+              } w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+            >
+              <div className="flex items-center gap-3">
+                <IoDesktop className="text-lg" />
+                <span className="text-gray-400">DESKTOP</span>
+              </div>
+              <span
+                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+              >
+                <span
+                  className={`${
+                    filterQuery === "DESKTOP" && "bg-[#43da63]"
+                  } w-full h-full rounded-full`}
+                ></span>
+              </span>
+            </div>
+            <div
+              ref={androidRef}
+              onClick={(e) => activeFilteringItem(e, "ANDROID")}
+              className={`${
+                filterQuery === "ANDROID" && "bg-[#3d34647e]"
+              } w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+            >
+              <div className="flex items-center gap-3">
+                <DiAndroid className="text-lg" />
+                <span className="text-gray-400">ANDROID</span>
+              </div>
+              <span
+                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+              >
+                <span
+                  className={`${
+                    filterQuery === "ANDROID" && "bg-[#43da63]"
+                  } w-full h-full rounded-full`}
+                ></span>
+              </span>
+            </div>
+            <div
+              ref={macRef}
+              onClick={(e) => activeFilteringItem(e, "MAC")}
+              className={`${
+                filterQuery === "MAC" && "bg-[#3d34647e]"
+              } w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+            >
+              <div className="flex items-center gap-3">
+                <SiApple className="text-lg" />
+                <span className="text-gray-400">MAC</span>
+              </div>
+              <span
+                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+              >
+                <span
+                  className={`${
+                    filterQuery === "MAC" && "bg-[#43da63]"
+                  } w-full h-full rounded-full`}
+                ></span>
+              </span>
+            </div>
           </div>
         </div>
-        <div className="flex xs:flex-col justify-between w-[65%] gap-2 sm:w-full ">
+        <div className="flex xs:flex-col justify-between w-[60%] gap-2 sm:w-full ">
           <div className="w-full h-10  rounded-md overflow-hidden">
             <SearchBar
               placeholder="search apps and offers..."
@@ -140,7 +289,11 @@ const Earn = () => {
             className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2  sm:gap-1"
           >
             <IoFilter />
-            <span className="text-gray-400 font-bold">{filterQuery}</span>
+            <span className="text-gray-400 font-bold">
+              {["ALL", "POPULAR", "RAITING", "REWARD"].includes(filterQuery)
+                ? filterQuery
+                : "ALL"}
+            </span>
             <IoMdArrowDropdown className="text-2xl" />
             {openFilterMenu && (
               <div
@@ -163,7 +316,7 @@ const Earn = () => {
                 </span>
                 <span
                   onClick={(e) => activeFilteringItem(e, "REWARD")}
-                  ref={androidRef}
+                  ref={heighestRewardRef}
                   className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
                 >
                   <SiFirewalla />
@@ -171,7 +324,7 @@ const Earn = () => {
                 </span>
                 <span
                   onClick={(e) => activeFilteringItem(e, "POPULAR")}
-                  ref={iosRef}
+                  ref={popularRef}
                   className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
                 >
                   <FaHeart />
@@ -179,7 +332,7 @@ const Earn = () => {
                 </span>
                 <span
                   onClick={(e) => activeFilteringItem(e, "RAITING")}
-                  ref={desktopRef}
+                  ref={heighestRatingRef}
                   className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
                 >
                   <FaStar /> Highest Rating
@@ -226,28 +379,29 @@ const Earn = () => {
               {loading &&
                 [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
 
-              {apps.map((taskDetail, i) => {
-                return (
-                  <AppCard
-                    taskDetail={taskDetail}
-                    setAppDetail={setAppDetail}
-                    key={taskDetail._id}
-                    index={i}
-                  />
-                );
-              })}
+              {!error &&
+                apps.map((taskDetail, i) => {
+                  return (
+                    <AppCard
+                      taskDetail={taskDetail}
+                      setAppDetail={setAppDetail}
+                      key={taskDetail._id}
+                      index={i}
+                    />
+                  );
+                })}
             </div>
             {error && (
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-full flex items-center justify-center text-[#2d9435]">
                 {error}
               </div>
             )}
-            {loadMore && (
+            {!error && loadMore && (
               <div className="mt-4">
                 <Spinner className="w-8 h-8 border-[3px] border-b-yellow-400 border-l-yellow-400 mx-auto" />
               </div>
             )}
-            {!noMoreTasks && (
+            {!error && !loading && !noMoreTasks && (
               <button
                 onClick={fetchMoreApps}
                 className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"
@@ -255,7 +409,7 @@ const Earn = () => {
                 Load More
               </button>
             )}
-            {apps.length === 0 && (
+            {!error && !loading && apps.length === 0 && (
               <Empty
                 emptyText="No Apps Matches your Filter Query"
                 imgWidthHeight=""

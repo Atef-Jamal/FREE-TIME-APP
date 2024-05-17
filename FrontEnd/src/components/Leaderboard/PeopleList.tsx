@@ -12,10 +12,11 @@ const PeopleList = () => {
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     item: number
   ) => {
-    setPage(item + 1);
+    if (users.length === 0 && item + 1 > page) return;
     const element = Array.from(event.currentTarget.parentElement!.children);
     element.forEach((ele) => ele.classList.remove("bg-[#92f16c]"));
     event.currentTarget.classList.add("bg-[#92f16c]");
+    setPage(item + 1);
   };
 
   return (
@@ -70,7 +71,7 @@ const PeopleList = () => {
             </span>
           </div>
         ))}
-      {users.length === 0 && <Empty emptyText="No More Peoples" />}
+      {!loading && users.length === 0 && <Empty emptyText="No More Peoples" />}
       <ul className="flex gap-2 items-center mx-auto mt-8 sm:w-[90%] sm:gap-1 sm:flex-wrap justify-center ">
         {[...Array(11).keys()].map((item) => (
           <li

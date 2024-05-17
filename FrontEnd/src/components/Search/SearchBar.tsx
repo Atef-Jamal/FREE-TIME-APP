@@ -13,7 +13,7 @@ const SearchBar = ({
   readOnly = false,
 }: TypeSearchBar) => {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-[#2a2a38]">
+    <div className="w-full h-full flex items-center justify-center bg-[#242424] border border-gray-700 rounded-md overflow-hidden">
       <span
         className={`min-w-[70px] lg:min-w-[60px] sm:min-w-[50px] h-full flex items-center justify-center`}
       >
