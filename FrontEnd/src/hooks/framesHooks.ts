@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
 import { useAppDispatch } from "../context/Hooks";
-import { TypeFrame } from "../types/frame";
+import { TypeFrame } from "../types/frameTypes";
 
 export const useFetchFrames = () => {
   const [frames, setFrames] = useState<TypeFrame[]>([]);

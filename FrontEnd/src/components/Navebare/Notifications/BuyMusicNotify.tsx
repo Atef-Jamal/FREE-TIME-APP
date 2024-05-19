@@ -3,7 +3,7 @@ import { FcMusic } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { toggleThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch } from "../../../context/Hooks";
-import { TypeMusicNotify } from "../../../types/notification";
+import { TypeMusicNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeMusicNotify, "_id" | "isRead" | "type">;
 

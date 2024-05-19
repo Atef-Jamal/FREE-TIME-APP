@@ -1,8 +1,8 @@
 import { FcBusinessman, FcFrame, FcMusic } from "react-icons/fc";
 import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
-import { User } from "../../types/user";
-import { TypeNotifications } from "../../types/notification";
+import { User } from "../../types/userTypes";
+import { TypeNotifications } from "../../types/notificationTypes";
 import Empty from "../Others/Empty";
 import { verifiedImage } from "../../assets";
 

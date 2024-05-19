@@ -8,31 +8,53 @@ import { io, onLineUsers } from "../app";
 export const getAllApps = async (req: Request, res: Response) => {
   const filter = req.query.filter || "ALL";
   const page = parseInt(req.query.page as string) || 1;
-  const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 18;
+  const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 20;
   const skip = (page - 1) * limitedPerPage;
 
   try {
     let allApps;
     if (filter === "POPULAR") {
-      allApps = (
-        await Task.find()
-          .limit(limitedPerPage)
-          .populate("completedBy", "name _id profilePicture")
-      ).filter((item) => item.completedBy.length > 0);
+      allApps = await Task.find({ completedBy: { $not: { $size: 0 } } })
+        .skip(skip)
+        .limit(limitedPerPage)
+        .populate("completedBy", "name _id profilePicture");
+      allApps.sort((a, b) => {
+        if (a.completedBy.length > b.completedBy.length) return -1;
+        if (a.completedBy.length < b.completedBy.length) return 1;
+        return 0;
+        // return b.prize - a.prize;
+      });
     } else if (filter === "REWARD") {
       allApps = await Task.find({ prize: { $gt: 150 } })
-        .limit(30)
+        .skip(skip)
+        .limit(limitedPerPage)
         .populate("completedBy", "name _id profilePicture");
       allApps.sort((a, b) => {
         return b.prize - a.prize;
       });
     } else if (filter === "RAITING") {
       allApps = await Task.find({ rating: { $gt: 4 } })
-        .limit(30)
+        .skip(skip)
+        .limit(limitedPerPage)
         .populate("completedBy", "name _id profilePicture");
       allApps.sort((a, b) => {
         return b.rating - a.rating;
       });
+    } else if (filter === "DESKTOP") {
+      allApps = await Task.find({ devices: "DESKTOP" })
+        .skip(skip)
+        .limit(limitedPerPage)
+        .populate("completedBy", "name _id profilePicture");
+    } else if (filter === "ANDROID") {
+      allApps = await Task.find({ devices: "ANDROID" })
+        .skip(skip)
+        .limit(limitedPerPage)
+        .populate("completedBy", "name _id profilePicture");
+    } else if (filter === "MAC") {
+      allApps = await Task.find({ devices: "MAC" })
+        .skip(skip)
+        .limit(limitedPerPage)
+        .populate("completedBy", "name _id profilePicture");
     } else {
       allApps = await Task.find()
         .skip(skip)
@@ -40,17 +62,9 @@ export const getAllApps = async (req: Request, res: Response) => {
         .populate("completedBy", "name _id profilePicture");
     }
 
-    let noApps = false;
-    if (
-      allApps.length === 0 ||
-      filter === "RAITING" ||
-      filter === "REWARD" ||
-      filter === "POPULAR"
-    ) {
-      noApps = true;
-    }
-    return res.status(200).json({ apps: allApps, noApps });
+    return res.status(200).json(allApps);
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "can't Load apps and offers" });
   }
 };

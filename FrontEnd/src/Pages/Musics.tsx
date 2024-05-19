@@ -2,7 +2,7 @@ import { FcMusic } from "react-icons/fc";
 import MusicCard from "../components/Music/MusicCard";
 import Skeleton from "../components/Others/Skeleton";
 import { useFetchMusics } from "../hooks";
-import { useScrollToElement } from "../hooks/common";
+import { useScrollToElement } from "../hooks/commonHooks";
 
 const Musics = () => {
   const { musics, loading, error } = useFetchMusics();

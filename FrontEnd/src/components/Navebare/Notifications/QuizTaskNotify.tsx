@@ -10,7 +10,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import Spinner from "../../Others/Spinner";
 
-import { TypeQuizAppNotify } from "../../../types/notification";
+import { TypeQuizAppNotify } from "../../../types/notificationTypes";
 
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 

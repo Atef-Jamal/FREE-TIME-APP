@@ -6,8 +6,8 @@ import FrameItem from "../components/MarketPlace/FrameItem";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
-import { TypeFrame } from "../types/frame";
-import { useScrollToElement } from "../hooks/common";
+import { TypeFrame } from "../types/frameTypes";
+import { useScrollToElement } from "../hooks/commonHooks";
 
 const MarketPlace = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);

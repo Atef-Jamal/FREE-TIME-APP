@@ -1,6 +1,6 @@
 import { SetStateAction } from "react";
 import UploadImage from "./UploadImage";
-import { TypeFormData } from "../../../types/others";
+import { TypeFormData } from "../../../types/othersTypes";
 
 interface TypeProps {
   formData: TypeFormData;

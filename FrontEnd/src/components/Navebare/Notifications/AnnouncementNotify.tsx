@@ -1,6 +1,6 @@
 import { GrAnnounce } from "react-icons/gr";
 import { formateDate } from "../../../utils/common";
-import { TypeAnnouncementNoify } from "../../../types/notification";
+import { TypeAnnouncementNoify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeAnnouncementNoify, "_id" | "isRead" | "type">;
 

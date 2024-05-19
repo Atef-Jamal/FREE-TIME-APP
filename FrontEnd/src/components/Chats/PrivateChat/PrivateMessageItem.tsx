@@ -3,7 +3,7 @@ import { useAppSelector } from "../../../context/Hooks";
 import { formateDate } from "../../../utils/common";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RefObject } from "react";
-import { TypePrivateMessage } from "../../../types/privateChat";
+import { TypePrivateMessage } from "../../../types/privateChatTypes";
 
 const PrivateMessageItem = ({
   messages,

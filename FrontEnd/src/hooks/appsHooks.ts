@@ -4,78 +4,59 @@ import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
 import { useAppDispatch } from "../context/Hooks";
-import { TypeTaskApp } from "../types/earn";
+import { TypeFilterQuery, TypeTaskApp } from "../types/earnTypes";
 
 export const useFetchAllApps = ({
-  initialLoading = false,
-  dependencies = [],
   filterQuery,
-  setNoMoreTasks,
-  limit,
+  page,
+  limitPerPage,
 }: {
-  initialLoading?: boolean;
-  filterQuery:
-    | "ALLDEVICES"
-    | "DESKTOP"
-    | "ANDROID"
-    | "MAC"
-    | "ALL"
-    | "REWARD"
-    | "POPULAR"
-    | "RAITING";
-  limit: number;
-  setNoMoreTasks: React.Dispatch<React.SetStateAction<boolean>>;
-  dependencies?: any[];
+  filterQuery: TypeFilterQuery;
+  limitPerPage: number;
+  page: number;
 }) => {
   const [apps, setApps] = useState<TypeTaskApp[]>([]);
-  const [loading, setLoading] = useState<boolean>(initialLoading);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [errorLoadMore, setErrorLoadMore] = useState<string | null>(null);
+  const [noMoreApps, setNoMoreApps] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getApps = async () => {
-      setError(null);
-      if (!loading) setLoading(true);
+      if (page > 1) setLoadMore(true);
+      if (error) setError(null);
+      if (errorLoadMore) setErrorLoadMore(null);
+      if (page === 1) setLoading(true);
+
       try {
         const response = await makeRequest.get(
-          `api/tasks?filter=${filterQuery}&&page=1&&limitedPerPage=${limit}`
+          `api/tasks?filter=${filterQuery}&&page=${page}&&limitedPerPage=${limitPerPage}`
         );
-        const data: { apps: TypeTaskApp[]; noApps: boolean } = response.data;
-        setNoMoreTasks(data.noApps);
-        data.apps.sort((a, b) => {
-          if (
-            a.isAvailable === "AVAILABLE" &&
-            b.isAvailable === "UNAVAILABLE"
-          ) {
-            return -1;
-          } else if (
-            a.isAvailable === "UNAVAILABLE" &&
-            b.isAvailable === "AVAILABLE"
-          ) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        setApps(data.apps);
+        const data = response.data;
+        if (page === 1) setApps(data);
+        if (page > 1) setApps((prev) => [...prev, ...data]);
+        if (data.length < limitPerPage) {
+          setNoMoreApps(true);
+        } else {
+          setNoMoreApps(false);
+        }
       } catch (error) {
+        if (page > 1) {
+          setErrorLoadMore("Error while loading more apps");
+          return;
+        }
         const err = handleApiError(error);
         setError(err);
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
       } finally {
         setLoading(false);
+        setLoadMore(false);
       }
     };
     getApps();
-  }, dependencies);
+  }, [filterQuery, page]);
 
-  return { apps, setApps, loading, error };
+  return { loading, apps, error, loadMore, noMoreApps, errorLoadMore };
 };
 
 export const useFetchTaskApp = ({

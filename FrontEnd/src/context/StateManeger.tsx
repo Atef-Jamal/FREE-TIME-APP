@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { TypeInitialState, TypeMusicInfo, TypePopup } from "../types/context";
-import { User } from "../types/user";
+import {
+  TypeInitialState,
+  TypeMusicInfo,
+  TypePopup,
+} from "../types/reduxTypes";
+import { User } from "../types/userTypes";
 
 const initialState: TypeInitialState = {
   currentUser: null,

@@ -3,7 +3,7 @@ import { FcPaid } from "react-icons/fc";
 import { toggleThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch } from "../../../context/Hooks";
-import { TypeBuyFrameNotify } from "../../../types/notification";
+import { TypeBuyFrameNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeBuyFrameNotify, "_id" | "isRead" | "type">;
 

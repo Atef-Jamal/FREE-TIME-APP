@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
-import { User } from "../../types/user";
+import { User } from "../../types/userTypes";
 import {
   useCloseMenuOnClickOutSide,
   useFetchAllUsers,

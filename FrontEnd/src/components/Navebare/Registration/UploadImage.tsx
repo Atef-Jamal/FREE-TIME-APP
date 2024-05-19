@@ -1,6 +1,6 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import UploadIcon from "../../../assets/images/upload-icon.png";
-import { TypeFormData } from "../../../types/others";
+import { TypeFormData } from "../../../types/othersTypes";
 
 const UploadImage = ({
   formData,

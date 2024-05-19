@@ -7,7 +7,7 @@ import {
   formateDate,
   collectReward,
 } from "../../../utils/common";
-import { TypeEmailVerifiedNotify } from "../../../types/notification";
+import { TypeEmailVerifiedNotify } from "../../../types/notificationTypes";
 import { verifiedImage } from "../../../assets";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;

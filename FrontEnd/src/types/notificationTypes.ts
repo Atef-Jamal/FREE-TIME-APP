@@ -1,5 +1,5 @@
-import { TypeFrame } from "./frame";
-import { User } from "./user";
+import { TypeFrame } from "./frameTypes";
+import { User } from "./userTypes";
 
 export interface TypeMentionNotify {
   _id: string;

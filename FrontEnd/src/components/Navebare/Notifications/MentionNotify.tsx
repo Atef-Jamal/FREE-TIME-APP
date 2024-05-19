@@ -3,7 +3,7 @@ import { GoMention } from "react-icons/go";
 import { toggleThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeMentionNotify } from "../../../types/notification";
+import { TypeMentionNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeMentionNotify, "_id" | "type" | "isRead">;
 

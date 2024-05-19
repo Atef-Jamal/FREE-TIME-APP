@@ -8,9 +8,9 @@ import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import { User } from "../types/user";
-import { TypePrivateMessage } from "../types/privateChat";
-import { TypePublicChatItem } from "../types/publicChat";
+import { User } from "../types/userTypes";
+import { TypePrivateMessage } from "../types/privateChatTypes";
+import { TypePublicChatItem } from "../types/publicChatTypes";
 
 export const useFetchPublicMessages = () => {
   const [messages, setMessages] = useState<TypePublicChatItem[]>([]);

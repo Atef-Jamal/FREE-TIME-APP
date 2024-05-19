@@ -5,7 +5,7 @@ import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
-import { TypeFrame } from "../../types/frame";
+import { TypeFrame } from "../../types/frameTypes";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
   const { currentUser, currentAccountRequestFullfiled } = useAppSelector(

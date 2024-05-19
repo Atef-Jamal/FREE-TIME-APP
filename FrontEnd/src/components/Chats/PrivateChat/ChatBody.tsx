@@ -12,8 +12,8 @@ import Spinner from "../../Others/Spinner";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
-import { TypePrivateMessage } from "../../../types/privateChat";
-import { User } from "../../../types/user";
+import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import { User } from "../../../types/userTypes";
 import { useFetchPrivateChatMessages, useListenToEvent } from "../../../hooks";
 
 const ChatBody = () => {
@@ -81,6 +81,7 @@ const ChatBody = () => {
       if (!id) {
         return;
       }
+
       try {
         const response = await makeRequest.patch(`api/conversations/${id}`, {
           FOR_CONSISTENCY: "FOR_CONSISTENCY",

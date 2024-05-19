@@ -10,7 +10,7 @@ import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
 import { handleApiError, validation } from "../../../utils/common";
 import { login, register } from "../../../utils/auth";
-import { TypeFormData } from "../../../types/others";
+import { TypeFormData } from "../../../types/othersTypes";
 
 const initialValue = {
   name: "",

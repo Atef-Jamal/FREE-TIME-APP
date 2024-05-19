@@ -6,7 +6,7 @@ import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
 import { ImSpinner3 } from "react-icons/im";
-import { TypeQuizApp } from "../../types/earn";
+import { TypeQuizApp } from "../../types/earnTypes";
 
 interface TypeProps {
   taskApp: TypeQuizApp;

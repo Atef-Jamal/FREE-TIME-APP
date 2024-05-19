@@ -20,10 +20,10 @@ import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
-import { TypeFrame } from "../types/frame";
+import { TypeFrame } from "../types/frameTypes";
 import Spinner from "../components/Others/Spinner";
 import { useFetchMusics } from "../hooks";
-import { useScrollToElement } from "../hooks/common";
+import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
 

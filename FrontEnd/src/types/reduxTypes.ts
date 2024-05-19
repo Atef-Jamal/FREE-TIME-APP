@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { User } from "./user";
+import { User } from "./userTypes";
 
 export interface TypePopup {
   status: boolean;

@@ -8,7 +8,7 @@ import {
   formateDate,
   collectReward,
 } from "../../../utils/common";
-import { TypeGuessCardNotify } from "../../../types/notification";
+import { TypeGuessCardNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 

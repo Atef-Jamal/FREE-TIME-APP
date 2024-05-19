@@ -8,7 +8,7 @@ import { showPopup } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
-import { TypeNotifications } from "../../types/notification";
+import { TypeNotifications } from "../../types/notificationTypes";
 
 const Statistics = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

@@ -1,7 +1,7 @@
 import { formateDate } from "../../../../utils/common";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../../context/Hooks";
-import { TypePublicChatFreeTime } from "../../../../types/publicChat";
+import { TypePublicChatFreeTime } from "../../../../types/publicChatTypes";
 import { verifiedImage } from "../../../../assets";
 
 const FreeTime = ({

@@ -3,7 +3,7 @@ import {
   leaderboard_place3_winnings,
   crown,
 } from "../../assets";
-import { User } from "../../types/user";
+import { User } from "../../types/userTypes";
 
 type TypeProps = {
   user: User;

@@ -9,9 +9,8 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
 import { Helmet } from "react-helmet-async";
-import { makeRequest } from "../utils";
 import { FaHeart, FaStar } from "react-icons/fa";
-import { TypeTaskApp } from "../types/earn";
+import { TypeFilterQuery, TypeTaskApp } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
 import { VscExpandAll } from "react-icons/vsc";
 import { useCloseMenuOnClickOutSide, useFetchAllApps } from "../hooks";
@@ -19,10 +18,11 @@ import AppDetail from "../components/Earn/AppDetail";
 import AppSkeleton from "../components/Earn/AppSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
 import AppCard from "../components/Earn/AppCard";
-import { useScrollToElement } from "../hooks/common";
+import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import SearchBar from "../components/Search/SearchBar";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { FaCaretDown } from "react-icons/fa6";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -30,21 +30,10 @@ const Earn = () => {
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
-  const [loadMore, setLoadMore] = useState(false);
-  const [noMoreTasks, setNoMoreTasks] = useState(false);
-  const [filterQuery, setFilterQuery] = useState<
-    | "ALLDEVICES"
-    | "DESKTOP"
-    | "ANDROID"
-    | "MAC"
-    | "ALL"
-    | "REWARD"
-    | "POPULAR"
-    | "RAITING"
-  >("ALL");
-  const [limit] = useState<number>(18);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(1);
+  const limitPerPage = 20;
   const [appDetail, setAppDetail] = useState<TypeTaskApp | null>(null);
+  const [filterQuery, setFilterQuery] = useState<TypeFilterQuery>("ALL");
 
   const deviceMenuRef = useRef<HTMLDivElement>(null);
   const filterMenuRef = useRef<HTMLDivElement>(null);
@@ -59,42 +48,14 @@ const Earn = () => {
   const heighestRewardRef = useRef<HTMLSpanElement>(null);
   const heighestRatingRef = useRef<HTMLSpanElement>(null);
 
-  // useEffect(() => {
-  //   const fetchAp = async () => {
-  //     try {
-  //       const res = await makeRequest.get("/api/atef");
-  //       console.log(res);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchAp();
-  // }, []);
-
-  const { apps, setApps, loading, error } = useFetchAllApps({
-    filterQuery,
-    limit,
-    setNoMoreTasks,
-    dependencies: [filterQuery],
-    initialLoading: true,
-  });
+  const { loading, apps, error, loadMore, noMoreApps, errorLoadMore } =
+    useFetchAllApps({
+      filterQuery,
+      limitPerPage,
+      page,
+    });
 
   useScrollToElement([apps]);
-
-  const fetchMoreApps = async () => {
-    setLoadMore(true);
-    try {
-      const response = await makeRequest.get(
-        `api/tasks?page=${currentPage + 1}&&limitedPerPage=${limit}`
-      );
-      setNoMoreTasks(response.data.noApps);
-      setApps((prev) => [...prev, ...response.data.apps]);
-      setCurrentPage((prev) => prev + 1);
-    } catch (error) {
-    } finally {
-      setLoadMore(false);
-    }
-  };
 
   useEffect(() => {
     if (appDetail !== null) {
@@ -125,15 +86,7 @@ const Earn = () => {
 
   const activeFilteringItem = (
     e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type:
-      | "ALLDEVICES"
-      | "ALL"
-      | "POPULAR"
-      | "RAITING"
-      | "REWARD"
-      | "DESKTOP"
-      | "ANDROID"
-      | "MAC"
+    type: TypeFilterQuery
   ) => {
     [
       allDevicesRef,
@@ -147,12 +100,16 @@ const Earn = () => {
     ].forEach((item) => item.current?.classList.remove("bg-[#4d3f72]"));
     e.currentTarget.classList.add("bg-[#4d3f72]");
     setFilterQuery(type);
+    setPage(1);
   };
 
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
-    setAppDetail(null);
+    const timeout = setTimeout(() => {
+      setAppDetail(null);
+    }, 1000);
+    return () => clearTimeout(timeout);
   };
 
   const prev = () => {
@@ -174,11 +131,12 @@ const Earn = () => {
             <div
               ref={deviceMenuRef}
               onClick={() => setSelectDevice((prev) => !prev)}
-              className="flex items-center justify-center gap-4 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 py-[11px]"
+              className="flex items-center justify-center gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4"
             >
               <IoDesktop className="text-lg" />
               <DiAndroid className="text-lg" />
               <SiApple className="text-lg" />
+              <FaCaretDown className="text-lg ml-auto" />
             </div>
           </div>
           <div
@@ -191,9 +149,9 @@ const Earn = () => {
           >
             <div
               ref={allDevicesRef}
-              onClick={(e) => activeFilteringItem(e, "ALLDEVICES")}
+              onClick={(e) => activeFilteringItem(e, "ALL")}
               className={`${
-                filterQuery === "ALLDEVICES" && "bg-[#3d34647e]"
+                filterQuery === "ALL" && "bg-[#3d34647e]"
               } w-full flex items-center justify-between p-2 sm:p-1  rounded-sm`}
             >
               <div className="flex items-center gap-3">
@@ -202,11 +160,11 @@ const Earn = () => {
                 <span className="text-gray-400">ALL DEVICES</span>
               </div>
               <span
-                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
               >
                 <span
                   className={`${
-                    filterQuery === "ALLDEVICES" && "bg-[#43da63]"
+                    filterQuery === "ALL" && "bg-[#43da63]"
                   } w-full h-full rounded-full`}
                 ></span>
               </span>
@@ -223,7 +181,7 @@ const Earn = () => {
                 <span className="text-gray-400">DESKTOP</span>
               </div>
               <span
-                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
               >
                 <span
                   className={`${
@@ -244,7 +202,7 @@ const Earn = () => {
                 <span className="text-gray-400">ANDROID</span>
               </div>
               <span
-                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
               >
                 <span
                   className={`${
@@ -265,7 +223,7 @@ const Earn = () => {
                 <span className="text-gray-400">MAC</span>
               </div>
               <span
-                className={`w-4 h-4 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
               >
                 <span
                   className={`${
@@ -396,24 +354,29 @@ const Earn = () => {
                 {error}
               </div>
             )}
-            {!error && loadMore && (
+            {loadMore && (
               <div className="mt-4">
                 <Spinner className="w-8 h-8 border-[3px] border-b-yellow-400 border-l-yellow-400 mx-auto" />
               </div>
             )}
-            {!error && !loading && !noMoreTasks && (
-              <button
-                onClick={fetchMoreApps}
-                className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"
-              >
-                Load More
-              </button>
-            )}
-            {!error && !loading && apps.length === 0 && (
+            {!loading && apps.length === 0 && (
               <Empty
                 emptyText="No Apps Matches your Filter Query"
                 imgWidthHeight=""
               />
+            )}
+            {errorLoadMore && (
+              <span className="text-sm text-[#4b9734] mx-auto">
+                {errorLoadMore}
+              </span>
+            )}
+            {!noMoreApps && (
+              <button
+                onClick={() => setPage((prev) => prev + 1)}
+                className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"
+              >
+                Load More
+              </button>
             )}
           </div>
           <div className={`bg-[#1c1e31] w-[50%] `}>

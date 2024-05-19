@@ -1,4 +1,4 @@
-import { TypeSearchItem } from "../../types/others";
+import { TypeSearchItem } from "../../types/othersTypes";
 
 const ResultItem = ({
   searchElement,
@@ -18,7 +18,7 @@ const ResultItem = ({
         key={i}
         className={`${
           isMatched ? "bg-[#80f064e7] text-[#495064]" : "text-[#afaaaa]"
-        } sm:text-sm `}
+        } sm:text-sm tracking-wide`}
       >
         {slice}
       </span>

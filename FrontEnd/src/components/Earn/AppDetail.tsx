@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types/earn";
+import { TypeTaskApp } from "../../types/earnTypes";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
@@ -12,6 +12,7 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
   const isCompleted = currentUser?.completedTasks.includes(appDetail._id);
 
   const notActiveStars = 5 - appDetail.rating;
+
   return (
     <>
       <h1 className="text-2xl font-bold text-[#78bd4f] text-center mb-4">
@@ -24,6 +25,10 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
         <span className="w-full text-[#b9a3a3]">
           <span className="mr-2 text-[#73f1a8]">Description :</span>
           {appDetail?.description}
+        </span>
+        <span className="w-full text-[#b9a3a3]">
+          <span className="mr-2 text-[#73f1a8]">available on :</span>
+          {appDetail?.devices === "ALL" ? "ALL DEVICES" : appDetail.devices}
         </span>
         <div
           onClick={() => setExpandUsers((prev) => !prev)}

@@ -1,14 +1,17 @@
-import { useFetchPublicMessages, useFetchPrivateChatMessages } from "./chats";
-import { useFetchAllApps, useFetchTaskApp } from "./apps";
-import { useListenToEvent } from "./listeners";
-import { useFetchFrames } from "./frames";
+import {
+  useFetchPublicMessages,
+  useFetchPrivateChatMessages,
+} from "./chatsHooks";
+import { useFetchAllApps, useFetchTaskApp } from "./appsHooks";
+import { useListenToEvent } from "./listenersHooks";
+import { useFetchFrames } from "./framesHooks";
 import {
   useCloseMenuOnClickOutSide,
   useFetchActivities,
   useFetchAllUsers,
   useFetchMusics,
   useFetchUser,
-} from "./common";
+} from "./commonHooks";
 
 export {
   useFetchAllUsers,

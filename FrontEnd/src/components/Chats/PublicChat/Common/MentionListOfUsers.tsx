@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../../../context/Hooks";
-import { User } from "../../../../types/user";
+import { User } from "../../../../types/userTypes";
 import { useFetchAllUsers } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
 

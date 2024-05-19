@@ -3,7 +3,7 @@ import { AiFillAndroid } from "react-icons/ai";
 import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types/earn";
+import { TypeTaskApp } from "../../types/earnTypes";
 
 interface TypeAppCard {
   taskDetail: TypeTaskApp;
@@ -15,7 +15,7 @@ const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
   const { currentUser, currentUserIsLoading } = useAppSelector(
     (state) => state.stateManeger
   );
-  const { _id, type, description, image, prize, title, isAvailable } =
+  const { _id, description, image, prize, title, isAvailable, devices } =
     taskDetail;
 
   const isCompleted = currentUser?.completedTasks.includes(_id);
@@ -37,35 +37,36 @@ const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
         </div>
       ) : undefined}
 
-      <div className="relative overflow-hidden ">
+      <div className="relative overflow-hidden">
         <div className="w-full mx-auto  overflow-hidden">
           <img
             alt={""}
             src={`${import.meta.env.VITE_SERVER_BASE_URL}/${image}`}
-            className={`w-full h-[95px] rounded-sm  object-cover object-center `}
+            className={`w-full h-[95px] rounded-sm  object-fill`}
           />
         </div>
         <span
-          className={`flex gap-1 absolute top-1 ${
-            index === 0 ? "left-[38%]" : "left-[25%]"
-          }  px-3 py-1 bg-[#0f0a25a9] rounded-md`}
+          className={`flex items-center justify-center gap-1 absolute top-1 left-0 right-0 w-[83px] mx-auto px-3 py-1 bg-[#000000c5] border border-gray-600 rounded-md`}
         >
-          <MdDesktopMac />
-          <AiFillAndroid />
-          <SiApple />
+          {devices === "DESKTOP" && <MdDesktopMac className="min-w-fit" />}
+          {devices === "ANDROID" && <AiFillAndroid className="min-w-fit" />}
+          {devices === "MAC" && <SiApple className="min-w-fit" />}
+          {devices === "ALL" && (
+            <>
+              <MdDesktopMac className="min-w-fit" />
+              <AiFillAndroid className="min-w-fit" />
+              <MdDesktopMac className="min-w-fit" />
+            </>
+          )}
         </span>
       </div>
       <div className="flex flex-col">
-        <span className="text-[#8ad657] font-bold ">
-          <span className="font-bold text-sm text-[#8ad657]">{title}</span>
-        </span>
-        <p className="text-xs text-[#cea5a5] overflow-auto scrollbar-none h-4 truncate ">
-          {description}
-        </p>
+        <p className="font-bold text-sm text-[#8ad657]  truncate">{title}</p>
+        <p className="text-xs text-[#cea5a5] h-4 truncate">{description}</p>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-300 font-bold py-1">{type}</span>
+          <span className="text-xs text-gray-300 font-bold py-1">Reward</span>
           <span className="text-sm sm:text-xs text-[#5dd140] text-center font-bold pr-1 ">
-            {prize} points
+            {prize}
           </span>
         </div>
       </div>

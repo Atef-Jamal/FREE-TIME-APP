@@ -9,7 +9,7 @@ import {
   formateDate,
   collectReward,
 } from "../../../utils/common";
-import { TypeReferrerNotify } from "../../../types/notification";
+import { TypeReferrerNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 

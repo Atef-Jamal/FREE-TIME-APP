@@ -12,7 +12,7 @@ import ActivitiesList from "../components/PublicUserProfile/ActivitiesList";
 import { PublicUserProfileSkeleton } from "../components/PublicUserProfile/PublicUserProfileSkeleton";
 
 import { useFetchActivities, useFetchUser, useListenToEvent } from "../hooks";
-import { User } from "../types/user";
+import { User } from "../types/userTypes";
 import { verifiedImage } from "../assets";
 import { formateDate } from "../utils/common";
 

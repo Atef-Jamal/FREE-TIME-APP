@@ -8,9 +8,9 @@ import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
 import { makeRequest } from "../../../../utils";
-import { TypePublicChatMessage } from "../../../../types/publicChat";
+import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
 import { useListenToEvent } from "../../../../hooks";
-import { User } from "../../../../types/user";
+import { User } from "../../../../types/userTypes";
 import { formateDate, handleApiError } from "../../../../utils/common";
 import { verifiedImage } from "../../../../assets";
 

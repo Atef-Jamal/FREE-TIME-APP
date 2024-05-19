@@ -10,8 +10,8 @@ import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
-import { TypeBounusCode } from "../types/rewards";
-import { useScrollToElement } from "../hooks/common";
+import { TypeBounusCode } from "../types/rewardsTypes";
+import { useScrollToElement } from "../hooks/commonHooks";
 
 const Rewards = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

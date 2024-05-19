@@ -15,7 +15,7 @@ import ApplyCoupon from "../../Others/ApplyCoupon";
 import UserImage from "../../Others/UserImage";
 import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
-import { TypeNotifications } from "../../../types/notification";
+import { TypeNotifications } from "../../../types/notificationTypes";
 import { useCloseMenuOnClickOutSide, useListenToEvent } from "../../../hooks";
 
 const ProfileActions = () => {

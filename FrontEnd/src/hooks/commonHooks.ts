@@ -4,8 +4,8 @@ import { useAppDispatch } from "../context/Hooks";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
-import { TypeNotifications } from "../types/notification";
-import { User } from "../types/user";
+import { TypeNotifications } from "../types/notificationTypes";
+import { User } from "../types/userTypes";
 import { useSearchParams } from "react-router-dom";
 
 export const useFetchAllUsers = (page?: number) => {

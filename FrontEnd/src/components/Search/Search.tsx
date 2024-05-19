@@ -8,7 +8,7 @@ import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import Empty from "../Others/Empty";
 import { MdOutlineWeb } from "react-icons/md";
-import { TypeSearchResults } from "../../types/others";
+import { TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
 
 const Search = () => {
@@ -53,7 +53,7 @@ const Search = () => {
 
   return (
     <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[81%]  overflow-auto absolute top-20 sm:top-11 translate-x-[-50%]  bg-[#19181b] rounded-lg">
-      <div className="sticky top-0 p-2  bg-[#29223d] flex">
+      <div className="sticky top-0 p-2  bg-[#2f2646] flex">
         <div className="w-full border border-gray-700 rounded-md">
           <input
             type="text"
@@ -65,7 +65,7 @@ const Search = () => {
         </div>
         <button
           onClick={() => dispatch(resetModel())}
-          className="w-10 h-11 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center"
+          className="w-10 h-11 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center ml-1"
         >
           <CgClose className="text-2xl sm:text-lg" />
         </button>

@@ -12,7 +12,7 @@ import messageSoundSrc from "../../assets/images/messageSound.wav";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
-import { TypePrivateMessage } from "../../types/privateChat";
+import { TypePrivateMessage } from "../../types/privateChatTypes";
 import { useListenToEvent } from "../../hooks";
 
 const Sidebar = () => {

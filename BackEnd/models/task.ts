@@ -16,10 +16,6 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
-      type: String,
-      default: "",
-    },
     title: {
       type: String,
       required: true,
@@ -27,6 +23,15 @@ const taskSchema = new mongoose.Schema(
     prize: {
       type: Number,
       required: true,
+    },
+    image: {
+      type: String,
+      default: "",
+    },
+    devices: {
+      type: String,
+      enum: ["DESKTOP", "ANDROID", "MAC", "ALL"],
+      default: "ALL",
     },
     completedBy: {
       type: [mongoose.Schema.Types.ObjectId],

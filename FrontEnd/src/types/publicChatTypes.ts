@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User } from "./userTypes";
 
 export interface TypePublicChatMessage {
   _id: string;

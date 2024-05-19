@@ -6,7 +6,7 @@ import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
 import { ImSpinner3 } from "react-icons/im";
-import { TypeGameApp } from "../../types/earn";
+import { TypeGameApp } from "../../types/earnTypes";
 
 const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);

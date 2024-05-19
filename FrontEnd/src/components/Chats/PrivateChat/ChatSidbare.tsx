@@ -3,7 +3,7 @@ import Spinner from "../../Others/Spinner";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
-import { User } from "../../../types/user";
+import { User } from "../../../types/userTypes";
 import { useFetchAllUsers, useListenToEvent } from "../../../hooks";
 import Empty from "../../Others/Empty";
 import SearchBar from "../../Search/SearchBar";

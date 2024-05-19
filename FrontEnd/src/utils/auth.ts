@@ -1,5 +1,5 @@
 import { makeRequest } from ".";
-import { TypeFormData } from "../types/others";
+import { TypeFormData } from "../types/othersTypes";
 
 export const register = async (formData: any, referrerUser?: string | null) => {
   let response;

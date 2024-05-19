@@ -3,10 +3,10 @@ import FreeTime from "../Common/FreeTime";
 import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
 import { useAppSelector } from "../../../../context/Hooks";
-import { TypePublicChatItem } from "../../../../types/publicChat";
+import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
-import { useScrollToElement } from "../../../../hooks/common";
+import { useScrollToElement } from "../../../../hooks/commonHooks";
 import { useSearchParams } from "react-router-dom";
 
 const MobileChat = () => {

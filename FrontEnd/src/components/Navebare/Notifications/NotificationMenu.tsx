@@ -15,7 +15,7 @@ import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
 
 import Spinner from "../../Others/Spinner";
-import { TypeNotifications } from "../../../types/notification";
+import { TypeNotifications } from "../../../types/notificationTypes";
 import Empty from "../../Others/Empty";
 
 const NotificationMenu = ({

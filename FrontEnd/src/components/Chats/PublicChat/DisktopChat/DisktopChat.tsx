@@ -7,10 +7,10 @@ import Message from "../Common/Message";
 import ChatHeader from "../Common/ChatHeader";
 import SendMessage from "../Common/SendMessage";
 import FreeTime from "../Common/FreeTime";
-import { TypePublicChatItem } from "../../../../types/publicChat";
+import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
-import { useScrollToElement } from "../../../../hooks/common";
+import { useScrollToElement } from "../../../../hooks/commonHooks";
 
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);

@@ -5,8 +5,8 @@ import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
-import { TypePrivateMessage } from "../../../types/privateChat";
-import { User } from "../../../types/user";
+import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import { User } from "../../../types/userTypes";
 import { useListenToEvent } from "../../../hooks";
 
 const People = ({ userInfo }: { userInfo: User }) => {

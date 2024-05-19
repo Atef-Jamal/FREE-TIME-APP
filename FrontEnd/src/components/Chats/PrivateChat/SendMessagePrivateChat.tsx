@@ -6,7 +6,7 @@ import { showPopup } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
 
-import { TypePrivateMessage } from "../../../types/privateChat";
+import { TypePrivateMessage } from "../../../types/privateChatTypes";
 
 const SendMessagePrivateChat = ({
   conversationReaded,
