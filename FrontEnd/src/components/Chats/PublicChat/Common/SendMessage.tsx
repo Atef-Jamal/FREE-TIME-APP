@@ -35,6 +35,7 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const mentionListRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -80,6 +81,7 @@ const SendMessage = ({
     });
     document.dispatchEvent(customEvent);
     setMessage("");
+    inputRef.current?.focus()
     try {
       const response = await makeRequest.post("api/publicchat", {
         type: "MESSAGE",
@@ -160,6 +162,7 @@ const SendMessage = ({
         <input
           name="send"
           type="text"
+          ref={inputRef}
           onChange={handleInputChange}
           readOnly={!currentUser}
           value={message}
