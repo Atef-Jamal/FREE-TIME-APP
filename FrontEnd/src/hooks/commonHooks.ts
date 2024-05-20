@@ -195,6 +195,7 @@ export const useScrollToElement = (
         return prev;
       });
     }
+    setElement(null)
   };
 
   useEffect(() => {
@@ -207,7 +208,6 @@ export const useScrollToElement = (
     return () => {
       element?.classList.remove(styles);
       element?.removeEventListener("click", handleRemoveAnimation);
-      setElement(null)
     };
   }, [element]);
 };
