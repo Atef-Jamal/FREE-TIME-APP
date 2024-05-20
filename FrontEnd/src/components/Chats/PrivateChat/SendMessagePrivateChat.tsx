@@ -40,7 +40,7 @@ const SendMessagePrivateChat = ({
       Date.now() +
       Date.now()
     ).toString();
-    const event = new CustomEvent("iCreatePrivatMessage", {
+    const event = new CustomEvent("immediatelyPrivateMessage", {
       detail: {
         _id: uniqeIdForRollback,
         sender: currentUser,

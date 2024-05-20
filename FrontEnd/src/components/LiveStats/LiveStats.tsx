@@ -10,7 +10,7 @@ import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
 import {
-  useCloseMenuOnClickOutSide,
+  useCloseMenuOnClickOutSideListener,
   useFetchAllUsers,
   useListenToSocketEvent,
 } from "../../hooks";
@@ -51,7 +51,7 @@ const LiveStats = () => {
     },
   });
 
-  useCloseMenuOnClickOutSide({
+  useCloseMenuOnClickOutSideListener({
     menuRef: langRef,
     onClose: () => {
       setToggleLanguage(false);

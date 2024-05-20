@@ -5,7 +5,7 @@ import {
 import { useFetchAllApps, useFetchTaskApp } from "./appsHooks";
 import {
   useListenToSocketEvent,
-  useCloseMenuOnClickOutSide,
+  useCloseMenuOnClickOutSideListener,
 } from "./listenersHooks";
 import { useFetchFrames } from "./framesHooks";
 import {
@@ -20,7 +20,7 @@ export {
   useFetchUser,
   useFetchActivities,
   useFetchMusics,
-  useCloseMenuOnClickOutSide,
+  useCloseMenuOnClickOutSideListener,
   useFetchPublicMessages,
   useFetchPrivateChatMessages,
   useFetchAllApps,

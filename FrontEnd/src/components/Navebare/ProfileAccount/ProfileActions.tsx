@@ -17,7 +17,7 @@ import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
 import { TypeNotifications } from "../../../types/notificationTypes";
 import {
-  useCloseMenuOnClickOutSide,
+  useCloseMenuOnClickOutSideListener,
   useListenToSocketEvent,
 } from "../../../hooks";
 
@@ -68,7 +68,7 @@ const ProfileActions = () => {
     },
   });
 
-  useCloseMenuOnClickOutSide({
+  useCloseMenuOnClickOutSideListener({
     menuRef: profileMenuRef,
     onClose: () => setOpenProfileMenu(false),
   });

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAppSelector } from "../context/Hooks";
 
 export const useListenToSocketEvent = <T>({
@@ -37,20 +37,24 @@ export const useListenToDocumentEvent = <T>({
   }, dependencies);
 };
 
-export const useCloseMenuOnClickOutSide = ({
+export const useCloseMenuOnClickOutSideListener = ({
   menuRef,
   onClose,
 }: {
   menuRef: React.RefObject<HTMLElement>;
   onClose: () => void;
 }) => {
-  useEffect(() => {
-    const func = (event: globalThis.MouseEvent) => {
+  const handleClose = useCallback(
+    (event: MouseEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) {
         onClose();
       }
-    };
-    document.addEventListener("click", func);
-    return () => document.removeEventListener("click", func);
-  }, []);
+    },
+    [menuRef, onClose]
+  );
+
+  useEffect(() => {
+    document.addEventListener("click", handleClose);
+    return () => document.removeEventListener("click", handleClose);
+  }, [handleClose]);
 };

@@ -13,7 +13,7 @@ import { FaHeart, FaStar } from "react-icons/fa";
 import { TypeFilterQuery, TypeTaskApp } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
 import { VscExpandAll } from "react-icons/vsc";
-import { useCloseMenuOnClickOutSide, useFetchAllApps } from "../hooks";
+import { useCloseMenuOnClickOutSideListener, useFetchAllApps } from "../hooks";
 import AppDetail from "../components/Earn/AppDetail";
 import AppSkeleton from "../components/Earn/AppSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
@@ -70,12 +70,12 @@ const Earn = () => {
     }
   }, [appDetail]);
 
-  useCloseMenuOnClickOutSide({
+  useCloseMenuOnClickOutSideListener({
     menuRef: filterMenuRef,
     onClose: () => setOpenFilterMenu(false),
   });
 
-  useCloseMenuOnClickOutSide({
+  useCloseMenuOnClickOutSideListener({
     menuRef: deviceMenuRef,
     onClose: () => setSelectDevice(false),
   });
@@ -337,7 +337,8 @@ const Earn = () => {
               {loading &&
                 [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
 
-              {!error&& !loading &&
+              {!error &&
+                !loading &&
                 apps.map((taskDetail, i) => {
                   return (
                     <AppCard

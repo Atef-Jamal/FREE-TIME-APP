@@ -35,7 +35,7 @@ const MobileChat = () => {
   };
 
   useListenToDocumentEvent({
-    eventToListen: "iCreatePublicMessageMobile",
+    eventToListen: "immediatelyMessage",
     onUpdate: handleAddMessage,
   });
 
@@ -53,11 +53,11 @@ const MobileChat = () => {
       if (msg.type === "MESSAGE") {
         return (
           <Message
-            key={index}
-            setStopScrolling={setStopScrolling}
-            stopScrolling={stopScrolling}
+            key={msg._id}
             singleMessage={msg}
             messageRef={index === messages.length - 1 ? lastMessageRef : null}
+            setStopScrolling={setStopScrolling}
+            stopScrolling={stopScrolling}
           />
         );
       }
@@ -84,7 +84,7 @@ const MobileChat = () => {
         hiddenLiveStats ? "top-[55px]" : "top-[98px]"
       } w-full bg-[#202233]`}
     >
-      <div className="w-full h-full px-1 pb-1 flex flex-col items-center gap-[5px] overflow-scroll scrollbar-none">
+      <div className="w-full h-full px-1 pb-1 flex flex-col items-center gap-[5px] overflow-scroll scrollbar-none transition-all">
         {loading && <Spinner className="m-auto w-12 h-12 border-[4px]" />}
         {error && (
           <div className="m-auto w-full text-center text-gray-400">

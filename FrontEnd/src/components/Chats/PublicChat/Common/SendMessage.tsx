@@ -1,4 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { showPopup } from "../../../../context/StateManeger";
@@ -6,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
 import { makeRequest } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
-import { useCloseMenuOnClickOutSide } from "../../../../hooks";
+import { useCloseMenuOnClickOutSideListener } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 
@@ -55,7 +61,8 @@ const SendMessage = ({
       Date.now() +
       Date.now()
     ).toString();
-    const event = new CustomEvent("iCreatePublicMessage", {
+
+    const customEvent = new CustomEvent("immediatelyMessage", {
       detail: {
         _id: uniqeIdForRollback,
         sender: currentUser,
@@ -71,28 +78,7 @@ const SendMessage = ({
         isSent: false,
       },
     });
-    const mobileEvent = new CustomEvent("iCreatePublicMessageMobile", {
-      detail: {
-        _id: uniqeIdForRollback,
-        sender: currentUser,
-        type: "MESSAGE",
-        message,
-        loves: [],
-        likes: [],
-        dislikes: [],
-        isDeleted: false,
-        mentioned: user?.name || null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isSent: false,
-      },
-    });
-    if(window.innerWidth <= 867){
-      document.dispatchEvent(mobileEvent);
-    }else{
-      
-    document.dispatchEvent(event);
-    }
+    document.dispatchEvent(customEvent);
     setMessage("");
     try {
       const response = await makeRequest.post("api/publicchat", {
@@ -100,12 +86,13 @@ const SendMessage = ({
         messageText: message,
         mentioned: user?._id,
       });
+
       setMessages((prev) => {
         return prev
           .filter((item) => item._id !== uniqeIdForRollback)
           .concat([{ ...response.data, isSent: true }]);
       });
-      console.log(response.data);
+
       socket?.emit("public-message", response.data);
       if (user) {
         setUser(null);
@@ -123,12 +110,21 @@ const SendMessage = ({
     }
   };
 
-  useCloseMenuOnClickOutSide({
+  useCloseMenuOnClickOutSideListener({
     menuRef: mentionListRef,
     onClose: () => {
       setOpenMentionList(false);
     },
   });
+
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+  }, []);
+
+  const handleOpenMentionList = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    setOpenMentionList((prev) => !prev);
+  }, []);
 
   return (
     <div className="relative w-full h-[67px] bg-[#0a071670] flex items-center">
@@ -164,7 +160,7 @@ const SendMessage = ({
         <input
           name="send"
           type="text"
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={handleInputChange}
           readOnly={!currentUser}
           value={message}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
@@ -181,11 +177,7 @@ const SendMessage = ({
           </span>
         )}
         <div
-          id="mentionbutton"
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpenMentionList((prev) => !prev);
-          }}
+          onClick={handleOpenMentionList}
           className="relative py-[4px] px-3 rounded-md bg-[#542ba06e] "
         >
           <p className=" text-gray-400 font-bold text-lg">@</p>

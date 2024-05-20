@@ -46,7 +46,7 @@ const DisktopChat = () => {
   };
 
   useListenToDocumentEvent({
-    eventToListen: "iCreatePublicMessage",
+    eventToListen: "immediatelyMessage",
     onUpdate: handleAddMessage,
   });
 
@@ -76,7 +76,7 @@ const DisktopChat = () => {
   }, [messages]);
 
   return (
-    <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full">
+    <div className="relative flex flex-col items-center bg-[#241f31c0] h-full w-full">
       <span
         onClick={() => dispatch(toggleThisEntity({ entity: "isChatOpen" }))}
         className="w-10 h-10 absolute top-[7%] -left-[42px] bg-[#513d80f8] rounded-sm flex items-center justify-center cursor-pointer"
@@ -88,7 +88,7 @@ const DisktopChat = () => {
         )}
       </span>
       <ChatHeader />
-      <div className="w-full flex flex-col items-center h-[83%] overflow-auto  gap-2 p-2 transition-all">
+      <div className="w-full flex flex-col items-center h-full overflow-auto gap-2 p-2 transition-all">
         {error && (
           <div className="w-full h-full flex items-center justify-center">
             {error}

@@ -135,7 +135,7 @@ const Layout = () => {
           </div>
           <div
             style={{ height: `calc(100dvh - 75px)` }}
-            className={`sm:hidden fixed bottom-0 right-0 z-[2] w-[25%] h-[90dvh] lg:w-[35%] bg-[#202138] border-l border-gray-600  transition-all ${
+            className={`sm:hidden fixed bottom-0 right-0 z-[2] w-[30%] h-[90dvh] lg:w-[38%] bg-[#202138] border-l border-gray-600  transition-all ${
               isChatOpen ? " translate-x-0" : " -translate-x-[-100%]"
             } `}
           >

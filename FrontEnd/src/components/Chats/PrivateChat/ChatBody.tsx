@@ -116,7 +116,7 @@ const ChatBody = () => {
   };
 
   useListenToDocumentEvent({
-    eventToListen: "iCreatePrivatMessage",
+    eventToListen: "immediatelyPrivateMessage",
     onUpdate: handleAddMessage,
     dependencies: [id],
   });
