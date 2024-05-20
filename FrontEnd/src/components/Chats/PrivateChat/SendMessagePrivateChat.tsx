@@ -48,7 +48,7 @@ const SendMessagePrivateChat = ({
         createdAt: new Date(),
         updatedAt: new Date(),
         isRead: false,
-        isSent: false,
+        isSended: false,
       },
     });
     document.dispatchEvent(event);
@@ -59,7 +59,7 @@ const SendMessagePrivateChat = ({
       setMessages((prev) => {
         return prev
           .filter((item) => item._id !== uniqeIdForRollback)
-          .concat([{ ...response.data, isSent: true }]);
+          .concat([{ ...response.data, isSended: true }]);
       });
 
       socket?.emit("private-message", { to: id, data: response.data });

@@ -49,10 +49,10 @@ const PrivateMessageItem = ({
           style={{ direction: "ltr" }}
           className="flex justify-between items-center px-2 sm:px-1 gap-2 border-b border-gray-600"
         >
-          {message.isSent !== undefined && message.isSent === true && (
+          {message.isSended !== undefined && message.isSended === true && (
             <FcOk className="mr-4" />
           )}
-          {message.isSent !== undefined && message.isSent === false && (
+          {message.isSended !== undefined && message.isSended === false && (
             <BiCircle className="mr-4" />
           )}
           <span className="text-[#64cf4f] text-xs truncate">

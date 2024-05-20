@@ -12,7 +12,7 @@ export interface TypePublicChatMessage {
   dislikes: string[];
   loves: string[];
   mentioned: User | null;
-  isSent?: boolean;
+  isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }
 
 export interface TypePublicChatFreeTime {

@@ -76,32 +76,38 @@ const SendMessage = ({
         mentioned: user?.name || null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        isSent: false,
+        isSended: "PENDING",
       },
     });
     document.dispatchEvent(customEvent);
     setMessage("");
-    inputRef.current?.focus()
+    inputRef.current?.focus();
     try {
       const response = await makeRequest.post("api/publicchat", {
         type: "MESSAGE",
         messageText: message,
         mentioned: user?._id,
       });
-setTimeout(() => {
-  setMessages((prev) => {
+      setMessages((prev) => {
         return prev
           .filter((item) => item._id !== uniqeIdForRollback)
-          .concat([{ ...response.data, isSent: true }]);
+          .concat([{ ...response.data, isSended: "SUCCESS" }]);
       });
-},5000)
-      
 
       socket?.emit("public-message", response.data);
       if (user) {
         setUser(null);
       }
     } catch (error) {
+      setMessages((prev) => {
+        return prev.map((item) => {
+          if (item.type === "MESSAGE" && item._id === uniqeIdForRollback) {
+            return { ...item, isSended: "FAILED" };
+          } else {
+            return item;
+          }
+        });
+      });
       dispatch(
         showPopup({
           status: true,

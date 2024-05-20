@@ -20,7 +20,7 @@ const MobileChat = () => {
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("to");
-  const [reScroll, setReScroll] = useState<boolean>(false);
+
   useScrollToElement([messages], "end");
 
   useListenToSocketEvent<TypePublicChatItem>({
@@ -32,7 +32,6 @@ const MobileChat = () => {
 
   const handleAddMessage = (data: any) => {
     setMessages((prev) => [...prev, data.detail]);
-    setReScroll(prev => !prev)
   };
 
   useListenToDocumentEvent({
@@ -47,7 +46,7 @@ const MobileChat = () => {
     if (!stopScrolling && !queryParam) {
       scrollToLastMessage();
     }
-  }, [messages,reScroll]);
+  }, [messages]);
 
   const messagesList = useMemo(() => {
     return messages.map((msg, index) => {

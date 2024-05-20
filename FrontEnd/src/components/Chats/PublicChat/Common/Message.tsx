@@ -14,6 +14,7 @@ import { User } from "../../../../types/userTypes";
 import { formateDate, handleApiError } from "../../../../utils/common";
 import { verifiedImage } from "../../../../assets";
 import { BiCircle } from "react-icons/bi";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -45,7 +46,7 @@ const Message = ({
     likes,
     loves,
     mentioned,
-    isSent,
+    isSended,
   } = messageItem;
 
   const dispatch = useAppDispatch();
@@ -61,6 +62,7 @@ const Message = ({
       const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
         isDeleted: true,
       });
+      setMessageItem((prev) => ({ ...prev, isDeleted: true }));
       socket?.emit("interact-with-public-message", response.data);
     } catch (error) {
       dispatch(
@@ -110,9 +112,8 @@ const Message = ({
         `api/publicchat/${_id}/${fieldName}`,
         { FOR_CONSISTENCY: "FOR_CONSISTENCY" }
       );
-      if (response.status === 200) {
-        socket?.emit("interact-with-public-message", response.data);
-      }
+      setMessageItem(response.data);
+      socket?.emit("interact-with-public-message", response.data);
     } catch (error) {
       dispatch(
         showPopup({
@@ -204,11 +205,16 @@ const Message = ({
             {message}
           </p>
           <div className="flex items-center justify-end gap-3 ml-auto w-full">
-            {isSent !== undefined && isSent === true && (
+            {isSended !== undefined && isSended === "SUCCESS" && (
               <FcOk className="mr-auto " />
             )}
-            {isSent !== undefined && isSent === false && (
+
+            {isSended !== undefined && isSended === "PENDING" && (
               <BiCircle className="mr-auto opacity-70" />
+            )}
+
+            {isSended !== undefined && isSended === "FAILED" && (
+              <IoCloseCircleOutline className="mr-auto " />
             )}
             <button
               onClick={() => reactToMessage("dislikes", "likes", "loves")}
