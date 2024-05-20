@@ -337,7 +337,7 @@ const Earn = () => {
               {loading &&
                 [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
 
-              {!error &&
+              {!error&& !loading &&
                 apps.map((taskDetail, i) => {
                   return (
                     <AppCard
