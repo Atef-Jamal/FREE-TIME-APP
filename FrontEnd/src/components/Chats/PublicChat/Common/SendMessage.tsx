@@ -71,7 +71,28 @@ const SendMessage = ({
         isSent: false,
       },
     });
+    const mobileEvent = new CustomEvent("iCreatePublicMessageMobile", {
+      detail: {
+        _id: uniqeIdForRollback,
+        sender: currentUser,
+        type: "MESSAGE",
+        message,
+        loves: [],
+        likes: [],
+        dislikes: [],
+        isDeleted: false,
+        mentioned: user?.name || null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isSent: false,
+      },
+    });
+    if(window.innerWidth <= 867){
+      document.dispatchEvent(mobileEvent);
+    }else{
+      
     document.dispatchEvent(event);
+    }
     setMessage("");
     try {
       const response = await makeRequest.post("api/publicchat", {

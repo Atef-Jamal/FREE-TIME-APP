@@ -35,7 +35,7 @@ const MobileChat = () => {
   };
 
   useListenToDocumentEvent({
-    eventToListen: "iCreatePublicMessage",
+    eventToListen: "iCreatePublicMessageMobile",
     onUpdate: handleAddMessage,
   });
 
