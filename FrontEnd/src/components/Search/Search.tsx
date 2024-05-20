@@ -18,6 +18,16 @@ const Search = () => {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
+  let resultsCounts = 0;
+
+  if (results) {
+    resultsCounts =
+      results.features.length +
+      results.users.length +
+      results.apps.length +
+      results.frames.length;
+  }
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
     if (searchTerm.trim() === "") {
@@ -52,7 +62,7 @@ const Search = () => {
   }, [searchQ]);
 
   return (
-    <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[81%]  overflow-auto absolute top-20 sm:top-11 translate-x-[-50%]  bg-[#19181b] rounded-lg">
+    <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[79%] overflow-auto absolute top-20 sm:top-[57px] translate-x-[-50%]  bg-[#19181b] rounded-lg">
       <div className="sticky top-0 p-2  bg-[#2f2646] flex">
         <div className="w-full border border-gray-700 rounded-md">
           <input
@@ -83,6 +93,12 @@ const Search = () => {
 
         {!loading && results && (
           <div className="p-2">
+            <p className="text-sm xs:text-[10px] text-gray-400 mb-1">
+              <span className="text-sm xs:text-[10px] text-[#8be64e] mx-1 ">
+                {resultsCounts}
+              </span>
+              Results Found
+            </p>
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
               Feartures
             </h1>
@@ -99,7 +115,7 @@ const Search = () => {
                   className="py-1 px-2 flex items-center gap-3"
                 >
                   <span className="rounded-lg">
-                    <MdOutlineWeb className="text-3xl sm:text-2xl" />
+                    <MdOutlineWeb className="text-4xl sm:text-3xl" />
                   </span>
                   <Link
                     to={item.link}
@@ -131,7 +147,7 @@ const Search = () => {
                     src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
                       item.image
                     }`}
-                    className="w-9 h-9 sm:w-6 sm:h-6 object-fill rounded-full "
+                    className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
                   />
                   <Link
                     to={item.link}
@@ -163,7 +179,7 @@ const Search = () => {
                     src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
                       item.image
                     }`}
-                    className="w-9 h-9 sm:w-6 sm:h-6 object-fill rounded-full "
+                    className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
                   />
                   <Link
                     to={item.link}
@@ -190,7 +206,7 @@ const Search = () => {
                   key={item._id}
                   className="py-1 px-2 flex items-center gap-3"
                 >
-                  <div className="relative w-9 h-9 sm:w-6 sm:h-6 object-fill ">
+                  <div className="relative w-10 h-10 sm:w-7 sm:h-7 object-fill ">
                     <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#353052]"></span>
                     <img
                       alt=""

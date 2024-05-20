@@ -53,7 +53,7 @@ export const useFetchPrivateChatMessages = ({
   secondUserId: string | undefined;
   dependencies?: any[];
 }) => {
-  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
   const [secondUser, setSecondUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -97,7 +97,7 @@ export const useFetchPrivateChatMessages = ({
           }
         );
         if (response.status === 200) {
-          socet?.emit("conversation-readed", {
+          socket?.emit("conversation-readed", {
             reciever: secondUserId,
             sender: currentUser?._id,
           });

@@ -82,24 +82,6 @@ export const useFetchUser = ({
   return { user, setUser, loading, error };
 };
 
-export const useCloseMenuOnClickOutSide = ({
-  menuRef,
-  onClose,
-}: {
-  menuRef: React.RefObject<HTMLElement>;
-  onClose: () => void;
-}) => {
-  useEffect(() => {
-    const func = (event: globalThis.MouseEvent) => {
-      if (!menuRef.current?.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener("click", func);
-    return () => document.removeEventListener("click", func);
-  }, []);
-};
-
 export const useFetchActivities = ({
   userId,
   initialLoading = false,

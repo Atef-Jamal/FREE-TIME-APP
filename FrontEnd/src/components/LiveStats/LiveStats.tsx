@@ -12,7 +12,7 @@ import { User } from "../../types/userTypes";
 import {
   useCloseMenuOnClickOutSide,
   useFetchAllUsers,
-  useListenToEvent,
+  useListenToSocketEvent,
 } from "../../hooks";
 
 const LiveStats = () => {
@@ -28,7 +28,7 @@ const LiveStats = () => {
     { title: "Egypt", lang: "ar" },
   ];
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
       setUsers((prevUsers) => {
@@ -44,7 +44,7 @@ const LiveStats = () => {
     },
   });
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "new-user-joined",
     onUpdate: (newUser) => {
       setUsers((prev) => [...prev, newUser]);

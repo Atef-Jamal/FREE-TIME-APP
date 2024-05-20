@@ -3,10 +3,12 @@ import {
   useFetchPrivateChatMessages,
 } from "./chatsHooks";
 import { useFetchAllApps, useFetchTaskApp } from "./appsHooks";
-import { useListenToEvent } from "./listenersHooks";
+import {
+  useListenToSocketEvent,
+  useCloseMenuOnClickOutSide,
+} from "./listenersHooks";
 import { useFetchFrames } from "./framesHooks";
 import {
-  useCloseMenuOnClickOutSide,
   useFetchActivities,
   useFetchAllUsers,
   useFetchMusics,
@@ -24,5 +26,5 @@ export {
   useFetchAllApps,
   useFetchTaskApp,
   useFetchFrames,
-  useListenToEvent,
+  useListenToSocketEvent,
 };

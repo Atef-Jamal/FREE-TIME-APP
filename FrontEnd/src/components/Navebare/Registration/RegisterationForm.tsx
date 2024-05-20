@@ -25,7 +25,7 @@ const RegisterationForm = () => {
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
   const [searchParams] = useSearchParams();
-  const { currentUser, isSignInMode, socet } = useAppSelector(
+  const { currentUser, isSignInMode, socket } = useAppSelector(
     (state) => state.stateManeger
   );
 
@@ -101,7 +101,7 @@ const RegisterationForm = () => {
 
         const response = await register(formDtaa, queryParam);
         localStorage.setItem("token", response.data.token);
-        socet?.emit("new-user-joined", response.data._doc);
+        socket?.emit("new-user-joined", response.data._doc);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
       }
     } catch (error) {

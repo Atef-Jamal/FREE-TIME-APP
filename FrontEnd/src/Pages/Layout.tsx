@@ -18,7 +18,7 @@ import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
 import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
-import { useListenToEvent } from "../hooks";
+import { useListenToSocketEvent } from "../hooks";
 
 const Layout = () => {
   const {
@@ -37,16 +37,17 @@ const Layout = () => {
   const referreQuery = searchParams.get("referrerUser");
 
   useEffect(() => {
+    if (!currentUser?._id) return;
     const establishSocetConnection = () => {
-      const socet = io(import.meta.env.VITE_SERVER_BASE_URL, {
-        query: { userId: currentUser?._id },
+      const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
+        query: { userId: currentUser._id },
       });
-      dispatch(setSocet(socet));
+      dispatch(setSocet(socket));
     };
     establishSocetConnection();
   }, [currentUser?._id]);
 
-  useListenToEvent<string[]>({
+  useListenToSocketEvent<string[]>({
     eventToListen: "online-users",
     onUpdate: (data) => {
       const filtered = data.filter((userId) => userId !== "undefined");

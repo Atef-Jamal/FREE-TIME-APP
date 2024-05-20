@@ -8,14 +8,20 @@ import { makeRequest } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
 import { useCloseMenuOnClickOutSide } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
+import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 
 interface typeProps {
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
+  setMessages: React.Dispatch<React.SetStateAction<TypePublicChatItem[]>>;
 }
 
-const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
-  const { currentUser, socet, onlineUsers } = useAppSelector(
+const SendMessage = ({
+  stopScrolling,
+  setStopScrolling,
+  setMessages,
+}: typeProps) => {
+  const { currentUser, socket, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,19 +46,46 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       );
       return;
     }
-
     setLoading(true);
     if (stopScrolling) {
       setStopScrolling(false);
     }
+    const uniqeIdForRollback = (
+      Math.random() * 1000000 +
+      Date.now() +
+      Date.now()
+    ).toString();
+    const event = new CustomEvent("iCreatePublicMessage", {
+      detail: {
+        _id: uniqeIdForRollback,
+        sender: currentUser,
+        type: "MESSAGE",
+        message,
+        loves: [],
+        likes: [],
+        dislikes: [],
+        isDeleted: false,
+        mentioned: user?.name || null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isSent: false,
+      },
+    });
+    document.dispatchEvent(event);
+    setMessage("");
     try {
-      setMessage("");
       const response = await makeRequest.post("api/publicchat", {
         type: "MESSAGE",
         messageText: message,
         mentioned: user?._id,
       });
-      socet?.emit("public-message", response.data);
+      setMessages((prev) => {
+        return prev
+          .filter((item) => item._id !== uniqeIdForRollback)
+          .concat([{ ...response.data, isSent: true }]);
+      });
+      console.log(response.data);
+      socket?.emit("public-message", response.data);
       if (user) {
         setUser(null);
       }

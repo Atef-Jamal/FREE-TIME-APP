@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { toggleThisEntity } from "../../../../context/StateManeger";
@@ -8,9 +8,13 @@ import ChatHeader from "../Common/ChatHeader";
 import SendMessage from "../Common/SendMessage";
 import FreeTime from "../Common/FreeTime";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
-import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
+import {
+  useFetchPublicMessages,
+  useListenToSocketEvent,
+} from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
 import { useScrollToElement } from "../../../../hooks/commonHooks";
+import { useListenToDocumentEvent } from "../../../../hooks/listenersHooks";
 
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);
@@ -21,7 +25,7 @@ const DisktopChat = () => {
 
   useScrollToElement([messages], "end");
 
-  useListenToEvent<TypePublicChatItem>({
+  useListenToSocketEvent<TypePublicChatItem>({
     eventToListen: "public-message",
     onUpdate: (data) => {
       setMessages((prev) => [...prev, data]);
@@ -37,20 +41,39 @@ const DisktopChat = () => {
     }
   }, [messages]);
 
-  if (error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        {error}
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <Spinner className="mx-auto w-8 h-8" />
-      </div>
-    );
-  }
+  const handleAddMessage = (data: any) => {
+    setMessages((prev) => [...prev, data.detail]);
+  };
+
+  useListenToDocumentEvent({
+    eventToListen: "iCreatePublicMessage",
+    onUpdate: handleAddMessage,
+  });
+
+  const messagesList = useMemo(() => {
+    return messages.map((msg, index) => {
+      if (msg.type === "MESSAGE") {
+        return (
+          <Message
+            key={msg._id}
+            singleMessage={msg}
+            messageRef={index === messages.length - 1 ? lastMessageRef : null}
+            setStopScrolling={setStopScrolling}
+            stopScrolling={stopScrolling}
+          />
+        );
+      }
+      if (msg.type === "FREETIME") {
+        return (
+          <FreeTime
+            key={msg._id}
+            singleMessage={msg}
+            messageRef={index === messages.length - 1 ? lastMessageRef : null}
+          />
+        );
+      }
+    });
+  }, [messages]);
 
   return (
     <div className="relative flex flex-col items-center mx-auto bg-[#241f31c0] justify-between h-full w-full">
@@ -66,35 +89,22 @@ const DisktopChat = () => {
       </span>
       <ChatHeader />
       <div className="w-full flex flex-col items-center h-[83%] overflow-auto  gap-2 p-2 transition-all">
-        {messages.length > 0 &&
-          messages.map((message, index) => {
-            if (message.type === "FREETIME") {
-              return (
-                <FreeTime
-                  key={message._id}
-                  singleMessage={message}
-                  messageRef={
-                    index === messages.length - 1 ? lastMessageRef : null
-                  }
-                />
-              );
-            }
-            return (
-              <Message
-                key={message._id}
-                singleMessage={message}
-                setStopScrolling={setStopScrolling}
-                stopScrolling={stopScrolling}
-                messageRef={
-                  index === messages.length - 1 ? lastMessageRef : null
-                }
-              />
-            );
-          })}
+        {error && (
+          <div className="w-full h-full flex items-center justify-center">
+            {error}
+          </div>
+        )}
+        {loading && (
+          <div className="w-full h-full flex items-center justify-center">
+            <Spinner className="mx-auto w-8 h-8" />
+          </div>
+        )}
+        {messagesList}
       </div>
       <SendMessage
         stopScrolling={stopScrolling}
         setStopScrolling={setStopScrolling}
+        setMessages={setMessages}
       />
     </div>
   );

@@ -3,16 +3,17 @@ import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
-import { FcLike } from "react-icons/fc";
+import { FcLike, FcOk } from "react-icons/fc";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
 import { makeRequest } from "../../../../utils";
 import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
-import { useListenToEvent } from "../../../../hooks";
+import { useListenToSocketEvent } from "../../../../hooks";
 import { User } from "../../../../types/userTypes";
 import { formateDate, handleApiError } from "../../../../utils/common";
 import { verifiedImage } from "../../../../assets";
+import { BiCircle } from "react-icons/bi";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -30,7 +31,7 @@ const Message = ({
   messageRef,
 }: TypeMessageProp) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [messageItem, setMessageItem] =
     useState<TypePublicChatMessage>(singleMessage);
 
@@ -44,6 +45,7 @@ const Message = ({
     likes,
     loves,
     mentioned,
+    isSent,
   } = messageItem;
 
   const dispatch = useAppDispatch();
@@ -59,7 +61,7 @@ const Message = ({
       const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
         isDeleted: true,
       });
-      socet?.emit("interact-with-public-message", response.data);
+      socket?.emit("interact-with-public-message", response.data);
     } catch (error) {
       dispatch(
         showPopup({
@@ -109,7 +111,7 @@ const Message = ({
         { FOR_CONSISTENCY: "FOR_CONSISTENCY" }
       );
       if (response.status === 200) {
-        socet?.emit("interact-with-public-message", response.data);
+        socket?.emit("interact-with-public-message", response.data);
       }
     } catch (error) {
       dispatch(
@@ -122,7 +124,7 @@ const Message = ({
     }
   };
 
-  useListenToEvent<TypePublicChatMessage>({
+  useListenToSocketEvent<TypePublicChatMessage>({
     eventToListen: "interact-with-public-message",
     onUpdate: (updatedMessage) => {
       if (updatedMessage._id === _id) {
@@ -131,7 +133,7 @@ const Message = ({
     },
   });
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
       if (sender._id === updatedUser._id) {
@@ -201,7 +203,13 @@ const Message = ({
             )}
             {message}
           </p>
-          <div className="flex items-center justify-end gap-3 ml-auto w-[130px]  ">
+          <div className="flex items-center justify-end gap-3 ml-auto w-full">
+            {isSent !== undefined && isSent === true && (
+              <FcOk className="mr-auto " />
+            )}
+            {isSent !== undefined && isSent === false && (
+              <BiCircle className="mr-auto opacity-70" />
+            )}
             <button
               onClick={() => reactToMessage("dislikes", "likes", "loves")}
               className="flex items-center gap-1"

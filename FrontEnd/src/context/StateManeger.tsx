@@ -29,7 +29,7 @@ const initialState: TypeInitialState = {
     audio: new Audio(),
     musicInfo: null,
   },
-  socet: null,
+  socket: null,
   onlineUsers: [],
   reFetchThisUserId: "",
   allUnReadedMesseges: [],
@@ -117,7 +117,7 @@ const StateManegerSlice = createSlice({
     },
 
     setSocet(state, action: PayloadAction<any>) {
-      state.socet = action.payload;
+      state.socket = action.payload;
     },
     setOnlineUsers(state, action: PayloadAction<string[]>) {
       state.onlineUsers = action.payload;

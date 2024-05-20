@@ -16,7 +16,10 @@ import UserImage from "../../Others/UserImage";
 import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
 import { TypeNotifications } from "../../../types/notificationTypes";
-import { useCloseMenuOnClickOutSide, useListenToEvent } from "../../../hooks";
+import {
+  useCloseMenuOnClickOutSide,
+  useListenToSocketEvent,
+} from "../../../hooks";
 
 const ProfileActions = () => {
   const { currentUser, openNotification } = useAppSelector(
@@ -57,7 +60,7 @@ const ProfileActions = () => {
     fetchNotifications();
   }, [currentUser]);
 
-  useListenToEvent<TypeNotifications>({
+  useListenToSocketEvent<TypeNotifications>({
     eventToListen: "new-notification",
     onUpdate: (data) => {
       setNotifications((prev) => [...prev, data]);

@@ -1,13 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import FreeTime from "../Common/FreeTime";
 import Message from "../Common/Message";
 import SendMessage from "../Common/SendMessage";
 import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
-import { useFetchPublicMessages, useListenToEvent } from "../../../../hooks";
+import {
+  useFetchPublicMessages,
+  useListenToSocketEvent,
+} from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
 import { useScrollToElement } from "../../../../hooks/commonHooks";
 import { useSearchParams } from "react-router-dom";
+import { useListenToDocumentEvent } from "../../../../hooks/listenersHooks";
 
 const MobileChat = () => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
@@ -19,11 +23,20 @@ const MobileChat = () => {
 
   useScrollToElement([messages], "end");
 
-  useListenToEvent<TypePublicChatItem>({
+  useListenToSocketEvent<TypePublicChatItem>({
     eventToListen: "public-message",
     onUpdate: (data) => {
       setMessages((prev) => [...prev, data]);
     },
+  });
+
+  const handleAddMessage = (data: any) => {
+    setMessages((prev) => [...prev, data.detail]);
+  };
+
+  useListenToDocumentEvent({
+    eventToListen: "iCreatePublicMessage",
+    onUpdate: handleAddMessage,
   });
 
   useEffect(() => {
@@ -33,6 +46,31 @@ const MobileChat = () => {
     if (!stopScrolling && !queryParam) {
       scrollToLastMessage();
     }
+  }, [messages]);
+
+  const messagesList = useMemo(() => {
+    return messages.map((msg, index) => {
+      if (msg.type === "MESSAGE") {
+        return (
+          <Message
+            key={index}
+            setStopScrolling={setStopScrolling}
+            stopScrolling={stopScrolling}
+            singleMessage={msg}
+            messageRef={index === messages.length - 1 ? lastMessageRef : null}
+          />
+        );
+      }
+      if (msg.type === "FREETIME") {
+        return (
+          <FreeTime
+            key={msg._id}
+            singleMessage={msg}
+            messageRef={index === messages.length - 1 ? lastMessageRef : null}
+          />
+        );
+      }
+    });
   }, [messages]);
 
   return (
@@ -53,33 +91,13 @@ const MobileChat = () => {
             {error}an eror
           </div>
         )}
-        {messages?.map((message, index) => {
-          if (message.type === "FREETIME") {
-            return (
-              <FreeTime
-                key={message._id}
-                singleMessage={message}
-                messageRef={
-                  index === messages.length - 1 ? lastMessageRef : null
-                }
-              />
-            );
-          }
-          return (
-            <Message
-              key={index}
-              setStopScrolling={setStopScrolling}
-              stopScrolling={stopScrolling}
-              singleMessage={message}
-              messageRef={index === messages.length - 1 ? lastMessageRef : null}
-            />
-          );
-        })}
+        {messagesList}
       </div>
       <div className="w-full">
         <SendMessage
           stopScrolling={stopScrolling}
           setStopScrolling={setStopScrolling}
+          setMessages={setMessages}
         />
       </div>
     </div>

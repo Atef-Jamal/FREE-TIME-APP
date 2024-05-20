@@ -1,9 +1,10 @@
-import { FcCheckmark } from "react-icons/fc";
+import { FcCheckmark, FcOk } from "react-icons/fc";
 import { useAppSelector } from "../../../context/Hooks";
 import { formateDate } from "../../../utils/common";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RefObject } from "react";
 import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import { BiCircle } from "react-icons/bi";
 
 const PrivateMessageItem = ({
   messages,
@@ -48,6 +49,12 @@ const PrivateMessageItem = ({
           style={{ direction: "ltr" }}
           className="flex justify-between items-center px-2 sm:px-1 gap-2 border-b border-gray-600"
         >
+          {message.isSent !== undefined && message.isSent === true && (
+            <FcOk className="mr-4" />
+          )}
+          {message.isSent !== undefined && message.isSent === false && (
+            <BiCircle className="mr-4" />
+          )}
           <span className="text-[#64cf4f] text-xs truncate">
             {message.sender.name}
           </span>

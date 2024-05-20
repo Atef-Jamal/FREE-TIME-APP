@@ -1,5 +1,5 @@
 import { IoMdSend } from "react-icons/io";
-import { useAppDispatch } from "../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { showPopup } from "../../../context/StateManeger";
@@ -17,6 +17,7 @@ const SendMessagePrivateChat = ({
   setConversationReaded: React.Dispatch<React.SetStateAction<boolean>>;
   setMessages: React.Dispatch<React.SetStateAction<TypePrivateMessage[]>>;
 }) => {
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
 
   const dispatch = useAppDispatch();
@@ -33,12 +34,35 @@ const SendMessagePrivateChat = ({
       );
       return;
     }
+    setMessage("");
+    const uniqeIdForRollback = (
+      Math.random() * 1000000 +
+      Date.now() +
+      Date.now()
+    ).toString();
+    const event = new CustomEvent("iCreatePrivatMessage", {
+      detail: {
+        _id: uniqeIdForRollback,
+        sender: currentUser,
+        message,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isRead: false,
+        isSent: false,
+      },
+    });
+    document.dispatchEvent(event);
     try {
       const response = await makeRequest.post(`api/conversations/${id}`, {
         messageText: message,
       });
-      setMessage("");
-      setMessages((prev) => [...prev, response.data]);
+      setMessages((prev) => {
+        return prev
+          .filter((item) => item._id !== uniqeIdForRollback)
+          .concat([{ ...response.data, isSent: true }]);
+      });
+
+      socket?.emit("private-message", { to: id, data: response.data });
       if (conversationReaded === true) setConversationReaded(false);
     } catch (error) {
       dispatch(

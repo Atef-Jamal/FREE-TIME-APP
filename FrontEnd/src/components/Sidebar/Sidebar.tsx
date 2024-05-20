@@ -13,7 +13,7 @@ import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
 import { TypePrivateMessage } from "../../types/privateChatTypes";
-import { useListenToEvent } from "../../hooks";
+import { useListenToSocketEvent } from "../../hooks";
 
 const Sidebar = () => {
   const { resizeSidebare, currentUser, allUnReadedMesseges } = useAppSelector(
@@ -52,7 +52,7 @@ const Sidebar = () => {
     }
   }, [currentUser?._id]);
 
-  useListenToEvent<TypePrivateMessage>({
+  useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
     onUpdate: (data) => {
       if (location.pathname.includes(data.sender._id) === false) {

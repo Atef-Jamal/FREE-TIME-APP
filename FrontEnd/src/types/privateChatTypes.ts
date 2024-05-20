@@ -7,4 +7,5 @@ export interface TypePrivateMessage {
   isRead: boolean;
   createdAt: Date;
   updatedAt: Date;
+  isSent?: boolean;
 }

@@ -138,6 +138,7 @@ const router = createBrowserRouter([
             <PrivateChat />
           </Suspense>
         ),
+        errorElement: <div>an error occurred!</div>,
         children: [
           {
             path: ":id",

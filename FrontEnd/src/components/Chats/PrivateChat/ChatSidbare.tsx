@@ -4,7 +4,7 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
 import { User } from "../../../types/userTypes";
-import { useFetchAllUsers, useListenToEvent } from "../../../hooks";
+import { useFetchAllUsers, useListenToSocketEvent } from "../../../hooks";
 import Empty from "../../Others/Empty";
 import SearchBar from "../../Search/SearchBar";
 
@@ -15,14 +15,14 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const [filterVlaue, setFilterValue] = useState<string>("");
   const [emptyResults, setEmptyResults] = useState<boolean>(false);
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "new-user-joined",
     onUpdate: (newUser) => {
       setUsers((prev) => [...prev, newUser]);
     },
   });
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
       setUsers((prev) => {

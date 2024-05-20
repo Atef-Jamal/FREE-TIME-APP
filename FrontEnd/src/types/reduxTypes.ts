@@ -33,7 +33,7 @@ export interface TypeInitialState {
     audio: HTMLAudioElement;
     musicInfo: TypeMusicInfo | null;
   };
-  socet: Socket | null;
+  socket: Socket | null;
   onlineUsers: string[];
   reFetchThisUserId: string;
   allUnReadedMesseges: string[];

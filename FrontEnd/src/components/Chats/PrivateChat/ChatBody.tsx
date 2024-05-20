@@ -14,10 +14,14 @@ import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import { TypePrivateMessage } from "../../../types/privateChatTypes";
 import { User } from "../../../types/userTypes";
-import { useFetchPrivateChatMessages, useListenToEvent } from "../../../hooks";
+import {
+  useFetchPrivateChatMessages,
+  useListenToSocketEvent,
+} from "../../../hooks";
+import { useListenToDocumentEvent } from "../../../hooks/listenersHooks";
 
 const ChatBody = () => {
-  const { currentUser, socet, onlineUsers } = useAppSelector(
+  const { currentUser, socket, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const { id } = useParams();
@@ -30,7 +34,7 @@ const ChatBody = () => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
-  useListenToEvent<TypePrivateMessage>({
+  useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
     onUpdate: (data) => {
       if (data.sender._id === id) {
@@ -40,7 +44,7 @@ const ChatBody = () => {
     dependencies: [id],
   });
 
-  useListenToEvent<{
+  useListenToSocketEvent<{
     reciever: string;
     sender: string;
   }>({
@@ -53,7 +57,7 @@ const ChatBody = () => {
     dependencies: [id],
   });
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
       if (updatedUser._id === secondUser?._id) {
@@ -87,7 +91,7 @@ const ChatBody = () => {
           FOR_CONSISTENCY: "FOR_CONSISTENCY",
         });
         if (response.status === 200) {
-          socet?.emit("conversation-readed", {
+          socket?.emit("conversation-readed", {
             reciever: id,
             sender: currentUser?._id,
           });
@@ -106,6 +110,16 @@ const ChatBody = () => {
     };
     markAsReaded();
   }, [messages, id]);
+
+  const handleAddMessage = (data: { detail: TypePrivateMessage }) => {
+    setMessages((prev) => [...prev, data.detail]);
+  };
+
+  useListenToDocumentEvent({
+    eventToListen: "iCreatePrivatMessage",
+    onUpdate: handleAddMessage,
+    dependencies: [id],
+  });
 
   if (loading) {
     return (
@@ -138,19 +152,17 @@ const ChatBody = () => {
         </span>
       </div>
 
-      <div className="flex flex-col items-center w-full gap-2 sm:gap-[3px] overflow-auto lg:scrollbar-thin grow">
-        {messages &&
-          messages.length > 0 &&
-          messages.map((msg, index) => (
-            <PrivateMessageItem
-              key={msg._id}
-              messages={messages}
-              message={msg}
-              index={index}
-              lastMessageRef={lastMessageRef}
-              conversationReaded={conversationReaded}
-            />
-          ))}
+      <div className="flex flex-col items-center w-full gap-2 sm:gap-[3px] overflow-auto scrollbar-none grow">
+        {messages.map((msg, index) => (
+          <PrivateMessageItem
+            key={msg._id}
+            messages={messages}
+            message={msg}
+            index={index}
+            lastMessageRef={lastMessageRef}
+            conversationReaded={conversationReaded}
+          />
+        ))}
       </div>
       <div className="w-full">
         <SendMessagePrivateChat

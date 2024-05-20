@@ -13,7 +13,7 @@ import { handleApiError } from "../../utils/common";
 import Spinner from "../Others/Spinner";
 
 const ProfileSettings = () => {
-  const { currentUser, socet } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
@@ -50,7 +50,10 @@ const ProfileSettings = () => {
           type: "SUCESS",
         })
       );
-      socet?.emit("user-updated", { ...currentUser, name: response.data.name });
+      socket?.emit("user-updated", {
+        ...currentUser,
+        name: response.data.name,
+      });
     } catch (error) {
       dispatch(
         showPopup({

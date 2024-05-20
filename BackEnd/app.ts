@@ -44,8 +44,6 @@ export const io = new Server(server, {
   },
 });
 
-export const onLineUsers: { [key: string]: string } = {};
-
 app.use("/api/auth", authRouter);
 
 app.use("/api/users", usersRouter);
@@ -70,61 +68,61 @@ app.use("/api/search", searchRoute);
 
 app.use("/uploads", express.static(path.join("uploads")));
 
-// const scheduleTime = moment
-//   .tz("12:00", "HH:mm", "Africa/Cairo")
-//   .tz("EET")
-//   .format("m H * * *");
+export const onLineUsers: { [key: string]: string } = {};
 
-// cron.schedule(scheduleTime, grantRewardsToAllUsers);
-
-// const train = async () => {
-//   try {
-//     const res = await Task.updateMany(
-//       { rating: 1 },
-//       {
-//         devices: "DESKTOP",
-//       }
-//     );
-//     console.log(res);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// train();
-
-io.on("connection", (socet) => {
-  const userId = socet.handshake.query.userId;
-  if (userId !== undefined) {
-    onLineUsers[userId as string] = socet.id;
-  }
-  io.emit("online-users", Object.keys(onLineUsers));
-
-  socet.on("new-user-joined", (newUser) => {
-    io.emit("new-user-joined", newUser);
-  });
-
-  socet.on("user-updated", (updatedUser) => {
-    io.emit("user-updated", updatedUser);
-  });
-
-  socet.on("public-message", (message) => {
-    io.emit("public-message", message);
-  });
-
-  socet.on("interact-with-public-message", (updatedMessage) => {
-    io.emit("interact-with-public-message", updatedMessage);
-  });
-
-  socet.on("conversation-readed", (data) => {
-    io.to(onLineUsers[data.reciever]).emit("conversation-readed", data);
-  });
-
-  socet.on("disconnect", () => {
-    const userId = socet.handshake.query.userId;
-    delete onLineUsers[userId as string];
+io.on("connection", (socket) => {
+  const userId = socket.handshake.query.userId as string;
+  if (userId) {
+    onLineUsers[userId] = socket.id;
     io.emit("online-users", Object.keys(onLineUsers));
-  });
+  }
+
+  const handleNewUserJoined = (newUser: any) => {
+    socket.broadcast.emit("new-user-joined", newUser);
+  };
+
+  const handleUserUpdated = (updatedUser: any) => {
+    socket.broadcast.emit("user-updated", updatedUser);
+  };
+
+  const handleNewPublicMessage = (message: any) => {
+    socket.broadcast.emit("public-message", message);
+  };
+
+  const handleInteractWithPMessage = (updatedMessage: any) => {
+    socket.broadcast.emit("interact-with-public-message", updatedMessage);
+  };
+
+  const handleNewPrivateMessage = (message: any) => {
+    if (!onLineUsers[message.to]) return;
+    socket.to(onLineUsers[message.to]).emit("private-message", message.data);
+  };
+
+  const handleConversationReaded = (data: any) => {
+    if (!onLineUsers[data.reciever]) return;
+    socket.to(onLineUsers[data.reciever]).emit("conversation-readed", data);
+  };
+
+  const handleDisconnect = () => {
+    if (userId) {
+      delete onLineUsers[userId];
+      io.emit("online-users", Object.keys(onLineUsers));
+    }
+    socket.off("new-user-joined", handleNewUserJoined);
+    socket.off("user-updated", handleUserUpdated);
+    socket.off("public-message", handleNewPublicMessage);
+    socket.off("private-message", handleNewPrivateMessage);
+    socket.off("interact-with-public-message", handleInteractWithPMessage);
+    socket.off("conversation-readed", handleConversationReaded);
+  };
+
+  socket.on("new-user-joined", handleNewUserJoined);
+  socket.on("user-updated", handleUserUpdated);
+  socket.on("public-message", handleNewPublicMessage);
+  socket.on("interact-with-public-message", handleInteractWithPMessage);
+  socket.on("private-message", handleNewPrivateMessage);
+  socket.on("conversation-readed", handleConversationReaded);
+  socket.on("disconnect", handleDisconnect);
 });
 
 server.listen(process.env.PORT, () => {

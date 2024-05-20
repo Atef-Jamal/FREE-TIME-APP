@@ -11,7 +11,11 @@ import UserImage from "../components/Others/UserImage";
 import ActivitiesList from "../components/PublicUserProfile/ActivitiesList";
 import { PublicUserProfileSkeleton } from "../components/PublicUserProfile/PublicUserProfileSkeleton";
 
-import { useFetchActivities, useFetchUser, useListenToEvent } from "../hooks";
+import {
+  useFetchActivities,
+  useFetchUser,
+  useListenToSocketEvent,
+} from "../hooks";
 import { User } from "../types/userTypes";
 import { verifiedImage } from "../assets";
 import { formateDate } from "../utils/common";
@@ -32,7 +36,7 @@ const PublicUserProfile = () => {
     dependencies: [id],
   });
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
       if (updatedUser._id === id) {

@@ -28,9 +28,8 @@ import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
 
 const MyProfile = () => {
-  const { currentUser, currentAccountRequestFullfiled, socet } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, currentAccountRequestFullfiled, socket } =
+    useAppSelector((state) => state.stateManeger);
   const { musics } = useFetchMusics();
   const dispatch = useAppDispatch();
   useScrollToElement([musics]);
@@ -73,7 +72,7 @@ const MyProfile = () => {
           type: "SUCESS",
         })
       );
-      socet?.emit("user-updated", {
+      socket?.emit("user-updated", {
         ...currentUser,
         activeFrame: response.data,
       });
@@ -102,7 +101,7 @@ const MyProfile = () => {
           type: "SUCESS",
         })
       );
-      socet?.emit("user-updated", { ...currentUser, activeFrame: null });
+      socket?.emit("user-updated", { ...currentUser, activeFrame: null });
     } catch (error) {
       dispatch(
         showPopup({

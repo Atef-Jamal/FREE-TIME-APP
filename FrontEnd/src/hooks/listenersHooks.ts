@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppSelector } from "../context/Hooks";
 
-export const useListenToEvent = <T>({
+export const useListenToSocketEvent = <T>({
   eventToListen,
   onUpdate,
   dependencies = [],
@@ -10,14 +10,47 @@ export const useListenToEvent = <T>({
   onUpdate: (arg: T) => void;
   dependencies?: any[];
 }) => {
-  const { socet } = useAppSelector((state) => state.stateManeger);
+  const { socket } = useAppSelector((state) => state.stateManeger);
 
   useEffect(() => {
-    if (socet) {
-      socet.on(eventToListen, onUpdate);
+    if (socket) {
+      socket.on(eventToListen, onUpdate);
       return () => {
-        socet.off(eventToListen, onUpdate);
+        socket.off(eventToListen, onUpdate);
       };
     }
-  }, [socet, ...dependencies]);
+  }, [socket, ...dependencies]);
+};
+
+export const useListenToDocumentEvent = <T>({
+  eventToListen,
+  onUpdate,
+  dependencies = [],
+}: {
+  eventToListen: string;
+  onUpdate: (arg: T | any) => void;
+  dependencies?: any[];
+}) => {
+  useEffect(() => {
+    document.addEventListener(eventToListen, onUpdate);
+    return () => document.removeEventListener(eventToListen, onUpdate);
+  }, dependencies);
+};
+
+export const useCloseMenuOnClickOutSide = ({
+  menuRef,
+  onClose,
+}: {
+  menuRef: React.RefObject<HTMLElement>;
+  onClose: () => void;
+}) => {
+  useEffect(() => {
+    const func = (event: globalThis.MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("click", func);
+    return () => document.removeEventListener("click", func);
+  }, []);
 };

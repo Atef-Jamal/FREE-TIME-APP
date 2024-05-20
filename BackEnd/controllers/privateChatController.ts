@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Conversation from "../models/conversation";
 import User from "../models/user";
-import { io, onLineUsers } from "../app";
+// import { io, onLineUsers } from "../app";
 
 export const getConversationMessages = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
@@ -57,10 +57,10 @@ export const createMessage = async (req: Request, res: Response) => {
     const saveConversation = await getConversation.save();
     const conversation = await saveConversation.populate("lastMessage.sender");
 
-    io.to(onLineUsers[seconduserid]).emit(
-      "private-message",
-      conversation.lastMessage
-    );
+    // io.to(onLineUsers[seconduserid]).emit(
+    //   "private-message",
+    //   conversation.lastMessage
+    // );
 
     return res.status(200).json(conversation.lastMessage);
   } catch (error) {

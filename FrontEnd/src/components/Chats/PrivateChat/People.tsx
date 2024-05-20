@@ -7,7 +7,7 @@ import { setRefetchUnReadedMessagesCount } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { TypePrivateMessage } from "../../../types/privateChatTypes";
 import { User } from "../../../types/userTypes";
-import { useListenToEvent } from "../../../hooks";
+import { useListenToSocketEvent } from "../../../hooks";
 
 const People = ({ userInfo }: { userInfo: User }) => {
   const { reFetchThisUserId, onlineUsers } = useAppSelector(
@@ -20,7 +20,7 @@ const People = ({ userInfo }: { userInfo: User }) => {
   const [unReadedCount, setUnReadedCount] = useState<number>(0);
   const dispatch = useAppDispatch();
 
-  useListenToEvent<TypePrivateMessage>({
+  useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
     onUpdate: (data) => {
       if (data.sender._id === user._id) {
@@ -32,7 +32,7 @@ const People = ({ userInfo }: { userInfo: User }) => {
     },
   });
 
-  useListenToEvent<User>({
+  useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
       if (updatedUser._id === user._id) {
