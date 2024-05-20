@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { showPopup } from "../context/StateManeger";
 import { useAppDispatch } from "../context/Hooks";
 import { makeRequest } from "../utils";
@@ -186,7 +186,7 @@ export const useScrollToElement = (
     }
   }, [searchParams, ...dependencies]);
 
-  const handleRemoveAnimation = (event: MouseEvent) => {
+  const handleRemoveAnimation = useCallback((event: MouseEvent) => {
     const targetElement = event.currentTarget as HTMLElement;
     targetElement.classList.remove(styles);
     if (element?.id === targetElement.id) {
@@ -196,7 +196,7 @@ export const useScrollToElement = (
       });
     }
     setElement(null)
-  };
+  }, [element])
 
   useEffect(() => {
     if (!element) return;
