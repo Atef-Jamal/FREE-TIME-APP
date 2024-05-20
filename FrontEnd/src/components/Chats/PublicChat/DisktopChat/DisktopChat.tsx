@@ -99,6 +99,7 @@ const DisktopChat = () => {
             <Spinner className="mx-auto w-8 h-8" />
           </div>
         )}
+
         {messagesList}
       </div>
       <SendMessage

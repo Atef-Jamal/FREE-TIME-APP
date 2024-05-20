@@ -77,12 +77,12 @@ const SendMessagePrivateChat = ({
 
   return (
     <div className="w-full flex items-center gap-3 sm:gap-1">
-      <input
+      <textarea
+        style={{ lineHeight: "1" }}
         onChange={(e) => setMessage(e.target.value)}
         value={message}
         autoFocus
-        name="message"
-        className="ml-1 outline-none rounded-md grow py-3 sm:py-2 px-4  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm "
+        className="ml-1 h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none"
         placeholder="Enter a message"
       />
       <button

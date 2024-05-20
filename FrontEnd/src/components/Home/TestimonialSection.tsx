@@ -162,7 +162,7 @@ const TestimonialSection = () => {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add Your Testimonial"
-              className="placeholder:text-gray-500 outline-none p-4 sm:p-2 w-full min-h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee]"
+              className="placeholder:text-gray-500 outline-none p-4 sm:p-2 w-full min-h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee] resize-none"
             />
           </div>
           <div className="flex items-center justify-between w-full">

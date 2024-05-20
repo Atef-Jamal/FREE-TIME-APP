@@ -35,7 +35,7 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const mentionListRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -127,9 +127,12 @@ const SendMessage = ({
     },
   });
 
-  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
-  }, []);
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(e.target.value);
+    },
+    []
+  );
 
   const handleOpenMentionList = useCallback((e: MouseEvent) => {
     e.stopPropagation();
@@ -137,8 +140,8 @@ const SendMessage = ({
   }, []);
 
   return (
-    <div className="relative w-full h-[67px] bg-[#0a071670] flex items-center">
-      <span className="hidden sm:flex absolute top-1 left-4 text-xs text-[#a2a345]">
+    <div className="relative w-full bg-[#0a071670] flex flex-col items-center p-2">
+      <span className="hidden sm:flex text-xs text-[#a2a345] -mt-1 mr-auto">
         <RiBaseStationLine className="opacity-70" />
         <span className="text-[#7ff349] mx-2">{onlineUsers.length}</span> Online
         Now
@@ -163,21 +166,21 @@ const SendMessage = ({
         </div>
       )}
       <form
-        className={`${
+        className={`w-full ${
           !currentUser && " blur-sm"
-        } relative flex items-center gap-1 justify-between px-3 xs:px-1 w-full mt-auto mb-2`}
+        } relative flex items-center justify-between gap-1`}
       >
-        <input
-          name="send"
-          type="text"
+        <textarea
           ref={inputRef}
           onChange={handleInputChange}
           readOnly={!currentUser}
           value={message}
+          rows={1}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
+          style={{ lineHeight: "1" }}
           className={`${
-            user ? "pl-[60px]" : "px-4 xs:px-2"
-          } bg-[#2f3042a2] text-[#afc6e0] rounded-md border-none outline-none placeholder:text-gray-600 py-[6px] w-full `}
+            user ? "pl-[60px]" : "p-2"
+          } bg-[#2f3042a2] text-[#afc6e0] rounded-md border-none outline-none placeholder:text-gray-600 w-full resize-none h-10 overflow-hidden`}
         />
         {user && (
           <span
@@ -189,14 +192,14 @@ const SendMessage = ({
         )}
         <div
           onClick={handleOpenMentionList}
-          className="relative py-[4px] px-3 rounded-md bg-[#542ba06e] "
+          className="relative py-[6px] px-3 rounded-md bg-[#542ba06e] "
         >
           <p className=" text-gray-400 font-bold text-lg">@</p>
         </div>
         <button
           id="sendbutton"
           type="submit"
-          className="bg-[#217ebbf3] rounded-md w-12 h-9 flex items-center justify-center"
+          className="bg-[#217ebbf3] rounded-md w-12 h-10 flex items-center justify-center"
           onClick={sendMessageHandler}
           disabled={!currentUser || loading}
         >
