@@ -202,11 +202,12 @@ export const useScrollToElement = (
     element.scrollIntoView({ behavior: "smooth", block: scrollPosition });
     element.classList.add(styles);
     element.addEventListener("click", handleRemoveAnimation);
-    setElement(null)
+    
     
     return () => {
       element?.classList.remove(styles);
       element?.removeEventListener("click", handleRemoveAnimation);
+      setElement(null)
     };
   }, [element]);
 };
