@@ -88,12 +88,14 @@ const SendMessage = ({
         messageText: message,
         mentioned: user?._id,
       });
-
-      setMessages((prev) => {
+setTimeout(() => {
+  setMessages((prev) => {
         return prev
           .filter((item) => item._id !== uniqeIdForRollback)
           .concat([{ ...response.data, isSent: true }]);
       });
+},5000)
+      
 
       socket?.emit("public-message", response.data);
       if (user) {
