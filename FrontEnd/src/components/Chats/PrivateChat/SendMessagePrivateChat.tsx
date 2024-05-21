@@ -19,7 +19,7 @@ const SendMessagePrivateChat = ({
 }) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
-
+  const inputRef = useRef<HTMLTextareaElement>(null)
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
@@ -34,7 +34,7 @@ const SendMessagePrivateChat = ({
       );
       return;
     }
-    setMessage("");
+    
     const uniqeIdForRollback = (
       Math.random() * 1000000 +
       Date.now() +
@@ -52,6 +52,8 @@ const SendMessagePrivateChat = ({
       },
     });
     document.dispatchEvent(event);
+    setMessage("");
+    inputRef.current?.focus()
     try {
       const response = await makeRequest.post(`api/conversations/${id}`, {
         messageText: message,
@@ -78,11 +80,12 @@ const SendMessagePrivateChat = ({
   return (
     <div className="w-full flex items-center gap-3 sm:gap-1">
       <textarea
+        ref={inputRef}
         style={{ lineHeight: "1" }}
         onChange={(e) => setMessage(e.target.value)}
         value={message}
         autoFocus
-        className="ml-1 h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none"
+        className="ml-1 h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none overflow-hidden"
         placeholder="Enter a message"
       />
       <button
