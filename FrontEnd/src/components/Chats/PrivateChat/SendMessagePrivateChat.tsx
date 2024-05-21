@@ -84,7 +84,6 @@ const SendMessagePrivateChat = ({
         style={{ lineHeight: "1" }}
         onChange={(e) => setMessage(e.target.value)}
         value={message}
-        autoFocus
         className="ml-1 h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none overflow-hidden"
         placeholder="Enter a message"
       />
