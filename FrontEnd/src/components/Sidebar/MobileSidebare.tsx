@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { RiCloseFill } from "react-icons/ri";
 import {
-  setAllUnReadedMesseges,
+  updateSidebarUnReadedMsgCount,
   showPopup,
   toggleThisEntity,
 } from "../../context/StateManeger";
@@ -23,7 +23,10 @@ const MobileSidebare = () => {
           "api/conversations/all/all-unreaded-count"
         );
         dispatch(
-          setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })
+          updateSidebarUnReadedMsgCount({
+            type: "ADD-ALL",
+            userId: response.data,
+          })
         );
       } catch (error) {
         dispatch(

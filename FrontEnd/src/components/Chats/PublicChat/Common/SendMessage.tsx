@@ -102,7 +102,8 @@ const SendMessage = ({
       setMessages((prev) => {
         return prev.map((item) => {
           if (item.type === "MESSAGE" && item._id === uniqeIdForRollback) {
-            return { ...item, isSended: "FAILED" };
+            item.isSended = "FAILED";
+            return item;
           } else {
             return item;
           }

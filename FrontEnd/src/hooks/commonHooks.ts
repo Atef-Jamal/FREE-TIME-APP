@@ -26,6 +26,7 @@ export const useFetchAllUsers = (page?: number) => {
           response = await makeRequest.get(`/api/users`);
         }
         const data = response.data;
+
         setUsers(data);
       } catch (error) {
         const err = handleApiError(error);
@@ -186,25 +187,27 @@ export const useScrollToElement = (
     }
   }, [searchParams, ...dependencies]);
 
-  const handleRemoveAnimation = useCallback((event: MouseEvent) => {
-    const targetElement = event.currentTarget as HTMLElement;
-    targetElement.classList.remove(styles);
-    if (element?.id === targetElement.id) {
-      setSearchParams((prev) => {
-        prev.delete("to");
-        return prev;
-      });
-    }
-    setElement(null)
-  }, [element])
+  const handleRemoveAnimation = useCallback(
+    (event: MouseEvent) => {
+      const targetElement = event.currentTarget as HTMLElement;
+      targetElement.classList.remove(styles);
+      if (element?.id === targetElement.id) {
+        setSearchParams((prev) => {
+          prev.delete("to");
+          return prev;
+        });
+      }
+      setElement(null);
+    },
+    [element]
+  );
 
   useEffect(() => {
     if (!element) return;
     element.scrollIntoView({ behavior: "smooth", block: scrollPosition });
     element.classList.add(styles);
     element.addEventListener("click", handleRemoveAnimation);
-    
-    
+
     return () => {
       element?.classList.remove(styles);
       element?.removeEventListener("click", handleRemoveAnimation);

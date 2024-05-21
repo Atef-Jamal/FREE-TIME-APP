@@ -1,6 +1,6 @@
 import { IoMdSend } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { useState,useRef } from "react";
+import { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { showPopup } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
@@ -19,7 +19,7 @@ const SendMessagePrivateChat = ({
 }) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
@@ -34,26 +34,27 @@ const SendMessagePrivateChat = ({
       );
       return;
     }
-    
+
     const uniqeIdForRollback = (
       Math.random() * 1000000 +
       Date.now() +
       Date.now()
     ).toString();
+    const msg = {
+      _id: uniqeIdForRollback,
+      sender: currentUser,
+      message,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isRead: false,
+      isSended: "PENDING",
+    };
     const event = new CustomEvent("immediatelyPrivateMessage", {
-      detail: {
-        _id: uniqeIdForRollback,
-        sender: currentUser,
-        message,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isRead: false,
-        isSended: false,
-      },
+      detail: msg,
     });
     document.dispatchEvent(event);
     setMessage("");
-    inputRef.current?.focus()
+    inputRef.current?.focus();
     try {
       const response = await makeRequest.post(`api/conversations/${id}`, {
         messageText: message,
@@ -61,12 +62,21 @@ const SendMessagePrivateChat = ({
       setMessages((prev) => {
         return prev
           .filter((item) => item._id !== uniqeIdForRollback)
-          .concat([{ ...response.data, isSended: true }]);
+          .concat([{ ...response.data, isSended: "SUCCESS" }]);
       });
 
       socket?.emit("private-message", { to: id, data: response.data });
       if (conversationReaded === true) setConversationReaded(false);
     } catch (error) {
+      setMessages((prev) => {
+        return prev.map((item) => {
+          if (item._id === uniqeIdForRollback) {
+            item.isSended = "FAILED";
+            return item;
+          }
+          return item;
+        });
+      });
       dispatch(
         showPopup({
           status: true,

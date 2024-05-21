@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { sidebareItems } from "../../helper/data";
 import {
-  setAllUnReadedMesseges,
+  updateSidebarUnReadedMsgCount,
   showPopup,
   toggleThisEntity,
 } from "../../context/StateManeger";
@@ -35,7 +35,10 @@ const Sidebar = () => {
           "api/conversations/all/all-unreaded-count"
         );
         dispatch(
-          setAllUnReadedMesseges({ type: "ADD-ALL", userId: response.data })
+          updateSidebarUnReadedMsgCount({
+            type: "ADD-ALL",
+            userId: response.data,
+          })
         );
       } catch (error) {
         dispatch(
@@ -57,7 +60,10 @@ const Sidebar = () => {
     onUpdate: (data) => {
       if (location.pathname.includes(data.sender._id) === false) {
         dispatch(
-          setAllUnReadedMesseges({ type: "ADD-ONE", userId: data.sender._id })
+          updateSidebarUnReadedMsgCount({
+            type: "ADD-ONE",
+            userId: data.sender._id,
+          })
         );
         messageSound.play();
       }

@@ -59,12 +59,13 @@ const Message = ({
       if (stopScrolling === false) {
         setStopScrolling(true);
       }
+      setMessageItem((prev) => ({ ...prev, isDeleted: true }));
       const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
         isDeleted: true,
       });
-      setMessageItem((prev) => ({ ...prev, isDeleted: true }));
       socket?.emit("interact-with-public-message", response.data);
     } catch (error) {
+      setMessageItem((prev) => ({ ...prev, isDeleted: false }));
       dispatch(
         showPopup({
           status: true,
@@ -106,15 +107,17 @@ const Message = ({
         : prev[otherFieldTow],
     });
 
+    const restoreOldMessageIfIsError = messageItem;
+
     setMessageItem(updateMessage);
     try {
       const response = await makeRequest.patch(
         `api/publicchat/${_id}/${fieldName}`,
         { FOR_CONSISTENCY: "FOR_CONSISTENCY" }
       );
-      setMessageItem(response.data);
       socket?.emit("interact-with-public-message", response.data);
     } catch (error) {
+      setMessageItem(restoreOldMessageIfIsError);
       dispatch(
         showPopup({
           status: true,

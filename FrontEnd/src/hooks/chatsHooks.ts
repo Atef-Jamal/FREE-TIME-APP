@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
-  setAllUnReadedMesseges,
-  setRefetchUnReadedMessagesCount,
+  updateSidebarUnReadedMsgCount,
+  handleRefetchUnReadedMsgCount,
   showPopup,
 } from "../context/StateManeger";
 import { makeRequest } from "../utils";
@@ -86,34 +86,40 @@ export const useFetchPrivateChatMessages = ({
 
   useEffect(() => {
     const markAsReaded = async () => {
-      if (!secondUserId) {
-        return;
-      }
-      try {
-        const response = await makeRequest.patch(
-          `api/conversations/${secondUserId}`,
-          {
+      const lastMessage = messages[messages.length - 1];
+      const lastMessageIsnotReaded =
+        lastMessage?.sender._id === secondUser?._id &&
+        lastMessage?.isRead === false;
+
+      if (secondUserId && messages.length > 0 && lastMessageIsnotReaded) {
+        try {
+          await makeRequest.patch(`api/conversations/${secondUserId}`, {
             FOR_CONSISTENCY: "FOR_CONSISTENCY",
-          }
-        );
-        if (response.status === 200) {
+          });
+
           socket?.emit("conversation-readed", {
             reciever: secondUserId,
             sender: currentUser?._id,
           });
-          dispatch(setRefetchUnReadedMessagesCount(secondUserId));
+
+          dispatch(handleRefetchUnReadedMsgCount(secondUserId));
           dispatch(
-            setAllUnReadedMesseges({ type: "REMOVE", userId: secondUserId })
+            updateSidebarUnReadedMsgCount({
+              type: "REMOVE",
+              userId: secondUserId,
+            })
+          );
+
+          console.log("I'am Run");
+        } catch (error) {
+          dispatch(
+            showPopup({
+              status: true,
+              type: "ERROR_GENERAL",
+              message: handleApiError(error),
+            })
           );
         }
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
       }
     };
     markAsReaded();

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Conversation from "../models/conversation";
 import User from "../models/user";
-// import { io, onLineUsers } from "../app";
 
 export const getConversationMessages = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
@@ -56,11 +55,6 @@ export const createMessage = async (req: Request, res: Response) => {
 
     const saveConversation = await getConversation.save();
     const conversation = await saveConversation.populate("lastMessage.sender");
-
-    // io.to(onLineUsers[seconduserid]).emit(
-    //   "private-message",
-    //   conversation.lastMessage
-    // );
 
     return res.status(200).json(conversation.lastMessage);
   } catch (error) {
@@ -162,5 +156,45 @@ export const markAsReaded = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "success" });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred" });
+  }
+};
+
+export const getAllConversations = async (req: Request, res: Response) => {
+  const currentUserId = req.user._id;
+  try {
+    const allUsers = await User.find({ _id: { $ne: currentUserId } });
+
+    const newArray = await Promise.all(
+      allUsers.map(async (user: any) => {
+        const conversation = await Conversation.findOne({
+          participants: { $all: [currentUserId, user._id] },
+        }).select("lastMessage messages");
+
+        let lastMessage = null;
+        let unreadedCount = 0;
+
+        if (conversation) {
+          lastMessage = conversation.lastMessage;
+          conversation.messages.map((msg) => {
+            if (
+              msg.sender._id.toString() === user._id.toString() &&
+              msg.isRead === false
+            ) {
+              unreadedCount += 1;
+            }
+          });
+        }
+        const docObject = user.toObject();
+
+        docObject.lastMessage = lastMessage;
+        docObject.unreadedCount = unreadedCount;
+
+        return docObject;
+      })
+    );
+
+    return res.status(200).json(newArray);
+  } catch (error) {
+    return res.status(404).json({ error: "can not load all conversations" });
   }
 };

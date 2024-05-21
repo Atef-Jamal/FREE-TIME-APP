@@ -67,7 +67,7 @@ const StateManegerSlice = createSlice({
     setCurrentAccountRequestFullfiled(state, action: PayloadAction<boolean>) {
       state.currentAccountRequestFullfiled = action.payload;
     },
-    setRefetchUnReadedMessagesCount(state, action) {
+    handleRefetchUnReadedMsgCount(state, action) {
       state.reFetchThisUserId = action.payload;
     },
 
@@ -122,7 +122,7 @@ const StateManegerSlice = createSlice({
     setOnlineUsers(state, action: PayloadAction<string[]>) {
       state.onlineUsers = action.payload;
     },
-    setAllUnReadedMesseges(
+    updateSidebarUnReadedMsgCount(
       state,
       action: PayloadAction<{
         type: "ADD-ALL" | "ADD-ONE" | "REMOVE";
@@ -157,8 +157,8 @@ export const {
   handlePauseMusic,
   setSocet,
   setOnlineUsers,
-  setRefetchUnReadedMessagesCount,
-  setAllUnReadedMesseges,
+  handleRefetchUnReadedMsgCount,
+  updateSidebarUnReadedMsgCount,
   openModel,
   resetModel,
   toggleThisEntity,

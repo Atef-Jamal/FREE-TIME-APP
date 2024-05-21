@@ -1,13 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import {
-  setAllUnReadedMesseges,
-  setRefetchUnReadedMessagesCount,
-  showPopup,
-} from "../../../context/StateManeger";
-import { makeRequest } from "../../../utils";
-import { handleApiError } from "../../../utils/common";
+import { useAppSelector } from "../../../context/Hooks";
 import Spinner from "../../Others/Spinner";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
@@ -21,10 +14,11 @@ import {
 import { useListenToDocumentEvent } from "../../../hooks/listenersHooks";
 
 const ChatBody = () => {
-  const { currentUser, socket, onlineUsers } = useAppSelector(
+  const { currentUser, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const { id } = useParams();
+
   const { messages, setMessages, secondUser, setSecondUser, loading, error } =
     useFetchPrivateChatMessages({
       secondUserId: id,
@@ -32,7 +26,6 @@ const ChatBody = () => {
     });
   const [conversationReaded, setConversationReaded] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
 
   useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
@@ -66,54 +59,29 @@ const ChatBody = () => {
     },
   });
 
+  const scrollToLastMessage = useCallback(() => {
+    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   useEffect(() => {
-    const scrollToElement = () => {
-      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
+    scrollToLastMessage();
     const getMyLastMessage = messages.filter((item) => {
       return item.sender._id === currentUser?._id;
     });
     const lastOne = getMyLastMessage[getMyLastMessage.length - 1];
     if (lastOne?.isRead === true) {
-      if (conversationReaded === false) setConversationReaded(true);
+      setConversationReaded(true);
+    } else {
+      setConversationReaded(false);
     }
-    scrollToElement();
-  }, [messages]);
-
-  useEffect(() => {
-    const markAsReaded = async () => {
-      if (!id) {
-        return;
-      }
-
-      try {
-        const response = await makeRequest.patch(`api/conversations/${id}`, {
-          FOR_CONSISTENCY: "FOR_CONSISTENCY",
-        });
-        if (response.status === 200) {
-          socket?.emit("conversation-readed", {
-            reciever: id,
-            sender: currentUser?._id,
-          });
-          dispatch(setRefetchUnReadedMessagesCount(id));
-          dispatch(setAllUnReadedMesseges({ type: "REMOVE", userId: id }));
-        }
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-      }
-    };
-    markAsReaded();
   }, [messages, id]);
 
-  const handleAddMessage = (data: { detail: TypePrivateMessage }) => {
-    setMessages((prev) => [...prev, data.detail]);
-  };
+  const handleAddMessage = useCallback(
+    (data: { detail: TypePrivateMessage }) => {
+      setMessages((prev) => [...prev, data.detail]);
+    },
+    []
+  );
 
   useListenToDocumentEvent({
     eventToListen: "immediatelyPrivateMessage",

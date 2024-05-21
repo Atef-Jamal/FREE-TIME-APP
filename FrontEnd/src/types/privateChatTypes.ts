@@ -7,5 +7,5 @@ export interface TypePrivateMessage {
   isRead: boolean;
   createdAt: Date;
   updatedAt: Date;
-  isSended?: boolean;
+  isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }

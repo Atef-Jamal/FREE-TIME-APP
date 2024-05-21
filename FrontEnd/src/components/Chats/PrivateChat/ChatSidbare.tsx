@@ -4,21 +4,34 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
 import { User } from "../../../types/userTypes";
-import { useFetchAllUsers, useListenToSocketEvent } from "../../../hooks";
+import { useListenToSocketEvent } from "../../../hooks";
 import Empty from "../../Others/Empty";
 import SearchBar from "../../Search/SearchBar";
+import { makeRequest } from "../../../utils";
+import { TypePrivateMessage } from "../../../types/privateChatTypes";
+
+export interface ExtendedUser extends User {
+  lastMessage: TypePrivateMessage | null;
+  unreadedCount: number;
+}
 
 const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const { users, setUsers, loading, error } = useFetchAllUsers(1);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<ExtendedUser[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<ExtendedUser[]>([]);
   const [filterVlaue, setFilterValue] = useState<string>("");
   const [emptyResults, setEmptyResults] = useState<boolean>(false);
+
+  const error = null;
+  const loading = false;
 
   useListenToSocketEvent<User>({
     eventToListen: "new-user-joined",
     onUpdate: (newUser) => {
-      setUsers((prev) => [...prev, newUser]);
+      setUsers((prev) => [
+        ...prev,
+        { ...newUser, lastMessage: null, unreadedCount: 0 },
+      ]);
     },
   });
 
@@ -28,7 +41,11 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
       setUsers((prev) => {
         const newArry = prev.map((usr) => {
           if (usr._id === updatedUser._id) {
-            return updatedUser;
+            return {
+              ...updatedUser,
+              lastMessage: usr.lastMessage,
+              unreadedCount: usr.unreadedCount,
+            };
           } else {
             return usr;
           }
@@ -58,6 +75,44 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
     setFilterValue(event.target.value);
   };
 
+  useListenToSocketEvent<TypePrivateMessage>({
+    eventToListen: "private-message",
+    onUpdate: (data) => {
+      setUsers((prev) => {
+        const newArry = prev.map((user) => {
+          if (data.sender._id === user._id) {
+            user.lastMessage = data;
+            const isChatWithUserOpen = location.pathname.includes(user._id);
+            return {
+              ...user,
+              lastMessage: data,
+              unreadedCount: isChatWithUserOpen
+                ? user.unreadedCount
+                : user.unreadedCount + 1,
+            };
+          } else {
+            return user;
+          }
+        });
+        return newArry;
+      });
+    },
+  });
+
+  useEffect(() => {
+    const fetchAllConversations = async () => {
+      try {
+        const response = await makeRequest.get(
+          "api/conversations/all-conversations/allusers"
+        );
+        setUsers(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllConversations();
+  }, []);
+
   return (
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
@@ -81,7 +136,7 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
           !emptyResults &&
           filteredUsers.length === 0 &&
           users.length > 0 &&
-          users?.map((user: User) => {
+          users.map((user) => {
             if (user._id === currentUser?._id) return;
             return (
               <div onClick={toggleSidbare} key={user._id} className="w-full">
@@ -92,7 +147,7 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
         {!loading &&
           !emptyResults &&
           filteredUsers.length > 0 &&
-          filteredUsers?.map((user: User) => {
+          filteredUsers?.map((user) => {
             if (user._id === currentUser?._id) return;
             return (
               <div onClick={toggleSidbare} key={user._id} className="w-full">

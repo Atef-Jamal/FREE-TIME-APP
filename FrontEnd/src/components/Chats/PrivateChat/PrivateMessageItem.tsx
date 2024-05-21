@@ -1,7 +1,7 @@
 import { FcCheckmark, FcOk } from "react-icons/fc";
 import { useAppSelector } from "../../../context/Hooks";
 import { formateDate } from "../../../utils/common";
-import { IoCheckmarkOutline } from "react-icons/io5";
+import { IoCheckmarkOutline, IoCloseCircleOutline } from "react-icons/io5";
 import { RefObject } from "react";
 import { TypePrivateMessage } from "../../../types/privateChatTypes";
 import { BiCircle } from "react-icons/bi";
@@ -42,18 +42,21 @@ const PrivateMessageItem = ({
         className={`relative max-w-[70%] xs:max-w-full p-1 flex flex-col ${
           message.sender._id === currentUser?._id
             ? "bg-[#141722] "
-            : "bg-[#343633] "
+            : "bg-[#121f3b] "
         } rounded-sm`}
       >
         <div
           style={{ direction: "ltr" }}
           className="flex justify-between items-center px-2 sm:px-1 gap-2 border-b border-gray-600"
         >
-          {message.isSended !== undefined && message.isSended === true && (
+          {message.isSended !== undefined && message.isSended === "SUCCESS" && (
             <FcOk className="mr-4" />
           )}
-          {message.isSended !== undefined && message.isSended === false && (
+          {message.isSended !== undefined && message.isSended === "PENDING" && (
             <BiCircle className="mr-4" />
+          )}
+          {message.isSended !== undefined && message.isSended === "FAILED" && (
+            <IoCloseCircleOutline className="mr-4" />
           )}
           <span className="text-[#64cf4f] text-xs truncate">
             {message.sender.name}
