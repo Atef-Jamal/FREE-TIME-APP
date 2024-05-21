@@ -19,7 +19,7 @@ const SendMessagePrivateChat = ({
 }) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
-  const inputRef = useRef<HTMLTextareaElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
