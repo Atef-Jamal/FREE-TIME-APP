@@ -68,7 +68,7 @@ const ChatBody = () => {
 
   useEffect(() => {
     const scrollToElement = () => {
-      lastMessageRef.current?.scrollIntoView(false);
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     };
     const getMyLastMessage = messages.filter((item) => {
       return item.sender._id === currentUser?._id;
