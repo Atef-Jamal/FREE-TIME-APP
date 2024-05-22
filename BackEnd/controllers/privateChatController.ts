@@ -165,7 +165,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
     const allUsers = await User.find({ _id: { $ne: currentUserId } });
 
     const newArray = await Promise.all(
-      allUsers.map(async (user: any) => {
+      allUsers.map(async (user) => {
         const conversation = await Conversation.findOne({
           participants: { $all: [currentUserId, user._id] },
         }).select("lastMessage messages");
@@ -184,12 +184,17 @@ export const getAllConversations = async (req: Request, res: Response) => {
             }
           });
         }
-        const docObject = user.toObject();
 
-        docObject.lastMessage = lastMessage;
-        docObject.unreadedCount = unreadedCount;
-
-        return docObject;
+        return {
+          secondParty: {
+            _id: user.toObject()._id,
+            name: user.toObject().name,
+            profilePicture: user.toObject().profilePicture,
+            activeFrame: user.toObject().activeFrame,
+          },
+          lastMessage: lastMessage,
+          unreadedCount: unreadedCount,
+        };
       })
     );
 

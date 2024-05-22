@@ -1,15 +1,29 @@
-import { useState } from "react";
-import { Outlet, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../context/Hooks";
 import Welcome from "../components/Chats/PrivateChat/Welcome";
 import Spinner from "../components/Others/Spinner";
 import ChatSidbare from "../components/Chats/PrivateChat/ChatSidbare";
+import ChatBody from "../components/Chats/PrivateChat/ChatBody";
+import { User } from "../types/userTypes";
+import {
+  TypeConversation,
+  TypePrivateMessage,
+} from "../types/privateChatTypes";
+import { useListenToSocketEvent } from "../hooks";
+import { makeRequest } from "../utils";
+
+// export interface ExtendedUser extends User {
+//   lastMessage: TypePrivateMessage | null;
+//   unreadedCount: number;
+// }
 
 const PrivateChat = () => {
-  const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
     useAppSelector((state) => state.stateManeger);
-  const { id } = useParams();
+  const [openSidbare, setOpenSidbare] = useState<boolean>(true);
+  const [conversations, setConversations] = useState<TypeConversation[]>([]);
+  const [activeConversation, setActiveConversation] =
+    useState<TypeConversation | null>(null);
 
   const toggleSidbare = () => {
     setOpenSidbare((prev) => !prev);
@@ -19,6 +33,107 @@ const PrivateChat = () => {
     if (openSidbare) return;
     setOpenSidbare(true);
   };
+
+  useEffect(() => {
+    const fetchAllConversations = async () => {
+      try {
+        const response = await makeRequest.get(
+          "api/conversations/all-conversations/allusers"
+        );
+        const sorted = response.data.sort((a: any, b: any) => {
+          if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
+            if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
+              return -1;
+            }
+            if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+          return 0;
+        });
+        setConversations(sorted);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllConversations();
+  }, []);
+
+  useListenToSocketEvent<User>({
+    eventToListen: "new-user-joined",
+    onUpdate: (newUser) => {
+      setConversations((prev) => [
+        ...prev,
+        { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
+      ]);
+    },
+  });
+
+  useListenToSocketEvent<User>({
+    eventToListen: "user-updated",
+    onUpdate: (updatedUser) => {
+      setConversations((prev) => {
+        const newArry = prev.map((conv) => {
+          if (conv.secondParty._id === updatedUser._id) {
+            return {
+              secondParty: updatedUser,
+              lastMessage: conv.lastMessage,
+              unreadedCount: conv.unreadedCount,
+            };
+          } else {
+            return conv;
+          }
+        });
+        return newArry;
+      });
+      if (updatedUser._id === activeConversation?.secondParty?._id) {
+        setActiveConversation({
+          ...activeConversation,
+          secondParty: updatedUser,
+        });
+      }
+    },
+  });
+
+  useListenToSocketEvent<TypePrivateMessage>({
+    eventToListen: "private-message",
+    onUpdate: (data) => {
+      setConversations((prev) => {
+        const newArry = prev.map((conv) => {
+          if (data.sender._id === conv.secondParty._id) {
+            const isChatWithUserOpen =
+              data.sender._id === activeConversation?.secondParty?._id;
+            return {
+              ...conv,
+              lastMessage: data,
+              unreadedCount: isChatWithUserOpen
+                ? conv.unreadedCount
+                : conv.unreadedCount + 1,
+            };
+          } else {
+            return conv;
+          }
+        });
+        newArry.sort((a, b) => {
+          if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
+            if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
+              return -1;
+            }
+            if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+          return 0;
+        });
+        return newArry;
+      });
+    },
+    dependencies: [activeConversation?.secondParty?._id],
+  });
 
   if (!currentAccountRequestFullfiled) {
     return (
@@ -54,10 +169,23 @@ const PrivateChat = () => {
             openSidbare ? "lg:translate-x-[0%]" : "lg:-translate-x-[100%]"
           } `}
         >
-          <ChatSidbare toggleSidbare={toggleSidbare} />
+          <ChatSidbare
+            toggleSidbare={toggleSidbare}
+            conversations={conversations}
+            activeConversation={activeConversation}
+            setActiveConversation={setActiveConversation}
+          />
         </div>
         <div className="h-full grow max-w-[800px] mx-auto">
-          {id ? <Outlet /> : <Welcome handleOpenSidbare={handleOpenSidbare} />}
+          {activeConversation ? (
+            <ChatBody
+              setConversations={setConversations}
+              activeConversation={activeConversation}
+              setActiveConversation={setActiveConversation}
+            />
+          ) : (
+            <Welcome handleOpenSidbare={handleOpenSidbare} />
+          )}
         </div>
       </div>
     </div>

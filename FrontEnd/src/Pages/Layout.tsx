@@ -112,12 +112,12 @@ const Layout = () => {
               style={{
                 minHeight: hiddenLiveStats
                   ? `${
-                      window.screen.width < 800
+                      window.innerWidth < 800
                         ? `calc(100dvh - 123px)`
                         : `calc(100dvh - 76px)`
                     }`
                   : `${
-                      window.screen.width < 800
+                      window.innerWidth < 800
                         ? `calc(100dvh - 165px)`
                         : `calc(100dvh - 142px)`
                     }`,

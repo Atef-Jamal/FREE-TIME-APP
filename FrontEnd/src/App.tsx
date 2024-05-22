@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import "./App.css";
 import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
 import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
-import ChatBody from "./components/Chats/PrivateChat/ChatBody";
+// import ChatBody from "./components/Chats/PrivateChat/ChatBody";
 import LoadingWebsite from "./components/Others/LoadingWebsite";
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: "earn",
-        errorElement: <div className="w-full h-full">Page Not Foundddd</div>,
+        errorElement: <div className="w-full h-full">an error ocurred</div>,
 
         element: (
           <Suspense fallback={<LoadingWebsite />}>
@@ -139,16 +139,16 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         errorElement: <div>an error occurred!</div>,
-        children: [
-          {
-            path: ":id",
-            element: (
-              <Suspense fallback={<LoadingWebsite />}>
-                <ChatBody />
-              </Suspense>
-            ),
-          },
-        ],
+        // children: [
+        //   {
+        //     path: ":id",
+        //     element: (
+        //       <Suspense fallback={<LoadingWebsite />}>
+        //         <ChatBody />
+        //       </Suspense>
+        //     ),
+        //   },
+        // ],
       },
       {
         path: "user/:id",

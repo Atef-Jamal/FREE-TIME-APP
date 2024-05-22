@@ -1,27 +1,32 @@
 import { IoMdSend } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useRef, SetStateAction } from "react";
 import { showPopup } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
 
-import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import {
+  TypeConversation,
+  TypePrivateMessage,
+} from "../../../types/privateChatTypes";
 
 const SendMessagePrivateChat = ({
   conversationReaded,
   setConversationReaded,
   setMessages,
+  id,
+  setConversations,
 }: {
+  id: string;
+  setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
   conversationReaded: boolean;
-  setConversationReaded: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessages: React.Dispatch<React.SetStateAction<TypePrivateMessage[]>>;
+  setConversationReaded: React.Dispatch<SetStateAction<boolean>>;
+  setMessages: React.Dispatch<SetStateAction<TypePrivateMessage[]>>;
 }) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
-  const { id } = useParams();
 
   const sendMessage = async () => {
     if (message.trim() === "") {
@@ -34,7 +39,6 @@ const SendMessagePrivateChat = ({
       );
       return;
     }
-
     const uniqeIdForRollback = (
       Math.random() * 1000000 +
       Date.now() +
@@ -50,7 +54,7 @@ const SendMessagePrivateChat = ({
       isSended: "PENDING",
     };
     const event = new CustomEvent("immediatelyPrivateMessage", {
-      detail: msg,
+      detail: { message: msg, recieverId: id },
     });
     document.dispatchEvent(event);
     setMessage("");
@@ -63,6 +67,15 @@ const SendMessagePrivateChat = ({
         return prev
           .filter((item) => item._id !== uniqeIdForRollback)
           .concat([{ ...response.data, isSended: "SUCCESS" }]);
+      });
+      setConversations((prev) => {
+        return prev.map((conv) => {
+          if (conv.secondParty._id === id) {
+            return { ...conv, lastMessage: response.data };
+          } else {
+            return conv;
+          }
+        });
       });
 
       socket?.emit("private-message", { to: id, data: response.data });
@@ -94,7 +107,7 @@ const SendMessagePrivateChat = ({
         style={{ lineHeight: "1" }}
         onChange={(e) => setMessage(e.target.value)}
         value={message}
-        className="ml-1 h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#95ff8b] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none overflow-hidden"
+        className="ml-1 h-11 sm:h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#a0bb9d] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none overflow-hidden"
         placeholder="Enter a message"
       />
       <button

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import egypt from "../../assets/images/eg.svg";
@@ -20,6 +20,7 @@ const LiveStats = () => {
     (state) => state.stateManeger
   );
   const { users, setUsers, loading, error } = useFetchAllUsers();
+  const [sortedUsers, setSortedUsers] = useState<User[]>([]);
   const [toggleLanguage, setToggleLanguage] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
 
@@ -57,6 +58,70 @@ const LiveStats = () => {
       setToggleLanguage(false);
     },
   });
+
+  useEffect(() => {
+    const sortedArray = [...users].sort((a, b) => {
+      if (
+        onlineUsers.includes(a._id) &&
+        onlineUsers.includes(b._id) &&
+        a.points > b.points
+      ) {
+        return -1;
+      }
+      if (
+        onlineUsers.includes(a._id) &&
+        onlineUsers.includes(b._id) &&
+        a.points < b.points
+      ) {
+        return 1;
+      }
+      if (
+        onlineUsers.includes(a._id) &&
+        !onlineUsers.includes(b._id) &&
+        a.points > b.points
+      ) {
+        return -1;
+      }
+      if (
+        onlineUsers.includes(a._id) &&
+        !onlineUsers.includes(b._id) &&
+        a.points < b.points
+      ) {
+        return -1;
+      }
+      if (
+        !onlineUsers.includes(a._id) &&
+        onlineUsers.includes(b._id) &&
+        a.points < b.points
+      ) {
+        return 1;
+      }
+      if (
+        !onlineUsers.includes(a._id) &&
+        onlineUsers.includes(b._id) &&
+        a.points > b.points
+      ) {
+        return 1;
+      }
+      if (
+        !onlineUsers.includes(a._id) &&
+        !onlineUsers.includes(b._id) &&
+        a.points < b.points
+      ) {
+        return 1;
+      }
+      if (
+        !onlineUsers.includes(a._id) &&
+        !onlineUsers.includes(b._id) &&
+        a.points > b.points
+      ) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    setSortedUsers(sortedArray);
+  }, [users, onlineUsers]);
 
   return (
     <div
@@ -110,7 +175,7 @@ const LiveStats = () => {
         )}
 
         {!error &&
-          users.map((user, index) => {
+          sortedUsers.map((user, index) => {
             const { _id, name, points, emailVerified } = user;
             const isOnline = onlineUsers.includes(_id);
 

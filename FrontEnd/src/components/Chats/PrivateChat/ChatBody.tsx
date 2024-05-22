@@ -1,40 +1,65 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useAppSelector } from "../../../context/Hooks";
+import {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import Spinner from "../../Others/Spinner";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
-import { TypePrivateMessage } from "../../../types/privateChatTypes";
-import { User } from "../../../types/userTypes";
+import {
+  TypeConversation,
+  TypePrivateMessage,
+} from "../../../types/privateChatTypes";
+// import { User } from "../../../types/userTypes";
 import {
   useFetchPrivateChatMessages,
   useListenToSocketEvent,
 } from "../../../hooks";
 import { useListenToDocumentEvent } from "../../../hooks/listenersHooks";
+import { showPopup } from "../../../context/StateManeger";
+import { handleApiError } from "../../../utils/common";
+import { makeRequest } from "../../../utils";
+import { User } from "../../../types/userTypes";
 
-const ChatBody = () => {
-  const { currentUser, onlineUsers } = useAppSelector(
+const ChatBody = ({
+  activeConversation,
+  setActiveConversation,
+  setConversations,
+}: {
+  activeConversation: TypeConversation;
+  setActiveConversation: React.Dispatch<
+    SetStateAction<TypeConversation | null>
+  >;
+  setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
+}) => {
+  const { currentUser, onlineUsers, socket } = useAppSelector(
     (state) => state.stateManeger
   );
-  const { id } = useParams();
 
-  const { messages, setMessages, secondUser, setSecondUser, loading, error } =
-    useFetchPrivateChatMessages({
-      secondUserId: id,
-      dependencies: [id],
-    });
+  const { messages, setMessages, loading, error } = useFetchPrivateChatMessages(
+    {
+      secondUserId: activeConversation.secondParty._id,
+      dependencies: [activeConversation.secondParty._id],
+    }
+  );
+
+  const dispatch = useAppDispatch();
+
   const [conversationReaded, setConversationReaded] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
     onUpdate: (data) => {
-      if (data.sender._id === id) {
+      if (data.sender._id === activeConversation.secondParty._id) {
         setMessages((prev) => [...prev, data]);
       }
     },
-    dependencies: [id],
+    dependencies: [activeConversation.secondParty._id],
   });
 
   useListenToSocketEvent<{
@@ -43,18 +68,21 @@ const ChatBody = () => {
   }>({
     eventToListen: "conversation-readed",
     onUpdate: (data) => {
-      if (data.sender === id) {
+      if (data.sender === activeConversation.secondParty._id) {
         setConversationReaded(true);
       }
     },
-    dependencies: [id],
+    dependencies: [activeConversation.secondParty._id],
   });
 
   useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
-      if (updatedUser._id === secondUser?._id) {
-        setSecondUser(updatedUser);
+      if (updatedUser._id === activeConversation.secondParty._id) {
+        setActiveConversation({
+          ...activeConversation,
+          secondParty: updatedUser,
+        });
       }
     },
   });
@@ -74,11 +102,11 @@ const ChatBody = () => {
     } else {
       setConversationReaded(false);
     }
-  }, [messages, id]);
+  }, [messages, activeConversation.secondParty._id]);
 
   const handleAddMessage = useCallback(
-    (data: { detail: TypePrivateMessage }) => {
-      setMessages((prev) => [...prev, data.detail]);
+    (data: { detail: { message: TypePrivateMessage; recieverId: string } }) => {
+      setMessages((prev) => [...prev, data.detail.message]);
     },
     []
   );
@@ -86,8 +114,50 @@ const ChatBody = () => {
   useListenToDocumentEvent({
     eventToListen: "immediatelyPrivateMessage",
     onUpdate: handleAddMessage,
-    dependencies: [id],
+    dependencies: [activeConversation.secondParty._id],
   });
+
+  useEffect(() => {
+    const markAsReaded = async () => {
+      const lastMessage = messages[messages.length - 1];
+      const lastMessageIsnotReaded =
+        lastMessage?.sender._id === activeConversation.secondParty?._id &&
+        lastMessage?.isRead === false;
+
+      if (messages.length > 0 && lastMessageIsnotReaded) {
+        try {
+          await makeRequest.patch(
+            `api/conversations/${activeConversation.secondParty._id}`,
+            {
+              FOR_CONSISTENCY: "FOR_CONSISTENCY",
+            }
+          );
+          socket?.emit("conversation-readed", {
+            reciever: activeConversation.secondParty._id,
+            sender: currentUser?._id,
+          });
+          setConversations((prev) => {
+            return prev.map((conv) => {
+              if (conv.secondParty._id === activeConversation.secondParty._id) {
+                return { ...conv, unreadedCount: 0 };
+              } else {
+                return conv;
+              }
+            });
+          });
+        } catch (error) {
+          dispatch(
+            showPopup({
+              status: true,
+              type: "ERROR_GENERAL",
+              message: handleApiError(error),
+            })
+          );
+        }
+      }
+    };
+    markAsReaded();
+  }, [messages, activeConversation.secondParty._id]);
 
   if (loading) {
     return (
@@ -106,16 +176,18 @@ const ChatBody = () => {
 
   return (
     <div className="w-full flex flex-col items-center h-full gap-1 pb-1 bg-[#332342]">
-      <div className="flex items-center gap-4 sm:gap-2 w-full justify-center bg-[#1f1f2e9a]  border border-gray-700 py-2 xs:py-[2px]">
+      <div className="flex items-center gap-4 sm:gap-2 w-full justify-center bg-[#1f1f2e9a]  border border-gray-700 py-1 xs:py-[2px]">
         <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-          <UserImage user={secondUser} />
+          <UserImage user={activeConversation.secondParty} />
         </div>
         <span className=" flex flex-col items-center ">
-          <span className="text-sm text-[#62e66d] font-[900]">
-            {secondUser?.name}
+          <span className="text-sm text-[#62e66d] sm:-mb-1">
+            {activeConversation.secondParty?.name}
           </span>
           <span className="sm:text-[9px] text-sm tracking-wider font-[200] xs:-mt-1 text-[#c5bbbb]">
-            {onlineUsers.includes(id || "") ? "(online)" : "(offline)"}
+            {onlineUsers.includes(activeConversation.secondParty._id)
+              ? "(online)"
+              : "(offline)"}
           </span>
         </span>
       </div>
@@ -134,7 +206,9 @@ const ChatBody = () => {
       </div>
       <div className="w-full">
         <SendMessagePrivateChat
+          id={activeConversation.secondParty._id}
           setMessages={setMessages}
+          setConversations={setConversations}
           conversationReaded={conversationReaded}
           setConversationReaded={setConversationReaded}
         />

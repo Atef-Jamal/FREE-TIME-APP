@@ -10,11 +10,17 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
+import { useListenToSocketEvent } from "../../hooks";
+import { TypePrivateMessage } from "../../types/privateChatTypes";
+import messageSoundSrc from "../../assets/images/messageSound.wav";
 
 const MobileSidebare = () => {
   const { openSidebarMobile, currentUser, allUnReadedMesseges } =
     useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
+
+  const messageSound = new Audio();
+  messageSound.src = messageSoundSrc;
 
   useEffect(() => {
     const getAllUnReadedMsgs = async () => {
@@ -42,6 +48,35 @@ const MobileSidebare = () => {
       getAllUnReadedMsgs();
     }
   }, [currentUser?._id]);
+
+  useListenToSocketEvent<TypePrivateMessage>({
+    eventToListen: "private-message",
+    onUpdate: (data) => {
+      if (location.pathname !== "/privatechat" && window.innerWidth <= 867) {
+        dispatch(
+          updateSidebarUnReadedMsgCount({
+            type: "ADD-ONE",
+            userId: data.sender._id,
+          })
+        );
+        messageSound.play();
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (
+      location.pathname === "/privatechat" &&
+      window.innerWidth <= 867 &&
+      allUnReadedMesseges.length > 0
+    ) {
+      dispatch(
+        updateSidebarUnReadedMsgCount({
+          type: "REMOVE-ALL",
+        })
+      );
+    }
+  }, [location.pathname, allUnReadedMesseges]);
 
   return (
     <div

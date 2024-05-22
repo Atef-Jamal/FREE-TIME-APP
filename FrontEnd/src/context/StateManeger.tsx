@@ -125,8 +125,8 @@ const StateManegerSlice = createSlice({
     updateSidebarUnReadedMsgCount(
       state,
       action: PayloadAction<{
-        type: "ADD-ALL" | "ADD-ONE" | "REMOVE";
-        userId: string | string[];
+        type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ONE" | "REMOVE-ALL";
+        userId?: string | string[];
       }>
     ) {
       const { type, userId } = action.payload;
@@ -136,10 +136,13 @@ const StateManegerSlice = createSlice({
       if (type === "ADD-ONE") {
         state.allUnReadedMesseges.push(userId as string);
       }
-      if (type === "REMOVE") {
+      if (type === "REMOVE-ONE") {
         state.allUnReadedMesseges = state.allUnReadedMesseges.filter(
           (item) => item !== userId
         );
+      }
+      if (type === "REMOVE-ALL") {
+        state.allUnReadedMesseges = [];
       }
     },
   },

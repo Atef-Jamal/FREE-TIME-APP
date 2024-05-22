@@ -1,65 +1,41 @@
 import People from "./People";
 import Spinner from "../../Others/Spinner";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
-import { User } from "../../../types/userTypes";
-import { useListenToSocketEvent } from "../../../hooks";
 import Empty from "../../Others/Empty";
 import SearchBar from "../../Search/SearchBar";
-import { makeRequest } from "../../../utils";
-import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import { TypeConversation } from "../../../types/privateChatTypes";
 
-export interface ExtendedUser extends User {
-  lastMessage: TypePrivateMessage | null;
-  unreadedCount: number;
-}
+const ChatSidbare = ({
+  toggleSidbare,
+  conversations,
+  activeConversation,
+  setActiveConversation,
+}: {
+  toggleSidbare: () => void;
 
-const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
+  conversations: TypeConversation[];
+  activeConversation: TypeConversation | null;
+  setActiveConversation: React.Dispatch<
+    SetStateAction<TypeConversation | null>
+  >;
+}) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const [users, setUsers] = useState<ExtendedUser[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<ExtendedUser[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<TypeConversation[]>([]);
   const [filterVlaue, setFilterValue] = useState<string>("");
   const [emptyResults, setEmptyResults] = useState<boolean>(false);
 
   const error = null;
   const loading = false;
 
-  useListenToSocketEvent<User>({
-    eventToListen: "new-user-joined",
-    onUpdate: (newUser) => {
-      setUsers((prev) => [
-        ...prev,
-        { ...newUser, lastMessage: null, unreadedCount: 0 },
-      ]);
-    },
-  });
-
-  useListenToSocketEvent<User>({
-    eventToListen: "user-updated",
-    onUpdate: (updatedUser) => {
-      setUsers((prev) => {
-        const newArry = prev.map((usr) => {
-          if (usr._id === updatedUser._id) {
-            return {
-              ...updatedUser,
-              lastMessage: usr.lastMessage,
-              unreadedCount: usr.unreadedCount,
-            };
-          } else {
-            return usr;
-          }
-        });
-        return newArry;
-      });
-    },
-  });
-
   useEffect(() => {
     setEmptyResults(false);
     if (filterVlaue) {
-      const matchedUsers = users.filter((user) =>
-        user.name.toLocaleLowerCase().includes(filterVlaue.toLocaleLowerCase())
+      const matchedUsers = conversations.filter((conv) =>
+        conv.secondParty.name
+          .toLocaleLowerCase()
+          .includes(filterVlaue.toLocaleLowerCase())
       );
       if (matchedUsers.length > 0) {
         setFilteredUsers(matchedUsers);
@@ -67,7 +43,7 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
         setEmptyResults(true);
       }
     } else if (filterVlaue === "") {
-      setFilteredUsers(users);
+      setFilteredUsers(conversations);
     }
   }, [filterVlaue]);
 
@@ -75,49 +51,11 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
     setFilterValue(event.target.value);
   };
 
-  useListenToSocketEvent<TypePrivateMessage>({
-    eventToListen: "private-message",
-    onUpdate: (data) => {
-      setUsers((prev) => {
-        const newArry = prev.map((user) => {
-          if (data.sender._id === user._id) {
-            user.lastMessage = data;
-            const isChatWithUserOpen = location.pathname.includes(user._id);
-            return {
-              ...user,
-              lastMessage: data,
-              unreadedCount: isChatWithUserOpen
-                ? user.unreadedCount
-                : user.unreadedCount + 1,
-            };
-          } else {
-            return user;
-          }
-        });
-        return newArry;
-      });
-    },
-  });
-
-  useEffect(() => {
-    const fetchAllConversations = async () => {
-      try {
-        const response = await makeRequest.get(
-          "api/conversations/all-conversations/allusers"
-        );
-        setUsers(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAllConversations();
-  }, []);
-
   return (
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
         onClick={toggleSidbare}
-        className="hidden lg:flex items-center justify-center  absolute top-0 -right-9 w-9 h-9 bg-[#5353a8] rounded-sm"
+        className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 xs:h-9 bg-[#423e3e] rounded-sm"
       >
         <MdKeyboardDoubleArrowRight className="text-2xl" />
       </span>
@@ -135,23 +73,39 @@ const ChatSidbare = ({ toggleSidbare }: { toggleSidbare: () => void }) => {
         {!loading &&
           !emptyResults &&
           filteredUsers.length === 0 &&
-          users.length > 0 &&
-          users.map((user) => {
-            if (user._id === currentUser?._id) return;
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
             return (
-              <div onClick={toggleSidbare} key={user._id} className="w-full">
-                <People userInfo={user} />
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
               </div>
             );
           })}
         {!loading &&
           !emptyResults &&
           filteredUsers.length > 0 &&
-          filteredUsers?.map((user) => {
-            if (user._id === currentUser?._id) return;
+          filteredUsers?.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
             return (
-              <div onClick={toggleSidbare} key={user._id} className="w-full">
-                <People userInfo={user} />
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
               </div>
             );
           })}

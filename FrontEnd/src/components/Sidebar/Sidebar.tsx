@@ -58,7 +58,7 @@ const Sidebar = () => {
   useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
     onUpdate: (data) => {
-      if (location.pathname.includes(data.sender._id) === false) {
+      if (location.pathname !== "/privatechat" && window.innerWidth > 867) {
         dispatch(
           updateSidebarUnReadedMsgCount({
             type: "ADD-ONE",
@@ -69,6 +69,20 @@ const Sidebar = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (
+      location.pathname === "/privatechat" &&
+      window.innerWidth > 867 &&
+      allUnReadedMesseges.length > 0
+    ) {
+      dispatch(
+        updateSidebarUnReadedMsgCount({
+          type: "REMOVE-ALL",
+        })
+      );
+    }
+  }, [location.pathname, allUnReadedMesseges]);
 
   return (
     <div
