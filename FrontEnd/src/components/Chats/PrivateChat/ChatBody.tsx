@@ -165,6 +165,7 @@ const ChatBody = ({
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-300">
@@ -174,7 +175,7 @@ const ChatBody = ({
   }
 
   return (
-    <div className="w-full flex flex-col items-center h-full gap-1 pb-1 bg-[#332342] border">
+    <div className="w-full flex flex-col items-center h-full gap-1 pb-1 bg-[#332342]">
       <div className="flex items-center gap-4 sm:gap-2 w-full justify-center bg-[#1f1f2e9a]  border border-gray-700 py-1 xs:py-[2px]">
         <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
           <UserImage user={activeConversation.secondParty} />

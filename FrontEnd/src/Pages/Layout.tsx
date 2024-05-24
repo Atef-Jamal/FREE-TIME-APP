@@ -100,7 +100,7 @@ const Layout = () => {
       </div>
       {model.status && <Model children={model.children} />}
       <Navbare />
-      <div className="w-full flex bg-[#212134]">
+      <div className="border w-full flex bg-[#212134]">
         <Sidebar />
         <div
           className={`${
@@ -134,18 +134,20 @@ const Layout = () => {
               </div>
             )}
           </div>
-          <div
-            style={{ height: `calc(100dvh - 75px)` }}
-            className={`sm:hidden fixed bottom-0 right-0 z-[2] w-[30%] h-[90dvh] lg:w-[38%] bg-[#202138] border-l border-gray-600  transition-all ${
-              isChatOpen ? " translate-x-0" : " -translate-x-[-100%]"
-            } `}
-          >
-            <DisktopChat />
-          </div>
+          {window.innerWidth > 867 && (
+            <div
+              style={{ height: `calc(100dvh - 75px)` }}
+              className={`sm:hidden fixed bottom-0 right-0 z-[2] w-[30%] h-[90dvh] lg:w-[38%] bg-[#202138] border-l border-gray-600  transition-all ${
+                isChatOpen ? " translate-x-0" : " -translate-x-[-100%]"
+              } `}
+            >
+              <DisktopChat />
+            </div>
+          )}
         </div>
       </div>
       <NavebareBottom />
-      <MobileSidebare />
+      {window.innerWidth <= 867 && <MobileSidebare />}
     </div>
   );
 };

@@ -1,84 +1,14 @@
-import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
 import { RiCloseFill } from "react-icons/ri";
-import {
-  updateSidebarUnReadedMsgCount,
-  showPopup,
-  toggleThisEntity,
-} from "../../context/StateManeger";
+import { toggleThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { sidebareItems } from "../../helper/data";
-import { makeRequest } from "../../utils";
-import { handleApiError } from "../../utils/common";
-import { useListenToSocketEvent } from "../../hooks";
-import { TypePrivateMessage } from "../../types/privateChatTypes";
-import messageSoundSrc from "../../assets/images/messageSound.wav";
+import SidebarList from "./SidebarList";
 
 const MobileSidebare = () => {
-  const { openSidebarMobile, currentUser, allUnReadedMesseges } =
-    useAppSelector((state) => state.stateManeger);
+  const { openSidebarMobile } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
 
-  const messageSound = new Audio();
-  messageSound.src = messageSoundSrc;
-
-  const getAllUnReadedMsgs = async () => {
-    try {
-      const response = await makeRequest.get(
-        "api/conversations/all/all-unreaded-count"
-      );
-      dispatch(
-        updateSidebarUnReadedMsgCount({
-          type: "ADD-ALL",
-          userId: response.data,
-        })
-      );
-    } catch (error) {
-      dispatch(
-        showPopup({
-          status: true,
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        })
-      );
-    }
-  };
-  const handleAddNewPrivateMessage = (data: TypePrivateMessage) => {
-    if (location.pathname !== "/privatechat" && window.innerWidth <= 867) {
-      dispatch(
-        updateSidebarUnReadedMsgCount({
-          type: "ADD-ONE",
-          userId: data.sender._id,
-        })
-      );
-      messageSound.play();
-    }
-  };
-
-  useListenToSocketEvent<TypePrivateMessage>({
-    eventToListen: "private-message",
-    onUpdate: handleAddNewPrivateMessage,
-  });
-
-  useEffect(() => {
-    if (
-      location.pathname === "/privatechat" &&
-      window.innerWidth <= 867 &&
-      allUnReadedMesseges.length > 0
-    ) {
-      dispatch(
-        updateSidebarUnReadedMsgCount({
-          type: "REMOVE-ALL",
-        })
-      );
-    }
-  }, [location.pathname, allUnReadedMesseges]);
-
-  useEffect(() => {
-    if (currentUser?._id) {
-      getAllUnReadedMsgs();
-    }
-  }, [currentUser?._id]);
+  const handleCollaps = () =>
+    dispatch(toggleThisEntity({ entity: "openSidebarMobile" }));
 
   return (
     <div
@@ -93,54 +23,13 @@ const MobileSidebare = () => {
           FREE<span className="text-2xl text-[#d0ddc7] font-bold">TIME</span>
         </span>
         <span
-          onClick={() =>
-            dispatch(toggleThisEntity({ entity: "openSidebarMobile" }))
-          }
+          onClick={handleCollaps}
           className="bg-[#489b2f] p-[4px] rounded-sm"
         >
           <RiCloseFill style={{ fontSize: "20px" }} />
         </span>
       </div>
-      <div className="flex flex-col gap-1 mt-4 max-h-[450px] overflow-auto scrollbar-thin ">
-        {sidebareItems.map((item, index) => {
-          if (
-            item.path === "leaderboard" ||
-            item.path === "rewards" ||
-            item.path === "earn"
-          ) {
-            return;
-          }
-          return (
-            <div key={index}>
-              <NavLink
-                to={item.path}
-                onClick={() => {}}
-                className={({ isActive }) =>
-                  `${
-                    isActive ? "bg-[#40496975]" : ""
-                  } transition-all hover:bg-[#40496975] px-2 flex items-center gap-4 min-h-[40px] rounded-md overflow-hidden`
-                }
-              >
-                <span className={"text-xl p-1"}>{item.icon}</span>
-                <span
-                  className={
-                    "font-bold tracking-wide text-gray-400 text-[14px] "
-                  }
-                >
-                  {item.title}
-                </span>
-                {currentUser &&
-                  allUnReadedMesseges.length > 0 &&
-                  item.path === "privatechat" && (
-                    <span className="ml-auto w-5 h-5 text-xs font-bold flex items-center justify-center rounded-full bg-[#e23e32]">
-                      {allUnReadedMesseges.length}
-                    </span>
-                  )}
-              </NavLink>
-            </div>
-          );
-        })}
-      </div>
+      <SidebarList isMobile={true} />
     </div>
   );
 };
