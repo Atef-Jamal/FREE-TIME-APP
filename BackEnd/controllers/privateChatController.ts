@@ -9,22 +9,16 @@ export const getConversationMessages = async (req: Request, res: Response) => {
     const getConversation = await Conversation.findOne({
       participants: { $all: [currentUserId, seconduserid] },
     });
-    const secondUser = await User.findById(seconduserid).select("-password");
-
-    if (!secondUser) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
 
     if (!getConversation) {
-      return res.status(200).json({ messages: [], secondUser: secondUser });
+      return res.status(200).json([]);
     }
+
     const conversation = await getConversation.populate(
       "messages.sender",
       "-password"
     );
-    return res
-      .status(200)
-      .json({ messages: conversation.messages, secondUser: secondUser });
+    return res.status(200).json(conversation.messages);
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }

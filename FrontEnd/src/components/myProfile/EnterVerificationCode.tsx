@@ -17,10 +17,6 @@ const EnterVerificationCode = () => {
   const fourtInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    firstInput.current?.focus();
-  }, []);
-
   const handleVerify = async () => {
     const code = first + second + third + fourt;
     try {
@@ -36,6 +32,10 @@ const EnterVerificationCode = () => {
       );
     }
   };
+
+  useEffect(() => {
+    firstInput.current?.focus();
+  }, []);
 
   if (successfullyVerified) {
     return (

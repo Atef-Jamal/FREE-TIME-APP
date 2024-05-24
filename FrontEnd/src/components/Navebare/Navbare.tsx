@@ -27,36 +27,34 @@ const Navbare = () => {
     openRegisterForm,
     openMusicModal,
   } = useAppSelector((state) => state.stateManeger);
-
   const dispatch = useAppDispatch();
-
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      try {
-        if (token) {
-          dispatch(setCurrentUserIsLoading(true));
-          const response = await makeRequest.get("api/auth/currentuser");
-          dispatch(setCurrentUser(response.data));
-        }
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-      } finally {
-        dispatch(setCurrentUserIsLoading(false));
-        const timout = setTimeout(() => {
-          dispatch(setCurrentAccountRequestFullfiled(true));
-        }, 1500);
-        return () => clearTimeout(timout);
+  const getCurrentUser = async () => {
+    try {
+      if (token) {
+        dispatch(setCurrentUserIsLoading(true));
+        const response = await makeRequest.get("api/auth/currentuser");
+        dispatch(setCurrentUser(response.data));
       }
-    };
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    } finally {
+      dispatch(setCurrentUserIsLoading(false));
+      const timout = setTimeout(() => {
+        dispatch(setCurrentAccountRequestFullfiled(true));
+      }, 1500);
+      return () => clearTimeout(timout);
+    }
+  };
 
+  useEffect(() => {
     getCurrentUser();
   }, [token]);
 

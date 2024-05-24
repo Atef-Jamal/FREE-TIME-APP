@@ -36,13 +36,15 @@ const PublicUserProfile = () => {
     dependencies: [id],
   });
 
+  const handleUpdateUser = (updatedUser: User) => {
+    if (updatedUser._id === id) {
+      setUser(updatedUser);
+    }
+  };
+
   useListenToSocketEvent<User>({
     eventToListen: "user-updated",
-    onUpdate: (updatedUser) => {
-      if (updatedUser._id === id) {
-        setUser(updatedUser);
-      }
-    },
+    onUpdate: handleUpdateUser,
     dependencies: [id],
   });
 
@@ -67,9 +69,6 @@ const PublicUserProfile = () => {
 
   useEffect(() => {
     const handleVisit = async () => {
-      if (!currentUser || !id || loading) {
-        return;
-      }
       await makeRequest.patch(`/api/users/${id}/visited`, {
         NOT_IMPORTANT: "NOT_IMPORTANT",
       });

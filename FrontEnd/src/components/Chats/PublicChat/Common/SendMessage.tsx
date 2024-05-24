@@ -36,10 +36,9 @@ const SendMessage = ({
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const mentionListRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
   const dispatch = useAppDispatch();
 
-  const sendMessageHandler = async (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSendMessage = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!currentUser) return;
 
@@ -201,7 +200,7 @@ const SendMessage = ({
           id="sendbutton"
           type="submit"
           className="bg-[#217ebbf3] rounded-md w-12 h-10 flex items-center justify-center"
-          onClick={sendMessageHandler}
+          onClick={handleSendMessage}
           disabled={!currentUser || loading}
         >
           <MdSend />

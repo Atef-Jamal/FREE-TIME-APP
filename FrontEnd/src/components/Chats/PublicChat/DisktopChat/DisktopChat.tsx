@@ -19,17 +19,28 @@ import { useListenToDocumentEvent } from "../../../../hooks/listenersHooks";
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
+  const { messages, setMessages, loading, error } = useFetchPublicMessages();
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const { messages, setMessages, loading, error } = useFetchPublicMessages();
+
+  const handleAddNewMessage = (data: TypePublicChatItem) => {
+    setMessages((prev) => [...prev, data]);
+  };
+
+  const handleAddMyMessage = (data: any) => {
+    setMessages((prev) => [...prev, data.detail]);
+  };
 
   useScrollToElement([messages], "end");
 
   useListenToSocketEvent<TypePublicChatItem>({
     eventToListen: "public-message",
-    onUpdate: (data) => {
-      setMessages((prev) => [...prev, data]);
-    },
+    onUpdate: handleAddNewMessage,
+  });
+
+  useListenToDocumentEvent({
+    eventToListen: "immediatelyMessage",
+    onUpdate: handleAddMyMessage,
   });
 
   useEffect(() => {
@@ -40,15 +51,6 @@ const DisktopChat = () => {
       scrollToLastMessage();
     }
   }, [messages]);
-
-  const handleAddMessage = (data: any) => {
-    setMessages((prev) => [...prev, data.detail]);
-  };
-
-  useListenToDocumentEvent({
-    eventToListen: "immediatelyMessage",
-    onUpdate: handleAddMessage,
-  });
 
   const messagesList = useMemo(() => {
     return messages.map((msg, index) => {

@@ -36,11 +36,15 @@ const Layout = () => {
   const redirectQuery = searchParams.get("redirectedfrom");
   const referreQuery = searchParams.get("referrerUser");
 
+  const handleUpdateOnlineUsers = (data: string[]) => {
+    const filtered = data.filter((userId) => userId !== "undefined");
+    dispatch(setOnlineUsers(filtered));
+  };
+
   useEffect(() => {
-    if (!currentUser?._id) return;
     const establishSocetConnection = () => {
       const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-        query: { userId: currentUser._id },
+        query: { userId: currentUser?._id },
       });
       dispatch(setSocet(socket));
     };
@@ -49,10 +53,7 @@ const Layout = () => {
 
   useListenToSocketEvent<string[]>({
     eventToListen: "online-users",
-    onUpdate: (data) => {
-      const filtered = data.filter((userId) => userId !== "undefined");
-      dispatch(setOnlineUsers(filtered));
-    },
+    onUpdate: handleUpdateOnlineUsers,
   });
 
   useEffect(() => {

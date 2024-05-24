@@ -32,7 +32,6 @@ const MyProfile = () => {
     useAppSelector((state) => state.stateManeger);
   const { musics } = useFetchMusics();
   const dispatch = useAppDispatch();
-  useScrollToElement([musics]);
 
   let mathLevel: number = currentUser?.points
     ? currentUser.points / 100
@@ -46,6 +45,7 @@ const MyProfile = () => {
   } else {
     progress = Number(mathLevel?.toString().slice(-1).concat("0"));
   }
+  useScrollToElement([musics]);
 
   const handleOpenSetting = () => {
     dispatch(

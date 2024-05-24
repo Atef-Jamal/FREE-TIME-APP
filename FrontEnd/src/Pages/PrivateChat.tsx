@@ -12,11 +12,6 @@ import {
 import { useListenToSocketEvent } from "../hooks";
 import { makeRequest } from "../utils";
 
-// export interface ExtendedUser extends User {
-//   lastMessage: TypePrivateMessage | null;
-//   unreadedCount: number;
-// }
-
 const PrivateChat = () => {
   const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
     useAppSelector((state) => state.stateManeger);
@@ -32,6 +27,70 @@ const PrivateChat = () => {
   const handleOpenSidbare = () => {
     if (openSidbare) return;
     setOpenSidbare(true);
+  };
+
+  const handleAddNewUser = (newUser: User) => {
+    setConversations((prev) => [
+      ...prev,
+      { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
+    ]);
+  };
+
+  const handleUpdateUser = (updatedUser: User) => {
+    setConversations((prev) => {
+      const newArry = prev.map((conv) => {
+        if (conv.secondParty._id === updatedUser._id) {
+          return {
+            secondParty: updatedUser,
+            lastMessage: conv.lastMessage,
+            unreadedCount: conv.unreadedCount,
+          };
+        } else {
+          return conv;
+        }
+      });
+      return newArry;
+    });
+    if (updatedUser._id === activeConversation?.secondParty?._id) {
+      setActiveConversation({
+        ...activeConversation,
+        secondParty: updatedUser,
+      });
+    }
+  };
+
+  const handleNewPrivateMessage = (data: TypePrivateMessage) => {
+    setConversations((prev) => {
+      const newArry = prev.map((conv) => {
+        if (data.sender._id === conv.secondParty._id) {
+          const isChatWithUserOpen =
+            data.sender._id === activeConversation?.secondParty?._id;
+          return {
+            ...conv,
+            lastMessage: data,
+            unreadedCount: isChatWithUserOpen
+              ? conv.unreadedCount
+              : conv.unreadedCount + 1,
+          };
+        } else {
+          return conv;
+        }
+      });
+      newArry.sort((a, b) => {
+        if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
+          if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
+            return -1;
+          }
+          if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+        return 0;
+      });
+      return newArry;
+    });
   };
 
   useEffect(() => {
@@ -63,75 +122,17 @@ const PrivateChat = () => {
 
   useListenToSocketEvent<User>({
     eventToListen: "new-user-joined",
-    onUpdate: (newUser) => {
-      setConversations((prev) => [
-        ...prev,
-        { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
-      ]);
-    },
+    onUpdate: handleAddNewUser,
   });
 
   useListenToSocketEvent<User>({
     eventToListen: "user-updated",
-    onUpdate: (updatedUser) => {
-      setConversations((prev) => {
-        const newArry = prev.map((conv) => {
-          if (conv.secondParty._id === updatedUser._id) {
-            return {
-              secondParty: updatedUser,
-              lastMessage: conv.lastMessage,
-              unreadedCount: conv.unreadedCount,
-            };
-          } else {
-            return conv;
-          }
-        });
-        return newArry;
-      });
-      if (updatedUser._id === activeConversation?.secondParty?._id) {
-        setActiveConversation({
-          ...activeConversation,
-          secondParty: updatedUser,
-        });
-      }
-    },
+    onUpdate: handleUpdateUser,
   });
 
   useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
-    onUpdate: (data) => {
-      setConversations((prev) => {
-        const newArry = prev.map((conv) => {
-          if (data.sender._id === conv.secondParty._id) {
-            const isChatWithUserOpen =
-              data.sender._id === activeConversation?.secondParty?._id;
-            return {
-              ...conv,
-              lastMessage: data,
-              unreadedCount: isChatWithUserOpen
-                ? conv.unreadedCount
-                : conv.unreadedCount + 1,
-            };
-          } else {
-            return conv;
-          }
-        });
-        newArry.sort((a, b) => {
-          if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
-            if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
-              return -1;
-            }
-            if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }
-          return 0;
-        });
-        return newArry;
-      });
-    },
+    onUpdate: handleNewPrivateMessage,
     dependencies: [activeConversation?.secondParty?._id],
   });
 

@@ -28,42 +28,38 @@ const NotificationMenu = ({
   setNotifications: React.Dispatch<React.SetStateAction<TypeNotifications[]>>;
 }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-
   const dispatch = useAppDispatch();
 
-  if (!currentUser) return;
+  const markNotificationasRead = async () => {
+    try {
+      await makeRequest.patch("api/notifications", { ddd: "ddd" });
+      setNotifications((prev) => {
+        return prev.map((item) => {
+          if (item.isRead === false) {
+            return { ...item, isRead: true };
+          }
+          return item;
+        });
+      });
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    }
+  };
 
   useEffect(() => {
-    const markNotificationasRead = async () => {
-      try {
-        await makeRequest.patch("api/notifications", { ddd: "ddd" });
-        setNotifications((prev) => {
-          return prev.map((item) => {
-            if (item.isRead === false) {
-              return { ...item, isRead: true };
-            }
-            return item;
-          });
-        });
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-      }
-    };
-
     const isThereNotificationUnReaded = notifications.some(
       (item) => item.isRead === false
     );
-
     if (isThereNotificationUnReaded) {
       markNotificationasRead();
     }
-  }, [currentUser]);
+  }, [currentUser?._id]);
 
   return (
     <>

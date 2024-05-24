@@ -6,13 +6,12 @@ import { TypeNotifications } from "../../types/notificationTypes";
 import Empty from "../Others/Empty";
 import { verifiedImage } from "../../assets";
 
-const ActivitiesList = ({
-  activities,
-  user,
-}: {
+interface TypeProps {
   user: User | null;
   activities: TypeNotifications[];
-}) => {
+}
+
+const ActivitiesList = ({ activities, user }: TypeProps) => {
   return (
     <div className="flex flex-col gap-2">
       {activities.map((item, index) => {

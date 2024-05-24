@@ -21,18 +21,19 @@ const MobileChat = () => {
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("to");
 
+  const handleAddNewMessage = (data: TypePublicChatItem) => {
+    setMessages((prev) => [...prev, data]);
+  };
+  const handleAddMessage = (data: any) => {
+    setMessages((prev) => [...prev, data.detail]);
+  };
+
   useScrollToElement([messages], "end");
 
   useListenToSocketEvent<TypePublicChatItem>({
     eventToListen: "public-message",
-    onUpdate: (data) => {
-      setMessages((prev) => [...prev, data]);
-    },
+    onUpdate: handleAddNewMessage,
   });
-
-  const handleAddMessage = (data: any) => {
-    setMessages((prev) => [...prev, data.detail]);
-  };
 
   useListenToDocumentEvent({
     eventToListen: "immediatelyMessage",

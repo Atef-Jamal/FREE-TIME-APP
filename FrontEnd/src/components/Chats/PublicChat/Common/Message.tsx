@@ -1,20 +1,23 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
-import { MdDeleteOutline } from "react-icons/md";
 import { FcLike, FcOk } from "react-icons/fc";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
 import { makeRequest } from "../../../../utils";
 import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
-import { useListenToSocketEvent } from "../../../../hooks";
+import {
+  useCloseMenuOnClickOutSideListener,
+  useListenToSocketEvent,
+} from "../../../../hooks";
 import { User } from "../../../../types/userTypes";
 import { formateDate, handleApiError } from "../../../../utils/common";
 import { verifiedImage } from "../../../../assets";
 import { BiCircle } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { LuMoreHorizontal } from "react-icons/lu";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
@@ -32,7 +35,9 @@ const Message = ({
   messageRef,
 }: TypeMessageProp) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [openMore, setOpenMore] = useState<boolean>(false);
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
+  const moreRef = useRef(null);
   const [messageItem, setMessageItem] =
     useState<TypePublicChatMessage>(singleMessage);
 
@@ -50,7 +55,6 @@ const Message = ({
   } = messageItem;
 
   const dispatch = useAppDispatch();
-
   const date = formateDate(createdAt.toString());
 
   const deleteMessage = async (messageId: string) => {
@@ -77,7 +81,6 @@ const Message = ({
       setIsDeleting(false);
     }
   };
-
   const reactToMessage = async (
     fieldName: TypeFieldName,
     otherFieldOne: TypeFieldName,
@@ -127,26 +130,33 @@ const Message = ({
       );
     }
   };
+  const handleUpdateMessage = (updatedMessage: TypePublicChatMessage) => {
+    if (updatedMessage._id === _id) {
+      setMessageItem(updatedMessage);
+    }
+  };
+  const handleUpdateUser = (updatedUser: User) => {
+    if (sender._id === updatedUser._id) {
+      setMessageItem((prevMessageItem) => ({
+        ...prevMessageItem,
+        sender: updatedUser,
+      }));
+    }
+  };
 
   useListenToSocketEvent<TypePublicChatMessage>({
     eventToListen: "interact-with-public-message",
-    onUpdate: (updatedMessage) => {
-      if (updatedMessage._id === _id) {
-        setMessageItem(updatedMessage);
-      }
-    },
+    onUpdate: handleUpdateMessage,
   });
 
   useListenToSocketEvent<User>({
     eventToListen: "user-updated",
-    onUpdate: (updatedUser) => {
-      if (sender._id === updatedUser._id) {
-        setMessageItem((prevMessageItem) => ({
-          ...prevMessageItem,
-          sender: updatedUser,
-        }));
-      }
-    },
+    onUpdate: handleUpdateUser,
+  });
+
+  useCloseMenuOnClickOutSideListener({
+    menuRef: moreRef,
+    onClose: () => setOpenMore(false),
   });
 
   return (
@@ -155,7 +165,7 @@ const Message = ({
       id={_id}
       className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
-      <div className="w-full flex ">
+      <div className="w-full flex relative ">
         <div className="w-[35px] h-[30px] sm:w-[30px] sm:h-[25px]">
           <UserImage user={sender} />
         </div>
@@ -185,12 +195,30 @@ const Message = ({
         )}
         {currentUser?._id === sender._id && !isDeleted && (
           <button
-            onClick={() => deleteMessage(_id)}
+            ref={moreRef}
+            onClick={() => setOpenMore(true)}
             disabled={isDeleting}
-            className="ml-auto bg-[#f82a2a38] w-6 h-6 flex items-center justify-center rounded-md"
+            className="ml-auto bg-[#f82a2a38] px-2 flex items-center justify-center rounded-sm h-4"
           >
-            <MdDeleteOutline className="text-lg opacity-60" />
+            <LuMoreHorizontal className="text-xl" />
           </button>
+          // <button
+          //   onClick={() => deleteMessage(_id)}
+          //   disabled={isDeleting}
+          //   className="ml-auto bg-[#f82a2a38] w-6 h-6 flex items-center justify-center rounded-md"
+          // >
+          //   <MdDeleteOutline className="text-lg opacity-60" />
+          // </button>
+        )}
+        {openMore && (
+          <div className="absolute top-5 right-0 bg-[#3d3131] p-1">
+            <button
+              onClick={() => deleteMessage(_id)}
+              className="flex items-center gap-1 text-gray-400 px-2 text-sm"
+            >
+              delete
+            </button>
+          </div>
         )}
       </div>
 

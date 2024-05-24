@@ -10,19 +10,21 @@ import {
   TypePrivateMessage,
 } from "../../../types/privateChatTypes";
 
+interface TypeProps {
+  id: string;
+  setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
+  conversationReaded: boolean;
+  setConversationReaded: React.Dispatch<SetStateAction<boolean>>;
+  setMessages: React.Dispatch<SetStateAction<TypePrivateMessage[]>>;
+}
+
 const SendMessagePrivateChat = ({
   conversationReaded,
   setConversationReaded,
   setMessages,
   id,
   setConversations,
-}: {
-  id: string;
-  setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
-  conversationReaded: boolean;
-  setConversationReaded: React.Dispatch<SetStateAction<boolean>>;
-  setMessages: React.Dispatch<SetStateAction<TypePrivateMessage[]>>;
-}) => {
+}: TypeProps) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [message, setMessage] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -56,6 +58,7 @@ const SendMessagePrivateChat = ({
     const event = new CustomEvent("immediatelyPrivateMessage", {
       detail: { message: msg, recieverId: id },
     });
+    if (conversationReaded === true) setConversationReaded(false);
     document.dispatchEvent(event);
     setMessage("");
     inputRef.current?.focus();
@@ -79,7 +82,6 @@ const SendMessagePrivateChat = ({
       });
 
       socket?.emit("private-message", { to: id, data: response.data });
-      if (conversationReaded === true) setConversationReaded(false);
     } catch (error) {
       setMessages((prev) => {
         return prev.map((item) => {

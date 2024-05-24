@@ -22,23 +22,24 @@ const Statistics = () => {
     (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP"
   ).length;
 
+  const getUserStatistics = async () => {
+    try {
+      const response = await makeRequest.get("api/notifications");
+      setStatistics(response.data);
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    }
+  };
+
   useEffect(() => {
-    const getStatistics = async () => {
-      try {
-        const response = await makeRequest.get("api/notifications");
-        setStatistics(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-      }
-    };
     if (currentUser) {
-      getStatistics();
+      getUserStatistics();
     }
   }, [currentUser]);
 

@@ -1,14 +1,11 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import UploadIcon from "../../../assets/images/upload-icon.png";
 import { TypeFormData } from "../../../types/othersTypes";
-
-const UploadImage = ({
-  formData,
-  setFormData,
-}: {
+interface TypeProps {
   formData: TypeFormData;
   setFormData: React.Dispatch<SetStateAction<TypeFormData>>;
-}) => {
+}
+const UploadImage = ({ formData, setFormData }: TypeProps) => {
   const [imagePreview, setImagePreview] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 

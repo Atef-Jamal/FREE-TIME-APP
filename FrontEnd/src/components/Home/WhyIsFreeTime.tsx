@@ -6,6 +6,7 @@ import {
   support,
   timers,
 } from "../../assets";
+
 const WhyIsFreeTime = () => {
   return (
     <div className="py-3">

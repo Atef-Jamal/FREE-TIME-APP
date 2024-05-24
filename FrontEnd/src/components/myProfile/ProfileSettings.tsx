@@ -28,11 +28,9 @@ const ProfileSettings = () => {
   const handleChangeOldPassword = (e: any) => {
     setOldPass(e.target.value);
   };
-
   const handleChangeNewPassword = (e: any) => {
     setNewPass(e.target.value);
   };
-
   const handleSaveName = async () => {
     if (!currentUser) {
       return;
@@ -66,7 +64,6 @@ const ProfileSettings = () => {
       setLoadingName(false);
     }
   };
-
   const handleSavePassword = async () => {
     if (!currentUser) {
       return;

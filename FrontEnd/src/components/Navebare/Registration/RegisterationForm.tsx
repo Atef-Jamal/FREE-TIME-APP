@@ -21,17 +21,15 @@ const initialValue = {
 };
 
 const RegisterationForm = () => {
+  const { currentUser, isSignInMode, socket } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const [formData, setFormData] = useState<TypeFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
   const [searchParams] = useSearchParams();
-  const { currentUser, isSignInMode, socket } = useAppSelector(
-    (state) => state.stateManeger
-  );
-
-  const dispatch = useAppDispatch();
-
   const queryParam = searchParams.get("referrerUser");
+  const dispatch = useAppDispatch();
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((previous) => {

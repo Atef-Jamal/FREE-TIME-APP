@@ -4,17 +4,18 @@ import { useAppSelector } from "../../../context/Hooks";
 import { SetStateAction } from "react";
 import { TypeConversation } from "../../../types/privateChatTypes";
 
-const People = ({
-  convInfo,
-  activeConversation,
-  setActiveConversation,
-}: {
+interface TypeProps {
   convInfo: TypeConversation;
   activeConversation: TypeConversation | null;
   setActiveConversation: React.Dispatch<
     SetStateAction<TypeConversation | null>
   >;
-}) => {
+}
+const People = ({
+  convInfo,
+  activeConversation,
+  setActiveConversation,
+}: TypeProps) => {
   const { onlineUsers } = useAppSelector((state) => state.stateManeger);
 
   let date = "";
@@ -27,10 +28,10 @@ const People = ({
       onClick={() => {
         setActiveConversation(convInfo);
       }}
-      className={`${
+      className={`relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1 ${
         activeConversation?.secondParty?._id === convInfo.secondParty._id &&
-        "bg-[#27263d]"
-      } relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-lg p-2 sm:p-1`}
+        "bg-[#1c1b2e]"
+      } `}
     >
       <div className="w-full flex gap-2">
         <div className="w-[50px] h-[35px] sm:w-[30px] sm:h-[25px]">
@@ -54,7 +55,7 @@ const People = ({
             )}
           </span>
           {(convInfo.lastMessage?.createdAt && (
-            <span className="text-xs xs:text-[9px] font-bold text-[#947e7e] -mt-1">
+            <span className="text-xs xs:text-[9px] font-bold text-[#947e7ebb] -mt-[2px]">
               {date}
             </span>
           )) || (

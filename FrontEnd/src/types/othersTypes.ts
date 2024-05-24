@@ -20,3 +20,8 @@ export interface TypeSearchResults {
   apps: TypeSearchItem[];
   frames: TypeSearchItem[];
 }
+
+export interface TypeConversationSocketData {
+  reciever: string;
+  sender: string;
+}

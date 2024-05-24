@@ -22,46 +22,42 @@ const MobileSidebare = () => {
   const messageSound = new Audio();
   messageSound.src = messageSoundSrc;
 
-  useEffect(() => {
-    const getAllUnReadedMsgs = async () => {
-      try {
-        const response = await makeRequest.get(
-          "api/conversations/all/all-unreaded-count"
-        );
-        dispatch(
-          updateSidebarUnReadedMsgCount({
-            type: "ADD-ALL",
-            userId: response.data,
-          })
-        );
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      }
-    };
-    if (currentUser?._id) {
-      getAllUnReadedMsgs();
+  const getAllUnReadedMsgs = async () => {
+    try {
+      const response = await makeRequest.get(
+        "api/conversations/all/all-unreaded-count"
+      );
+      dispatch(
+        updateSidebarUnReadedMsgCount({
+          type: "ADD-ALL",
+          userId: response.data,
+        })
+      );
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          type: "ERROR_GENERAL",
+        })
+      );
     }
-  }, [currentUser?._id]);
+  };
+  const handleAddNewPrivateMessage = (data: TypePrivateMessage) => {
+    if (location.pathname !== "/privatechat" && window.innerWidth <= 867) {
+      dispatch(
+        updateSidebarUnReadedMsgCount({
+          type: "ADD-ONE",
+          userId: data.sender._id,
+        })
+      );
+      messageSound.play();
+    }
+  };
 
   useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
-    onUpdate: (data) => {
-      if (location.pathname !== "/privatechat" && window.innerWidth <= 867) {
-        dispatch(
-          updateSidebarUnReadedMsgCount({
-            type: "ADD-ONE",
-            userId: data.sender._id,
-          })
-        );
-        messageSound.play();
-      }
-    },
+    onUpdate: handleAddNewPrivateMessage,
   });
 
   useEffect(() => {
@@ -77,6 +73,12 @@ const MobileSidebare = () => {
       );
     }
   }, [location.pathname, allUnReadedMesseges]);
+
+  useEffect(() => {
+    if (currentUser?._id) {
+      getAllUnReadedMsgs();
+    }
+  }, [currentUser?._id]);
 
   return (
     <div

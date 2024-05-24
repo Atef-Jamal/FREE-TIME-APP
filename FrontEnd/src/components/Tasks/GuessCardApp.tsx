@@ -55,35 +55,35 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
     element.classList.add("active-guesscard");
     setSelected(element.textContent as string);
   };
+  const getReward = async () => {
+    if (!currentUser || score < 5) {
+      return;
+    }
+    if (error) setError("");
+    setIsLoading(true);
+    try {
+      await makeRequest.post(
+        `api/tasks/complete-guesscard-app/${taskApp._id}`,
+        {
+          example: "example",
+        }
+      );
+      setCompleted(true);
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          completedTasks: [...currentUser.completedTasks, taskApp._id],
+        })
+      );
+      setIsLoading(false);
+    } catch (error) {
+      setError(handleApiError(error));
+      setCompleted(false);
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getReward = async () => {
-      if (!currentUser || score < 5) {
-        return;
-      }
-      if (error) setError("");
-      setIsLoading(true);
-      try {
-        await makeRequest.post(
-          `api/tasks/complete-guesscard-app/${taskApp._id}`,
-          {
-            example: "example",
-          }
-        );
-        setCompleted(true);
-        dispatch(
-          setCurrentUser({
-            ...currentUser,
-            completedTasks: [...currentUser.completedTasks, taskApp._id],
-          })
-        );
-        setIsLoading(false);
-      } catch (error) {
-        setError(handleApiError(error));
-        setCompleted(false);
-        setIsLoading(false);
-      }
-    };
     if (score >= 5) {
       getReward();
     }

@@ -39,38 +39,41 @@ const ProfileActions = () => {
     (element) => element.isRead === false
   ).length;
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await makeRequest.get("api/notifications");
+      setNotifications(response.data);
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          type: "ERROR_GENERAL",
+        })
+      );
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+  const handleAddNewNotification = (data: TypeNotifications) => {
+    setNotifications((prev) => [...prev, data]);
+    notifySound.play();
+  };
+  const handleCloseProfileMenu = () => setOpenProfileMenu(false);
+
   useEffect(() => {
-    const fetchNotifications = async () => {
-      if (!currentUser) return;
-      try {
-        const response = await makeRequest.get("api/notifications");
-        setNotifications(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      } finally {
-        setLoadingNotifications(false);
-      }
-    };
+    if (!currentUser) return;
     fetchNotifications();
-  }, [currentUser]);
+  }, [currentUser?._id]);
 
   useListenToSocketEvent<TypeNotifications>({
     eventToListen: "new-notification",
-    onUpdate: (data) => {
-      setNotifications((prev) => [...prev, data]);
-      notifySound.play();
-    },
+    onUpdate: handleAddNewNotification,
   });
 
   useCloseMenuOnClickOutSideListener({
     menuRef: profileMenuRef,
-    onClose: () => setOpenProfileMenu(false),
+    onClose: handleCloseProfileMenu,
   });
 
   return (

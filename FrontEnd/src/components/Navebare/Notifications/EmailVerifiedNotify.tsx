@@ -55,7 +55,6 @@ const EmailVerifiedNotify = ({
       setIsLoading(false);
     }
   };
-
   const date = formateDate(createdAt.toString());
 
   return (

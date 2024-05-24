@@ -50,6 +50,11 @@ export interface TypeTogglActionPayload {
   value?: boolean;
 }
 
+interface TypeSidbareUnreadedMsgs {
+  type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ONE" | "REMOVE-ALL";
+  userId?: string | string[];
+}
+
 const StateManegerSlice = createSlice({
   name: "stateManeger",
   initialState,
@@ -124,10 +129,7 @@ const StateManegerSlice = createSlice({
     },
     updateSidebarUnReadedMsgCount(
       state,
-      action: PayloadAction<{
-        type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ONE" | "REMOVE-ALL";
-        userId?: string | string[];
-      }>
+      action: PayloadAction<TypeSidbareUnreadedMsgs>
     ) {
       const { type, userId } = action.payload;
       if (type === "ADD-ALL") {

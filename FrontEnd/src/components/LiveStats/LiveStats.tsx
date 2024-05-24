@@ -29,6 +29,29 @@ const LiveStats = () => {
     { title: "Egypt", lang: "ar" },
   ];
 
+  const handleAddUser = (newUser: User) => {
+    setUsers((prev) => [...prev, newUser]);
+  };
+
+  const sorted = [...users].sort((a, b) => {
+    const aIsOnline = onlineUsers.includes(a._id);
+    const bIsOnline = onlineUsers.includes(b._id);
+
+    if (aIsOnline && !bIsOnline) {
+      return -1;
+    }
+    if (!aIsOnline && bIsOnline) {
+      return 1;
+    } else {
+      if (a.points === b.points) {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      }
+      return b.points - a.points;
+    }
+  });
+
   useListenToSocketEvent<User>({
     eventToListen: "user-updated",
     onUpdate: (updatedUser) => {
@@ -47,9 +70,7 @@ const LiveStats = () => {
 
   useListenToSocketEvent<User>({
     eventToListen: "new-user-joined",
-    onUpdate: (newUser) => {
-      setUsers((prev) => [...prev, newUser]);
-    },
+    onUpdate: handleAddUser,
   });
 
   useCloseMenuOnClickOutSideListener({
@@ -60,67 +81,7 @@ const LiveStats = () => {
   });
 
   useEffect(() => {
-    const sortedArray = [...users].sort((a, b) => {
-      if (
-        onlineUsers.includes(a._id) &&
-        onlineUsers.includes(b._id) &&
-        a.points > b.points
-      ) {
-        return -1;
-      }
-      if (
-        onlineUsers.includes(a._id) &&
-        onlineUsers.includes(b._id) &&
-        a.points < b.points
-      ) {
-        return 1;
-      }
-      if (
-        onlineUsers.includes(a._id) &&
-        !onlineUsers.includes(b._id) &&
-        a.points > b.points
-      ) {
-        return -1;
-      }
-      if (
-        onlineUsers.includes(a._id) &&
-        !onlineUsers.includes(b._id) &&
-        a.points < b.points
-      ) {
-        return -1;
-      }
-      if (
-        !onlineUsers.includes(a._id) &&
-        onlineUsers.includes(b._id) &&
-        a.points < b.points
-      ) {
-        return 1;
-      }
-      if (
-        !onlineUsers.includes(a._id) &&
-        onlineUsers.includes(b._id) &&
-        a.points > b.points
-      ) {
-        return 1;
-      }
-      if (
-        !onlineUsers.includes(a._id) &&
-        !onlineUsers.includes(b._id) &&
-        a.points < b.points
-      ) {
-        return 1;
-      }
-      if (
-        !onlineUsers.includes(a._id) &&
-        !onlineUsers.includes(b._id) &&
-        a.points > b.points
-      ) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    setSortedUsers(sortedArray);
+    setSortedUsers(sorted);
   }, [users, onlineUsers]);
 
   return (

@@ -4,13 +4,12 @@ import { useAppSelector } from "../../../../context/Hooks";
 import { TypePublicChatFreeTime } from "../../../../types/publicChatTypes";
 import { verifiedImage } from "../../../../assets";
 
-const FreeTime = ({
-  singleMessage,
-  messageRef,
-}: {
+interface TypeProps {
   singleMessage: TypePublicChatFreeTime;
   messageRef: React.RefObject<HTMLDivElement> | null;
-}) => {
+}
+
+const FreeTime = ({ singleMessage, messageRef }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const date = formateDate(singleMessage.createdAt.toString());
   return (

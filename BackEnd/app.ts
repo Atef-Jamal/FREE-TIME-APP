@@ -17,11 +17,6 @@ import couponRoute from "./routes/couponRoutes";
 import searchRoute from "./routes/searchRoute";
 import http from "http";
 import { Server } from "socket.io";
-// import Task from "./models/task";
-// import Task from "./models/task";
-// import cron from "node-cron";
-// import moment from "moment-timezone";
-// import { grantRewardsToAllUsers } from "./utils";
 
 dotenv.config();
 const app = express();
@@ -77,10 +72,6 @@ io.on("connection", (socket) => {
     io.emit("online-users", Object.keys(onLineUsers));
   }
 
-  const handleNewUserJoined = (newUser: any) => {
-    socket.broadcast.emit("new-user-joined", newUser);
-  };
-
   const handleUserUpdated = (updatedUser: any) => {
     socket.broadcast.emit("user-updated", updatedUser);
   };
@@ -108,7 +99,6 @@ io.on("connection", (socket) => {
       delete onLineUsers[userId];
       io.emit("online-users", Object.keys(onLineUsers));
     }
-    socket.off("new-user-joined", handleNewUserJoined);
     socket.off("user-updated", handleUserUpdated);
     socket.off("public-message", handleNewPublicMessage);
     socket.off("private-message", handleNewPrivateMessage);
@@ -116,7 +106,6 @@ io.on("connection", (socket) => {
     socket.off("conversation-readed", handleConversationReaded);
   };
 
-  socket.on("new-user-joined", handleNewUserJoined);
   socket.on("user-updated", handleUserUpdated);
   socket.on("public-message", handleNewPublicMessage);
   socket.on("interact-with-public-message", handleInteractWithPMessage);

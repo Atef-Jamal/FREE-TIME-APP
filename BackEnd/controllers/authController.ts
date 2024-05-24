@@ -89,6 +89,7 @@ export const register = async (req: Request, res: Response) => {
         );
       }
     }
+    io.emit("new-user-joined", savedUser);
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
     if (req.file) {

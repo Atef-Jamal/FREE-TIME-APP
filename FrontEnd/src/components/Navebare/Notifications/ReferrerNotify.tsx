@@ -57,7 +57,6 @@ const ReferrerNotify = ({
       setIsLoading(false);
     }
   };
-
   const date = formateDate(createdAt.toString());
 
   return (

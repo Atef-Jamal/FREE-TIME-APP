@@ -23,7 +23,7 @@ const protectedRoute = async (
     if (!token) {
       return res
         .status(401)
-        .json({ error: "unauthorized Request, Log in with your credientials" });
+        .json({ error: "unAuthorized Request, Log in with your credientials" });
     }
 
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "");
@@ -31,7 +31,7 @@ const protectedRoute = async (
     if (!decoded) {
       return res
         .status(404)
-        .json({ error: "unauthorized Request, Invalid credientials" });
+        .json({ error: "unAuthorized, Invalid credientials" });
     }
 
     const user = await User.findById(decoded.userId).select("-password");
@@ -44,9 +44,7 @@ const protectedRoute = async (
 
     return next();
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error, unexpected behaviour occurred" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

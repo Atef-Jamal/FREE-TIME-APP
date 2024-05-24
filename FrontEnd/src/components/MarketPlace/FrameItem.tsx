@@ -14,9 +14,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
   const purshasedByCurrentUser = !!currentUser?.myFrames.find(
     (item) => item._id === singleFrame._id
   );
-
   const [isLoading, setIsLoading] = useState(false);
-
   const dispatch = useAppDispatch();
 
   const buyNow = async (frameId: string) => {
@@ -54,6 +52,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
       setIsLoading(false);
     }
   };
+
   return (
     <div
       id={singleFrame._id}

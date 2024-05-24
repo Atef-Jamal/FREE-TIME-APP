@@ -12,26 +12,25 @@ import { useScrollToElement } from "../hooks/commonHooks";
 const MarketPlace = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
   const [frames, setFrames] = useState<TypeFrame[]>([]);
-
-  useScrollToElement([frames]);
-
   const dispatch = useAppDispatch();
 
+  useScrollToElement([frames]);
+  const getFrames = async () => {
+    try {
+      const response = await makeRequest.get("api/frames");
+      setFrames(response.data);
+    } catch (error) {
+      dispatch(
+        showPopup({
+          status: true,
+          message: handleApiError(error),
+          type: "ERROR_GENERAL",
+        })
+      );
+    }
+  };
+
   useEffect(() => {
-    const getFrames = async () => {
-      try {
-        const response = await makeRequest.get("api/frames");
-        setFrames(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            status: true,
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      }
-    };
     getFrames();
   }, []);
 

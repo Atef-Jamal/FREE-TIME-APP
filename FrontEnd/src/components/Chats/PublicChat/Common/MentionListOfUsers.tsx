@@ -26,7 +26,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
       {error && <div className="w-full my-4">{error}</div>}
       {loading && (
         <div className="w-full my-4">
-          <Spinner className="mx-auto w-5 h-5 border-b-yellow-500 border-r-yellow-500" />
+          <Spinner className="mx-auto w-5 h-5 border-b-yellow-500 border-l-yellow-500" />
         </div>
       )}
       {users.length > 0 &&

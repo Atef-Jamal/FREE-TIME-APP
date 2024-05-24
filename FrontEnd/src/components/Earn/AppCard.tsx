@@ -17,9 +17,7 @@ const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
   );
   const { _id, description, image, prize, title, isAvailable, devices } =
     taskDetail;
-
   const isCompleted = currentUser?.completedTasks.includes(_id);
-
   if (currentUserIsLoading) return;
 
   return (

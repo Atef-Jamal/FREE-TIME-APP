@@ -7,20 +7,21 @@ import Empty from "../../Others/Empty";
 import SearchBar from "../../Search/SearchBar";
 import { TypeConversation } from "../../../types/privateChatTypes";
 
-const ChatSidbare = ({
-  toggleSidbare,
-  conversations,
-  activeConversation,
-  setActiveConversation,
-}: {
+interface TypeProps {
   toggleSidbare: () => void;
-
   conversations: TypeConversation[];
   activeConversation: TypeConversation | null;
   setActiveConversation: React.Dispatch<
     SetStateAction<TypeConversation | null>
   >;
-}) => {
+}
+
+const ChatSidbare = ({
+  toggleSidbare,
+  conversations,
+  activeConversation,
+  setActiveConversation,
+}: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [filteredUsers, setFilteredUsers] = useState<TypeConversation[]>([]);
   const [filterVlaue, setFilterValue] = useState<string>("");
@@ -55,11 +56,11 @@ const ChatSidbare = ({
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
         onClick={toggleSidbare}
-        className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 xs:h-9 bg-[#423e3e] rounded-sm"
+        className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 sm:h-9 bg-[#423e3e] rounded-sm"
       >
         <MdKeyboardDoubleArrowRight className="text-2xl" />
       </span>
-      <div className="w-full h-12 sm:h-10 mt-3 rounded-md overflow-hidden">
+      <div className="w-full h-12 sm:h-10 overflow-hidden">
         <SearchBar placeholder="search people..." onChange={handleChange} />
       </div>
       <div className="w-full text-[#81bef0] pl-2">Peoples</div>

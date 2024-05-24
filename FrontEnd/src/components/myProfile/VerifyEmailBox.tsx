@@ -46,6 +46,7 @@ const VerifyEmailBox = () => {
   if (openEnterCode) {
     return <EnterVerificationCode />;
   }
+
   return (
     <div className="w-full h-[110px] p-4 flex flex-col  gap-3 bg-[#414368] rounded-md ">
       <div className="flex items-center justify-between">

@@ -7,13 +7,12 @@ import Spinner from "../Others/Spinner";
 import { Link } from "react-router-dom";
 import { formateDate, handleApiError } from "../../utils/common";
 import Empty from "../Others/Empty";
+import { User } from "../../types/userTypes";
 
 const WhoVisitProfile = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<
-    { _id: string; createdAt: Date; profilePicture: string; name: string }[]
-  >([]);
+  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();

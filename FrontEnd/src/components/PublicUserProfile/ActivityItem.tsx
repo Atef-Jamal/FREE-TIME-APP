@@ -1,5 +1,12 @@
 import { formateDate } from "../../utils/common";
-
+interface TypeProps {
+  index: number;
+  message: string;
+  time: Date;
+  prize?: number;
+  price?: number;
+  icon: React.ReactNode;
+}
 const ActivityItem = ({
   message,
   prize,
@@ -7,14 +14,7 @@ const ActivityItem = ({
   index,
   time,
   icon,
-}: {
-  index: number;
-  message: string;
-  time: Date;
-  prize?: number;
-  price?: number;
-  icon: React.ReactNode;
-}) => {
+}: TypeProps) => {
   const date = formateDate(time.toString());
   return (
     <div

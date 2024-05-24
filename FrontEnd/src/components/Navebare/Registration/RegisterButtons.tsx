@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 const RegisterButtons = () => {
   const { isSignInMode } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
+
   return (
     <div className="flex items-center gap-2">
       <button

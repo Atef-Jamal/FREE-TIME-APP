@@ -37,23 +37,22 @@ const Search = () => {
     setSearchQ(searchTerm);
   };
 
+  const getResults = async () => {
+    if (error) setError(null);
+    if (!loading) setLoading(true);
+
+    try {
+      const response = await makeRequest.get(`api/search?q=${searchQ}`);
+      setResults(response.data);
+    } catch (error) {
+      setError(handleApiError(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!searchQ) return;
-
-    const getResults = async () => {
-      if (error) setError(null);
-      if (!loading) setLoading(true);
-
-      try {
-        const response = await makeRequest.get(`api/search?q=${searchQ}`);
-        setResults(response.data);
-      } catch (error) {
-        setError(handleApiError(error));
-      } finally {
-        setLoading(false);
-      }
-    };
-
     const timout = setTimeout(() => {
       getResults();
     }, 500);
