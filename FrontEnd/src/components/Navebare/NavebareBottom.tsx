@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
@@ -8,7 +8,11 @@ import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { toggleThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
-const NavebareBottom = () => {
+const NavebareBottom = ({
+  setOpenSidbareMobile,
+}: {
+  setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { openSidebarMobile } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
 
@@ -27,18 +31,14 @@ const NavebareBottom = () => {
     return () => document.removeEventListener("click", toggle);
   }, [openSidebarMobile]);
 
+  const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
   return (
-    <ul className="mobile-navbar-bottom hidden sm:flex fixed bottom-0 transition-all duration-700 ease-linear w-full h-[68px] z-[3] bg-[#2b2b55] items-center justify-between py-1">
-      <li className="w-[17%] h-full  flex items-center justify-center">
-        <FaList
-          className="text-2xl"
-          onClick={(e: React.MouseEvent<SVGElement, MouseEvent>) => {
-            e.stopPropagation();
-            dispatch(toggleThisEntity({ entity: "openSidebarMobile" }));
-          }}
-        />
+    <ul className="w-full flex items-center justify-between">
+      <li className="flex-1 h-full flex items-center justify-center">
+        <FaList className="text-2xl" onClick={handleToggleMobileSidbare} />
       </li>
-      <li className="w-[20%]">
+
+      <li className="flex-1">
         <NavLink
           to={"leaderboard"}
           className={({ isActive }) =>
@@ -53,7 +53,7 @@ const NavebareBottom = () => {
           Leader board
         </NavLink>
       </li>
-      <li className="w-[20%]">
+      <li className="flex-1">
         <NavLink
           to={"earn"}
           className={({ isActive }) =>
@@ -68,7 +68,7 @@ const NavebareBottom = () => {
           Earn
         </NavLink>
       </li>
-      <li className="w-[20%]">
+      <li className="flex-1">
         <NavLink
           to={"rewards"}
           className={({ isActive }) =>
@@ -83,7 +83,7 @@ const NavebareBottom = () => {
           Rewards
         </NavLink>
       </li>
-      <li className="w-[20%]">
+      <li className="flex-1">
         <NavLink
           to={"chat"}
           className={({ isActive }) =>

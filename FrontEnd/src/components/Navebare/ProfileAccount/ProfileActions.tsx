@@ -55,10 +55,12 @@ const ProfileActions = () => {
       setLoadingNotifications(false);
     }
   };
+
   const handleAddNewNotification = (data: TypeNotifications) => {
     setNotifications((prev) => [...prev, data]);
     notifySound.play();
   };
+
   const handleCloseProfileMenu = () => setOpenProfileMenu(false);
 
   useEffect(() => {
@@ -79,29 +81,27 @@ const ProfileActions = () => {
   return (
     <>
       {currentUser && (
-        <div className="relative flex items-center gap-3 sm:gap-[3px]">
-          <div className=" flex items-center rounded-md bg-[#04050a] h-[47px] sm:h-[40px]">
+        <div className="relative h-full flex items-center gap-3 sm:gap-[3px]">
+          <div className="h-full flex items-center rounded-md bg-[#04050a] ">
             <button
               onClick={() => {
                 dispatch(
                   openModel({ status: true, children: <ApplyCoupon /> })
                 );
               }}
-              className="h-full text-2xl sm:text-xl text-[#8fee37ee] font-bold flex items-center justify-center px-4 lg:px-2 rounded-s-md"
+              className="h-full text-xl text-[#8fee37ee] font-bold flex items-center justify-center px-4 lg:px-2 rounded-s-md"
             >
               +
             </button>
-            <span className="h-full px-2 flex items-center justify-center sm:text-[10px] tracking-wider font-bold border-l text-[#beababde]">
-              <span className="text-[#3de21c] mr-[3px]">
-                {currentUser.points}
-              </span>
+            <span className="h-full px-2 flex items-center justify-center sm:text-[10px] font-bold border-l text-[#beababde]">
+              <span className="text-[#3de21c] mr-1">{currentUser.points}</span>
               points
             </span>
           </div>
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
             ref={profileMenuRef}
-            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md sm:h-[40px] h-[47px] cursor-pointer"
+            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md h-full cursor-pointer"
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />
@@ -113,7 +113,7 @@ const ProfileActions = () => {
             {openProfileMenu && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-[#32324c] absolute top-14 sm:top-12 right-0 w-[65%] rounded-lg"
+                className="bg-[#32324c] absolute top-14 sm:top-12 right-5 w-[65%] rounded-lg"
               >
                 <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
               </div>
@@ -131,7 +131,7 @@ const ProfileActions = () => {
                 );
               }
             }}
-            className="flex items-center justify-center relative cursor-pointer sm:h-[40px] h-[47px] w-[45px] rounded-md bg-[#3a3e5877]"
+            className="flex items-center justify-center relative cursor-pointer h-full w-[45px] rounded-md bg-[#3a3e5877]"
           >
             {numUnReaded > 0 && (
               <span className="w-[18px] h-[18px] flex items-center justify-center absolute top-1 right-1 rounded-full bg-red-600 text-xs">

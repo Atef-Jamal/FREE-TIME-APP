@@ -25,7 +25,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   };
 
   return (
-    <>
+    <div className="py-2">
       <Link
         to={"myprofile"}
         onClick={() => setOpenProfileMenu((previos) => !previos)}
@@ -53,7 +53,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
       <Link
         to={""}
         onClick={handleLogOut}
-        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full py-[6px] px-4"
+        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full py-[6px] px-4 mb-2"
       >
         <LuLogOut style={{ fontSize: "18px" }} />
         <span className=" text-gray-400 font-bold ">Log out</span>
@@ -80,7 +80,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
           <span className="w-6 h-6 rounded-full bg-[#a0b1a0]"></span>
         </button>
       </span>
-    </>
+    </div>
   );
 };
 

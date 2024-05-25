@@ -16,7 +16,7 @@ import {
 } from "../../hooks";
 
 const LiveStats = () => {
-  const { currentUser, hiddenLiveStats, onlineUsers } = useAppSelector(
+  const { currentUser, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
   );
   const { users, setUsers, loading, error } = useFetchAllUsers();
@@ -85,11 +85,7 @@ const LiveStats = () => {
   }, [users, onlineUsers]);
 
   return (
-    <div
-      className={`${
-        hiddenLiveStats ? "hidden" : "flex"
-      } items-center w-full sticky top-[75px] sm:top-[55px] z-[2] bg-[#1a1a25] border border-gray-800 `}
-    >
+    <div className={`flex w-full`}>
       <div
         onClick={() => setToggleLanguage(!toggleLanguage)}
         ref={langRef}
@@ -125,7 +121,7 @@ const LiveStats = () => {
           </div>
         )}
       </div>
-      <div className="w-full flex items-center gap-2 xs:gap-[6px] overflow-y-scroll scrollbar-none pl-2  py-2 sm:py-1">
+      <div className=" flex items-center gap-2 xs:gap-[6px] scrollbar-none pl-2  py-2 sm:py-1 w-full ">
         {loading && <LiveStatsSkeleton />}
 
         {error && (

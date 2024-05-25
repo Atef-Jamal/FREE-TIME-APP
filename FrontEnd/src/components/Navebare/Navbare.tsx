@@ -10,7 +10,6 @@ import {
 } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import MusicPlayer from "../Music/MusicPlayer";
 import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
 import RegisterButtons from "../Navebare/Registration/RegisterButtons";
@@ -25,7 +24,6 @@ const Navbare = () => {
     currentUserIsLoading,
     currentAccountRequestFullfiled,
     openRegisterForm,
-    openMusicModal,
   } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
   const token = localStorage.getItem("token");
@@ -59,28 +57,20 @@ const Navbare = () => {
   }, [token]);
 
   return (
-    <div className="w-full h-[75px] sm:h-[55px] px-5 sm:px-1 sticky top-0 z-[4] bg-[#22162c] flex items-center justify-between">
+    <div className="relative w-full h-[80%] flex items-center justify-between">
       <Link
         to={""}
-        className="sm:hidden font-bold text-[1.65rem] tracking-widest italic text-white flex items-center"
+        className="sm:hidden tracking-wider font-bold italic text-white flex items-center"
       >
-        <span className="text-[1.65rem] tracking-widest text-[#01D676]">
-          FREE
-        </span>
-        <span className="text-[1.65rem] text-gray-300">TIME</span>
+        <span className="text-[1.6rem] text-[#01D676]">FREE</span>
+        <span className="text-[1.6rem] text-gray-300">TIME</span>
       </Link>
-      <div
-        className={`absolute top-0 -left-0 z-[3] transition-all h-full mr-auto  ${
-          openMusicModal ? "block" : "hidden"
-        }`}
-      >
-        <MusicPlayer />
-      </div>
+
       <div
         onClick={() =>
           dispatch(openModel({ status: true, children: <Search /> }))
         }
-        className="xs:hidden w-[600px] xl:w-[30%] sm:w-[35%] xs:w-[10%] h-[47px] sm:h-[40px] ml-auto mx-auto rounded-md overflow-hidden cursor-pointer"
+        className="xs:hidden w-[600px] xl:w-[30%] sm:w-[35%] xs:w-[10%] h-full ml-auto mx-auto rounded-md overflow-hidden cursor-pointer"
       >
         <SearchBar
           placeholder="search EveryThing..."
@@ -92,7 +82,7 @@ const Navbare = () => {
         onClick={() =>
           dispatch(openModel({ status: true, children: <Search /> }))
         }
-        className="hidden xs:flex items-center justify-center min-w-[40px] min-h-[40px] bg-[#383847] ml-auto mr-2 rounded-md overflow-hidden"
+        className="hidden xs:flex items-center justify-center min-w-[40px] h-full bg-[#383847] ml-auto mr-2 rounded-md overflow-hidden"
       >
         <BiSearch className=" text-xl opacity-70" />
       </button>
@@ -100,7 +90,11 @@ const Navbare = () => {
         !currentUser &&
         currentAccountRequestFullfiled && <RegisterButtons />}
       {openRegisterForm && !currentUser && <RegisterationForm />}
-      {currentUserIsLoading && <ProfileSkeleton />}
+      {currentUserIsLoading && (
+        <div className="h-full">
+          <ProfileSkeleton />
+        </div>
+      )}
       {currentUser && <ProfileActions />}
     </div>
   );

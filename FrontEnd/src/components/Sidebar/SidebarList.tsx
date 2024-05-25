@@ -12,8 +12,8 @@ import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.wav";
 
-const SidebarList = ({ isMobile }: { isMobile: boolean }) => {
-  const { resizeSidebare, currentUser, allUnReadedMesseges } = useAppSelector(
+const SidebarList = () => {
+  const { currentUser, allUnReadedMesseges } = useAppSelector(
     (state) => state.stateManeger
   );
   const dispatch = useAppDispatch();
@@ -80,22 +80,13 @@ const SidebarList = ({ isMobile }: { isMobile: boolean }) => {
   return (
     <ul className="flex flex-col px-1 gap-1 w-full overflow-scroll scrollbar-none">
       {sidebareItems.map((item, index) => {
-        if (isMobile) {
-          if (
-            item.path === "leaderboard" ||
-            item.path === "rewards" ||
-            item.path === "earn"
-          )
-            return;
-        }
-
         return (
           <li key={index}>
             <NavLink
               to={item.path}
               className={({ isActive }) =>
-                `${isActive ? "bg-[#40496975]" : ""}  ${
-                  resizeSidebare && !isMobile ? "self-center pl-0" : ""
+                `${
+                  isActive ? "bg-[#40496975]" : ""
                 } transition-all hover:bg-[#40496975] flex items-center gap-1 py-2 rounded-md overflow-hidden`
               }
             >
@@ -111,24 +102,11 @@ const SidebarList = ({ isMobile }: { isMobile: boolean }) => {
                   )}
                 {item.icon}
               </span>
-              {!resizeSidebare && !isMobile && (
-                <span
-                  className={
-                    "font-bold tracking-wide text-gray-400 text-[14px] "
-                  }
-                >
-                  {item.title}
-                </span>
-              )}
-              {isMobile && (
-                <span
-                  className={
-                    "font-bold tracking-wide text-gray-400 text-[14px] "
-                  }
-                >
-                  {item.title}
-                </span>
-              )}
+              <span
+                className={"font-bold tracking-wide text-gray-400 text-[14px] "}
+              >
+                {item.title}
+              </span>
             </NavLink>
           </li>
         );

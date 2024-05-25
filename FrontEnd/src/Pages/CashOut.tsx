@@ -1,6 +1,6 @@
-import { BiSolidReport } from "react-icons/bi";
-import { moneyActive } from "../assets";
-import { withdrawCash, withdrawGiftCards, withdrawSkins } from "../helper/data";
+// import { BiSolidReport } from "react-icons/bi";
+// import { moneyActive } from "../assets";
+// import { withdrawCash, withdrawGiftCards, withdrawSkins } from "../helper/data";
 
 const CashOut = () => {
   return (

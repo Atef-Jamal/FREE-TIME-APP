@@ -7,7 +7,7 @@ import { MdDeck } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <div className="bg-[#181929] sm:mb-14 overflow-hidden ">
+    <div className="bg-[#181929] sm:pb-14 overflow-hidden ">
       <div className="flex justify-center items-center">
         <div className="w-[80%] flex justify-between my-16 sm:w-full sm:flex-wrap sm:px-5">
           <div className="flex flex-col gap-4 ">

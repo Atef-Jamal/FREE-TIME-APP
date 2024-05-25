@@ -64,13 +64,133 @@ const ChatSidbare = ({
         <SearchBar placeholder="search people..." onChange={handleChange} />
       </div>
       <div className="w-full text-[#81bef0] pl-2">Peoples</div>
-      <div className="w-full flex flex-col items-center gap-2 sm:gap-1  h-[100%] overflow-auto lg:scrollbar-thin  overflow-x-hidden">
+      <div className="w-full flex flex-1 flex-col items-center gap-2 sm:gap-1 overflow-auto lg:scrollbar-thin  overflow-x-hidden">
         {error && <div className="my-5 text-gray-400 font-bold">{error}</div>}
         {loading && (
           <div className=" w-full h-full flex items-center justify-center">
             <Spinner />
           </div>
         )}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
+            return (
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
+              </div>
+            );
+          })}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
+            return (
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
+              </div>
+            );
+          })}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
+            return (
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
+              </div>
+            );
+          })}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
+            return (
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
+              </div>
+            );
+          })}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
+            return (
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
+              </div>
+            );
+          })}
+        {!loading &&
+          !emptyResults &&
+          filteredUsers.length === 0 &&
+          conversations.length > 0 &&
+          conversations.map((conv) => {
+            if (conv.secondParty._id === currentUser?._id) return;
+            return (
+              <div
+                onClick={toggleSidbare}
+                key={conv.secondParty._id}
+                className="w-full"
+              >
+                <People
+                  convInfo={conv}
+                  activeConversation={activeConversation}
+                  setActiveConversation={setActiveConversation}
+                />
+              </div>
+            );
+          })}
         {!loading &&
           !emptyResults &&
           filteredUsers.length === 0 &&
