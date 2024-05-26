@@ -302,10 +302,10 @@ const Layout = () => {
           >
             <LiveStats />
           </div>
-          <div className="min-h-[73dvh]">
+          <div className="">
             <Outlet />
           </div>
-          {location.pathname !== "/privatechat" && (
+          {location.pathname !== "/privatechat" || location.pathname !== "/chat" && (
             <div className="">
               <Footer />
             </div>
