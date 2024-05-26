@@ -42,6 +42,11 @@ const taskSchema = new mongoose.Schema(
       type: Number,
       default: 5,
     },
+    reviews: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "AppsReview",
+      default: [],
+    },
     quizes: {
       type: [
         {

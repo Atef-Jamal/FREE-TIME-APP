@@ -297,11 +297,12 @@ const Layout = () => {
           <div
             className={`${
               hiddenLiveStats && "hidden"
-            } border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[1] overflow-scroll scrollbar-none sm:scrollbar-thin`}
+            } border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[1] `}
           >
             <LiveStats />
           </div>
-          <div className="min-h-[73dvh]">
+          {/* <div className="min-h-[73dvh]"> */}
+          <div>
             <Outlet />
           </div>
           {location.pathname !== "/privatechat" && (

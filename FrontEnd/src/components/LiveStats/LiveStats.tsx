@@ -94,7 +94,7 @@ const LiveStats = () => {
         <MdLanguage />
         <IoIosArrowDown />
         {toggleLanguage && (
-          <div className="select__languages absolute top-[60px] lg:top-[64px] sm:top-[45px] left-3 sm:left-1 rounded-md w-56 sm:w-40  bg-[#33334d] flex flex-col justify-center py-1">
+          <div className="select__languages absolute top-[60px] lg:top-[64px] sm:top-[45px] left-3 sm:left-1 z-[10s0] rounded-md w-56 sm:w-40  bg-[#33334d] flex flex-col justify-center py-1">
             {languages.map((item) => (
               <button
                 key={item.lang}
@@ -121,7 +121,7 @@ const LiveStats = () => {
           </div>
         )}
       </div>
-      <div className=" flex items-center gap-2 xs:gap-[6px] scrollbar-none pl-2  py-2 sm:py-1 w-full ">
+      <div className=" flex items-center gap-2 xs:gap-[6px] overflow-scroll scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
         {loading && <LiveStatsSkeleton />}
 
         {error && (

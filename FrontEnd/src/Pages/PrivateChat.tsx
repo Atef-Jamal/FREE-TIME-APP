@@ -156,13 +156,13 @@ const PrivateChat = () => {
       style={{
         height: hiddenLiveStats
           ? window.innerWidth <= 867
-            ? `calc(100dvh - 130px)`
+            ? `calc(100dvh - 142px)`
             : "calc(100dvh - 70px)"
           : window.innerWidth <= 867
-          ? `calc(100dvh - 170px)`
+          ? `calc(100dvh - 172px)`
           : "calc(100dvh - 133px)",
       }}
-      className="absolute w-full right-0 flex items-center justify-center h-full bg-[#202338]"
+      className=" w-full fixed bottom-0 h-full sm:bottom-[76px] flex items-center justify-center bg-[#202338]"
     >
       <div className="lg:w-full w-full relative flex items-center h-full overflow-hidden">
         <div
