@@ -305,11 +305,12 @@ const Layout = () => {
           <div className="">
             <Outlet />
           </div>
-          {location.pathname !== ("/privatechat" || "/chat") && (
+          {location.pathname !== "/privatechat" || location.pathname !== "/privatechat" ? (
             <div className="">
               <Footer />
             </div>
-          )}
+          ) : undefined}
+          
         </div>
         <div
           style={{ height: `calc(100dvh - 70px)` }}
