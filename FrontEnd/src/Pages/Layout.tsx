@@ -305,7 +305,7 @@ const Layout = () => {
           <div className="">
             <Outlet />
           </div>
-          {location.pathname !== "/privatechat" || location.pathname !== "/chat" && (
+          {location.pathname !== ("/privatechat" || "/chat") && (
             <div className="">
               <Footer />
             </div>
