@@ -65,7 +65,7 @@ const Rewards = () => {
 
   return (
     <div className="flex flex-col bg-[#242438] gap-8 py-6 xs:pt-2 xs:pb-5">
-      <div className="flex justify-between items-center bg-[#242438] px-8 sm:flex-col sm:p-4 sm:items-start sm:gap-6">
+      <div className="flex justify-between items-center bg-[#242438] px-6 sm:flex-col sm:items-start sm:gap-6">
         <div className="flex items-center gap-4">
           <img
             alt={""}
@@ -93,7 +93,7 @@ const Rewards = () => {
             </span>
           </span>
           <MdCardGiftcard />
-          <span id="bonus-code" className="text-white w-24">
+          <span id="bonus-code" className="text-white w-25">
             {loading ? (
               <Spinner className="w-5 h-5 mx-auto border-b-blue-800 border-l-blue-800" />
             ) : (

@@ -24,8 +24,8 @@ const OpenPopup = () => {
   return (
     <div
       className={`${
-        status ? "opacity-100" : " opacity-0"
-      } transition duration-500 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#7768fff8] rounded-lg border px-4 sm:px-2 py-2 mx-auto border-[#97f34cde] `}
+        status ? " translate-y-0" : "-translate-y-[200%]"
+      } transition duration-200 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#7768fff8] rounded-lg border px-4 sm:px-2 py-2 mx-auto border-[#97f34cde] `}
     >
       <span className="text-xl">
         {type === "ERROR_LOCK" && <IoLockClosed />}
@@ -34,7 +34,7 @@ const OpenPopup = () => {
         {type === "SUCESS" && <FaRegCheckCircle />}
       </span>
       <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">
-        {message}
+        {message} hellow
       </p>
     </div>
   );

@@ -34,7 +34,7 @@ const HeroSection = () => {
       } lg:flex-col lg:items-center px-16 lg:px-0`}
     >
       <div className={`flex flex-col items-start sm:items-center`}>
-        <h1 className="font-bold text-5xl text-[#c99d81] tracking-wider sm:text-center sm:text-3xl sm:mx-auto mb-6">
+        <h1 className=" font-bold text-5xl text-[#c99d81] tracking-wider sm:text-center sm:text-3xl sm:mx-auto mb-6">
           Get Paid For
         </h1>
         <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-2">

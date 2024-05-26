@@ -256,15 +256,13 @@ const Layout = () => {
   }, [redirectQuery]);
 
   return (
-    <div className=" flex flex-col min-h-screen">
+    <div className="w-full min-h-screen">
       <Helmet>
         <title>FREE TIME</title>
       </Helmet>
+
       {model.status && <Model children={model.children} />}
-      <div className="fixed top-4 w-fit z-[10]">
-        <OpenPopup />
-      </div>
-      <div className="h-[70px] sm:h-[55px] sticky top-0 z-[3] bg-[#22162c] flex items-center justify-center px-3 sm:pr-1 border-b border-[#f8d3d32a]">
+      <div className=" h-[70px] sm:h-[55px] sticky top-0 z-[5] bg-[#22162c] flex items-center justify-center px-3 sm:px-1  border-b border-[#f8d3d32a]">
         <Navbare />
         <div
           className={`absolute top-0 left-0 z-[1] transition-all h-full  ${
@@ -272,6 +270,9 @@ const Layout = () => {
           }`}
         >
           <MusicPlayer />
+        </div>
+        <div className="absolute top-3 sm:top-1 w-fit z-[20]">
+          <OpenPopup />
         </div>
       </div>
       <div className="flex flex-1">
@@ -297,12 +298,11 @@ const Layout = () => {
           <div
             className={`${
               hiddenLiveStats && "hidden"
-            } border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[1] `}
+            } border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[4] `}
           >
             <LiveStats />
           </div>
-          {/* <div className="min-h-[73dvh]"> */}
-          <div>
+          <div className="min-h-[73dvh]">
             <Outlet />
           </div>
           {location.pathname !== "/privatechat" && (
@@ -313,7 +313,7 @@ const Layout = () => {
         </div>
         <div
           style={{ height: `calc(100dvh - 70px)` }}
-          className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138] duration-300 border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[1] ${
+          className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138] duration-300 border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
             isChatOpen ? " translate-x-0" : " translate-x-[100%]"
           }`}
         >

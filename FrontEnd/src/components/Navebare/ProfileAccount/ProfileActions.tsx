@@ -101,7 +101,7 @@ const ProfileActions = () => {
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
             ref={profileMenuRef}
-            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md h-full cursor-pointer"
+            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md h-full cursor-pointer "
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />
@@ -113,7 +113,7 @@ const ProfileActions = () => {
             {openProfileMenu && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-[#32324c] absolute top-14 sm:top-12 right-5 w-[65%] rounded-lg"
+                className="bg-[#32324c] absolute top-[60px] sm:top-12 right-2 w-[65%] rounded-lg"
               >
                 <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
               </div>
