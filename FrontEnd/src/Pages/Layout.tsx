@@ -257,6 +257,7 @@ const Layout = () => {
 
   return (
     <div className="w-full">
+    <div className="w-full">
       <Helmet>
         <title>FREE TIME</title>
       </Helmet>
