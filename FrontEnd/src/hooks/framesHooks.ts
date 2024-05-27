@@ -22,7 +22,6 @@ export const useFetchFrames = () => {
         setError("an Error occurred");
         dispatch(
           showPopup({
-            status: true,
             message: "Failed to Load Frames, try again Later",
             type: "ERROR_GENERAL",
           })

@@ -25,7 +25,6 @@ const EnterVerificationCode = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })

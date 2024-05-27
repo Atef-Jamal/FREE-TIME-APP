@@ -34,7 +34,6 @@ const SendMessagePrivateChat = ({
     if (message.trim() === "") {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: "Enter a Message",
         })
@@ -94,7 +93,6 @@ const SendMessagePrivateChat = ({
       });
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

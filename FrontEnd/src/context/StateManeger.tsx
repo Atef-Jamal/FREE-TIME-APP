@@ -13,7 +13,6 @@ const initialState: TypeInitialState = {
   currentAccountRequestFullfiled: false,
   openNotification: false,
   openPopup: {
-    status: false,
     type: null,
     message: "",
   },
@@ -77,7 +76,6 @@ const StateManegerSlice = createSlice({
     },
 
     showPopup(state, action: PayloadAction<TypePopup>) {
-      state.openPopup.status = true;
       state.openPopup.message = action.payload.message;
       state.openPopup.type = action.payload.type;
     },
@@ -93,9 +91,8 @@ const StateManegerSlice = createSlice({
       state.model.children = null;
     },
     resetPopup(state) {
-      state.openPopup.status = false;
       state.openPopup.type = null;
-      state.openPopup.message = "";
+      state.openPopup.message = null;
     },
     handleAddMusic(state, action: PayloadAction<TypeMusicInfo>) {
       state.activeMusic.audio.src = action.payload.musicSrc;
@@ -109,16 +106,12 @@ const StateManegerSlice = createSlice({
       state.musicIsPlaying = false;
     },
     handlePlayMusic(state) {
-      // if (state.activeMusic.audio.src) {
       state.activeMusic.audio.play();
       state.musicIsPlaying = true;
-      // }
     },
     handlePauseMusic(state) {
-      // if (state.activeMusic.audio.src) {
       state.activeMusic.audio.pause();
       state.musicIsPlaying = false;
-      // }
     },
 
     setSocet(state, action: PayloadAction<any>) {

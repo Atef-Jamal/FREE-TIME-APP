@@ -26,7 +26,6 @@ export const useFetchPublicMessages = () => {
         setError(err);
         dispatch(
           showPopup({
-            status: true,
             message: handleApiError(error),
             type: "ERROR_GENERAL",
           })
@@ -51,7 +50,7 @@ export const useFetchPrivateChatMessages = ({
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
   const [secondUser, setSecondUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
@@ -70,9 +69,7 @@ export const useFetchPrivateChatMessages = ({
       } catch (error) {
         const err = handleApiError(error);
         setError(err);
-        dispatch(
-          showPopup({ status: true, message: err, type: "ERROR_GENERAL" })
-        );
+        dispatch(showPopup({ message: err, type: "ERROR_GENERAL" }));
       } finally {
         setLoading(false);
       }

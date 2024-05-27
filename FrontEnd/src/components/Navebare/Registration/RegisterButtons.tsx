@@ -8,7 +8,7 @@ const RegisterButtons = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="h-full flex items-center gap-2">
+    <div className="h-full flex items-center gap-2 overflow-scroll scrollbar-none">
       <button
         onClick={() => {
           dispatch(
@@ -32,7 +32,7 @@ const RegisterButtons = () => {
               toggleThisEntity({ entity: "isSignInMode", value: false })
             );
         }}
-        className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ffffff] bg-[#01D676] font-bold border border-gray-500 px-6 h-full  tracking-wider sm:text-sm"
+        className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ffffff] bg-[#01D676] font-bold border border-gray-500 px-6 sm:px-3 h-full  tracking-wider sm:text-sm"
       >
         <ImKey2 />
         Sign Up

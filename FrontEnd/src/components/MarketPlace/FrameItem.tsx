@@ -21,7 +21,6 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
     if (!currentUser) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_LOCK",
           message: "Log In First",
         })
@@ -43,7 +42,6 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
     } catch (error: any) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
@@ -92,7 +90,6 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
           onClick={() =>
             dispatch(
               showPopup({
-                status: true,
                 type: "ERROR_GENERAL",
                 message: "Already Buyed. Try with another Frames",
               })

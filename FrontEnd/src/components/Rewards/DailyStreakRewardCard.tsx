@@ -40,7 +40,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
       } catch (error) {
         dispatch(
           showPopup({
-            status: true,
             message: handleApiError(error),
             type: "ERROR_GENERAL",
           })
@@ -52,7 +51,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
       if (!currentUser) {
         dispatch(
           showPopup({
-            status: true,
             message: "Sign In First",
             type: "ERROR_LOCK",
           })
@@ -60,7 +58,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
       } else {
         dispatch(
           showPopup({
-            status: true,
             message: "Smothing Went Wrong",
             type: "ERROR_GENERAL",
           })
@@ -108,7 +105,6 @@ const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
           onClick={() => {
             dispatch(
               showPopup({
-                status: true,
                 message: "Please, Sign In First",
                 type: "ERROR_LOCK",
               })

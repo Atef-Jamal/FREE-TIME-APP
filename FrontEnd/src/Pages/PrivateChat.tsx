@@ -162,13 +162,13 @@ const PrivateChat = () => {
           ? `calc(100dvh - 172px)`
           : "calc(100dvh - 133px)",
       }}
-      className="w-full fixed bottom-0 h-full sm:bottom-[76px] flex items-center justify-center bg-[#202338]"
+      className="w-full h-full flex items-center justify-center bg-[#202338]"
     >
-      <div className="lg:w-full w-full relative flex items-center h-full overflow-hidden">
+      <div className="w-full relative flex items-center h-full">
         <div
           className={`transition-all lg:absolute top-0 left-0 w-[350px] sm:w-[250px] h-full z-[1] ${
             openSidbare ? "lg:translate-x-[0%]" : "lg:-translate-x-[100%]"
-          } `}
+          }`}
         >
           <ChatSidbare
             toggleSidbare={toggleSidbare}
@@ -177,7 +177,7 @@ const PrivateChat = () => {
             setActiveConversation={setActiveConversation}
           />
         </div>
-        <div className="h-full grow max-w-[800px] mx-auto">
+        <div className="h-full flex-1 max-w-[800px] mx-auto">
           {activeConversation ? (
             <ChatBody
               setConversations={setConversations}

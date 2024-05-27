@@ -45,7 +45,6 @@ const SendMessage = ({
     if (message.trim() === "") {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: "Enter a Message",
         })
@@ -110,7 +109,6 @@ const SendMessage = ({
       });
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

@@ -19,7 +19,6 @@ const HeroSection = () => {
     } catch (error: any) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

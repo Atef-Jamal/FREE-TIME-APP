@@ -33,7 +33,6 @@ export const useFetchAllUsers = (page?: number) => {
         setError(err);
         dispatch(
           showPopup({
-            status: true,
             message: handleApiError(error),
             type: "ERROR_GENERAL",
           })
@@ -111,7 +110,6 @@ export const useFetchActivities = ({
         setError(err);
         dispatch(
           showPopup({
-            status: true,
             message: handleApiError(error),
             type: "ERROR_GENERAL",
           })
@@ -155,7 +153,6 @@ export const useFetchMusics = () => {
         setError("an Error occurred");
         dispatch(
           showPopup({
-            status: true,
             message: "Failed to Load Musics, try again Later",
             type: "ERROR_GENERAL",
           })

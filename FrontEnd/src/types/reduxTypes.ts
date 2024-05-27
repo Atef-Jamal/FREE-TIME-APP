@@ -2,9 +2,8 @@ import { Socket } from "socket.io-client";
 import { User } from "./userTypes";
 
 export interface TypePopup {
-  status: boolean;
   type: "ERROR_GENERAL" | "ERROR_LOCK" | "SUCESS" | "LOADING" | null;
-  message: string;
+  message: string | null;
 }
 
 export interface TypeMusicInfo {

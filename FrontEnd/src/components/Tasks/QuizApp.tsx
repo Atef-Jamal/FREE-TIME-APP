@@ -84,7 +84,6 @@ const QuizApp = ({ taskApp }: TypeProps) => {
       setError(handleApiError(error));
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })

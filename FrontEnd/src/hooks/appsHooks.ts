@@ -87,7 +87,6 @@ export const useFetchTaskApp = ({
         setError(err);
         dispatch(
           showPopup({
-            status: true,
             message: handleApiError(error),
             type: "ERROR_GENERAL",
           })

@@ -17,7 +17,6 @@ const VerifyEmailBox = () => {
     if (!currentUser || currentUser.emailVerified) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: "sorry, Email already verified",
         })
@@ -33,7 +32,6 @@ const VerifyEmailBox = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

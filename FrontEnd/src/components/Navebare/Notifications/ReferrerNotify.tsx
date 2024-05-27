@@ -40,7 +40,6 @@ const ReferrerNotify = ({
       );
       dispatch(
         showPopup({
-          status: true,
           message: "collected successfully ",
           type: "SUCESS",
         })
@@ -48,7 +47,6 @@ const ReferrerNotify = ({
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })

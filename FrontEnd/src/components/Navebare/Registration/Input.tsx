@@ -28,7 +28,7 @@ const Input = ({
 
   return (
     <div className="w-full flex flex-col gap-1">
-      <label htmlFor={id} className="font-bold tracking-wider text-[#6be8f8ee]">
+      <label htmlFor={id} className=" tracking-wider text-[#6be8f8ee]">
         {label}
       </label>
       <div className="relative">

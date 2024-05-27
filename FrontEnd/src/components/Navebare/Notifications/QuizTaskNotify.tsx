@@ -35,7 +35,6 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
       );
       dispatch(
         showPopup({
-          status: true,
           message: "collected successfully ",
           type: "SUCESS",
         })
@@ -43,7 +42,6 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

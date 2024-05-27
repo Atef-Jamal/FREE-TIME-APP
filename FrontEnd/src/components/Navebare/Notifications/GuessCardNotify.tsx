@@ -33,7 +33,6 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
       );
       dispatch(
         showPopup({
-          status: true,
           message: "collected successfully ",
           type: "SUCESS",
         })
@@ -41,7 +40,6 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

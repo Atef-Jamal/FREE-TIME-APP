@@ -40,7 +40,7 @@ import { RiCloseFill } from "react-icons/ri";
 //   } catch (error) {
 //     dispatch(
 //       showPopup({
-//         status: true,
+//
 //         message: handleApiError(error),
 //         type: "ERROR_GENERAL",
 //       })
@@ -163,7 +163,6 @@ const Sidebar = ({
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -250,7 +249,7 @@ const Sidebar = ({
                 className={({ isActive }) =>
                   `${
                     isActive ? "bg-[#40496975]" : ""
-                  } relative transition-all hover:bg-[#40496975] flex items-center gap-1 py-2 sm:py-1 rounded-md`
+                  } relative transition-all hover:bg-[#40496975] flex items-center gap-1 py-2 rounded-md`
                 }
               >
                 <span

@@ -29,7 +29,6 @@ const Statistics = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

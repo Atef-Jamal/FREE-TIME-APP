@@ -38,7 +38,6 @@ const EmailVerifiedNotify = ({
       );
       dispatch(
         showPopup({
-          status: true,
           type: "SUCESS",
           message: "collected successfully",
         })
@@ -46,7 +45,6 @@ const EmailVerifiedNotify = ({
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

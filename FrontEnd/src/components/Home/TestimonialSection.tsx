@@ -29,7 +29,6 @@ const TestimonialSection = () => {
     if (!currentUser) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_LOCK",
           message: "Log In First",
         })
@@ -39,7 +38,6 @@ const TestimonialSection = () => {
     if (comment.trim() === "") {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: "Enter Your Opinion",
         })
@@ -54,7 +52,6 @@ const TestimonialSection = () => {
       setTestimonials((prev) => [response.data, ...prev]);
       dispatch(
         showPopup({
-          status: true,
           type: "SUCESS",
           message: "successfull published",
         })
@@ -62,7 +59,6 @@ const TestimonialSection = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
@@ -83,7 +79,6 @@ const TestimonialSection = () => {
       } catch (error) {
         dispatch(
           showPopup({
-            status: true,
             type: "ERROR_GENERAL",
             message: handleApiError(error),
           })

@@ -30,7 +30,6 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
     if (!currentUser) {
       dispatch(
         showPopup({
-          status: true,
           message: "Log In First",
           type: "ERROR_LOCK",
         })
@@ -54,7 +53,6 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
       );
       dispatch(
         showPopup({
-          status: true,
           type: "SUCESS",
           message: "successfully purshased",
         })
@@ -63,7 +61,6 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

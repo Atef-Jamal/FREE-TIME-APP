@@ -46,7 +46,6 @@ const ProfileActions = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -143,7 +142,7 @@ const ProfileActions = () => {
         </div>
       )}
       {openNotification && (
-        <div className="fixed top-[9%] right-0 w-[100vw] z-[4] h-[100vh] sm:w-full">
+        <div className="fixed top-[70px] sm:top-[53px] right-0 w-[100vw] z-[4] h-[100vh] sm:w-full">
           <NotificationMenu
             loadingNotifications={loadingNotifications}
             notifications={notifications}

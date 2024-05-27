@@ -72,7 +72,6 @@ const Message = ({
       setMessageItem((prev) => ({ ...prev, isDeleted: false }));
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
@@ -89,7 +88,6 @@ const Message = ({
     if (!currentUser) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: "Log in First",
         })
@@ -123,7 +121,6 @@ const Message = ({
       setMessageItem(restoreOldMessageIfIsError);
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })

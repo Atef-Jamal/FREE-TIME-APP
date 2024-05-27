@@ -46,7 +46,6 @@ const ApplyCoupon = () => {
         );
         dispatch(
           showPopup({
-            status: true,
             message: "successfully applied",
             type: "SUCESS",
           })
@@ -59,7 +58,6 @@ const ApplyCoupon = () => {
       setError(error.response.data.error);
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })

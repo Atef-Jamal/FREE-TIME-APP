@@ -61,7 +61,6 @@ const RegisterationForm = () => {
     if (errorMessage) {
       dispatch(
         showPopup({
-          status: true,
           message: errorMessage,
           type: "ERROR_GENERAL",
         })
@@ -74,7 +73,6 @@ const RegisterationForm = () => {
       if (isSignInMode) {
         dispatch(
           showPopup({
-            status: true,
             message: "Logging In....",
             type: "LOADING",
           })
@@ -85,7 +83,6 @@ const RegisterationForm = () => {
       } else {
         dispatch(
           showPopup({
-            status: true,
             message: "Registering....",
             type: "LOADING",
           })
@@ -106,7 +103,6 @@ const RegisterationForm = () => {
       console.log(error);
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -124,7 +120,6 @@ const RegisterationForm = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })

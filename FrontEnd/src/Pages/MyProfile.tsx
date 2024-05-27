@@ -67,7 +67,6 @@ const MyProfile = () => {
       dispatch(setCurrentUser({ ...currentUser, activeFrame: response.data }));
       dispatch(
         showPopup({
-          status: true,
           message: "Changed Successfully",
           type: "SUCESS",
         })
@@ -79,7 +78,6 @@ const MyProfile = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -96,7 +94,6 @@ const MyProfile = () => {
       dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));
       dispatch(
         showPopup({
-          status: true,
           message: "Removed Successfully",
           type: "SUCESS",
         })
@@ -105,7 +102,6 @@ const MyProfile = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -117,7 +113,6 @@ const MyProfile = () => {
     navigator.clipboard.writeText(text);
     dispatch(
       showPopup({
-        status: true,
         message: "Copied!",
         type: "SUCESS",
       })

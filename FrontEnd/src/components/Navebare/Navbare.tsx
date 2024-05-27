@@ -38,7 +38,6 @@ const Navbare = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
@@ -82,7 +81,7 @@ const Navbare = () => {
         onClick={() =>
           dispatch(openModel({ status: true, children: <Search /> }))
         }
-        className="hidden xs:flex items-center justify-center min-w-[40px] h-full bg-[#383847] ml-auto mr-2 rounded-md overflow-hidden"
+        className="hidden xs:flex items-center justify-center min-w-[40px] h-full bg-[#383847] ml-auto mr-1 rounded-md overflow-hidden"
       >
         <BiSearch className=" text-xl opacity-70" />
       </button>

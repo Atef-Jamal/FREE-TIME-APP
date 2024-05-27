@@ -43,7 +43,6 @@ const ProfileSettings = () => {
       dispatch(setCurrentUser({ ...currentUser, name: response.data.name }));
       dispatch(
         showPopup({
-          status: true,
           message: "Name changed successfully",
           type: "SUCESS",
         })
@@ -55,7 +54,6 @@ const ProfileSettings = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -76,7 +74,6 @@ const ProfileSettings = () => {
       });
       dispatch(
         showPopup({
-          status: true,
           message: "Password changed successfully",
           type: "SUCESS",
         })
@@ -84,7 +81,6 @@ const ProfileSettings = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })

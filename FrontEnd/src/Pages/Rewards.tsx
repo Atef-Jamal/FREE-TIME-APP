@@ -26,7 +26,6 @@ const Rewards = () => {
     if (!currentUser) {
       dispatch(
         showPopup({
-          status: true,
           message: "Log In first",
           type: "ERROR_LOCK",
         })
@@ -40,7 +39,6 @@ const Rewards = () => {
     } catch (error) {
       dispatch(
         showPopup({
-          status: true,
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
@@ -55,7 +53,6 @@ const Rewards = () => {
       navigator.clipboard.writeText(bonusCode.code);
       dispatch(
         showPopup({
-          status: true,
           message: "Copied!",
           type: "SUCESS",
         })

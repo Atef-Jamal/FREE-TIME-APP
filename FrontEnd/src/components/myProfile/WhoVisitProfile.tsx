@@ -26,7 +26,6 @@ const WhoVisitProfile = () => {
       if (currentUser.points < 5) {
         dispatch(
           showPopup({
-            status: true,
             type: "ERROR_GENERAL",
             message: handleApiError(error),
           })
@@ -42,7 +41,6 @@ const WhoVisitProfile = () => {
       setError(handleApiError(error));
       dispatch(
         showPopup({
-          status: true,
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
