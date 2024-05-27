@@ -147,7 +147,7 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
               placeholder="Write your opinion"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full outline-none border-gray-700 text-sm bg-[#171227fd] p-3 rounded-md"
+              className="w-full outline-none placeholder:text-gray-500 border-gray-700 text-sm bg-[#171227fd] p-3 rounded-md"
             />
             <button className="w-full text-center rounded-md py-2 bg-[#6f9c5a] mt-2">
               Send

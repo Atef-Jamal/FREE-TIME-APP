@@ -33,8 +33,8 @@ const NavebareBottom = ({
 
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
   return (
-    <ul className="w-full flex items-center justify-between">
-      <li className="flex-1 h-full flex items-center justify-center">
+    <ul className="w-full flex items-center justify-between gap-1">
+      <li className="w-[17%] h-full flex items-center justify-center">
         <FaList className="text-2xl" onClick={handleToggleMobileSidbare} />
       </li>
 
@@ -46,7 +46,7 @@ const NavebareBottom = ({
               isActive
                 ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
                 : ""
-            } flex flex-col items-center text-center rounded-md gap-2 text-gray-200 text-xs font-[500] py-2`
+            } flex flex-col items-center text-center rounded-md gap-1 text-gray-200 text-xs font-[500] py-2`
           }
         >
           <MdLeaderboard className="text-xl" />
