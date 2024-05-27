@@ -256,7 +256,7 @@ const Layout = () => {
   }, [redirectQuery]);
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full">
       <Helmet>
         <title>FREE TIME</title>
       </Helmet>
