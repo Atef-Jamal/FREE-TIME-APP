@@ -7,7 +7,7 @@ const Empty = ({
   emptyText: string;
   imgWidthHeight?: string;
 }) => (
-  <div className="w-full flex items-center justify-center gap-2 p-2 opacity-30 ">
+  <div className="w-full flex items-end justify-center gap-2 p-2 opacity-30 ">
     <img
       className={`object-cover ${imgWidthHeight || "w-12 h-12 xs:w-8 xs:h-8"}`}
       alt=""

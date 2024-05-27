@@ -256,7 +256,7 @@ const Layout = () => {
   }, [redirectQuery]);
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full">
       <Helmet>
         <title>FREE TIME</title>
       </Helmet>
@@ -302,14 +302,15 @@ const Layout = () => {
           >
             <LiveStats />
           </div>
-          <div className="min-h-[73dvh]">
+          <div>
             <Outlet />
           </div>
-          {location.pathname !== "/privatechat" && (
-            <div className="">
-              <Footer />
-            </div>
-          )}
+          {location.pathname !== "/privatechat" &&
+            location.pathname !== "/chat" && (
+              <div className="">
+                <Footer />
+              </div>
+            )}
         </div>
         <div
           style={{ height: `calc(100dvh - 70px)` }}

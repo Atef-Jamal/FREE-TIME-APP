@@ -103,7 +103,7 @@ const Search = () => {
             </h1>
             {results.features.length === 0 && (
               <Empty
-                emptyText="No Features Founded"
+                emptyText="No Features Found"
                 imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
@@ -131,7 +131,7 @@ const Search = () => {
             </h1>
             {results.users.length === 0 && (
               <Empty
-                emptyText="No People Founded"
+                emptyText="No People Found"
                 imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
@@ -163,7 +163,7 @@ const Search = () => {
             </h1>
             {results.apps.length === 0 && (
               <Empty
-                emptyText="No Apps Founded"
+                emptyText="No Apps Found"
                 imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}
@@ -195,7 +195,7 @@ const Search = () => {
             </h1>
             {results.frames.length === 0 && (
               <Empty
-                emptyText="No Frames Founded"
+                emptyText="No Frames Found"
                 imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
               />
             )}

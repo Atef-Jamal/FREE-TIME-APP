@@ -4,6 +4,7 @@ import User from "../models/user";
 import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { io, onLineUsers } from "../app";
+import AppsReview from "../models/appsReview";
 
 export const getAllApps = async (req: Request, res: Response) => {
   const filter = req.query.filter || "ALL";
@@ -17,7 +18,11 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ completedBy: { $not: { $size: 0 } } })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
       allApps.sort((a, b) => {
         if (a.completedBy.length > b.completedBy.length) return -1;
         if (a.completedBy.length < b.completedBy.length) return 1;
@@ -28,7 +33,11 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ prize: { $gt: 150 } })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
       allApps.sort((a, b) => {
         return b.prize - a.prize;
       });
@@ -36,7 +45,11 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ rating: { $gt: 4 } })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
       allApps.sort((a, b) => {
         return b.rating - a.rating;
       });
@@ -44,22 +57,38 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ devices: "DESKTOP" })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
     } else if (filter === "ANDROID") {
       allApps = await Task.find({ devices: "ANDROID" })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
     } else if (filter === "MAC") {
       allApps = await Task.find({ devices: "MAC" })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
     } else {
       allApps = await Task.find()
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture");
+        .populate("completedBy", "name _id profilePicture")
+        .populate({
+          path: "reviews",
+          populate: { path: "user", select: "profilePicture name _id" },
+        });
     }
 
     return res.status(200).json(allApps);
@@ -238,5 +267,26 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "passed sucessfully" });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
+  }
+};
+
+export const handleAddReview = async (req: Request, res: Response) => {
+  const { appId } = req.params;
+  const currentUserId = req.user._id;
+  const { comment } = req.body;
+
+  try {
+    const app = await Task.findById(appId);
+    if (!app) {
+      return res.status(404).json({ error: "app Not Found" });
+    }
+    const newReview = new AppsReview({ appId, user: currentUserId, comment });
+    const savedReview = await newReview.save();
+    const populated = await savedReview.populate("user");
+    app.reviews.push(savedReview._id);
+    await app.save();
+    return res.status(200).json(populated);
+  } catch (error) {
+    return res.status(404).json({ error: "can not add review" });
   }
 };

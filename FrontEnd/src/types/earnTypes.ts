@@ -13,6 +13,7 @@ export interface TypeGameApp {
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   title: string;
   image: string;
+  reviews: { _id: string; appId: string; user: User; comment: string }[];
   prize: number;
   rating: number;
   completedBy: User[];
@@ -26,6 +27,7 @@ export interface TypeQuizApp {
   isAvailable: "AVAILABLE" | "UNAVAILABLE";
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   quizes: TypeQuiz[];
+  reviews: { _id: string; appId: string; user: User; comment: string }[];
   title: string;
   image: string;
   prize: number;

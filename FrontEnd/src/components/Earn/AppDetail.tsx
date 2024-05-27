@@ -4,16 +4,38 @@ import { TypeTaskApp } from "../../types/earnTypes";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
-import { empty, visaShopLogo } from "../../assets";
+import { empty } from "../../assets";
 import { BsArrowDownCircle } from "react-icons/bs";
+import { makeRequest } from "../../utils";
+import Empty from "../Others/Empty";
 
 const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
+  const [comment, setComment] = useState("");
+  const [reviews, setReviews] = useState(appDetail.reviews);
 
   const isCompleted = currentUser?.completedTasks.includes(appDetail._id);
   const notActiveStars = 5 - appDetail.rating;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (comment.trim() === "" || !appDetail._id) return;
+    try {
+      const response = await makeRequest.post(
+        `/api/tasks/${appDetail._id}/review`,
+        {
+          comment,
+        }
+      );
+
+      setReviews((prev) => [...prev, response.data]);
+      setComment("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -90,22 +112,47 @@ const AppDetail = ({ appDetail }: { appDetail: TypeTaskApp }) => {
           } px-2 flex flex-col items-center"
           `}
         >
-          <div className="flex flex-col items-center border-b">
-            <div className="w-full flex items-center gap-2">
-              <img
-                src={visaShopLogo}
-                alt=""
-                className="w-8 h-8 rounded-full object-contain"
-              />
-              <span className="text-sm text-[#d1cfcf]">Atef Jamal</span>
-            </div>
-            <p className="w-full text-sm text-[#9d79ff]">
-              I Encourage everybody to play this app it is an amazing app i have
-              ever seenI Encourage everybody to play this app it is an amazing
-              app i have ever seen
-            </p>
-          </div>
-          <div className=""></div>
+          {reviews.map((review) => {
+            return (
+              <div
+                key={review._id}
+                className="flex flex-col items-center border-b border-gray-500 pb-1 mb-1"
+              >
+                <div className="w-full flex items-center gap-2">
+                  <img
+                    src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
+                      review.user.profilePicture
+                    }`}
+                    alt=""
+                    className="w-8 h-8 rounded-full object-contain"
+                  />
+                  <span className="text-sm text-[#d1cfcf]">
+                    {review.user.name}
+                  </span>
+                </div>
+                <p className="w-full text-sm text-[#9d79ff]">
+                  {review.comment}
+                </p>
+              </div>
+            );
+          })}
+          {reviews.length === 0 && (
+            <Empty
+              emptyText="There is not Reviews on this offer"
+              imgWidthHeight="w-8 h-8"
+            />
+          )}
+          <form onSubmit={handleSubmit} className="w-full">
+            <input
+              placeholder="Write your opinion"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="w-full outline-none border-gray-700 text-sm bg-[#171227fd] p-3 rounded-md"
+            />
+            <button className="w-full text-center rounded-md py-2 bg-[#6f9c5a] mt-2">
+              Send
+            </button>
+          </form>
         </div>
         <span className="text-[#73f1a8] flex items-center gap-3 w-full">
           Reward :
