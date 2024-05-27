@@ -9,9 +9,12 @@ export const allUsers = async (req: Request, res: Response) => {
   try {
     let users;
     if (page) {
-      users = await User.find().skip(skip).limit(limit).select("-password");
+      users = await User.find()
+        .skip(skip)
+        .limit(limit)
+        .select("-password -email");
     } else {
-      users = await User.find().select("-password");
+      users = await User.find().select("-password -email -usersVisitedMe");
     }
     return res.status(200).json(users);
   } catch (error) {
@@ -23,7 +26,9 @@ export const getUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select(
+      "-password -email -usersVisitedMe"
+    );
 
     if (!user) {
       return res.status(404).json({ error: "User Not Found" });

@@ -5,6 +5,7 @@ import { handleApiError } from "../utils/common";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import { TypePrivateMessage } from "../types/privateChatTypes";
 import { TypePublicChatItem } from "../types/publicChatTypes";
+import { User } from "../types/userTypes";
 
 export const useFetchPublicMessages = () => {
   const [messages, setMessages] = useState<TypePublicChatItem[]>([]);
@@ -49,6 +50,7 @@ export const useFetchPrivateChatMessages = ({
 }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
+  const [secondUser, setSecondUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
@@ -62,6 +64,8 @@ export const useFetchPrivateChatMessages = ({
         const response = await makeRequest.get(
           `api/conversations/${secondUserId}`
         );
+        const userRes = await makeRequest.get(`/api/users/${secondUserId}`);
+        setSecondUser(userRes.data);
         setMessages(response.data);
       } catch (error) {
         const err = handleApiError(error);
@@ -76,5 +80,5 @@ export const useFetchPrivateChatMessages = ({
     getMessages();
   }, dependencies);
 
-  return { messages, setMessages, loading, error };
+  return { messages, setMessages, secondUser, loading, error };
 };

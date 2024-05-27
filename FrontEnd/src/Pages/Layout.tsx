@@ -255,8 +255,10 @@ const Layout = () => {
     }
   }, [redirectQuery]);
 
+  const isMobile = window.innerWidth <= 867;
+
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen">
       <Helmet>
         <title>FREE TIME</title>
       </Helmet>
@@ -312,14 +314,16 @@ const Layout = () => {
               </div>
             )}
         </div>
-        <div
-          style={{ height: `calc(100dvh - 70px)` }}
-          className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138] duration-300 border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
-            isChatOpen ? " translate-x-0" : " translate-x-[100%]"
-          }`}
-        >
-          <DisktopChat />
-        </div>
+        {!isMobile && (
+          <div
+            style={{ height: `calc(100dvh - 70px)` }}
+            className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138] duration-300 border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
+              isChatOpen ? " translate-x-0" : " translate-x-[100%]"
+            }`}
+          >
+            <DisktopChat />
+          </div>
+        )}
       </div>
       <div className="hidden sm:block w-full bg-[#2b2b55] fixed bottom-0 z-[3]">
         <NavebareBottom setOpenSidbareMobile={setOpenSidbareMobile} />
