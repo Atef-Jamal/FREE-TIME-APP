@@ -20,7 +20,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<FcBusinessman className="text-xl" />}
+              icon={<FcBusinessman className="text-2xl sm:text-xl" />}
               time={item.createdAt}
               message={`${user?.name} successfully Referred his friend ${item.referredUser.name}`}
               prize={item.prize}
@@ -31,7 +31,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<AiFillGift className="text-xl" />}
+              icon={<AiFillGift className="text-2xl sm:text-xl" />}
               time={item.createdAt}
               message="Quiz app completed"
               prize={item.prize}
@@ -42,7 +42,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<FcFrame className="text-xl" />}
+              icon={<FcFrame className="text-2xl sm:text-xl" />}
               time={item.createdAt}
               message={`Buyed ${item.frame.title}`}
               price={item.frame.price}
@@ -54,7 +54,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<AiFillGift className="text-xl" />}
+              icon={<AiFillGift className="text-2xl sm:text-xl" />}
               time={item.createdAt}
               message={"Guess Card Game Completed "}
               prize={item.prize}
@@ -69,7 +69,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
                 <img
                   src={verifiedImage}
                   alt=""
-                  className="w-4 h-4 object-cover"
+                  className="w-6 h-6 sm:w-4 sm:h-4 object-cover"
                 />
               }
               time={item.createdAt}
@@ -82,10 +82,10 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<FcMusic className="text-xl" />}
+              icon={<FcMusic className="text-2xl sm:text-xl" />}
               time={item.createdAt}
-              message={`Music ${item.musicTitle} Buyed Now`}
-              prize={item.price}
+              message={`Music ${item.musicTitle} purshased `}
+              price={item.price}
             />
           );
       })}

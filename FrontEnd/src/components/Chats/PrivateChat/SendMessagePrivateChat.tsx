@@ -49,8 +49,8 @@ const SendMessagePrivateChat = ({
       _id: uniqeIdForRollback,
       sender: currentUser,
       message,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toLocaleString("en-US"),
+      updatedAt: new Date().toLocaleString("en-US"),
       isRead: false,
       isSended: "PENDING",
     };

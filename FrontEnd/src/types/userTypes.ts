@@ -6,7 +6,7 @@ export interface User {
   name: string;
   email: string;
   profilePicture: string;
-  createdAt: string;
+  createdAt: Date;
   emailVerified: boolean;
   points: number;
   copouns: string[];

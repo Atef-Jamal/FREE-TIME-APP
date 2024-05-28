@@ -121,7 +121,7 @@ const TestimonialSection = () => {
                       </span>
                       {item.createdAt && (
                         <span className="text-xs text-[#9ba89aee]">
-                          {formateDate(item.createdAt.toString())}
+                          {formateDate(item.createdAt)}
                         </span>
                       )}
                       <div className="flex items-center gap-1">

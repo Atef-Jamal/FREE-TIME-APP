@@ -5,7 +5,7 @@ import { TypeAnnouncementNoify } from "../../../types/notificationTypes";
 type PropType = Omit<TypeAnnouncementNoify, "_id" | "isRead" | "type">;
 
 const AnnouncementNotify = ({ announceContent, createdAt }: PropType) => {
-  const date = formateDate(createdAt.toString());
+  const date = formateDate(createdAt);
 
   return (
     <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:py-1 border border-gray-700 ">

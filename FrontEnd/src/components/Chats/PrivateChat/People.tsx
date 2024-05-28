@@ -6,10 +6,8 @@ import { TypeConversation } from "../../../types/privateChatTypes";
 
 interface TypeProps {
   convInfo: TypeConversation;
-  activeConversation: TypeConversation | null;
-  setActiveConversation: React.Dispatch<
-    SetStateAction<TypeConversation | null>
-  >;
+  activeConversation: string | null;
+  setActiveConversation: React.Dispatch<SetStateAction<string | null>>;
 }
 const People = ({
   convInfo,
@@ -20,17 +18,16 @@ const People = ({
 
   let date = "";
   if (convInfo.lastMessage) {
-    date = formateDate(convInfo.lastMessage.createdAt.toString());
+    date = formateDate(convInfo.lastMessage.createdAt);
   }
 
   return (
     <div
       onClick={() => {
-        setActiveConversation(convInfo);
+        setActiveConversation(convInfo.secondParty._id);
       }}
       className={`relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1 ${
-        activeConversation?.secondParty?._id === convInfo.secondParty._id &&
-        "bg-[#1c1b2e]"
+        activeConversation === convInfo.secondParty._id && "bg-[#1c1b2e]"
       } `}
     >
       <div className="w-full flex gap-2">

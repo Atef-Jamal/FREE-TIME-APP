@@ -31,10 +31,9 @@ export const validation = (
   return result.split("-").reverse().join("");
 };
 
-export const formateDate = (dateArg: string): string => {
-  const mongoDBDate = new Date(dateArg);
+export const formateDate = (dateArg: Date): string => {
   const now: Date = new Date();
-  const timestampDate: Date = new Date(mongoDBDate);
+  const timestampDate: Date = new Date(dateArg.toLocaleString("en-US"));
   const difference: number = now.getTime() - timestampDate.getTime();
 
   const minutes: number = Math.floor(difference / (1000 * 60));

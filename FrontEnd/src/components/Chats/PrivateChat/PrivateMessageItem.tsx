@@ -26,7 +26,7 @@ const PrivateMessageItem = ({
   index,
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const date = formateDate(message.createdAt.toString());
+  const date = formateDate(message.createdAt);
   return (
     <div
       style={{

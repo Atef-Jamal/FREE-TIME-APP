@@ -51,7 +51,7 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
     }
   };
 
-  const date = formateDate(createdAt.toString());
+  const date = formateDate(createdAt);
 
   return (
     <div className="w-full flex flex-col items-center gap-2 bg-[#1010308e] rounded-md p-2 border border-gray-700 ">

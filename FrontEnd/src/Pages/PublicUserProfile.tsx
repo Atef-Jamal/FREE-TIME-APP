@@ -86,12 +86,12 @@ const PublicUserProfile = () => {
     );
   }
 
-  if (loading) {
-    return <PublicUserProfileSkeleton />;
-  }
-
   if (id === currentUser?._id) {
     return <Navigate to={"/myprofile"} />;
+  }
+
+  if (loading) {
+    return <PublicUserProfileSkeleton />;
   }
 
   if (!user) {
@@ -127,7 +127,7 @@ const PublicUserProfile = () => {
                 </div>
               )}
               <p className="text-sm text-[#b19e9eee]">
-                Joined About {formateDate(user.createdAt.toString())}
+                Joined About {formateDate(user.createdAt)}
               </p>
             </div>
           </div>
@@ -152,10 +152,7 @@ const PublicUserProfile = () => {
                   <BsFillClockFill className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
                 </div>
                 <div className="flex flex-col ">
-                  <span className="font-bold text-gray-300">
-                    {" "}
-                    {user.points}
-                  </span>
+                  <span className="font-bold text-gray-300">{user.points}</span>
                   <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
                     Earnings last 30 days
                   </span>
@@ -191,7 +188,7 @@ const PublicUserProfile = () => {
         {user && (
           <div className="-4 py-1">
             <Link
-              to={`/privatechat/${user._id}`}
+              to={`/privatechat?chat-with=${user._id}`}
               className="py-[6px] px-8 bg-[#bbb55c] text-[#3a1f1f] rounded-md font-bold"
             >
               Chat with {user.name}

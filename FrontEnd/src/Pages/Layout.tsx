@@ -99,7 +99,7 @@ const Layout = () => {
         <title>FREE TIME</title>
       </Helmet>
       {model.status && <Model children={model.children} />}
-      <div className=" h-[70px] sm:h-[55px] sticky top-0 z-[5] bg-[#22162c] flex items-center justify-center px-3 sm:px-1  border-b border-[#f8d3d32a]">
+      <div className=" h-[70px] sm:h-[55px] sticky top-0 z-[6] bg-[#22162c] flex items-center justify-center px-3 sm:px-1  border-b border-[#f8d3d32a]">
         <Navbare />
         <div
           className={`absolute top-0 left-0 z-[1] transition-all h-full  ${

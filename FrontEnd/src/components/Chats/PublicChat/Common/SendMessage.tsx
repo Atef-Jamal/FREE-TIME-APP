@@ -72,8 +72,8 @@ const SendMessage = ({
         dislikes: [],
         isDeleted: false,
         mentioned: user?.name || null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toLocaleString("en-US"),
+        updatedAt: new Date().toLocaleString("en-US"),
         isSended: "PENDING",
       },
     });
@@ -173,7 +173,6 @@ const SendMessage = ({
           onChange={handleInputChange}
           readOnly={!currentUser}
           value={message}
-          rows={1}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
           style={{ lineHeight: "1" }}
           className={`${

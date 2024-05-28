@@ -7,7 +7,9 @@ export const getUserActivities = async (req: Request, res: Response) => {
     const userId = req.params.id;
     const allNotifications = await Notification.find({
       belongsTo: userId,
-    }).populate("referredUser", "-password");
+    })
+      .populate("referredUser", "-password")
+      .populate("frame");
     return res.status(200).json(allNotifications);
   } catch (error) {
     return res.status(404).json({ error: "can't get user Activities" });

@@ -77,5 +77,5 @@ export const useFetchPrivateChatMessages = ({
     getMessages();
   }, dependencies);
 
-  return { messages, setMessages, secondUser, loading, error };
+  return { messages, setMessages, secondUser, setSecondUser, loading, error };
 };

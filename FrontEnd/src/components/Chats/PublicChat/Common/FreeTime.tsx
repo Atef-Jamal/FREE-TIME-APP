@@ -11,7 +11,7 @@ interface TypeProps {
 
 const FreeTime = ({ singleMessage, messageRef }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const date = formateDate(singleMessage.createdAt.toString());
+  const date = formateDate(singleMessage.createdAt);
   return (
     <div
       ref={messageRef}

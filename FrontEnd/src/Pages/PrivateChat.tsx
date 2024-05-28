@@ -11,14 +11,44 @@ import {
 } from "../types/privateChatTypes";
 import { useListenToSocketEvent } from "../hooks";
 import { makeRequest } from "../utils";
+import { useSearchParams } from "react-router-dom";
 
 const PrivateChat = () => {
   const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
     useAppSelector((state) => state.stateManeger);
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const [conversations, setConversations] = useState<TypeConversation[]>([]);
-  const [activeConversation, setActiveConversation] =
-    useState<TypeConversation | null>(null);
+  const [activeConversation, setActiveConversation] = useState<string | null>(
+    null
+  );
+
+  const [searchParams] = useSearchParams();
+
+  const secondPartyId = searchParams.get("chat-with");
+
+  const fetchAllConversations = async () => {
+    try {
+      const response = await makeRequest.get(
+        "api/conversations/all-conversations/allusers"
+      );
+      const sorted = response.data.sort((a: any, b: any) => {
+        if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
+          if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
+            return -1;
+          }
+          if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+        return 0;
+      });
+      setConversations(sorted);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const toggleSidbare = () => {
     setOpenSidbare((prev) => !prev);
@@ -36,35 +66,11 @@ const PrivateChat = () => {
     ]);
   };
 
-  const handleUpdateUser = (updatedUser: User) => {
-    setConversations((prev) => {
-      const newArry = prev.map((conv) => {
-        if (conv.secondParty._id === updatedUser._id) {
-          return {
-            secondParty: updatedUser,
-            lastMessage: conv.lastMessage,
-            unreadedCount: conv.unreadedCount,
-          };
-        } else {
-          return conv;
-        }
-      });
-      return newArry;
-    });
-    if (updatedUser._id === activeConversation?.secondParty?._id) {
-      setActiveConversation({
-        ...activeConversation,
-        secondParty: updatedUser,
-      });
-    }
-  };
-
   const handleNewPrivateMessage = (data: TypePrivateMessage) => {
     setConversations((prev) => {
       const newArry = prev.map((conv) => {
         if (data.sender._id === conv.secondParty._id) {
-          const isChatWithUserOpen =
-            data.sender._id === activeConversation?.secondParty?._id;
+          const isChatWithUserOpen = data.sender._id === activeConversation;
           return {
             ...conv,
             lastMessage: data,
@@ -94,30 +100,10 @@ const PrivateChat = () => {
   };
 
   useEffect(() => {
-    const fetchAllConversations = async () => {
-      try {
-        const response = await makeRequest.get(
-          "api/conversations/all-conversations/allusers"
-        );
-        const sorted = response.data.sort((a: any, b: any) => {
-          if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
-            if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
-              return -1;
-            }
-            if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }
-          return 0;
-        });
-        setConversations(sorted);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchAllConversations();
+    if (secondPartyId) {
+      setActiveConversation(secondPartyId);
+    }
   }, []);
 
   useListenToSocketEvent<User>({
@@ -125,15 +111,10 @@ const PrivateChat = () => {
     onUpdate: handleAddNewUser,
   });
 
-  useListenToSocketEvent<User>({
-    eventToListen: "user-updated",
-    onUpdate: handleUpdateUser,
-  });
-
   useListenToSocketEvent<TypePrivateMessage>({
     eventToListen: "private-message",
     onUpdate: handleNewPrivateMessage,
-    dependencies: [activeConversation?.secondParty?._id],
+    dependencies: [activeConversation],
   });
 
   if (!currentAccountRequestFullfiled) {
@@ -182,7 +163,6 @@ const PrivateChat = () => {
             <ChatBody
               setConversations={setConversations}
               activeConversation={activeConversation}
-              setActiveConversation={setActiveConversation}
             />
           ) : (
             <Welcome handleOpenSidbare={handleOpenSidbare} />

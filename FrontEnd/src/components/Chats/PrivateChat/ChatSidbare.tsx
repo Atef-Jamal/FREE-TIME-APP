@@ -10,10 +10,8 @@ import { TypeConversation } from "../../../types/privateChatTypes";
 interface TypeProps {
   toggleSidbare: () => void;
   conversations: TypeConversation[];
-  activeConversation: TypeConversation | null;
-  setActiveConversation: React.Dispatch<
-    SetStateAction<TypeConversation | null>
-  >;
+  activeConversation: string | null;
+  setActiveConversation: React.Dispatch<SetStateAction<string | null>>;
 }
 
 const ChatSidbare = ({

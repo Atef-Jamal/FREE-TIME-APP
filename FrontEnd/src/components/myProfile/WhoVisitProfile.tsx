@@ -99,7 +99,7 @@ const WhoVisitProfile = () => {
                 </Link>
               </div>
               <span className="text-[#918080d5] text-sm">
-                {formateDate(item.createdAt.toString())}
+                {formateDate(item.createdAt)}
               </span>
             </div>
           ))}
