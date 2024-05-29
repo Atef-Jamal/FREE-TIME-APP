@@ -20,6 +20,7 @@ import {
   useCloseMenuOnClickOutSideListener,
   useListenToSocketEvent,
 } from "../../../hooks";
+import { FaPlus } from "react-icons/fa6";
 
 const ProfileActions = () => {
   const { currentUser, openNotification } = useAppSelector(
@@ -80,27 +81,29 @@ const ProfileActions = () => {
   return (
     <>
       {currentUser && (
-        <div className="relative h-full flex items-center gap-3 sm:gap-[3px]">
-          <div className="h-full flex items-center rounded-md bg-[#04050a] ">
+        <div className="relative h-full flex items-center justify-between w-[550px] sm:w-[320px]">
+          <div className="w-[24%] h-full flex items-center rounded-md bg-[#04050a] overflow-scroll scrollbar-none">
             <button
               onClick={() => {
                 dispatch(
                   openModel({ status: true, children: <ApplyCoupon /> })
                 );
               }}
-              className="h-full text-xl text-[#8fee37ee] font-bold flex items-center justify-center px-4 lg:px-2 rounded-s-md"
+              className="w-1/3 h-full flex items-center justify-center"
             >
-              +
+              <FaPlus />
             </button>
-            <span className="h-full px-2 flex items-center justify-center sm:text-[10px] font-bold border-l text-[#beababde]">
-              <span className="text-[#3de21c] mr-1">{currentUser.points}</span>
-              points
+            <span className="border-l h-full flex items-center justify-center flex-1">
+              <span className="text-[#3de21c] mr-1 text-lg sm:text-xs">
+                {currentUser.points}
+              </span>
+              <span className="sm:hidden text-xs text-[#c2bebe] ">points</span>
             </span>
           </div>
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
             ref={profileMenuRef}
-            className="bg-[#3a3e5877] flex gap-6 px-3 sm:px-[7px] sm:gap-[8px] items-center justify-center rounded-md h-full cursor-pointer "
+            className="w-[59%] h-full bg-[#3a3e5877] flex items-center justify-around rounded-md "
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />
@@ -130,7 +133,7 @@ const ProfileActions = () => {
                 );
               }
             }}
-            className="flex items-center justify-center relative cursor-pointer h-full w-[45px] rounded-md bg-[#3a3e5877]"
+            className="flex items-center justify-center relative cursor-pointer h-full w-[14%] rounded-md bg-[#3a3e5877]"
           >
             {numUnReaded > 0 && (
               <span className="w-[18px] h-[18px] flex items-center justify-center absolute top-1 right-1 rounded-full bg-red-600 text-xs">

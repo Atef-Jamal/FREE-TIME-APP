@@ -28,7 +28,7 @@ const HeroSection = () => {
 
   return (
     <div
-      className={`w-[90%] xl:w-full max-w-[1400px] mx-auto flex ${
+      className={`w-[90%] max-w-[1400px] mx-auto flex ${
         !isTokenExists ? "justify-between" : "justify-center"
       } lg:flex-col lg:items-center px-16 lg:px-0`}
     >
@@ -59,29 +59,29 @@ const HeroSection = () => {
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />
         </div>
-        <div className="grid grid-cols-4 gap-2 sm:gap-1 ">
-          <span className=" bg-yellow-400 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+        <div className="grid grid-cols-4 gap-2 sm:gap-1 overflow-scroll scrollbar-none">
+          <span className=" bg-yellow-400 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Bitcoin
           </span>
-          <span className=" bg-slate-400 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className=" bg-slate-400 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Ethereum
           </span>
-          <span className=" bg-red-900 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className=" bg-red-900 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Litecoin
           </span>
-          <span className="bg-blue-800 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className="bg-blue-800 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             PayPal
           </span>
-          <span className=" bg-cyan-700 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className=" bg-cyan-700 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Amazon
           </span>
-          <span className=" bg-pink-800 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className=" bg-pink-800 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Steam
           </span>
-          <span className=" bg-green-400 text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className=" bg-green-400 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Apple
           </span>
-          <span className=" bg-[#63636e] text-[#fff] sm:text-xs text-center py-2 w-[100px] sm:w-[80px] rounded-sm text-sm">
+          <span className=" bg-[#63636e] text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
             Google Play
           </span>
         </div>

@@ -160,7 +160,7 @@ const TestimonialSection = () => {
               className="placeholder:text-gray-500 outline-none p-4 sm:p-2 w-full min-h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee] resize-none"
             />
           </div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between flex-wrap gap-2 w-full">
             <div className="flex items-center gap-2">
               {stars >= 1 ? (
                 <button type="button" onClick={() => setStars(1)}>
