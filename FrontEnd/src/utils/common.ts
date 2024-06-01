@@ -61,9 +61,9 @@ export const formateDate = (dateArg: Date): string => {
 */
 
 export const formateDate = (date: Date) : string => {
-    const now = new Date();
-    const past = new Date(date);
-    const diffInSeconds = Math.floor((now - past) / 1000);
+    const now: Date = new Date();
+    const past: Date = new Date(date);
+    const diffInSeconds: number = Math.floor((now - past) / 1000);
 
     const units = [
         { name: 'year', seconds: 31536000 },
