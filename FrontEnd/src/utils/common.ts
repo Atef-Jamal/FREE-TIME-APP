@@ -32,8 +32,8 @@ export const validation = (
 };
 
 export const formateDate = (dateArg: Date): string => {
-  const now: Date = new Date();
-  const timestampDate: Date = new Date(dateArg.toLocaleString("en-US"));
+  const now: Date = new Date().toLocaleString("en-US");
+  const timestampDate: Date = new Date(dateArg).toLocaleString("en-US");
   const difference: number = now.getTime() - timestampDate.getTime();
 
   const minutes: number = Math.floor(difference / (1000 * 60));
