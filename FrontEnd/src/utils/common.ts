@@ -60,7 +60,7 @@ export const formateDate = (dateArg: Date): string => {
 };
 */
 
-const formateDate = (date: Date) : string => {
+export const formateDate = (date: Date) : string => {
     const now = new Date();
     const past = new Date(date);
     const diffInSeconds = Math.floor((now - past) / 1000);
