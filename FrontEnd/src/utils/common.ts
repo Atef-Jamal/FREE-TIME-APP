@@ -30,11 +30,11 @@ export const validation = (
   }
   return result.split("-").reverse().join("");
 };
-
+/*
 export const formateDate = (dateArg: Date): string => {
   const now: Date = new Date();
-  const timestampDate: Date = new Date(dateArg.toLocaleString("en-US"));
-  const difference: number = now.getTime() - timestampDate.getTime();
+  const timestampDate: Date = new Date(dateArg);
+  const difference: number = now.toLocaleString("en-US").getTime() - timestampDate.toLocaleString("en-US").getTime();
 
   const minutes: number = Math.floor(difference / (1000 * 60));
   const hours: number = Math.floor(difference / (1000 * 60 * 60));
@@ -58,6 +58,34 @@ export const formateDate = (dateArg: Date): string => {
     );
   }
 };
+*/
+
+export const formateDate = (date: Date) : string => {
+    const now: any = new Date();
+    const past: any = new Date(date);
+    const diffInSeconds: any = Math.floor((now - past) / 1000);
+
+    const units = [
+        { name: 'year', seconds: 31536000 },
+        { name: 'month', seconds: 2592000 },
+        { name: 'week', seconds: 604800 },
+        { name: 'day', seconds: 86400 },
+        { name: 'hour', seconds: 3600 },
+        { name: 'minute', seconds: 60 },
+        { name: 'second', seconds: 1 },
+    ];
+
+    for (const unit of units) {
+        const count = Math.floor(diffInSeconds / unit.seconds);
+        if (count >= 1) {
+            return `${count} ${unit.name}${count > 1 ? 's' : ''} ago`;
+        }
+    }
+
+    return 'just now';
+}
+
+
 
 export const handleApiError = (error: any) => {
   let errorMessage = "";
