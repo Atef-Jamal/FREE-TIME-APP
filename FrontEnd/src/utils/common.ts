@@ -36,16 +36,6 @@ export const formateDate = (date: Date): string => {
   const past: any = new Date(date);
   const diffInSeconds: any = Math.floor((now.getTime() - past.getTime()) / 1000);
 
-  const units = [
-    { name: "year", seconds: 31536000 },
-    { name: "month", seconds: 2592000 },
-    { name: "week", seconds: 604800 },
-    { name: "day", seconds: 86400 },
-    { name: "hour", seconds: 3600 },
-    { name: "minute", seconds: 60 },
-    { name: "second", seconds: 1 },
-  ];
-
   if(diffInSeconds < 60 ){
     return `just now`;
   }
