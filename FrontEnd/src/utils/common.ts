@@ -46,6 +46,13 @@ export const formateDate = (date: Date): string => {
     { name: "second", seconds: 1 },
   ];
 
+  if(diffInSeconds < 60 ){
+    return `just now`;
+  }
+  if(diffInSeconds < 3600 ){
+    return `${diffInSeconds / 60} minute ago`;
+  }
+  
   for (const unit of units) {
     const count = Math.floor(diffInSeconds / unit.seconds);
     if (count >= 60) {
