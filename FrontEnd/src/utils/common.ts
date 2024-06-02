@@ -30,62 +30,34 @@ export const validation = (
   }
   return result.split("-").reverse().join("");
 };
-/*
-export const formateDate = (dateArg: Date): string => {
-  const now: Date = new Date();
-  const timestampDate: Date = new Date(dateArg);
-  const difference: number = now.toLocaleString("en-US").getTime() - timestampDate.toLocaleString("en-US").getTime();
 
-  const minutes: number = Math.floor(difference / (1000 * 60));
-  const hours: number = Math.floor(difference / (1000 * 60 * 60));
-  const days: number = Math.floor(difference / (1000 * 60 * 60 * 24));
-  const months: number = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
+export const formateDate = (date: Date): string => {
+  const now: any = new Date();
+  const past: any = new Date(date);
+  const diffInSeconds: any = Math.floor((now - past) / 1000);
 
-  if (months > 0) {
-    return months + (months === 1 ? " month ago" : " months ago");
-  } else if (days > 0) {
-    return days + (days === 1 ? " day ago" : " days ago");
-  } else if (hours > 0) {
-    return hours + (hours === 1 ? " hour ago" : " hours ago");
-  } else {
-    return (
-      (minutes === 0 ? "" : minutes) +
-      (minutes === 0
-        ? "Just now"
-        : minutes === 1
-        ? " minute ago "
-        : " minutes ago")
-    );
-  }
-};
-*/
+  const units = [
+    { name: "year", seconds: 31536000 },
+    { name: "month", seconds: 2592000 },
+    { name: "week", seconds: 604800 },
+    { name: "day", seconds: 86400 },
+    { name: "hour", seconds: 3600 },
+    { name: "minute", seconds: 60 },
+    { name: "second", seconds: 1 },
+  ];
 
-export const formateDate = (date: Date) : string => {
-    const now: any = new Date();
-    const past: any = new Date(date);
-    const diffInSeconds: any = Math.floor((now - past) / 1000);
-
-    const units = [
-        { name: 'year', seconds: 31536000 },
-        { name: 'month', seconds: 2592000 },
-        { name: 'week', seconds: 604800 },
-        { name: 'day', seconds: 86400 },
-        { name: 'hour', seconds: 3600 },
-        { name: 'minute', seconds: 60 },
-        { name: 'second', seconds: 1 },
-    ];
-
-    for (const unit of units) {
-        const count = Math.floor(diffInSeconds / unit.seconds);
-        if (count >= 1) {
-            return `${count} ${unit.name}${count > 1 ? 's' : ''} ago`;
-        }
+  for (const unit of units) {
+    const count = Math.floor(diffInSeconds / unit.seconds);
+    if (count < 60) {
+      return `just now`;
     }
+    if (count >= 60) {
+      return `${count} ${unit.name}${count > 1 ? "s" : ""} ago`;
+    }
+  }
 
-    return 'just now';
-}
-
-
+  return "just now";
+};
 
 export const handleApiError = (error: any) => {
   let errorMessage = "";
