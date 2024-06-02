@@ -55,9 +55,9 @@ export const formateDate = (date: Date): string => {
   if(diffInSeconds < 31536000 ){
     return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4))} month ago`;
   }
-  if(diffInSeconds >= 31536000 ){
+  
     return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4 * 12))} years ago`;
-  }
+  
   
 };
 
