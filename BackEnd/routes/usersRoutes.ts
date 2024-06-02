@@ -2,7 +2,6 @@ import express from "express";
 import {
   allUsers,
   getUser,
-  // updateUser,
   changeUserPhotoFrame,
   unselectUserPhotoFrame,
   getWhoVisitMe,
@@ -20,7 +19,6 @@ router.get(
 router.get("/unselect-myphoto-frame", protectedRoute, unselectUserPhotoFrame);
 router.get("/:userId", getUser);
 router.get("/who-visit-me/me", protectedRoute, getWhoVisitMe);
-// router.patch("/:userId", protectedRoute, updateUser);
 router.patch("/:userId/visited", protectedRoute, userVisited);
 
 export default router;

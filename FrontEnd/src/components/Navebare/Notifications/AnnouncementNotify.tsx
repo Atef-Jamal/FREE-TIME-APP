@@ -14,9 +14,11 @@ const AnnouncementNotify = ({ announceContent, createdAt }: PropType) => {
           <GrAnnounce className=" text-xl" />
         </span>
         <h1 className="text-[#d67d54]">ANNOUNCEMENT</h1>
-        <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>
+        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1]">{announceContent}</p>
+      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
+        {announceContent}
+      </p>
     </div>
   );
 };

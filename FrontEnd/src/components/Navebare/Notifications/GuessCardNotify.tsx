@@ -58,11 +58,13 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
           <FcApproval className=" text-xl" />
         </span>
         <h1 className="text-[#d67d54]">GAME</h1>
-        <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>
+        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1]">
+      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         Guess cards game successfully completed! and get
-        <span className="text-sm text-[#696cf3] mx-1 font-bold">{prize}</span>
+        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">
+          {prize}
+        </span>
         points as a Reward
       </p>
 

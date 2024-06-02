@@ -120,46 +120,9 @@ export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
     await User.findByIdAndUpdate(currentUserId, {
       activeFrame: null,
     });
-    // io.emit("user-photo-frame-changed", {
-    //   belongsTo: currentUserId,
-    //   frameObj: null,
-    // });
     return res.status(200).json({ message: "suceess" });
   } catch (error) {
     return res.status(404).json({ error: "can't change your Frame" });
-  }
-};
-
-export const collectDailyReward = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
-  const { day } = req.body;
-  const reward = day * 50 + 50;
-  try {
-    const user = await User.findById(currentUserId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
-    const isCollectedBefore = user.dailyReward.days.includes(day);
-
-    if (isCollectedBefore) {
-      return res
-        .status(404)
-        .json({ error: "sorry, Reward is already collected" });
-    }
-
-    user.points += reward;
-
-    const savedUser = await user.save();
-
-    return res.status(200).json({
-      points: savedUser?.points,
-      dailyReward: savedUser?.dailyReward.days,
-    });
-  } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't collect a Reward, an error occurred" });
   }
 };
 

@@ -1,134 +1,102 @@
 import { useState } from "react";
-import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
+import Spinner from "../Others/Spinner";
+import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
+import { BsClockHistory } from "react-icons/bs";
+import Timer from "./Timer";
 
 interface TypeProps {
-  day: number;
-  isCollected: boolean;
-  isMock: boolean;
+  dayInfo: {
+    day: number;
+    availableAt: Date;
+    reward: number;
+    isCollected: boolean;
+  };
 }
-const DailyStreakRewardCard = ({ day, isCollected, isMock }: TypeProps) => {
+const DailyStreakRewardCard = ({ dayInfo }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
-  const [isCollectedNow, setIsCollectedNow] = useState<boolean | undefined>(
-    isCollected
-  );
   const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useAppDispatch();
 
-  const collect = async () => {
-    if (isMock === false && currentUser) {
-      setIsLoading(true);
-      try {
-        const response = await makeRequest.post(
-          "api/coupons/collect-daily-reward",
-          {
-            day,
-          }
-        );
+  const today = new Date();
+  let isTimerHere;
 
-        dispatch(
-          setCurrentUser({
-            ...currentUser,
-            points: response.data.points,
-            dailyReward: response.data.dailyReward,
-          })
-        );
-        setIsCollectedNow(true);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      if (!currentUser) {
-        dispatch(
-          showPopup({
-            message: "Sign In First",
-            type: "ERROR_LOCK",
-          })
-        );
-      } else {
-        dispatch(
-          showPopup({
-            message: "Smothing Went Wrong",
-            type: "ERROR_GENERAL",
-          })
-        );
-      }
+  const nearstNexttDay = currentUser?.dailyReward.find(
+    (item) => new Date(item.availableAt) > today
+  );
+  if (nearstNexttDay?.availableAt === dayInfo.availableAt) {
+    isTimerHere = true;
+  }
+
+  const collectDailyReward = async () => {
+    if (!currentUser) {
+      dispatch(showPopup({ type: "ERROR_LOCK", message: "Log in First" }));
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const response = await makeRequest.post(
+        `api/rewards/daily-reward/collect`,
+        { day: dayInfo.day }
+      );
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          points: response.data.points,
+          dailyReward: response.data.dailyReward,
+          week: response.data.week,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" })
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="p-3 flex flex-col gap-4 bg-[#122641c4]">
-      <span className="text-center text-lg font-bold text-[#85d361] p-1 bg-[#413fc54b]">
-        {day === 1 && "Day ONE"}
-        {day === 2 && "Day TWO"}
-        {day === 3 && "Day THREE"}
-        {day === 4 && "Day FOUR"}
-        {day === 5 && "Day FIVE"}
-        {day === 6 && "Day SIX"}
-        {day === 7 && "Day SEVEN"}
-      </span>
-      <span className="font-bold text-[#39aa39] text-lg flex flex-col items-center mx-auto ">
-        <span className="font-bold text-[#41eb41] text-lg px-2 py-1 bg-[#8edd1021] rounded-md">
-          {day * 50}
+    <div className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#122641c4] rounded-md">
+      <div className="flex items-center justify-center w-full gap-3">
+        <BsClockHistory className="text-4xl" />
+        <span className="text-[#c9c6c6] text-xl sm:text-lg font-bold">
+          Day {dayInfo.day}
         </span>
-        <span className="font-bold text-[#41eb41] text-lg">Points</span>
-      </span>
-      {isCollectedNow && isMock === false && (
-        <button className="px-2 py-1 bg-[#170e27]  font-bold text-blue-700 rounded-sm">
+      </div>
+      <div className="w-full flex items-center justify-center flex-wrap gap-3 text-[#aec94f] text-xl xl:text-base font-bold ">
+        Reward : <span className="text-[#aec94f]">{dayInfo.reward}</span>
+      </div>
+      {dayInfo.isCollected ? (
+        <button className="w-full py-1 bg-[#170e27]  font-bold rounded-md">
           Collected
         </button>
-      )}
-      {!isCollectedNow && isMock === false && (
+      ) : undefined}
+      {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
         <button
-          onClick={collect}
-          className="px-2 py-1 bg-[#37d132]  font-bold text-[#382452] rounded-sm"
+          onClick={collectDailyReward}
+          className="w-full py-1 bg-[#37d132]  font-bold rounded-md"
         >
           {isLoading ? (
-            <Spinner className="w-5 h-5 border-2 border-b-[#292363] border-l-[#292363] mx-auto" />
+            <Spinner className="mx-auto w-6 h-6 border-b-blue-950 border-r-blue-950" />
           ) : (
-            "Claim"
+            "Collect"
           )}
         </button>
-      )}
-      {!isCollectedNow && isMock === true && !currentUser && day === 1 && (
-        <button
-          onClick={() => {
-            dispatch(
-              showPopup({
-                message: "Please, Sign In First",
-                type: "ERROR_LOCK",
-              })
-            );
-          }}
-          className="px-2 py-1 bg-[#37d132]  font-bold text-[#382452] rounded-sm"
-        >
-          {isLoading ? (
-            <Spinner className="w-5 h-5 border-2 border-b-[#292363] border-l-[#292363] mx-auto" />
+      ) : undefined}
+      {new Date(dayInfo.availableAt) > today ? (
+        <button className="w-full py-1 bg-[#205764] font-bold rounded-md">
+          {isTimerHere ? (
+            <Timer date={new Date(dayInfo.availableAt)} />
           ) : (
-            "Claim"
+            "Next"
           )}
         </button>
-      )}
-      {!currentUser && isMock && day !== 1 && (
-        <button className="px-2 py-1 bg-[#205764] font-bold text-blue-200 rounded-sm">
-          Next
-        </button>
-      )}
-      {currentUser && isMock && (
-        <button className="px-2 py-1 bg-[#205764] font-bold text-blue-200 rounded-sm">
-          Next
-        </button>
-      )}
+      ) : undefined}
     </div>
   );
 };

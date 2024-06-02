@@ -17,6 +17,7 @@ import couponRoute from "./routes/couponRoutes";
 import searchRoute from "./routes/searchRoute";
 import http from "http";
 import { Server } from "socket.io";
+import rewardsRoutes from "./routes/rewardsRoutes";
 
 dotenv.config();
 const app = express();
@@ -60,6 +61,17 @@ app.use("/api/testimonials", testimonialRoute);
 app.use("/api/coupons", couponRoute);
 
 app.use("/api/search", searchRoute);
+
+app.use("/api/rewards", rewardsRoutes);
+
+app.get("/api/current-date", async (_, res) => {
+  try {
+    const now = new Date();
+    return res.status(200).json(now);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.use("/uploads", express.static(path.join("uploads")));
 

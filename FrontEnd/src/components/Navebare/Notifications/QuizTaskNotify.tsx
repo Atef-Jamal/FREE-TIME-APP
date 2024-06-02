@@ -60,9 +60,9 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
           <FcApproval className=" text-xl" />
         </span>
         <h1 className="text-[#d67d54]">QUIZ APP</h1>
-        <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>
+        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1]">
+      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         quiz app successfully completed! and get
         <span className="text-sm text-[#696cf3] mx-1 font-bold">{prize}</span>
         points as a Reward

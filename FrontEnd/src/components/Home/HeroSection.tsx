@@ -2,12 +2,13 @@ import { useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
-import { useAppDispatch } from "../../context/Hooks";
-import { showPopup } from "../../context/StateManeger";
+import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { showPopup, toggleThisEntity } from "../../context/StateManeger";
 import Input from "../Navebare/Registration/Input";
 import { handleApiError } from "../../utils/common";
 
 const HeroSection = () => {
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
@@ -32,56 +33,72 @@ const HeroSection = () => {
         !isTokenExists ? "justify-between" : "justify-center"
       } lg:flex-col lg:items-center px-16 lg:px-0`}
     >
-      <div className={`flex flex-col items-start sm:items-center`}>
-        <h1 className=" font-bold text-5xl text-[#c99d81] tracking-wider sm:text-center sm:text-3xl sm:mx-auto mb-6">
+      <div
+        className={`${
+          isTokenExists && "w-full"
+        } flex flex-col items-start justify-center sm:items-center gap-2 sm:gap-1`}
+      >
+        <h1 className="w-full text-center text-6xl sm:text-4xl font-bold text-[#af5a5a] mb-4">
           Get Paid For
         </h1>
-        <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-2">
+        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
           opening up bank accounts
         </p>
-        <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-2 ">
-          Refer Your Friends
+        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
+          Refer Your Friends through your Referrer Link
+          {currentUser && (
+            <button
+              onClick={() =>
+                dispatch(
+                  toggleThisEntity({ entity: "openRegisterForm", value: true })
+                )
+              }
+              className="ml-1 text-[#54b360] underline text-xl sm:text-sm"
+            >
+              Sign up to get your owen Link
+            </button>
+          )}
         </p>
-        <p className="text-xl text-white font-[300] tracking-wider sm:text-xl mb-6">
-          complete Tasks and apps, offers
+        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
+          complete Tasks and apps, offers and much more
         </p>
-        <p className="text-white text-sm mb-1">
-          Earn up to <span className="text-red-400">$2.05</span> per offer 20
-          Offers available
+        <p className="w-full text-center text-lg sm:text-xs text-[#95afff]">
+          Earn up to <span className="text-red-400 text-xs">$2.05</span> per
+          offer 20 Offers available
         </p>
-        <p className=" text-white text-sm tracking-widest  mb-6">
+        <p className="w-full text-center text-lg  sm:text-xs text-[#95afff]">
           See our 33,225 reviews on Trustpilot
         </p>
-        <div className="flex gap-1 rounded-sm mb-6">
+        <div className="w-full text-center flex items-center justify-center gap-1 rounded-sm mb-6">
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />
         </div>
-        <div className="grid grid-cols-4 gap-2 sm:gap-1 overflow-scroll scrollbar-none">
-          <span className=" bg-yellow-400 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+        <div className="mx-auto grid grid-cols-4 gap-2 sm:gap-1 overflow-scroll scrollbar-none">
+          <span className=" bg-yellow-400 text-[#fff] sm:text-xs text-center flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Bitcoin
           </span>
-          <span className=" bg-slate-400 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className=" bg-slate-400 text-[#fff] sm:text-xs text-center flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Ethereum
           </span>
-          <span className=" bg-red-900 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className=" bg-red-900 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Litecoin
           </span>
-          <span className="bg-blue-800 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className="bg-blue-800 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             PayPal
           </span>
-          <span className=" bg-cyan-700 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className=" bg-cyan-700 text-[#fff] sm:text-xs  flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Amazon
           </span>
-          <span className=" bg-pink-800 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className=" bg-pink-800 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Steam
           </span>
-          <span className=" bg-green-400 text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className=" bg-green-400 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Apple
           </span>
-          <span className=" bg-[#63636e] text-[#fff] sm:text-xs text-center p-3 rounded-sm text-sm">
+          <span className=" bg-[#63636e] text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
             Google Play
           </span>
         </div>

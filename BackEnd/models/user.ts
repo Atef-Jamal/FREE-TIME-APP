@@ -32,18 +32,53 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    week: { type: Number, default: 1 },
     dailyReward: {
-      type: Object,
-      default: {
-        week: 1,
-        days: [
-          {
-            day: 1,
-            isCollected: false,
-            reward: 50,
-          },
-        ],
-      },
+      type: Array,
+      default: [
+        {
+          day: 1,
+          reward: 50,
+          availableAt: new Date(),
+          isCollected: false,
+        },
+        {
+          day: 2,
+          reward: 100,
+          availableAt: new Date(new Date().setDate(new Date().getDate() + 1)),
+          isCollected: false,
+        },
+        {
+          day: 3,
+          reward: 150,
+          availableAt: new Date(new Date().setDate(new Date().getDate() + 2)),
+          isCollected: false,
+        },
+        {
+          day: 4,
+          reward: 200,
+          availableAt: new Date(new Date().setDate(new Date().getDate() + 3)),
+          isCollected: false,
+        },
+        {
+          day: 5,
+          reward: 250,
+          availableAt: new Date(new Date().setDate(new Date().getDate() + 4)),
+          isCollected: false,
+        },
+        {
+          day: 6,
+          reward: 300,
+          availableAt: new Date(new Date().setDate(new Date().getDate() + 5)),
+          isCollected: false,
+        },
+        {
+          day: 7,
+          reward: 350,
+          availableAt: new Date(new Date().setDate(new Date().getDate() + 6)),
+          isCollected: false,
+        },
+      ],
     },
     emailVerified: {
       type: Boolean,

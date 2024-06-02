@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
@@ -8,28 +7,9 @@ import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 
 const DailyReward = () => {
-  const { currentUser, currentUserIsLoading, resizeSidebare } = useAppSelector(
+  const { currentUser, resizeSidebare } = useAppSelector(
     (state) => state.stateManeger
   );
-  const [otherDays, setOtherDays] = useState<number[]>([]);
-
-  const getOtherDays = () => {
-    if (currentUser) {
-      let dayes = [];
-      for (
-        let index = currentUser?.dailyReward.days.length + 1;
-        index <= 7;
-        index++
-      ) {
-        dayes.push(index);
-      }
-      setOtherDays(dayes);
-    }
-  };
-
-  useEffect(() => {
-    getOtherDays();
-  }, [currentUser]);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -64,55 +44,105 @@ const DailyReward = () => {
           </Link>
         </div>
       </div>
-      <div className="flex flex-col bg-[#2C2C44] gap-4 p-5 rounded-md sm:p-4 ">
-        <div className="flex justify-between items-center sm:flex-col sm:items-start sm:gap-3">
-          <p className="text-yellow-300 text-xl sm:text-lg lg:text-lg font-bold">
+      <div className="flex flex-col bg-[#2C2C44] gap-4 p-5 rounded-md sm:p-4 xs:p-2 ">
+        <div className="flex justify-between items-center flex-wrap">
+          <p className="text-yellow-300 text-xl sm:text-lg lg:text-lg font-bold tracking-widest">
             7 Day Streak Rewards
           </p>
-          <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
-            Earn 1,000 <span className="text-sm">or more</span> coins{" "}
-            <span className="text-sm">within </span> 24 hours{" "}
-            <span className="text-sm">
-              to keep you streak week: {currentUser?.dailyReward.week || 1}
-            </span>
-          </p>
+          <span className="text-yellow-300 text-xl sm:text-lg lg:text-lg font-bold  tracking-widest">
+            week : {currentUser?.week}
+          </span>
         </div>
+        <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
+          Earn 1,000 <span className="text-sm">or more</span> coins{" "}
+          <span className="text-sm">within </span> 24 hours{" "}
+          <span className="text-sm">
+            to keep you streak week: {currentUser?.week || 1}
+          </span>
+        </p>
         <div
           id="daily-reward"
           className={`gap-2 grid ${
-            resizeSidebare ? "grid-cols-4 " : "grid-cols-3 lg:grid-cols-2"
+            resizeSidebare
+              ? "grid-cols-4 lg:grid-cols-3"
+              : "grid-cols-3 lg:grid-cols-2"
           }  sm:grid-cols-3 xs:grid-cols-2`}
         >
-          {currentUser?.dailyReward.days.map((item) => {
-            return (
+          {currentUser?.dailyReward.map((item) => (
+            <DailyStreakRewardCard key={item.day} dayInfo={item} />
+          ))}
+          {!currentUser && (
+            <>
               <DailyStreakRewardCard
-                key={item.day}
-                day={item.day}
-                isCollected={item.isCollected}
-                isMock={false}
+                dayInfo={{
+                  day: 1,
+                  availableAt: new Date(),
+                  reward: 50,
+                  isCollected: false,
+                }}
               />
-            );
-          })}
-          {otherDays.map((item) => {
-            return (
               <DailyStreakRewardCard
-                key={item}
-                day={item}
-                isMock={true}
-                isCollected={true}
+                dayInfo={{
+                  day: 2,
+                  availableAt: new Date(
+                    new Date().setDate(new Date().getDay() + 5)
+                  ),
+                  reward: 100,
+                  isCollected: false,
+                }}
               />
-            );
-          })}
-          {!currentUser &&
-            !currentUserIsLoading &&
-            [...Array(7).keys()].map((item) => (
               <DailyStreakRewardCard
-                key={item}
-                day={item + 1}
-                isMock={true}
-                isCollected={false}
+                dayInfo={{
+                  day: 3,
+                  availableAt: new Date(
+                    new Date().setDate(new Date().getDay() + 5)
+                  ),
+                  reward: 150,
+                  isCollected: false,
+                }}
               />
-            ))}
+              <DailyStreakRewardCard
+                dayInfo={{
+                  day: 4,
+                  availableAt: new Date(
+                    new Date().setDate(new Date().getDay() + 5)
+                  ),
+                  reward: 200,
+                  isCollected: false,
+                }}
+              />
+              <DailyStreakRewardCard
+                dayInfo={{
+                  day: 5,
+                  availableAt: new Date(
+                    new Date().setDate(new Date().getDay() + 5)
+                  ),
+                  reward: 250,
+                  isCollected: false,
+                }}
+              />
+              <DailyStreakRewardCard
+                dayInfo={{
+                  day: 6,
+                  availableAt: new Date(
+                    new Date().setDate(new Date().getDay() + 5)
+                  ),
+                  reward: 300,
+                  isCollected: false,
+                }}
+              />
+              <DailyStreakRewardCard
+                dayInfo={{
+                  day: 7,
+                  availableAt: new Date(
+                    new Date().setDate(new Date().getDay() + 6)
+                  ),
+                  reward: 350,
+                  isCollected: false,
+                }}
+              />
+            </>
+          )}
         </div>
         <div className="flex items-center gap-2 text-orange-400 text-sm bg-[#a5a5a425] px-4 py-2 rounded-md">
           <MdOutlineGppMaybe className="w-10 h-10 opacity-70" />

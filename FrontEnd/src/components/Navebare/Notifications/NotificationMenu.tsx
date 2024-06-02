@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { CgCloseR } from "react-icons/cg";
-import { MdOutlineEditNotifications } from "react-icons/md";
+import { MdOutlineClose, MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
 import ReferrerNotify from "./ReferrerNotify";
@@ -71,24 +70,24 @@ const NotificationMenu = ({
         className="fixed top-[75px] sm:top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#01010779] "
       ></div>
 
-      <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-4">
-        <div className=" bg-[#2e2e4b] flex justify-between w-[93%] my-2 xs:my-1 ">
+      <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-2 border">
+        <div className=" bg-[#2e2e4b] flex justify-between w-[96%] my-1 ">
           <h1 className="text-lg font-bold tracking-wider text-gray-300 border-b w-[50%] pb-2 flex items-center gap-2">
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
           </h1>
-          <CgCloseR
+          <MdOutlineClose
             onClick={() =>
               dispatch(
                 toggleThisEntity({ entity: "openNotification", value: false })
               )
             }
-            className="text-2xl bg-[#222]"
+            className="text-2xl"
           />
         </div>
-        <div className="w-[93%] overflow-y-auto scrollbar-thin scrollbar-thumb-[#6d7c5a] scrollbar-track-[#251b3f85] pr-2 flex flex-col gap-[6px]">
+        <div className="w-[96%] overflow-y-auto scrollbar-thin scrollbar-thumb-[#6d7c5a] scrollbar-track-[#251b3f85] flex flex-col gap-1">
           {loadingNotifications && (
             <div className="w-full h-full flex items-center justify-center">
-              <Spinner className="w-7 h-7" />
+              <Spinner className="w-8 h-8 border-[4px]" />
             </div>
           )}
           {!loadingNotifications &&

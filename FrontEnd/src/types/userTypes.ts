@@ -1,5 +1,5 @@
 import { TypeFrame } from "./frameTypes";
-import { TypeDailyReward } from "./rewardsTypes";
+// import { TypeDailyReward } from "./rewardsTypes";
 
 export interface User {
   _id: string;
@@ -14,7 +14,13 @@ export interface User {
   myFrames: TypeFrame[];
   mySongs: string[];
   completedTasks: string[];
-  dailyReward: { week: number; days: TypeDailyReward[] };
+  week: number;
+  dailyReward: {
+    day: number;
+    availableAt: Date;
+    reward: number;
+    isCollected: boolean;
+  }[];
   usersVisitedMe: {
     _id: string;
     createdAt: Date;

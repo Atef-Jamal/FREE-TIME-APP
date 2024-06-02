@@ -53,6 +53,7 @@ import empty from "./images/empty.png";
 import dailyleaderboard from "./images/daily-leaderboard.png";
 import verifiedIcon from "./images/verified-icon.png";
 import verifiedImage from "./images/verified.png";
+import dailybg from "./images/dailybg.jpg";
 
 export {
   paypalShopLogo,
@@ -109,4 +110,5 @@ export {
   crown,
   empty,
   verifiedImage,
+  dailybg,
 };

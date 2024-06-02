@@ -25,12 +25,12 @@ const MentionNotify = ({
           <GoMention />
         </span>
         <h1 className="text-[#d67d54]">MENTION</h1>
-        <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>
+        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1]">
+      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         <Link
           to={`/user/${mentionedUser._id}`}
-          className="text-sm text-[#696cf3] mr-1 underline"
+          className="text-sm text-[#696cf3] mr-1 underline sm:text-xs"
         >
           {mentionedUser.name}
         </Link>

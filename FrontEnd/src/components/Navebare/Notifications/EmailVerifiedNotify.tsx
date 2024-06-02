@@ -62,11 +62,13 @@ const EmailVerifiedNotify = ({
           <img src={verifiedImage} alt="" className="w-6 h-6 object-cover" />
         </span>
         <h1 className="text-[#d67d54]">VERIFYING</h1>
-        <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>
+        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1]">
+      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         successfully verified your Email and get
-        <span className="text-sm text-[#696cf3] mx-1 font-bold">{prize}</span>
+        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">
+          {prize}
+        </span>
         as Reward
       </p>
 

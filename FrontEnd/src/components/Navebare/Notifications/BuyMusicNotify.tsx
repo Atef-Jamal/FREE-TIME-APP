@@ -23,15 +23,26 @@ const BuyMusicNotify = ({
           <FcMusic className=" text-xl" />
         </span>
         <h1 className="text-[#d67d54]">PURSHASING</h1>
-        <span className="text-sm ml-auto text-[#7c7a7a] pr-1">{date}</span>
+        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1]">
+      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         congratulation! For Buying
-        <span className="text-sm text-[#696cf3] mx-1 underline">
+        <Link
+          to={`/musics?to=${musicId}`}
+          onClick={() => {
+            dispatch(
+              toggleThisEntity({ entity: "openNotification", value: false })
+            );
+          }}
+          className="text-sm text-[#696cf3] mx-1 underline sm:text-xs"
+        >
           {musicTitle}
-        </span>
-        for
-        <span className="text-sm text-[#696cf3] mx-1">{price}</span> points
+        </Link>
+        For
+        <span className="text-sm text-[#696cf3] mx-1 sm:text-xs">
+          {price}
+        </span>{" "}
+        points
       </p>
       <Link
         to={`/myprofile?to=${musicId}`}

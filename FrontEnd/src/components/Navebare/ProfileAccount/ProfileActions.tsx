@@ -81,7 +81,7 @@ const ProfileActions = () => {
   return (
     <>
       {currentUser && (
-        <div className="relative h-full flex items-center justify-between w-[550px] sm:w-[320px]">
+        <div className="relative h-full flex items-center justify-between w-[500px] sm:w-[320px]">
           <div className="w-[24%] h-full flex items-center rounded-md bg-[#04050a] overflow-scroll scrollbar-none">
             <button
               onClick={() => {
