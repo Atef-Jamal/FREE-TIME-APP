@@ -48,9 +48,6 @@ export const formateDate = (date: Date): string => {
 
   for (const unit of units) {
     const count = Math.floor(diffInSeconds / unit.seconds);
-    if (count < 60) {
-      return `just now`;
-    }
     if (count >= 60) {
       return `${count} ${unit.name}${count > 1 ? "s" : ""} ago`;
     }
