@@ -34,7 +34,7 @@ export const validation = (
 export const formateDate = (date: Date): string => {
   const now: any = new Date();
   const past: any = new Date(date);
-  const diffInSeconds: any = Math.floor((now - past) / 1000);
+  const diffInSeconds: any = Math.floor((now.getTime() - past.getTime()) / 1000);
 
   const units = [
     { name: "year", seconds: 31536000 },
