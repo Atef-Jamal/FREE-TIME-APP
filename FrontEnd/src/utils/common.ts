@@ -50,23 +50,25 @@ export const formateDate = (date: Date): string => {
     return `just now`;
   }
   if(diffInSeconds < 3600 ){
-    return `${Math.floor(diffInSeconds / 60)} minute ago`;
+    return `${Math.floor(diffInSeconds / 60)} minutes ago`;
   }
   if(diffInSeconds < 86400 ){
-    return `${Math.floor(diffInSeconds / (60 * 60))} hour ago`;
+    return `${Math.floor(diffInSeconds / (60 * 60))} hours ago`;
   }
   if(diffInSeconds < 604800 ){
-    return `${Math.floor(diffInSeconds / (60 * 60 * 60))} day ago`;
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24))} day ago`;
   }
   
-  for (const unit of units) {
-    const count = Math.floor(diffInSeconds / unit.seconds);
-    if (count >= 60) {
-      return `${count} ${unit.name}${count > 1 ? "s" : ""} ago`;
-    }
+  if(diffInSeconds < 2592000 ){
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7))} week ago`;
   }
-
-  return "just now";
+  if(diffInSeconds < 31536000 ){
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4))} month ago`;
+  }
+  if(diffInSeconds >= 31536000 ){
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4 * 12))} years ago`;
+  }
+  
 };
 
 export const handleApiError = (error: any) => {
