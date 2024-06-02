@@ -53,10 +53,10 @@ export const formateDate = (date: Date): string => {
     return `${Math.floor(diffInSeconds / 60)} minute ago`;
   }
   if(diffInSeconds < 86400 ){
-    return `${Math.floor(diffInSeconds / (60 * 60)} hour ago`;
+    return `${Math.floor(diffInSeconds / (60 * 60))} hour ago`;
   }
   if(diffInSeconds < 604800 ){
-    return `${Math.floor(diffInSeconds / (60 * 60 * 60)} day ago`;
+    return `${Math.floor(diffInSeconds / (60 * 60 * 60))} day ago`;
   }
   
   for (const unit of units) {
