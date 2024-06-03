@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import ResultItem from "./ResultItem";
-import { Link } from "react-router-dom";
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
-import Empty from "../Others/Empty";
-import { MdOutlineWeb } from "react-icons/md";
 import { TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
+import ResultEelement from "./resultEelement";
 
 const Search = () => {
   const [searchQ, setSearchQ] = useState("");
@@ -98,131 +95,46 @@ const Search = () => {
               </span>
               Results Found
             </p>
+
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
               Feartures
             </h1>
-            {results.features.length === 0 && (
-              <Empty
-                emptyText="No Features Found"
-                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
-              />
-            )}
-            {results.features.map((item) => {
-              return (
-                <div
-                  key={item._id}
-                  className="py-1 px-2 flex items-center gap-3"
-                >
-                  <span className="rounded-lg">
-                    <MdOutlineWeb className="text-4xl sm:text-3xl" />
-                  </span>
-                  <Link
-                    to={item.link}
-                    onClick={() => dispatch(resetModel())}
-                    className="underline"
-                  >
-                    <ResultItem searchElement={item} searchQuery={searchQ} />
-                  </Link>
-                </div>
-              );
-            })}
+            <ResultEelement
+              type="FEATURES"
+              results={results.features}
+              searchTerm={searchQ}
+              emptyText={"No Features Found"}
+            />
+
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               People
             </h1>
-            {results.users.length === 0 && (
-              <Empty
-                emptyText="No People Found"
-                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
-              />
-            )}
-            {results.users.map((item) => {
-              return (
-                <div
-                  key={item._id}
-                  className="py-1 px-2 flex items-center gap-3"
-                >
-                  <img
-                    alt=""
-                    src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
-                      item.image
-                    }`}
-                    className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
-                  />
-                  <Link
-                    to={item.link}
-                    onClick={() => dispatch(resetModel())}
-                    className="underline"
-                  >
-                    <ResultItem searchElement={item} searchQuery={searchQ} />
-                  </Link>
-                </div>
-              );
-            })}
+            <ResultEelement
+              type="USERS"
+              results={results.users}
+              searchTerm={searchQ}
+              emptyText={"No People Found"}
+            />
+
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               Apps
             </h1>
-            {results.apps.length === 0 && (
-              <Empty
-                emptyText="No Apps Found"
-                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
-              />
-            )}
-            {results.apps.map((item) => {
-              return (
-                <div
-                  key={item._id}
-                  className="py-1 px-2 flex items-center gap-3"
-                >
-                  <img
-                    alt=""
-                    src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
-                      item.image
-                    }`}
-                    className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
-                  />
-                  <Link
-                    to={item.link}
-                    onClick={() => dispatch(resetModel())}
-                    className="underline"
-                  >
-                    <ResultItem searchElement={item} searchQuery={searchQ} />
-                  </Link>
-                </div>
-              );
-            })}
+            <ResultEelement
+              type="APPS"
+              results={results.apps}
+              searchTerm={searchQ}
+              emptyText={"No offers, apps Found"}
+            />
+
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               Frames
             </h1>
-            {results.frames.length === 0 && (
-              <Empty
-                emptyText="No Frames Found"
-                imgWidthHeight="w-10 h-10 xs:w-6 xs:h-6"
-              />
-            )}
-            {results.frames.map((item) => {
-              return (
-                <div
-                  key={item._id}
-                  className="py-1 px-2 flex items-center gap-3"
-                >
-                  <div className="relative w-10 h-10 sm:w-7 sm:h-7 object-fill ">
-                    <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#353052]"></span>
-                    <img
-                      alt=""
-                      src={item.image}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                  <Link
-                    to={item.link}
-                    onClick={() => dispatch(resetModel())}
-                    className="underline"
-                  >
-                    <ResultItem searchElement={item} searchQuery={searchQ} />
-                  </Link>
-                </div>
-              );
-            })}
+            <ResultEelement
+              type="FRAMES"
+              results={results.frames}
+              searchTerm={searchQ}
+              emptyText={"No Frames Found"}
+            />
           </div>
         )}
       </div>

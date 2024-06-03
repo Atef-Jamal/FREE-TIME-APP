@@ -1,6 +1,6 @@
 import { TypeSearchItem } from "../../types/othersTypes";
 
-const ResultItem = ({
+const ResultText = ({
   searchElement,
   searchQuery,
 }: {
@@ -26,4 +26,4 @@ const ResultItem = ({
   });
 };
 
-export default ResultItem;
+export default ResultText;
