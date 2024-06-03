@@ -104,9 +104,9 @@ const PublicChat = () => {
       <span
         className={`${
           somoneTyping ? "h-5" : "h-0"
-        } bg-[#2f2f30a4] transition-all overflow-hidden w-full text-xs xs:text-[10px] text-[#fd8f8f] `}
+        } mx-2 px-1 bg-[#2f2f30a4] transition-all overflow-hidden w-full text-xs xs:text-[10px] text-[#fd8f8f] `}
       >
-        somone typing...
+        somone typing ...
       </span>
       <div className="w-full">
         <SendMessage
