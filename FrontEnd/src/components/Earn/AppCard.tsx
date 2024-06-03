@@ -8,10 +8,10 @@ import { TypeTaskApp } from "../../types/earnTypes";
 interface TypeAppCard {
   taskDetail: TypeTaskApp;
   index: number;
-  setAppDetail: React.Dispatch<React.SetStateAction<TypeTaskApp | null>>;
+  setAppId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
+const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
   const { currentUser, currentUserIsLoading } = useAppSelector(
     (state) => state.stateManeger
   );
@@ -23,7 +23,7 @@ const AppCard = ({ taskDetail, index, setAppDetail }: TypeAppCard) => {
   return (
     <div
       id={taskDetail._id}
-      onClick={() => setAppDetail(taskDetail)}
+      onClick={() => setAppId(taskDetail._id)}
       className={` ${
         index === 0 ? "col-span-2" : ""
       } relative flex flex-col  bg-[#55539b3a] rounded-md p-2 justify-between overflow-hidden border border-gray-700 h-[230px]`}

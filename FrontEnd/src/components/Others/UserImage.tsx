@@ -12,7 +12,7 @@ const UserImage = ({ user }: TypeProps) => {
         <img
           className=" absolute top-0 w-full h-full rounded-sm"
           src={user.activeFrame.image}
-          alt="frame"
+          alt=""
         />
       ) : undefined}
       <img
@@ -22,7 +22,7 @@ const UserImage = ({ user }: TypeProps) => {
             : "w-full h-full rounded-md "
         } `}
         src={`${import.meta.env.VITE_SERVER_BASE_URL}/${user.profilePicture}`}
-        alt="user img"
+        alt=""
       />
     </div>
   );

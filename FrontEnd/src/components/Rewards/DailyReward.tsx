@@ -5,11 +5,11 @@ import DailyStreakRewardCard from "./DailyStreakRewardCard";
 import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
+import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
 
 const DailyReward = () => {
-  const { currentUser, resizeSidebare } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
+    useAppSelector((state) => state.stateManeger);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -68,10 +68,22 @@ const DailyReward = () => {
               : "grid-cols-3 lg:grid-cols-2"
           }  sm:grid-cols-3 xs:grid-cols-2`}
         >
-          {currentUser?.dailyReward.map((item) => (
-            <DailyStreakRewardCard key={item.day} dayInfo={item} />
-          ))}
-          {!currentUser && (
+          {!currentAccountRequestFullfiled && (
+            <>
+              <DailyStreakRewardCardSkeleton />
+              <DailyStreakRewardCardSkeleton />
+              <DailyStreakRewardCardSkeleton />
+              <DailyStreakRewardCardSkeleton />
+              <DailyStreakRewardCardSkeleton />
+              <DailyStreakRewardCardSkeleton />
+              <DailyStreakRewardCardSkeleton />
+            </>
+          )}
+          {currentAccountRequestFullfiled &&
+            currentUser?.dailyReward.map((item) => (
+              <DailyStreakRewardCard key={item.day} dayInfo={item} />
+            ))}
+          {currentAccountRequestFullfiled && !currentUser && (
             <>
               <DailyStreakRewardCard
                 dayInfo={{

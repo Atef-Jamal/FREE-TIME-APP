@@ -32,33 +32,33 @@ export const validation = (
 };
 
 export const formateDate = (date: Date): string => {
-  const now: any = new Date();
-  const past: any = new Date(date);
-  const diffInSeconds: any = Math.floor((now.getTime() - past.getTime()) / 1000);
+  const now: Date = new Date();
+  const past: Date = new Date(date);
+  const diffInSeconds: number = Math.floor(
+    (now.getTime() - past.getTime()) / 1000
+  );
 
-  if(diffInSeconds < 60 ){
+  if (diffInSeconds < 60) {
     return `just now`;
   }
-  if(diffInSeconds < 3600 ){
+  if (diffInSeconds < 3600) {
     return `${Math.floor(diffInSeconds / 60)} minutes ago`;
   }
-  if(diffInSeconds < 86400 ){
+  if (diffInSeconds < 86400) {
     return `${Math.floor(diffInSeconds / (60 * 60))} hours ago`;
   }
-  if(diffInSeconds < 604800 ){
+  if (diffInSeconds < 604800) {
     return `${Math.floor(diffInSeconds / (60 * 60 * 24))} day ago`;
   }
-  
-  if(diffInSeconds < 2592000 ){
+
+  if (diffInSeconds < 2592000) {
     return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7))} week ago`;
   }
-  if(diffInSeconds < 31536000 ){
+  if (diffInSeconds < 31536000) {
     return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4))} month ago`;
   }
-  
-    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4 * 12))} years ago`;
-  
-  
+
+  return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4 * 12))} years ago`;
 };
 
 export const handleApiError = (error: any) => {

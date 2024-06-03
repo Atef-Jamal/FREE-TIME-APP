@@ -10,7 +10,7 @@ import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
 import { Helmet } from "react-helmet-async";
 import { FaHeart, FaStar } from "react-icons/fa";
-import { TypeFilterQuery, TypeTaskApp } from "../types/earnTypes";
+import { TypeFilterQuery } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
 import { VscExpandAll } from "react-icons/vsc";
 import { useCloseMenuOnClickOutSideListener, useFetchAllApps } from "../hooks";
@@ -24,6 +24,7 @@ import SearchBar from "../components/Search/SearchBar";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCaretDown } from "react-icons/fa6";
 import { CgClose } from "react-icons/cg";
+import { useSearchParams } from "react-router-dom";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -33,8 +34,9 @@ const Earn = () => {
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [page, setPage] = useState<number>(1);
   const limitPerPage = 20;
-  const [appDetail, setAppDetail] = useState<TypeTaskApp | null>(null);
+  const [appId, setAppId] = useState<string | null>(null);
   const [filterQuery, setFilterQuery] = useState<TypeFilterQuery>("ALL");
+  const [searchParams] = useSearchParams();
 
   const deviceMenuRef = useRef<HTMLDivElement>(null);
   const filterMenuRef = useRef<HTMLDivElement>(null);
@@ -59,7 +61,7 @@ const Earn = () => {
   useScrollToElement([apps]);
 
   useEffect(() => {
-    if (appDetail !== null) {
+    if (appId !== null) {
       setTranslate("-translate-x-[50%]");
       const timout = setTimeout(() => {
         window.scrollTo({
@@ -69,7 +71,20 @@ const Earn = () => {
       }, 500);
       return () => clearTimeout(timout);
     }
-  }, [appDetail]);
+  }, [appId]);
+
+  useEffect(() => {
+    const appIdFromUrlSearchParam = searchParams.get("to");
+
+    if (appIdFromUrlSearchParam && apps.length > 0) {
+      const isExistInAppList = apps.find(
+        (app) => app._id === appIdFromUrlSearchParam
+      );
+      const isAppDetailOpen = translate === "-translate-x-[50%]";
+      if (isExistInAppList && !isAppDetailOpen) return;
+      setAppId(appIdFromUrlSearchParam);
+    }
+  }, [searchParams, apps]);
 
   useCloseMenuOnClickOutSideListener({
     menuRef: filterMenuRef,
@@ -108,7 +123,7 @@ const Earn = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
     const timeout = setTimeout(() => {
-      setAppDetail(null);
+      setAppId(null);
     }, 1000);
     return () => clearTimeout(timeout);
   };
@@ -338,7 +353,7 @@ const Earn = () => {
                   return (
                     <AppCard
                       taskDetail={taskDetail}
-                      setAppDetail={setAppDetail}
+                      setAppId={setAppId}
                       key={taskDetail._id}
                       index={i}
                     />
@@ -377,8 +392,8 @@ const Earn = () => {
           </div>
           <div className={`bg-[#1c1e31] w-[50%] `}>
             <div className=" w-[50%] sm:w-full max-w-[500px] mx-auto">
-              {appDetail && <AppDetail appDetail={appDetail} />}
-              {!appDetail && (
+              {appId && <AppDetail appId={appId} />}
+              {!appId && (
                 <button
                   onClick={selectApp}
                   className="w-[90%] max-w-[500px] p-5 mt-5 text-gray-500 underline text-xl font-bold"

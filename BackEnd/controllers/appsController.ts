@@ -27,7 +27,6 @@ export const getAllApps = async (req: Request, res: Response) => {
         if (a.completedBy.length > b.completedBy.length) return -1;
         if (a.completedBy.length < b.completedBy.length) return 1;
         return 0;
-        // return b.prize - a.prize;
       });
     } else if (filter === "REWARD") {
       allApps = await Task.find({ prize: { $gt: 150 } })
@@ -112,6 +111,29 @@ export const getAppDetails = async (req: Request, res: Response) => {
         .status(404)
         .json({ error: "This app is Not Available, try another app" });
     }
+    return res.status(200).json(app);
+  } catch (error) {
+    return res
+      .status(404)
+      .json({ error: "can't Load task, an Error occurred" });
+  }
+};
+
+export const publicAppDetails = async (req: Request, res: Response) => {
+  try {
+    const appId = req.params.id;
+
+    const app = await Task.findById(appId)
+      .populate("completedBy", "name _id profilePicture")
+      .populate({
+        path: "reviews",
+        populate: { path: "user", select: "profilePicture name _id" },
+      });
+
+    if (!app) {
+      return res.status(404).json({ error: "offer not found" });
+    }
+
     return res.status(200).json(app);
   } catch (error) {
     return res

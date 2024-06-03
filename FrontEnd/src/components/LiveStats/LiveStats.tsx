@@ -21,6 +21,9 @@ const LiveStats = () => {
   );
   const { users, setUsers, loading, error } = useFetchAllUsers();
   const [sortedUsers, setSortedUsers] = useState<User[]>([]);
+  const [userHieghestPoints, setUserHieghestPoints] = useState<string | null>(
+    null
+  );
   const [toggleLanguage, setToggleLanguage] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
 
@@ -81,7 +84,13 @@ const LiveStats = () => {
   });
 
   useEffect(() => {
-    setSortedUsers(sorted);
+    if (users.length > 0) {
+      setSortedUsers(sorted);
+      const hieghestPoints = [...users].sort((a, b) => {
+        return b.points - a.points;
+      })[0];
+      setUserHieghestPoints(hieghestPoints._id);
+    }
   }, [users, onlineUsers]);
 
   return (
@@ -132,7 +141,7 @@ const LiveStats = () => {
         )}
 
         {!error &&
-          sortedUsers.map((user, index) => {
+          sortedUsers.map((user) => {
             const { _id, name, points, emailVerified } = user;
             const isOnline = onlineUsers.includes(_id);
 
@@ -142,7 +151,7 @@ const LiveStats = () => {
                 to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
                 className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
               >
-                {index === 0 && (
+                {userHieghestPoints === _id && (
                   <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
                     <img src={crown} alt="" className="" />
                   </span>

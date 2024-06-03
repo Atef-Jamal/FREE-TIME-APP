@@ -82,7 +82,7 @@ const ProfileActions = () => {
     <>
       {currentUser && (
         <div className="relative h-full flex items-center justify-between w-[500px] sm:w-[320px]">
-          <div className="w-[24%] h-full flex items-center rounded-md bg-[#04050a] overflow-scroll scrollbar-none">
+          <div className="w-[28%] h-full flex items-center rounded-md bg-[#04050a] overflow-scroll scrollbar-none">
             <button
               onClick={() => {
                 dispatch(
@@ -103,7 +103,7 @@ const ProfileActions = () => {
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
             ref={profileMenuRef}
-            className="w-[59%] h-full bg-[#3a3e5877] flex items-center justify-around rounded-md "
+            className="w-[55%] h-full bg-[#3a3e58b7] flex items-center justify-around rounded-md "
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />
@@ -115,7 +115,7 @@ const ProfileActions = () => {
             {openProfileMenu && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-[#32324c] absolute top-[60px] sm:top-12 right-2 w-[65%] rounded-lg"
+                className="bg-[#32324c] absolute top-[60px] sm:top-12 right-7 sm:right-4 w-[65%] rounded-lg"
               >
                 <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
               </div>
@@ -133,7 +133,7 @@ const ProfileActions = () => {
                 );
               }
             }}
-            className="flex items-center justify-center relative cursor-pointer h-full w-[14%] rounded-md bg-[#3a3e5877]"
+            className="flex items-center justify-center relative cursor-pointer h-full w-[14%] rounded-md bg-[#3a3e58b7]"
           >
             {numUnReaded > 0 && (
               <span className="w-[18px] h-[18px] flex items-center justify-center absolute top-1 right-1 rounded-full bg-red-600 text-xs">

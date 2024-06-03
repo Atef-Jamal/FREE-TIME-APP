@@ -70,7 +70,7 @@ const NotificationMenu = ({
         className="fixed top-[75px] sm:top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#01010779] "
       ></div>
 
-      <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-2 border">
+      <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-2">
         <div className=" bg-[#2e2e4b] flex justify-between w-[96%] my-1 ">
           <h1 className="text-lg font-bold tracking-wider text-gray-300 border-b w-[50%] pb-2 flex items-center gap-2">
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
