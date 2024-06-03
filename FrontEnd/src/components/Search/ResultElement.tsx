@@ -6,7 +6,7 @@ import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { MdOutlineWeb } from "react-icons/md";
 
-const ResultEelement = ({
+const ResultElement = ({
   type,
   results,
   searchTerm,
@@ -65,4 +65,4 @@ const ResultEelement = ({
   );
 };
 
-export default ResultEelement;
+export default ResultElement;

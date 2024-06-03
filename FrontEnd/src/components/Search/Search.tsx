@@ -6,7 +6,7 @@ import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
-import ResultEelement from "./resultEelement";
+import ResultElement from "./ResultElement";
 
 const Search = () => {
   const [searchQ, setSearchQ] = useState("");
@@ -99,7 +99,7 @@ const Search = () => {
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
               Feartures
             </h1>
-            <ResultEelement
+            <ResultElement
               type="FEATURES"
               results={results.features}
               searchTerm={searchQ}
@@ -109,7 +109,7 @@ const Search = () => {
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               People
             </h1>
-            <ResultEelement
+            <ResultElement
               type="USERS"
               results={results.users}
               searchTerm={searchQ}
@@ -119,7 +119,7 @@ const Search = () => {
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               Apps
             </h1>
-            <ResultEelement
+            <ResultElement
               type="APPS"
               results={results.apps}
               searchTerm={searchQ}
@@ -129,7 +129,7 @@ const Search = () => {
             <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
               Frames
             </h1>
-            <ResultEelement
+            <ResultElement
               type="FRAMES"
               results={results.frames}
               searchTerm={searchQ}
