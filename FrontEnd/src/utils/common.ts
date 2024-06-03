@@ -34,29 +34,31 @@ export const validation = (
 export const formateDate = (date: Date): string => {
   const now: any = new Date();
   const past: any = new Date(date);
-  const diffInSeconds: any = Math.floor((now - past) / 1000);
+  const diffInSeconds: any = Math.floor((now.getTime() - past.getTime()) / 1000);
 
-  const units = [
-    { name: "year", seconds: 31536000 },
-    { name: "month", seconds: 2592000 },
-    { name: "week", seconds: 604800 },
-    { name: "day", seconds: 86400 },
-    { name: "hour", seconds: 3600 },
-    { name: "minute", seconds: 60 },
-    { name: "second", seconds: 1 },
-  ];
-
-  for (const unit of units) {
-    const count = Math.floor(diffInSeconds / unit.seconds);
-    if (count < 60) {
-      return `just now`;
-    }
-    if (count >= 60) {
-      return `${count} ${unit.name}${count > 1 ? "s" : ""} ago`;
-    }
+  if(diffInSeconds < 60 ){
+    return `just now`;
   }
-
-  return "just now";
+  if(diffInSeconds < 3600 ){
+    return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+  }
+  if(diffInSeconds < 86400 ){
+    return `${Math.floor(diffInSeconds / (60 * 60))} hours ago`;
+  }
+  if(diffInSeconds < 604800 ){
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24))} day ago`;
+  }
+  
+  if(diffInSeconds < 2592000 ){
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7))} week ago`;
+  }
+  if(diffInSeconds < 31536000 ){
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4))} month ago`;
+  }
+  
+    return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4 * 12))} years ago`;
+  
+  
 };
 
 export const handleApiError = (error: any) => {
