@@ -170,14 +170,15 @@ export const useFetchMusics = () => {
 
 export const useScrollToElement = (
   dependencies: any[] = [],
-  scrollPosition: "center" | "start" | "end" | "nearest" = "center"
+  scrollPosition: "center" | "start" | "end" | "nearest" = "center",
+  key: string = "to"
 ) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [element, setElement] = useState<HTMLElement | null>(null);
   const styles = "activeElement";
 
   useEffect(() => {
-    const queryParam = searchParams.get("to");
+    const queryParam = searchParams.get(key);
     if (queryParam) {
       const targetElement = document.getElementById(queryParam);
       setElement(targetElement);
@@ -190,7 +191,7 @@ export const useScrollToElement = (
       targetElement.classList.remove(styles);
       if (element?.id === targetElement.id) {
         setSearchParams((prev) => {
-          prev.delete("to");
+          prev.delete(key);
           return prev;
         });
       }

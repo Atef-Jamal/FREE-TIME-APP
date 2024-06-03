@@ -1,13 +1,27 @@
 import { useEffect, useState } from "react";
 
-const Timer = ({ date }: { date: Date }) => {
+const Timer = ({
+  date,
+  setRefresh,
+}: {
+  date: Date;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft(date));
+      if (
+        timeLeft.days === 0 &&
+        timeLeft.hours === 0 &&
+        timeLeft.minutes === 0 &&
+        timeLeft.seconds === 0
+      ) {
+        console.log("first");
+        setRefresh((prev) => !prev);
+      }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [date]);
 

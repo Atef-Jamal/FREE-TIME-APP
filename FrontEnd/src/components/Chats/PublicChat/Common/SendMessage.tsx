@@ -20,12 +20,16 @@ interface typeProps {
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
   setMessages: React.Dispatch<React.SetStateAction<TypePublicChatItem[]>>;
+  somoneTyping: boolean;
+  setSomeOneTyping: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SendMessage = ({
   stopScrolling,
   setStopScrolling,
   setMessages,
+  somoneTyping,
+  setSomeOneTyping,
 }: typeProps) => {
   const { currentUser, socket, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
@@ -50,6 +54,10 @@ const SendMessage = ({
         })
       );
       return;
+    }
+    if (somoneTyping) {
+      setSomeOneTyping(false);
+      socket?.emit("stop-typing-public-message");
     }
     setLoading(true);
     if (stopScrolling) {
@@ -124,13 +132,27 @@ const SendMessage = ({
       setOpenMentionList(false);
     },
   });
+  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+    if (!somoneTyping) {
+      setSomeOneTyping(true);
+      socket?.emit("typing-public-message");
+    }
 
-  const handleInputChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setMessage(e.target.value);
-    },
-    []
-  );
+    const lastTypingTime = new Date().getTime();
+    const timmerLenth = 3000;
+    const timmer = setTimeout(() => {
+      const now = new Date().getTime();
+      const timDiff = now - lastTypingTime;
+
+      if (timDiff >= timmerLenth && somoneTyping) {
+        socket?.emit("stop-typing-public-message");
+        setSomeOneTyping(false);
+      }
+    }, timmerLenth);
+
+    return () => clearTimeout(timmer);
+  };
 
   const handleOpenMentionList = useCallback((e: MouseEvent) => {
     e.stopPropagation();
@@ -176,13 +198,13 @@ const SendMessage = ({
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
           style={{ lineHeight: "1" }}
           className={`${
-            user ? "pl-[60px]" : "p-2"
+            user ? "pl-[60px] pt-2 py-2" : "p-2"
           } bg-[#2f3042a2] text-[#afc6e0] rounded-md border-none outline-none placeholder:text-gray-600 w-full resize-none h-10 overflow-hidden`}
         />
         {user && (
           <span
             onClick={() => setUser(null)}
-            className="absolute top-[5px] left-4 text-center xs:left-2 py-1 text-[11px] w-[50px] truncate bg-[#3c5db8e0] rounded-md px-[3px]"
+            className="absolute top-1 left-1 text-center py-[6px] text-[11px] w-[50px] truncate bg-[#3c5db8e0] rounded-md px-[3px] cursor-pointer"
           >
             {user.name}
           </span>
@@ -194,7 +216,6 @@ const SendMessage = ({
           <p className=" text-gray-400 font-bold text-lg">@</p>
         </div>
         <button
-          id="sendbutton"
           type="submit"
           className="bg-[#217ebbf3] rounded-md w-12 h-10 flex items-center justify-center"
           onClick={handleSendMessage}

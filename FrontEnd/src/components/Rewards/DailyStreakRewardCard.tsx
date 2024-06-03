@@ -14,13 +14,13 @@ interface TypeProps {
     reward: number;
     isCollected: boolean;
   };
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const DailyStreakRewardCard = ({ dayInfo }: TypeProps) => {
+const DailyStreakRewardCard = ({ dayInfo, setRefresh }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useAppDispatch();
-
   const today = new Date();
   let isTimerHere;
 
@@ -91,7 +91,10 @@ const DailyStreakRewardCard = ({ dayInfo }: TypeProps) => {
       {new Date(dayInfo.availableAt) > today ? (
         <button className="w-full py-1 bg-[#205764] font-bold rounded-md">
           {isTimerHere ? (
-            <Timer date={new Date(dayInfo.availableAt)} />
+            <Timer
+              date={new Date(dayInfo.availableAt)}
+              setRefresh={setRefresh}
+            />
           ) : (
             "Next"
           )}

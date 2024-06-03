@@ -6,11 +6,13 @@ import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
+import { useState } from "react";
 
 const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
     useAppSelector((state) => state.stateManeger);
-
+  const [refresh, setRefresh] = useState(false);
+  console.log(refresh);
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
@@ -81,7 +83,11 @@ const DailyReward = () => {
           )}
           {currentAccountRequestFullfiled &&
             currentUser?.dailyReward.map((item) => (
-              <DailyStreakRewardCard key={item.day} dayInfo={item} />
+              <DailyStreakRewardCard
+                key={item.day}
+                dayInfo={item}
+                setRefresh={setRefresh}
+              />
             ))}
           {currentAccountRequestFullfiled && !currentUser && (
             <>
@@ -92,6 +98,7 @@ const DailyReward = () => {
                   reward: 50,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -102,6 +109,7 @@ const DailyReward = () => {
                   reward: 100,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -112,6 +120,7 @@ const DailyReward = () => {
                   reward: 150,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -122,6 +131,7 @@ const DailyReward = () => {
                   reward: 200,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -132,6 +142,7 @@ const DailyReward = () => {
                   reward: 250,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -142,6 +153,7 @@ const DailyReward = () => {
                   reward: 300,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -152,6 +164,7 @@ const DailyReward = () => {
                   reward: 350,
                   isCollected: false,
                 }}
+                setRefresh={setRefresh}
               />
             </>
           )}

@@ -58,6 +58,8 @@ const Earn = () => {
       page,
     });
 
+  console.log(apps[0]);
+
   useScrollToElement([apps]);
 
   useEffect(() => {

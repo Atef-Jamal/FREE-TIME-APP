@@ -92,6 +92,13 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("public-message", message);
   };
 
+  const handleTypingPublicMessage = () => {
+    socket.broadcast.emit("typing-public-message");
+  };
+  const handleStopTypingPublicMessage = () => {
+    socket.broadcast.emit("stop-typing-public-message");
+  };
+
   const handleInteractWithPMessage = (updatedMessage: any) => {
     socket.broadcast.emit("interact-with-public-message", updatedMessage);
   };
@@ -113,6 +120,8 @@ io.on("connection", (socket) => {
     }
     socket.off("user-updated", handleUserUpdated);
     socket.off("public-message", handleNewPublicMessage);
+    socket.off("typing-public-message", handleTypingPublicMessage);
+    socket.off("stop-typing-public-message", handleStopTypingPublicMessage);
     socket.off("private-message", handleNewPrivateMessage);
     socket.off("interact-with-public-message", handleInteractWithPMessage);
     socket.off("conversation-readed", handleConversationReaded);
@@ -120,6 +129,8 @@ io.on("connection", (socket) => {
 
   socket.on("user-updated", handleUserUpdated);
   socket.on("public-message", handleNewPublicMessage);
+  socket.on("typing-public-message", handleTypingPublicMessage);
+  socket.on("stop-typing-public-message", handleStopTypingPublicMessage);
   socket.on("interact-with-public-message", handleInteractWithPMessage);
   socket.on("private-message", handleNewPrivateMessage);
   socket.on("conversation-readed", handleConversationReaded);

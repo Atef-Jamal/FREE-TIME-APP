@@ -18,11 +18,7 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ completedBy: { $not: { $size: 0 } } })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -rating -createdAt");
       allApps.sort((a, b) => {
         if (a.completedBy.length > b.completedBy.length) return -1;
         if (a.completedBy.length < b.completedBy.length) return 1;
@@ -32,11 +28,7 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ prize: { $gt: 150 } })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
       allApps.sort((a, b) => {
         return b.prize - a.prize;
       });
@@ -44,11 +36,7 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ rating: { $gt: 4 } })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -createdAt -completedBy");
       allApps.sort((a, b) => {
         return b.rating - a.rating;
       });
@@ -56,38 +44,22 @@ export const getAllApps = async (req: Request, res: Response) => {
       allApps = await Task.find({ devices: "DESKTOP" })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
     } else if (filter === "ANDROID") {
       allApps = await Task.find({ devices: "ANDROID" })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
     } else if (filter === "MAC") {
       allApps = await Task.find({ devices: "MAC" })
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
     } else {
       allApps = await Task.find()
         .skip(skip)
         .limit(limitedPerPage)
-        .populate("completedBy", "name _id profilePicture")
-        .populate({
-          path: "reviews",
-          populate: { path: "user", select: "profilePicture name _id" },
-        });
+        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
     }
 
     return res.status(200).json(allApps);

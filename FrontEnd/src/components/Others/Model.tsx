@@ -1,6 +1,4 @@
-import {
-  ReactNode,
-} from "react";
+import { ReactNode } from "react";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 
@@ -11,7 +9,9 @@ const Model = ({ children }: { children: ReactNode }) => {
       onClick={() => dispatch(resetModel())}
       className="fixed top-0 left-0 z-[5] w-screen h-screen flex items-center justify-center bg-[#0000003d]"
     >
-      <div onClick={(event) => event.stopPropagation()}>{children}</div>
+      <div className="mb-16" onClick={(event) => event.stopPropagation()}>
+        {children}
+      </div>
     </div>
   );
 };

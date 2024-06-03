@@ -42,8 +42,8 @@ const MentionNotify = ({
           window.innerWidth > 867
             ? `${
                 location.pathname === "/chat" ? "/" : location.pathname
-              }?to=${messageLocation}`
-            : `/chat?to=${messageLocation}`
+              }?messageId=${messageLocation}`
+            : `/chat?messageId=${messageLocation}`
         }
         onClick={() => {
           dispatch(

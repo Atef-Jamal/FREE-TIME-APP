@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types/earnTypes";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
 import { empty } from "../../assets";
 import { BsArrowDownCircle } from "react-icons/bs";
@@ -13,6 +13,13 @@ import { handleApiError } from "../../utils/common";
 import AppDetailsSkeleton from "./AppDetailsSkeleton";
 import { User } from "../../types/userTypes";
 
+interface TypeReview {
+  _id: string;
+  appId: string;
+  user: User;
+  comment: string;
+}
+
 const AppDetail = ({ appId }: { appId: string }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [appDetail, setAppDetail] = useState<TypeTaskApp | null>(null);
@@ -20,14 +27,8 @@ const AppDetail = ({ appId }: { appId: string }) => {
   const [openReviews, setOpenReviews] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
-  const [reviews, setReviews] = useState<
-    {
-      _id: string;
-      appId: string;
-      user: User;
-      comment: string;
-    }[]
-  >([]);
+  const [reviews, setReviews] = useState<TypeReview[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const dispatch = useAppDispatch();
 
@@ -74,14 +75,17 @@ const AppDetail = ({ appId }: { appId: string }) => {
     fetchAppDetails();
   }, [appId]);
 
-  // useEffect(() => {
-  //   return () => {
-  //     setSearchParams((prev) => {
-  //       prev.delete("to");
-  //       return prev;
-  //     });
-  //   };
-  // }, [searchParams]);
+  useEffect(() => {
+    const searchQuery = searchParams.get("to");
+    if (searchQuery) {
+      return () => {
+        setSearchParams((prev) => {
+          prev.delete("to");
+          return prev;
+        });
+      };
+    }
+  }, []);
 
   if (loading) return <AppDetailsSkeleton />;
 
