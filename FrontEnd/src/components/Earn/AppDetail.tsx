@@ -174,7 +174,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
               return (
                 <div
                   key={review._id}
-                  className="flex flex-col items-center border-b border-gray-500 pb-1 mb-1"
+                  className="w-full flex flex-col items-center border-b border-gray-500 pb-1 mb-1"
                 >
                   <div className="w-full flex items-center gap-2">
                     <img
