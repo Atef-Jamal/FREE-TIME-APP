@@ -58,8 +58,6 @@ const Earn = () => {
       page,
     });
 
-  console.log(apps[0]);
-
   useScrollToElement([apps]);
 
   useEffect(() => {
@@ -142,7 +140,7 @@ const Earn = () => {
       </Helmet>
       <div className="flex items-ceneter sm:flex-col sm:gap-1 gap-2">
         <div className="relative w-[40%] sm:w-full">
-          <div className=" flex justify-between">
+          <div className=" flex justify-between overflow-hidden">
             <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap mr-1">
               <span className="mr-1 text-[#bedf65]">EARN</span> ON
             </span>

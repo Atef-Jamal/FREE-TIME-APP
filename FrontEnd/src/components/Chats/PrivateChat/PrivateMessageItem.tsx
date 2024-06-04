@@ -45,7 +45,7 @@ const PrivateMessageItem = ({
         />
       </div>
       <div
-        className={`relative max-w-[70%] xs:max-w-full flex flex-col ${
+        className={`relative max-w-[70%] xs:max-w-[85%] flex flex-col ${
           message.sender._id === currentUser?._id
             ? "bg-[#101a30] "
             : "bg-[#12151f] "
@@ -63,7 +63,7 @@ const PrivateMessageItem = ({
           <div className="flex items-center gap-2">
             <span
               dir="ltr"
-              className="text-[#867272] sm:text-xs text-sm w-[100px] flex items-center justify-center pt-[5px]"
+              className="text-[#867272] sm:text-xs text-sm w-[100px] flex items-center justify-center"
             >
               {date}
             </span>

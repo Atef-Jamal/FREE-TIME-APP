@@ -103,21 +103,23 @@ const AppDetail = ({ appId }: { appId: string }) => {
           alt=""
         />
         <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
-          <span className="w-full text-[#b9a3a3]">
-            <span className="mr-2 text-[#73f1a8]">Name :</span>{" "}
+          <span className="w-full text-[#537692] text-sm">
+            <span className="mr-2 text-[#aebeb5] text-base">Name :</span>{" "}
             {appDetail?.title}
           </span>
-          <span className="w-full text-[#b9a3a3]">
-            <span className="mr-2 text-[#73f1a8]">Description :</span>
+          <span className="w-full text-[#537692] text-sm">
+            <span className="mr-2 text-[#aebeb5] text-base">Description :</span>
             {appDetail?.description}
           </span>
-          <span className="w-full text-[#b9a3a3]">
-            <span className="mr-2 text-[#73f1a8]">available on :</span>
+          <span className="w-full text-[#537692] text-sm">
+            <span className="mr-2 text-[#aebeb5] text-base">
+              available on :
+            </span>
             {appDetail?.devices === "ALL" ? "ALL DEVICES" : appDetail.devices}
           </span>
           <div
             onClick={() => setExpandUsers((prev) => !prev)}
-            className="w-full bg-[#333030] rounded-md flex item-center justify-between p-2"
+            className="w-full bg-[#333030] rounded-md flex item-center justify-between p-2 my-2"
           >
             <span className="text-[#73f1a8]">
               People who completed this app
@@ -146,7 +148,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
                 </Link>
               ))}
           </div>
-          <span className="flex items-center gap-3 w-full text-[#73f1a8]">
+          <span className="flex items-center gap-3 w-full text-[#aebeb5]">
             Rating :
             <span className="flex items-center justify-center gap-1">
               {[...Array(appDetail.rating).keys()].map((item) => (
@@ -159,7 +161,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
           </span>
           <span
             onClick={() => setOpenReviews((prev) => !prev)}
-            className="w-full flex items-center justify-between bg-[#333030] p-2 rounded-md"
+            className="w-full flex items-center justify-between bg-[#333030] p-2 rounded-md my-2"
           >
             <span className="text-[#cec8c8]">Rewies</span>
             <BsArrowDownCircle className="text-xl opacity-50" />
@@ -174,7 +176,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
               return (
                 <div
                   key={review._id}
-                  className="w-full flex flex-col items-center border-b border-gray-500 pb-1 mb-1"
+                  className="w-full flex flex-col items-center gap-2 border-b border-gray-500 pb-1 mb-1"
                 >
                   <div className="w-full flex items-center gap-2">
                     <img
@@ -182,7 +184,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
                         review.user.profilePicture
                       }`}
                       alt=""
-                      className="w-8 h-8 sm:w-6 sm:h-6 rounded-full object-contain"
+                      className="w-8 h-8 sm:w-6 sm:h-6 rounded-full object-fill"
                     />
                     <span className="text-sm text-[#d1cfcf]">
                       {review.user.name}
@@ -212,9 +214,11 @@ const AppDetail = ({ appId }: { appId: string }) => {
               </button>
             </form>
           </div>
-          <span className="text-[#73f1a8] flex items-center gap-3 w-full">
+          <span className="text-[#aebeb5] flex items-center gap-3 w-full mb-2">
             Reward :
-            <span className="text-[#6676ff]">{appDetail.prize} Points</span>
+            <span className="text-[#6676ff] text-sm">
+              {appDetail.prize} Points
+            </span>
           </span>
           {isCompleted && (
             <button

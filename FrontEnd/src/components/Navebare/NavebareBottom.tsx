@@ -61,7 +61,7 @@ const NavebareBottom = ({
               isActive
                 ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6] h-full"
                 : ""
-            }  flex flex-col items-center gap-2 text-gray-200 text-xs font-[500] bg-[#363663] mb-3 h-full py-2 rounded-md`
+            }  flex flex-col items-center gap-2 text-gray-200 text-xs font-[500] bg-[#3a3a6b] -mt-4 h-full py-2 rounded-md`
           }
         >
           <RiMoneyPoundBoxFill className="text-2xl" />

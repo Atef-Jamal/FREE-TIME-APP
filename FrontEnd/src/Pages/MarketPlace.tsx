@@ -34,8 +34,8 @@ const MarketPlace = () => {
   }, []);
 
   return (
-    <div className="min-h-screen p-8 sm:p-4 w-full">
-      <h1 className="border-b text-3xl text-[#7cec50] w-[40%] lg:w-[70%] py-5 mb-10 lg:text-xl font-bold flex items-center gap-5 lg:gap-3">
+    <div className="min-h-screen p-5 sm:p-3 w-full">
+      <h1 className="border-b text-3xl text-[#7cec50] w-[40%] lg:w-[70%] py-2 mb-6 lg:text-xl font-bold flex items-center gap-5 lg:gap-3">
         <MdStorefront /> MARKET STORE
       </h1>
       <div

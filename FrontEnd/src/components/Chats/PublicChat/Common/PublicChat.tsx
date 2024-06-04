@@ -103,8 +103,8 @@ const PublicChat = () => {
       </div>
       <div
         className={`${
-          somoneTyping ? "h-5" : "h-0"
-        } w-[97%] mx-auto px-1 bg-[#2f2f30a4] transition-all overflow-hidden text-xs xs:text-[10px] text-[#fd8f8f]`}
+          somoneTyping ? "opacity-100" : "opacity-0"
+        } w-[98%] mx-auto bg-[#25252ba4] transition-all text-xs xs:text-[10px] text-[#fd8f8f] tracking-wider`}
       >
         somone typing ...
       </div>
