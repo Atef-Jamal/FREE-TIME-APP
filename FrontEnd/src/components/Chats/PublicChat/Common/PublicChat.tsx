@@ -101,13 +101,13 @@ const PublicChat = () => {
         )}
         {messagesList}
       </div>
-      <span
+      <div
         className={`${
           somoneTyping ? "h-5" : "h-0"
-        } bg-[#2f2f30a4] transition-all overflow-hidden w-full text-xs xs:text-[10px] text-[#fd8f8f] `}
+        } w-[97%] mx-auto px-1 bg-[#2f2f30a4] transition-all overflow-hidden text-xs xs:text-[10px] text-[#fd8f8f]`}
       >
-        somone typing...
-      </span>
+        somone typing ...
+      </div>
       <div className="w-full">
         <SendMessage
           somoneTyping={somoneTyping}

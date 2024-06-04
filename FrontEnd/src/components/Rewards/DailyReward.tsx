@@ -72,7 +72,7 @@ const DailyReward = () => {
           Earn 1,000 <span className="text-sm">or more</span> coins{" "}
           <span className="text-sm">within </span> 24 hours{" "}
           <span className="text-sm">
-            to keep you streak week: {currentUser?.week || 1}
+            to keep you streak
           </span>
         </p>
         <div
