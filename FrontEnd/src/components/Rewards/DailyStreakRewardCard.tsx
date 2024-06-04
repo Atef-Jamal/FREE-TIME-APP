@@ -14,22 +14,19 @@ interface TypeProps {
     reward: number;
     isCollected: boolean;
   };
-  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  dayWhichTimmerIsLocated: Date | null;
+  setDayWhichTimmerIsLocated: React.Dispatch<React.SetStateAction<Date | null>>;
 }
-const DailyStreakRewardCard = ({ dayInfo, setRefresh }: TypeProps) => {
+const DailyStreakRewardCard = ({
+  dayInfo,
+  dayWhichTimmerIsLocated,
+  setDayWhichTimmerIsLocated,
+}: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useAppDispatch();
   const today = new Date();
-  let isTimerHere;
-
-  const nearstNexttDay = currentUser?.dailyReward.find(
-    (item) => new Date(item.availableAt) > today
-  );
-  if (nearstNexttDay?.availableAt === dayInfo.availableAt) {
-    isTimerHere = true;
-  }
 
   const collectDailyReward = async () => {
     if (!currentUser) {
@@ -90,10 +87,10 @@ const DailyStreakRewardCard = ({ dayInfo, setRefresh }: TypeProps) => {
       ) : undefined}
       {new Date(dayInfo.availableAt) > today ? (
         <button className="w-full py-1 bg-[#205764] font-bold rounded-md">
-          {isTimerHere ? (
+          {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
             <Timer
               date={new Date(dayInfo.availableAt)}
-              setRefresh={setRefresh}
+              setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
             />
           ) : (
             "Next"

@@ -61,6 +61,24 @@ export const formateDate = (date: Date): string => {
   return `${Math.floor(diffInSeconds / (60 * 60 * 24 * 7 * 4 * 12))} years ago`;
 };
 
+export function calculateTimeLeft(startDate: Date) {
+  const now = new Date();
+  let timeDiff = startDate.getTime() - now.getTime();
+
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  timeDiff -= days * (1000 * 60 * 60 * 24);
+
+  const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+  timeDiff -= hours * (1000 * 60 * 60);
+
+  const minutes = Math.floor(timeDiff / (1000 * 60));
+  timeDiff -= minutes * (1000 * 60);
+
+  const seconds = Math.floor(timeDiff / 1000);
+
+  return { days, hours, minutes, seconds };
+}
+
 export const handleApiError = (error: any) => {
   let errorMessage = "";
   if (

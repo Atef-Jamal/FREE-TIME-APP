@@ -6,13 +6,26 @@ import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
     useAppSelector((state) => state.stateManeger);
-  const [refresh, setRefresh] = useState(false);
-  console.log(refresh);
+  const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] =
+    useState<Date | null>(null);
+
+  const today = new Date();
+
+  const nearstNexttDay = currentUser?.dailyReward.find(
+    (item) => new Date(item.availableAt) > today
+  );
+
+  useEffect(() => {
+    if (currentUser && nearstNexttDay) {
+      setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
+    }
+  }, [currentUser?._id]);
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
@@ -86,7 +99,8 @@ const DailyReward = () => {
               <DailyStreakRewardCard
                 key={item.day}
                 dayInfo={item}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
             ))}
           {currentAccountRequestFullfiled && !currentUser && (
@@ -98,7 +112,8 @@ const DailyReward = () => {
                   reward: 50,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -109,7 +124,8 @@ const DailyReward = () => {
                   reward: 100,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -120,7 +136,8 @@ const DailyReward = () => {
                   reward: 150,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -131,7 +148,8 @@ const DailyReward = () => {
                   reward: 200,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -142,7 +160,8 @@ const DailyReward = () => {
                   reward: 250,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -153,7 +172,8 @@ const DailyReward = () => {
                   reward: 300,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
@@ -164,7 +184,8 @@ const DailyReward = () => {
                   reward: 350,
                   isCollected: false,
                 }}
-                setRefresh={setRefresh}
+                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
             </>
           )}

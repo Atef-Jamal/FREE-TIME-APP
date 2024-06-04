@@ -93,11 +93,13 @@ const ProfileActions = () => {
             >
               <FaPlus />
             </button>
-            <span className="border-l h-full flex items-center justify-center flex-1">
-              <span className="text-[#3de21c] mr-1 text-lg sm:text-xs">
+            <span className="border-l h-full flex flex-col items-center justify-center flex-1">
+              <span className="text-[#3de21c] -mb-[1px] text-lg sm:text-xs">
                 {currentUser.points}
               </span>
-              <span className="sm:hidden text-xs text-[#c2bebe] ">points</span>
+              <span className="sm:text-[9px] text-xs text-[#c2bebe] ">
+                points
+              </span>
             </span>
           </div>
           <div
