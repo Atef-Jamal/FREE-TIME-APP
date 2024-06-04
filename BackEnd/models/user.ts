@@ -46,11 +46,8 @@ const userSchema = new mongoose.Schema(
           day: 2,
           reward: 100,
           availableAt: new Date(
-            new Date(new Date().setDate(new Date().getDate() + 1)).setHours(
-              0,
-              0,
-              0,
-              0
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              new Date().getDate() + 1
             )
           ),
           isCollected: false,
@@ -59,11 +56,8 @@ const userSchema = new mongoose.Schema(
           day: 3,
           reward: 150,
           availableAt: new Date(
-            new Date(new Date().setDate(new Date().getDate() + 2)).setHours(
-              0,
-              0,
-              0,
-              0
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              new Date().getDate() + 2
             )
           ),
           isCollected: false,
@@ -72,11 +66,8 @@ const userSchema = new mongoose.Schema(
           day: 4,
           reward: 200,
           availableAt: new Date(
-            new Date(new Date().setDate(new Date().getDate() + 3)).setHours(
-              0,
-              0,
-              0,
-              0
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              new Date().getDate() + 3
             )
           ),
           isCollected: false,
@@ -85,11 +76,8 @@ const userSchema = new mongoose.Schema(
           day: 5,
           reward: 250,
           availableAt: new Date(
-            new Date(new Date().setDate(new Date().getDate() + 4)).setHours(
-              0,
-              0,
-              0,
-              0
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              new Date().getDate() + 4
             )
           ),
           isCollected: false,
@@ -98,11 +86,8 @@ const userSchema = new mongoose.Schema(
           day: 6,
           reward: 300,
           availableAt: new Date(
-            new Date(new Date().setDate(new Date().getDate() + 5)).setHours(
-              0,
-              0,
-              0,
-              0
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              new Date().getDate() + 5
             )
           ),
           isCollected: false,
@@ -111,11 +96,8 @@ const userSchema = new mongoose.Schema(
           day: 7,
           reward: 350,
           availableAt: new Date(
-            new Date(new Date().setDate(new Date().getDate() + 6)).setHours(
-              0,
-              0,
-              0,
-              0
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              new Date().getDate() + 6
             )
           ),
           isCollected: false,
