@@ -89,7 +89,9 @@ const DailyStreakRewardCard = ({
         <button className="w-full py-1 bg-[#205764] font-bold rounded-md">
           {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
             <Timer
-              date={new Date(dayInfo.availableAt)}
+              date={
+                new Date(new Date(dayInfo.availableAt).setHours(0, 0, 0, 0))
+              }
               setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
             />
           ) : (

@@ -26,9 +26,6 @@ const DailyReward = () => {
     }
   }, [currentUser?._id]);
 
-  // const test = new Date(currentUser?.dailyReward[0].availableAt || "");
-  // console.log(test);
-
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
