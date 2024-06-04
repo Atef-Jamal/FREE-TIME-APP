@@ -167,7 +167,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
           <div
             className={`w-full h-0 overflow-hidden ${
               openReviews && "h-auto"
-            } px-2 flex flex-col items-center"
+            } flex flex-col items-center"
           `}
           >
             {reviews?.map((review) => {
@@ -182,13 +182,13 @@ const AppDetail = ({ appId }: { appId: string }) => {
                         review.user.profilePicture
                       }`}
                       alt=""
-                      className="w-8 h-8 rounded-full object-contain"
+                      className="w-8 h-8 sm:w-6 sm:h-6 rounded-full object-contain"
                     />
                     <span className="text-sm text-[#d1cfcf]">
                       {review.user.name}
                     </span>
                   </div>
-                  <p className="w-full text-sm text-[#9d79ff]">
+                  <p className="w-full text-sm sm:text-xs text-[#9d79ff]">
                     {review.comment}
                   </p>
                 </div>
