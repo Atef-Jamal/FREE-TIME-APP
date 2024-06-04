@@ -26,6 +26,9 @@ const DailyReward = () => {
     }
   }, [currentUser?._id]);
 
+  // const test = new Date(currentUser?.dailyReward[0].availableAt || "");
+  // console.log(test);
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
@@ -71,9 +74,7 @@ const DailyReward = () => {
         <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
           Earn 1,000 <span className="text-sm">or more</span> coins{" "}
           <span className="text-sm">within </span> 24 hours{" "}
-          <span className="text-sm">
-            to keep you streak
-          </span>
+          <span className="text-sm">to keep you streak</span>
         </p>
         <div
           id="daily-reward"
