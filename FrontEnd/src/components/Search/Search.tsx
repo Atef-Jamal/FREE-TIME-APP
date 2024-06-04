@@ -58,7 +58,7 @@ const Search = () => {
   }, [searchQ]);
 
   return (
-    <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[79%] overflow-auto absolute top-20 sm:top-[57px] translate-x-[-50%]  bg-[#19181b] rounded-lg">
+    <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[79%] overflow-auto sm:scrollbar-thin absolute top-20 sm:top-[57px] translate-x-[-50%]  bg-[#19181b] rounded-lg">
       <div className="sticky top-0 p-2  bg-[#362b53] flex">
         <div className="w-full border border-gray-700 rounded-md">
           <input
