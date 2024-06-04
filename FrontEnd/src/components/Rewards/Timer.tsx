@@ -23,8 +23,6 @@ const Timer = ({
         const nearstNexttDay = currentUser?.dailyReward.find(
           (item) => new Date(item.availableAt) > date
         );
-        console.log(nearstNexttDay);
-        console.log("stop");
         if (nearstNexttDay) {
           setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
         } else {
