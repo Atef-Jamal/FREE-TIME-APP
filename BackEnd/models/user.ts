@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
         {
           day: 1,
           reward: 50,
-          availableAt: new Date(),
+          availableAt: new Date(new Date().setHours(0, 0, 0, 0)),
           isCollected: false,
         },
         {
