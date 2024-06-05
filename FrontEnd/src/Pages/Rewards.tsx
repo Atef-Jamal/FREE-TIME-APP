@@ -90,9 +90,9 @@ const Rewards = () => {
             </span>
           </span>
           <MdCardGiftcard />
-          <span id="bonus-code" className="text-white w-25">
+          <span id="bonus-code" className="text-white w-[100px]">
             {loading ? (
-              <Spinner className="w-5 h-5 mx-auto border-b-blue-800 border-l-blue-800" />
+              <Spinner className="w-6 h-6 border-[3px] mx-auto border-b-blue-800 border-l-blue-800" />
             ) : (
               "Bonus Code"
             )}

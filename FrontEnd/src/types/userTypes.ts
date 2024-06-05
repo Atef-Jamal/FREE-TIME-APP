@@ -17,7 +17,7 @@ export interface User {
   week: number;
   dailyReward: {
     day: number;
-    availableAt: Date;
+    availableAt: string;
     reward: number;
     isCollected: boolean;
   }[];

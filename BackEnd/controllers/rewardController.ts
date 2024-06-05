@@ -56,19 +56,31 @@ export const collectReward = async (req: Request, res: Response) => {
       user.dailyReward = [
         {
           day: 1,
-          availableAt: new Date(new Date().setDate(lastDate.getDate() + 1)),
+          availableAt: new Date(
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              lastDate.getDate() + 1
+            )
+          ),
           isCollected: false,
           reward: 50,
         },
         {
           day: 2,
-          availableAt: new Date(new Date().setDate(lastDate.getDate() + 2)),
+          availableAt: new Date(
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              lastDate.getDate() + 2
+            )
+          ),
           isCollected: false,
           reward: 100,
         },
         {
           day: 3,
-          availableAt: new Date(new Date().setDate(lastDate.getDate() + 3)),
+          availableAt: new Date(
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              lastDate.getDate() + 3
+            )
+          ),
           isCollected: false,
           reward: 150,
         },
@@ -80,19 +92,31 @@ export const collectReward = async (req: Request, res: Response) => {
         },
         {
           day: 5,
-          availableAt: new Date(new Date().setDate(lastDate.getDate() + 5)),
+          availableAt: new Date(
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              lastDate.getDate() + 5
+            )
+          ),
           isCollected: false,
           reward: 250,
         },
         {
           day: 6,
-          availableAt: new Date(new Date().setDate(lastDate.getDate() + 6)),
+          availableAt: new Date(
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              lastDate.getDate() + 6
+            )
+          ),
           isCollected: false,
           reward: 300,
         },
         {
           day: 7,
-          availableAt: new Date(new Date().setDate(lastDate.getDate() + 6)),
+          availableAt: new Date(
+            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+              lastDate.getDate() + 7
+            )
+          ),
           isCollected: false,
           reward: 350,
         },

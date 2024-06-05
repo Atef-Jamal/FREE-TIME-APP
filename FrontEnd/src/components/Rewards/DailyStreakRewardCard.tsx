@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
 import Spinner from "../Others/Spinner";
@@ -10,15 +10,19 @@ import Timer from "./Timer";
 interface TypeProps {
   dayInfo: {
     day: number;
-    availableAt: Date;
+    availableAt: string;
     reward: number;
     isCollected: boolean;
   };
-  dayWhichTimmerIsLocated: Date | null;
+  dayWhichTimmerIsLocated: string | null;
+  setDayWhichTimmerIsLocated: React.Dispatch<
+    React.SetStateAction<string | null>
+  >;
 }
 const DailyStreakRewardCard = ({
   dayInfo,
   dayWhichTimmerIsLocated,
+  setDayWhichTimmerIsLocated,
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +50,7 @@ const DailyStreakRewardCard = ({
           week: response.data.week,
         })
       );
-      setIsActive(false);
+      // setIsActive(false);
     } catch (error) {
       console.log(error);
       dispatch(
@@ -56,6 +60,15 @@ const DailyStreakRewardCard = ({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (active === true) {
+      const timmout = setTimeout(() => {
+        setIsActive((prev) => !prev);
+      }, 1000);
+      return () => clearTimeout(timmout);
+    }
+  }, [active]);
 
   return (
     <div className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#122641c4] rounded-md">
@@ -73,8 +86,8 @@ const DailyStreakRewardCard = ({
           Collected
         </button>
       ) : undefined}
-      {(!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today) ||
-      active === true ? (
+
+      {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
         <button
           onClick={collectDailyReward}
           className="w-full py-1 bg-[#37d132]  font-bold rounded-md"
@@ -86,18 +99,29 @@ const DailyStreakRewardCard = ({
           )}
         </button>
       ) : undefined}
-      {new Date(dayInfo.availableAt) > today && !active ? (
+
+      {new Date(dayInfo.availableAt) > today ? (
         <button className="w-full py-1 bg-[#205764] font-bold rounded-md">
           {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
             <Timer
               date={new Date(dayInfo.availableAt)}
               setIsActive={setIsActive}
+              setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
             />
           ) : (
             "Next"
           )}
         </button>
       ) : undefined}
+      {/* {active && (
+        <button
+          ref={btnRef}
+          onClick={handleUpdate}
+          className="hidden border text-xs"
+        >
+          Click
+        </button>
+      )} */}
     </div>
   );
 };

@@ -12,20 +12,27 @@ const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
     useAppSelector((state) => state.stateManeger);
 
-  const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] =
-    useState<Date | null>(null);
-
-  const today = new Date();
-
-  const nearstNexttDay = currentUser?.dailyReward.find(
-    (item) => new Date(item.availableAt) > today
-  );
+  const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
+    const today = new Date();
+    const nearstNexttDay = currentUser?.dailyReward.find(
+      (item) => new Date(item.availableAt) > today
+    );
     if (currentUser && nearstNexttDay) {
       setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
     }
-  }, [currentUser?._id]);
+    if (currentAccountRequestFullfiled && !currentUser) {
+      const nextDay = new Date(
+        new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+          new Date().getDay() + 3
+        )
+      ).toISOString();
+      setDayWhichTimmerIsLocated(nextDay);
+    }
+  }, [currentUser?._id, currentAccountRequestFullfiled]);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -99,87 +106,121 @@ const DailyReward = () => {
                 key={item.day}
                 dayInfo={item}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
             ))}
-          {currentAccountRequestFullfiled && !currentUser && (
+          {currentAccountRequestFullfiled &&
+            !currentUser &&
+            [...Array(7).keys()].map((item) => {
+              return (
+                <DailyStreakRewardCard
+                  key={item + 1}
+                  dayInfo={{
+                    day: item + 1,
+                    availableAt:
+                      item + 1 === 1
+                        ? new Date(
+                            new Date().setHours(0, 0, 0, 0)
+                          ).toISOString()
+                        : new Date(
+                            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+                              new Date().getDay() + item + 2
+                            )
+                          ).toISOString(),
+                    reward: 50 * (item + 1),
+                    isCollected: false,
+                  }}
+                  dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                  setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+                />
+              );
+            })}
+          {/* {currentAccountRequestFullfiled && !currentUser && (
             <>
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 1,
-                  availableAt: new Date(),
+                  availableAt: new Date().toISOString(),
                   reward: 50,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 2,
                   availableAt: new Date(
                     new Date().setDate(new Date().getDay() + 5)
-                  ),
+                  ).toISOString(),
                   reward: 100,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 3,
                   availableAt: new Date(
                     new Date().setDate(new Date().getDay() + 5)
-                  ),
+                  ).toISOString(),
                   reward: 150,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 4,
                   availableAt: new Date(
                     new Date().setDate(new Date().getDay() + 5)
-                  ),
+                  ).toISOString(),
                   reward: 200,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 5,
                   availableAt: new Date(
                     new Date().setDate(new Date().getDay() + 5)
-                  ),
+                  ).toISOString(),
                   reward: 250,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 6,
                   availableAt: new Date(
                     new Date().setDate(new Date().getDay() + 5)
-                  ),
+                  ).toISOString(),
                   reward: 300,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
               <DailyStreakRewardCard
                 dayInfo={{
                   day: 7,
                   availableAt: new Date(
                     new Date().setDate(new Date().getDay() + 6)
-                  ),
+                  ).toISOString(),
                   reward: 350,
                   isCollected: false,
                 }}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
             </>
-          )}
+          )} */}
         </div>
         <div className="flex items-center gap-2 text-orange-400 text-sm bg-[#a5a5a425] px-4 py-2 rounded-md">
           <MdOutlineGppMaybe className="w-10 h-10 opacity-70" />
