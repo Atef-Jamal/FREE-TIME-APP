@@ -1,38 +1,31 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../context/Hooks";
 import { calculateTimeLeft } from "../../utils/common";
 
 const Timer = ({
   date,
-  setDayWhichTimmerIsLocated,
+  setIsActive,
 }: {
   date: Date;
-  setDayWhichTimmerIsLocated: React.Dispatch<React.SetStateAction<Date | null>>;
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft(date));
-      if (
-        timeLeft.hours === 0 &&
-        timeLeft.minutes === 0 &&
-        timeLeft.seconds === 0
-      ) {
-        const nearstNexttDay = currentUser?.dailyReward.find(
-          (item) => new Date(item.availableAt) > date
-        );
-        if (nearstNexttDay) {
-          setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
-        } else {
-          setDayWhichTimmerIsLocated(null);
-        }
-      }
     }, 1000);
     return () => clearInterval(interval);
   }, [date]);
 
+  useEffect(() => {
+    if (
+      timeLeft.hours === 0 &&
+      timeLeft.minutes === 0 &&
+      timeLeft.seconds === 0
+    ) {
+      setIsActive(true);
+    }
+  }, [timeLeft]);
   return (
     <span className="flex items-center justify-center gap-1">
       <span className="w-7 text-[#e79349]">

@@ -15,15 +15,14 @@ interface TypeProps {
     isCollected: boolean;
   };
   dayWhichTimmerIsLocated: Date | null;
-  setDayWhichTimmerIsLocated: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 const DailyStreakRewardCard = ({
   dayInfo,
   dayWhichTimmerIsLocated,
-  setDayWhichTimmerIsLocated,
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
+  const [active, setIsActive] = useState(false);
 
   const dispatch = useAppDispatch();
   const today = new Date();
@@ -47,6 +46,7 @@ const DailyStreakRewardCard = ({
           week: response.data.week,
         })
       );
+      setIsActive(false);
     } catch (error) {
       console.log(error);
       dispatch(
@@ -73,7 +73,8 @@ const DailyStreakRewardCard = ({
           Collected
         </button>
       ) : undefined}
-      {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
+      {(!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today) ||
+      active === true ? (
         <button
           onClick={collectDailyReward}
           className="w-full py-1 bg-[#37d132]  font-bold rounded-md"
@@ -85,14 +86,12 @@ const DailyStreakRewardCard = ({
           )}
         </button>
       ) : undefined}
-      {new Date(dayInfo.availableAt) > today ? (
+      {new Date(dayInfo.availableAt) > today && !active ? (
         <button className="w-full py-1 bg-[#205764] font-bold rounded-md">
           {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
             <Timer
-              date={
-                new Date(new Date(dayInfo.availableAt).setHours(0, 0, 0, 0))
-              }
-              setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+              date={new Date(dayInfo.availableAt)}
+              setIsActive={setIsActive}
             />
           ) : (
             "Next"
