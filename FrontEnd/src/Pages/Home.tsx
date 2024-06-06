@@ -1,8 +1,3 @@
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
-
 import Faq from "../components/Home/Faq";
 import HeroSection from "../components/Home/HeroSection";
 import HowToStart from "../components/Home/HowToStart";
