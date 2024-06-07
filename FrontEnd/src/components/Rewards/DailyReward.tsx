@@ -35,19 +35,29 @@ const DailyReward = () => {
   }, [currentUser?._id, currentAccountRequestFullfiled]);
 
   const handleUpdateNextTimerDay = () => {
-    if (dayWhichTimmerIsLocated) {
-      // const copied = new Date(dayWhichTimmerIsLocated);
-      // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
-      // setDayWhichTimmerIsLocated(nextDay.toISOString());
-      let dayNow = new Date().getDate();
+    // if (dayWhichTimmerIsLocated) {
+    // const copied = new Date(dayWhichTimmerIsLocated);
+    // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
+    // setDayWhichTimmerIsLocated(nextDay.toISOString());
 
-      setDayWhichTimmerIsLocated(`2024-06-0${dayNow + 1}T00:00:00.000Z`);
-    }
+    const addOneDay = new Date(
+      new Date().setDate(new Date().getDate() + 2)
+    ).toISOString();
+    const datePart = addOneDay.split("T")[0];
+    const nextTimerDay = datePart + "T00:00:00.000Z";
+    // console.log(currentUser?.dailyReward[3].availableAt);
+    // console.log(nextTimerDay);
+    setDayWhichTimmerIsLocated(nextTimerDay);
+    // }
   };
+  // const addOneDay = new Date(
+  //   new Date().setDate(new Date().getDate() + 1)
+  // ).toISOString();
+  // const datePart = addOneDay.split("T")[0];
+  // const nextTimerDay = datePart + "T00:00:00.000Z";
 
-  // let dayNow = new Date().getDate() + 1;
-
-  // console.log(`2024-06-${dayNow + 1}T00:00:00.000Z`);
+  // console.log(currentUser?.dailyReward[2].availableAt);
+  // console.log(nextTimerDay);
 
   return (
     <div className="flex flex-col gap-4 w-full">
