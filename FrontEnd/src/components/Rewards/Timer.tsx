@@ -37,10 +37,11 @@ const Timer = ({
 
   useEffect(() => {
     if (helper && dayWhichTimmerIsLocated) {
-      const copied = new Date(dayWhichTimmerIsLocated);
-      const nextDay = new Date(copied.setDate(copied.getDate() + 1));
+      // const copied = new Date(dayWhichTimmerIsLocated);
+      // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
 
-      setDayWhichTimmerIsLocated(nextDay.toISOString());
+      // setDayWhichTimmerIsLocated(nextDay.toISOString());
+      setDayWhichTimmerIsLocated("2024-06-08T00:00:00.000Z");
     }
   }, [helper]);
 
