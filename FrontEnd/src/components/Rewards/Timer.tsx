@@ -39,6 +39,7 @@ const Timer = ({
     if (helper && dayWhichTimmerIsLocated) {
       const copied = new Date(dayWhichTimmerIsLocated);
       const nextDay = new Date(copied.setDate(copied.getDate() + 1));
+
       setDayWhichTimmerIsLocated(nextDay.toISOString());
     }
   }, [helper]);
