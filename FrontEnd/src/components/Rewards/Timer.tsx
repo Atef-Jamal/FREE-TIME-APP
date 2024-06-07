@@ -3,14 +3,14 @@ import { calculateTimeLeft } from "../../utils/common";
 
 const Timer = ({
   date,
-  setIsActive,
+  // setIsActive,
   // dayWhichTimmerIsLocated,
   // setDayWhichTimmerIsLocated,
   handleUpdateNextTimerDay,
 }: {
   date: Date;
   dayWhichTimmerIsLocated: string | null;
-  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  // setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   handleUpdateNextTimerDay: () => void;
 }) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
@@ -29,7 +29,7 @@ const Timer = ({
       timeLeft.minutes === 0 &&
       timeLeft.seconds === 0
     ) {
-      setIsActive(true);
+      // setIsActive(true);
       handleUpdateNextTimerDay();
       // setHelper((prev) => !prev);
     }

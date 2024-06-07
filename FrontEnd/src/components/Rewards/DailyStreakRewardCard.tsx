@@ -24,7 +24,7 @@ const DailyStreakRewardCard = ({
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
-  const [active, setIsActive] = useState(false);
+  const [, setIsActive] = useState(false);
 
   const dispatch = useAppDispatch();
   const today = new Date();
@@ -59,15 +59,27 @@ const DailyStreakRewardCard = ({
     }
   };
 
+  // useEffect(() => {
+  //   if (active === true) {
+  //     const timmout = setTimeout(() => {
+  //       setIsActive((prev) => !prev);
+  //     }, 1000);
+  //     return () => clearTimeout(timmout);
+  //   }
+  // }, [active]);
+
   useEffect(() => {
-    if (active === true) {
+    if (
+      dayWhichTimmerIsLocated &&
+      dayWhichTimmerIsLocated > dayInfo.availableAt
+    ) {
       const timmout = setTimeout(() => {
         setIsActive((prev) => !prev);
       }, 1000);
       return () => clearTimeout(timmout);
     }
-  }, [active]);
-
+  }, [dayWhichTimmerIsLocated]);
+  // console.log(active);
   return (
     <div className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#122641c4] rounded-md">
       <div className="flex items-center justify-center w-full gap-3">
@@ -103,7 +115,7 @@ const DailyStreakRewardCard = ({
           {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
             <Timer
               date={new Date(dayInfo.availableAt)}
-              setIsActive={setIsActive}
+              // setIsActive={setIsActive}
               dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
               handleUpdateNextTimerDay={handleUpdateNextTimerDay}
             />
