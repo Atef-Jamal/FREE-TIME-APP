@@ -36,13 +36,18 @@ const DailyReward = () => {
 
   const handleUpdateNextTimerDay = () => {
     if (dayWhichTimmerIsLocated) {
-      const copied = new Date(dayWhichTimmerIsLocated);
-      const nextDay = new Date(copied.setDate(copied.getDate() + 1));
-      setDayWhichTimmerIsLocated(nextDay.toISOString());
+      // const copied = new Date(dayWhichTimmerIsLocated);
+      // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
+      // setDayWhichTimmerIsLocated(nextDay.toISOString());
+      let dayNow = new Date().getDate();
+
+      setDayWhichTimmerIsLocated(`2024-06-0${dayNow + 1}T00:00:00.000Z`);
     }
   };
 
-  console.log(dayWhichTimmerIsLocated);
+  // let dayNow = new Date().getDate() + 1;
+
+  // console.log(`2024-06-${dayNow + 1}T00:00:00.000Z`);
 
   return (
     <div className="flex flex-col gap-4 w-full">
