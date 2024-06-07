@@ -9,18 +9,8 @@ const Timer = ({
   handleUpdateNextTimerDay: () => void;
 }) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
-  // const hoursRef = useRef<HTMLSpanElement>(null);
-  // const minutesRef = useRef<HTMLSpanElement>(null);
-  // const secondRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // const initialTime = calculateTimeLeft(date);
-    // hoursRef.current?.scrollBy({ top: 8 * 27 });
-    // minutesRef.current?.scrollBy({ top: 0 * 27 });
-    // secondRef.current?.scrollBy({ top: 0 * 27 });
-    // hoursRef.current?.scrollBy({ top: initialTime.hours * 27 });
-    // minutesRef.current?.scrollBy({ top: initialTime.hours * 27 });
-    // secondRef.current?.scrollBy({ top: initialTime.seconds * 27 });
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft(date));
     }, 1000);
@@ -56,7 +46,7 @@ const Timer = ({
           ))}
         </div>
       </span>
-      <span className="h-full">:</span>
+      <span className="h-full pt-[2px]">:</span>
       <span className="w-9 h-[30px]">
         <div
           style={{
@@ -74,7 +64,7 @@ const Timer = ({
           ))}
         </div>
       </span>
-      <span className="h-full">:</span>
+      <span className="h-full pt-[2px]">:</span>
       <span className="w-9 h-[30px]">
         <div
           style={{

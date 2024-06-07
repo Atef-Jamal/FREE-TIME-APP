@@ -103,6 +103,12 @@ const PrivateChat = () => {
     fetchAllConversations();
     if (secondPartyId) {
       setActiveConversation(secondPartyId);
+      localStorage.setItem("active-converstaion", secondPartyId);
+    } else {
+      const savedSecondPartyId = localStorage.getItem("active-converstaion");
+      if (savedSecondPartyId) {
+        setActiveConversation(savedSecondPartyId);
+      }
     }
   }, []);
 
@@ -137,10 +143,10 @@ const PrivateChat = () => {
       style={{
         height: hiddenLiveStats
           ? window.innerWidth <= 867
-            ? `calc(100dvh - 131px)`
+            ? `calc(100dvh - 120px)`
             : "calc(100dvh - 70px)"
           : window.innerWidth <= 867
-          ? `calc(100dvh - 172px)`
+          ? `calc(100dvh - 161px)`
           : "calc(100dvh - 133px)",
       }}
       className="w-full h-full flex items-center justify-center bg-[#202338]"

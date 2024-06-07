@@ -72,7 +72,7 @@ const DailyStreakRewardCard = ({
   }, [dayWhichTimmerIsLocated]);
 
   return (
-    <div className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#122641c4] rounded-md">
+    <div className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#242438] rounded-md">
       <div className="flex items-center justify-center w-full gap-3">
         <BsClockHistory className="text-4xl" />
         <span className="text-[#c9c6c6] text-xl sm:text-lg font-bold">
@@ -91,7 +91,7 @@ const DailyStreakRewardCard = ({
       {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
         <button
           onClick={collectDailyReward}
-          className="w-full py-1 bg-[#37d132]  font-bold rounded-md"
+          className="w-full py-1 bg-[#01d641]  font-bold rounded-md"
         >
           {isLoading ? (
             <Spinner className="mx-auto w-6 h-6 border-b-blue-950 border-r-blue-950" />

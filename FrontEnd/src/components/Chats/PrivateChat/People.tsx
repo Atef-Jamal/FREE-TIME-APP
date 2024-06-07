@@ -25,6 +25,7 @@ const People = ({
     <div
       onClick={() => {
         setActiveConversation(convInfo.secondParty._id);
+        localStorage.setItem("active-converstaion", convInfo.secondParty._id);
       }}
       className={`relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1 ${
         activeConversation === convInfo.secondParty._id && "bg-[#1c1b2e]"

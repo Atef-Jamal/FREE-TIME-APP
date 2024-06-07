@@ -55,7 +55,7 @@ const PrivateMessageItem = ({
           style={{
             direction: message.sender._id === currentUser?._id ? "rtl" : "ltr",
           }}
-          className="w-full flex items-center gap-2 border-b border-gray-600"
+          className="w-full flex items-center gap-2 border-b pb-[2px] border-gray-600"
         >
           <span className="text-[#64cf4f] sm:text-xs truncate">
             {message.sender.name}
@@ -63,7 +63,7 @@ const PrivateMessageItem = ({
           <div className="flex items-center gap-2">
             <span
               dir="ltr"
-              className="text-[#867272] sm:text-xs text-sm w-[100px] flex items-center justify-center"
+              className="text-[#8d7676] sm:text-xs text-sm w-[110px] flex items-center justify-center"
             >
               {date}
             </span>
@@ -89,7 +89,7 @@ const PrivateMessageItem = ({
               message.isSended === "FAILED" && <IoCloseCircleOutline />}
           </div>
         </div>
-        <div className="w-full flex items-end  text-[#5fc1df] text-sm sm:text-xs pt-[2px]">
+        <div className="max-w-[300px] break-words text-[#5fc1df] text-sm sm:text-xs pt-[2px]">
           {message.message}
         </div>
       </div>

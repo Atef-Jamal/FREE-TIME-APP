@@ -25,11 +25,10 @@ const DailyReward = () => {
       setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
     }
     if (currentAccountRequestFullfiled && !currentUser) {
-      const nextDay = new Date(
-        new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-          new Date().getDay() + 3
-        )
-      ).toISOString();
+      const nextDay =
+        new Date(new Date().setDate(new Date().getDate() + 1))
+          .toISOString()
+          .split("T")[0] + "T00:00:00.000Z";
       setDayWhichTimmerIsLocated(nextDay);
     }
   }, [currentUser?._id, currentAccountRequestFullfiled]);
@@ -111,7 +110,6 @@ const DailyReward = () => {
                 key={item.day}
                 dayInfo={item}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                // setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
                 handleUpdateNextTimerDay={handleUpdateNextTimerDay}
               />
             ))}
@@ -125,118 +123,25 @@ const DailyReward = () => {
                   dayInfo={{
                     day: item + 1,
                     availableAt:
-                      item + 1 === 1
-                        ? new Date(
-                            new Date().setHours(0, 0, 0, 0)
-                          ).toISOString()
-                        : new Date(
-                            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-                              new Date().getDay() + item + 2
-                            )
-                          ).toISOString(),
+                      new Date(new Date().setDate(new Date().getDate() + item))
+                        .toISOString()
+                        .split("T")[0] + "T00:00:00.000Z",
                     reward: 50 * (item + 1),
                     isCollected: false,
                   }}
                   dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                  // setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
                   handleUpdateNextTimerDay={handleUpdateNextTimerDay}
                 />
               );
             })}
-          {/* {currentAccountRequestFullfiled && !currentUser && (
-            <>
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 1,
-                  availableAt: new Date().toISOString(),
-                  reward: 50,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 2,
-                  availableAt: new Date(
-                    new Date().setDate(new Date().getDay() + 5)
-                  ).toISOString(),
-                  reward: 100,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 3,
-                  availableAt: new Date(
-                    new Date().setDate(new Date().getDay() + 5)
-                  ).toISOString(),
-                  reward: 150,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 4,
-                  availableAt: new Date(
-                    new Date().setDate(new Date().getDay() + 5)
-                  ).toISOString(),
-                  reward: 200,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 5,
-                  availableAt: new Date(
-                    new Date().setDate(new Date().getDay() + 5)
-                  ).toISOString(),
-                  reward: 250,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 6,
-                  availableAt: new Date(
-                    new Date().setDate(new Date().getDay() + 5)
-                  ).toISOString(),
-                  reward: 300,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-              <DailyStreakRewardCard
-                dayInfo={{
-                  day: 7,
-                  availableAt: new Date(
-                    new Date().setDate(new Date().getDay() + 6)
-                  ).toISOString(),
-                  reward: 350,
-                  isCollected: false,
-                }}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
-              />
-            </>
-          )} */}
         </div>
         <div className="flex items-center gap-2 text-orange-400 text-sm bg-[#a5a5a425] px-4 py-2 rounded-md">
-          <MdOutlineGppMaybe className="w-10 h-10 opacity-70" />
+          <MdOutlineGppMaybe className="min-w-fit h-8 opacity-70" />
           Earn 1000 more coins today to keep your streak! Time left d
         </div>
       </div>
       <div className="flex items-center gap-4 flex-wrap sm:flex-col overflow-hidden">
-        <div className="w-[300px] bg-[#746dac33] flex items-center justify-between  rounded-lg border-b border-b-gray-300 p-3">
+        <div className="w-[300px] xs:w-full bg-[#746dac33] flex items-center justify-between  rounded-lg border-b border-b-gray-300 p-3">
           <div className="w-[20%] py-2 bg-[#191c3aad] rounded-lg flex items-center justify-center border-b border-b-gray-300">
             <BsTwitter className="text-3xl " />
           </div>
@@ -250,7 +155,7 @@ const DailyReward = () => {
             </button>
           </div>
         </div>
-        <div className="w-[300px] bg-[#746dac33] flex items-center justify-between rounded-lg border-b border-b-gray-300 p-3">
+        <div className="w-[300px] xs:w-full bg-[#746dac33] flex items-center justify-between rounded-lg border-b border-b-gray-300 p-3">
           <div className="w-[20%] py-2 bg-[#191c3aad] rounded-lg flex items-center justify-center border-b border-b-gray-300">
             <MdAppSettingsAlt className="text-3xl " />
           </div>

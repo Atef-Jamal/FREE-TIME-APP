@@ -1,6 +1,12 @@
 import { IoMdSend } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { useState, useRef, SetStateAction } from "react";
+import {
+  useState,
+  useRef,
+  SetStateAction,
+  ChangeEvent,
+  FormEvent,
+} from "react";
 import { showPopup } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
@@ -30,7 +36,18 @@ const SendMessagePrivateChat = ({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
 
-  const sendMessage = async () => {
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const contentText = event.target;
+
+    inputRef.current!.style.height = "auto";
+    inputRef.current!.style.height = `${contentText.scrollHeight}px`;
+
+    setMessage(contentText.value);
+  };
+
+  const sendMessage = async (event: FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
     if (message.trim() === "") {
       dispatch(
         showPopup({
@@ -40,6 +57,7 @@ const SendMessagePrivateChat = ({
       );
       return;
     }
+
     const uniqeIdForRollback = (
       Math.random() * 1000000 +
       Date.now() +
@@ -54,13 +72,14 @@ const SendMessagePrivateChat = ({
       isRead: false,
       isSended: "PENDING",
     };
-    const event = new CustomEvent("immediatelyPrivateMessage", {
+    const customEvent = new CustomEvent("immediatelyPrivateMessage", {
       detail: { message: msg, recieverId: id },
     });
     if (conversationReaded === true) setConversationReaded(false);
-    document.dispatchEvent(event);
+    document.dispatchEvent(customEvent);
     setMessage("");
     inputRef.current?.focus();
+    inputRef.current!.style.height = "auto";
     try {
       const response = await makeRequest.post(`api/conversations/${id}`, {
         messageText: message,
@@ -101,23 +120,23 @@ const SendMessagePrivateChat = ({
   };
 
   return (
-    <div className="w-full flex items-center gap-3 sm:gap-1">
+    <form className="w-full flex items-end justify-between gap-3 sm:gap-1 px-1">
       <textarea
         ref={inputRef}
-        style={{ lineHeight: "1" }}
-        onChange={(e) => setMessage(e.target.value)}
+        style={{ lineHeight: "1", maxHeight: "300px" }}
+        onChange={handleChange}
         value={message}
-        className="ml-1 h-11 sm:h-9 outline-none rounded-md grow p-2  placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#a0bb9d] placeholder:tracking-wide sm:placeholder:text-sm sm:text-sm resize-none overflow-hidden"
+        rows={1}
+        className="outline-none rounded-md grow p-3 placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#a0bb9d] placeholder:tracking-wide sm:text-sm  resize-none overflow-scroll scrollbar-none"
         placeholder="Enter a message"
       />
       <button
-        id="private-chat-send-button"
-        className="bg-[#3c3b72] rounded-md flex items-center justify-center sm:px-3 px-5 py-3 sm:py-2 mr-1"
+        className="bg-[#3c3b72] rounded-md flex items-center justify-center py-2 sm:px-3 px-5"
         onClick={sendMessage}
       >
-        <IoMdSend className="text-xl sm:text-md" />
+        <IoMdSend className="text-2xl sm:text-[22px]" />
       </button>
-    </div>
+    </form>
   );
 };
 

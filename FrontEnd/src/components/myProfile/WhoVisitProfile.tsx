@@ -19,25 +19,26 @@ const WhoVisitProfile = () => {
 
   const handleShowWhoVisit = async () => {
     if (!currentUser) return;
-    setError("");
     setExpanded(true);
+
+    if (currentUser.points < 5) {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: "sorry, your points is not Enough",
+        })
+      );
+      setError("sorry, your points is not Enough");
+      return;
+    }
     setIsLoading(true);
     try {
-      if (currentUser.points < 5) {
-        dispatch(
-          showPopup({
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-        setError("your poits is Not Enough");
-        return;
-      }
       const response = await makeRequest.get("/api/users/who-visit-me/me");
       const data = response.data;
       dispatch(setCurrentUser({ ...currentUser, points: data.points }));
       setUsersVisitsMyProfile(data.users);
     } catch (error) {
+      console.log(error);
       setError(handleApiError(error));
       dispatch(
         showPopup({
@@ -49,7 +50,7 @@ const WhoVisitProfile = () => {
       setIsLoading(false);
     }
   };
-
+  console.log(error);
   return (
     <div className="w-[70%] sm:w-full mx-auto mt-3 flex flex-col items-center justify-center gap-2 pb-3">
       <div className="flex items-center justify-around xs:justify-center xs:flex-col xs:gap-2 w-full border-b border-gray-600 py-2">

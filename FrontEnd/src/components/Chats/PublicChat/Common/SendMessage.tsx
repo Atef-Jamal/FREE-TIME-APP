@@ -88,6 +88,7 @@ const SendMessage = ({
     document.dispatchEvent(customEvent);
     setMessage("");
     inputRef.current?.focus();
+    inputRef.current!.style.height = "auto";
     try {
       const response = await makeRequest.post("api/publicchat", {
         type: "MESSAGE",
@@ -133,7 +134,12 @@ const SendMessage = ({
     },
   });
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
+    const contentText = e.target;
+
+    inputRef.current!.style.height = "auto";
+    inputRef.current!.style.height = `${contentText.scrollHeight}px`;
+
+    setMessage(contentText.value);
     if (!somoneTyping) {
       setSomeOneTyping(true);
       socket?.emit("typing-public-message");
@@ -188,7 +194,7 @@ const SendMessage = ({
       <form
         className={`w-full ${
           !currentUser && " blur-sm"
-        } relative flex items-center justify-between gap-1`}
+        } relative flex items-end justify-between gap-1`}
       >
         <textarea
           ref={inputRef}
@@ -196,10 +202,11 @@ const SendMessage = ({
           readOnly={!currentUser}
           value={message}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
-          style={{ lineHeight: "1" }}
+          style={{ lineHeight: "1", maxHeight: "300px" }}
+          rows={1}
           className={`${
-            user ? "pl-[60px] pt-2 py-2" : "p-2"
-          } bg-[#2f3042a2] text-[#afc6e0] rounded-md border-none outline-none placeholder:text-gray-600 w-full resize-none h-10 overflow-hidden`}
+            user ? "pl-[60px] pt-3 py-3" : "p-3"
+          } bg-[#2f3042a2] text-[#afc6e0] rounded-md border-none outline-none placeholder:text-gray-600 w-full resize-none overflow-scroll scrollbar-none`}
         />
         {user && (
           <span
