@@ -4,20 +4,17 @@ import { calculateTimeLeft } from "../../utils/common";
 const Timer = ({
   date,
   setIsActive,
-  dayWhichTimmerIsLocated,
+  // dayWhichTimmerIsLocated,
   // setDayWhichTimmerIsLocated,
   handleUpdateNextTimerDay,
 }: {
   date: Date;
   dayWhichTimmerIsLocated: string | null;
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-  // setDayWhichTimmerIsLocated: React.Dispatch<
-  //   React.SetStateAction<string | null>
-  // >;
   handleUpdateNextTimerDay: () => void;
 }) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
-  const [helper, setHelper] = useState(false);
+  // const [helper, setHelper] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,20 +30,16 @@ const Timer = ({
       timeLeft.seconds === 0
     ) {
       setIsActive(true);
-      setHelper((prev) => !prev);
+      handleUpdateNextTimerDay();
+      // setHelper((prev) => !prev);
     }
   }, [timeLeft]);
 
-  useEffect(() => {
-    if (helper && dayWhichTimmerIsLocated) {
-      handleUpdateNextTimerDay();
-      // const copied = new Date(dayWhichTimmerIsLocated);
-      // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
-
-      // setDayWhichTimmerIsLocated(nextDay.toISOString());
-      // setDayWhichTimmerIsLocated("2024-06-08T00:00:00.000Z");
-    }
-  }, [helper]);
+  // useEffect(() => {
+  //   if (helper && dayWhichTimmerIsLocated) {
+  //     handleUpdateNextTimerDay();
+  //   }
+  // }, [helper]);
 
   return (
     <span className="flex items-center justify-center gap-1">

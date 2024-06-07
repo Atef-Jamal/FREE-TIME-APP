@@ -35,29 +35,13 @@ const DailyReward = () => {
   }, [currentUser?._id, currentAccountRequestFullfiled]);
 
   const handleUpdateNextTimerDay = () => {
-    // if (dayWhichTimmerIsLocated) {
-    // const copied = new Date(dayWhichTimmerIsLocated);
-    // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
-    // setDayWhichTimmerIsLocated(nextDay.toISOString());
-
     const addOneDay = new Date(
       new Date().setDate(new Date().getDate() + 2)
     ).toISOString();
     const datePart = addOneDay.split("T")[0];
     const nextTimerDay = datePart + "T00:00:00.000Z";
-    // console.log(currentUser?.dailyReward[3].availableAt);
-    // console.log(nextTimerDay);
     setDayWhichTimmerIsLocated(nextTimerDay);
-    // }
   };
-  // const addOneDay = new Date(
-  //   new Date().setDate(new Date().getDate() + 1)
-  // ).toISOString();
-  // const datePart = addOneDay.split("T")[0];
-  // const nextTimerDay = datePart + "T00:00:00.000Z";
-
-  // console.log(currentUser?.dailyReward[2].availableAt);
-  // console.log(nextTimerDay);
 
   return (
     <div className="flex flex-col gap-4 w-full">
