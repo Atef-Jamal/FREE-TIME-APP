@@ -217,14 +217,15 @@ const Message = ({
               <IoCloseCircleOutline className="mr-auto " />
             )}
             <button
-              onClick={() => reactToMessage("dislikes", "likes", "loves")}
-              className="flex items-center gap-1"
+              onClick={() => reactToMessage("loves", "dislikes", "likes")}
+              className="flex items-center gap-1 "
             >
-              <AiTwotoneDislike className="text-sm opacity-40" />
+              <FcLike className="text-sm opacity-70" />
               <span className="text-xs text-yellow-500 font-bold -mb-[2px]">
-                {dislikes.length || 0}
+                {loves.length || 0}
               </span>
             </button>
+            
             <button
               onClick={() => reactToMessage("likes", "dislikes", "loves")}
               className="flex items-center gap-1"
@@ -235,12 +236,12 @@ const Message = ({
               </span>
             </button>
             <button
-              onClick={() => reactToMessage("loves", "dislikes", "likes")}
-              className="flex items-center gap-1 "
+              onClick={() => reactToMessage("dislikes", "likes", "loves")}
+              className="flex items-center gap-1"
             >
-              <FcLike className="text-sm opacity-70" />
+              <AiTwotoneDislike className="text-sm opacity-40" />
               <span className="text-xs text-yellow-500 font-bold -mb-[2px]">
-                {loves.length || 0}
+                {dislikes.length || 0}
               </span>
             </button>
           </div>
@@ -258,11 +259,3 @@ const Message = ({
 };
 
 export default Message;
-
-// <div className={`${myMessage ? "gap-2" : ""} w-full flex items-center`}>
-// <Skeleton className="w-[30px] h-[30px]" />
-// <div className="max-w-[60%] flex flex-col gap-[6px] ml-2 ">
-//   <Skeleton className="w-[150px] h-[7px]" />
-//   <Skeleton className="w-[150px] h-[7px]" />
-// </div>
-// </div>
