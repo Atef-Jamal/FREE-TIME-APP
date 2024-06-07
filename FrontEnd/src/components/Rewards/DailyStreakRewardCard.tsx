@@ -106,6 +106,7 @@ const DailyStreakRewardCard = ({
             <Timer
               date={new Date(dayInfo.availableAt)}
               setIsActive={setIsActive}
+              dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
               setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
             />
           ) : (

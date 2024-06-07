@@ -5,9 +5,11 @@ import { calculateTimeLeft } from "../../utils/common";
 const Timer = ({
   date,
   setIsActive,
+  dayWhichTimmerIsLocated,
   setDayWhichTimmerIsLocated,
 }: {
   date: Date;
+  dayWhichTimmerIsLocated: string | null;
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setDayWhichTimmerIsLocated: React.Dispatch<
     React.SetStateAction<string | null>
@@ -36,11 +38,11 @@ const Timer = ({
   }, [timeLeft]);
 
   useEffect(() => {
-    if (helper) {
+    if (helper && dayWhichTimmerIsLocated) {
       // const nearestNextDay = currentUser?.dailyReward.find(
       //   (item) => item.availableAt > date.toISOString()
       // );
-      const copied = new Date(date);
+      const copied = new Date(dayWhichTimmerIsLocated);
       const nextDay = new Date(copied.setDate(copied.getDate() + 1));
 
       // if (nearestNextDay) {
