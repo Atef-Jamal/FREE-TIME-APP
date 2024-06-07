@@ -48,7 +48,12 @@ const DailyStreakRewardCard = ({
           week: response.data.week,
         })
       );
-      // setIsActive(false);
+      dispatch(
+        showPopup({
+          message: `successfully collect ${dayInfo.reward} points`,
+          type: "SUCESS",
+        })
+      );
     } catch (error) {
       console.log(error);
       dispatch(

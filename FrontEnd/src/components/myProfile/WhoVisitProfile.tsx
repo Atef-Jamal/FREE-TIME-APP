@@ -38,7 +38,6 @@ const WhoVisitProfile = () => {
       dispatch(setCurrentUser({ ...currentUser, points: data.points }));
       setUsersVisitsMyProfile(data.users);
     } catch (error) {
-      console.log(error);
       setError(handleApiError(error));
       dispatch(
         showPopup({
@@ -50,7 +49,7 @@ const WhoVisitProfile = () => {
       setIsLoading(false);
     }
   };
-  console.log(error);
+
   return (
     <div className="w-[70%] sm:w-full mx-auto mt-3 flex flex-col items-center justify-center gap-2 pb-3">
       <div className="flex items-center justify-around xs:justify-center xs:flex-col xs:gap-2 w-full border-b border-gray-600 py-2">

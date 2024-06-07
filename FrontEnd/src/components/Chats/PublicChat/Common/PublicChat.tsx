@@ -14,7 +14,6 @@ import FreeTime from "./FreeTime";
 
 const PublicChat = () => {
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
-  const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
   const [searchParams] = useSearchParams();
@@ -33,22 +32,6 @@ const PublicChat = () => {
   useListenToSocketEvent<TypePublicChatItem>({
     eventToListen: "public-message",
     onUpdate: handleAddNewMessage,
-  });
-
-  useListenToSocketEvent({
-    eventToListen: "typing-public-message",
-    onUpdate: () => {
-      if (!somoneTyping) {
-        setSomeOneTyping(true);
-      }
-    },
-  });
-
-  useListenToSocketEvent({
-    eventToListen: "stop-typing-public-message",
-    onUpdate: () => {
-      setSomeOneTyping(false);
-    },
   });
 
   useListenToDocumentEvent({
@@ -101,20 +84,11 @@ const PublicChat = () => {
         )}
         {messagesList}
       </div>
-      <div
-        className={`${
-          somoneTyping ? "opacity-100" : "opacity-0"
-        } w-[98%] mx-auto bg-[#25252ba4] transition-all text-xs xs:text-[10px] text-[#fd8f8f] tracking-wider`}
-      >
-        somone typing ...
-      </div>
       <div className="w-full">
         <SendMessage
-          somoneTyping={somoneTyping}
           stopScrolling={stopScrolling}
           setStopScrolling={setStopScrolling}
           setMessages={setMessages}
-          setSomeOneTyping={setSomeOneTyping}
         />
       </div>
     </>

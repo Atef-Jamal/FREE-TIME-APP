@@ -12,7 +12,10 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
 import { makeRequest } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
-import { useCloseMenuOnClickOutSideListener } from "../../../../hooks";
+import {
+  useCloseMenuOnClickOutSideListener,
+  useListenToSocketEvent,
+} from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 
@@ -20,16 +23,12 @@ interface typeProps {
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
   setMessages: React.Dispatch<React.SetStateAction<TypePublicChatItem[]>>;
-  somoneTyping: boolean;
-  setSomeOneTyping: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SendMessage = ({
   stopScrolling,
   setStopScrolling,
   setMessages,
-  somoneTyping,
-  setSomeOneTyping,
 }: typeProps) => {
   const { currentUser, socket, onlineUsers } = useAppSelector(
     (state) => state.stateManeger
@@ -38,6 +37,8 @@ const SendMessage = ({
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
+  const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
+
   const mentionListRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -165,21 +166,38 @@ const SendMessage = ({
     setOpenMentionList((prev) => !prev);
   }, []);
 
+  useListenToSocketEvent({
+    eventToListen: "typing-public-message",
+    onUpdate: () => {
+      if (!somoneTyping) {
+        setSomeOneTyping(true);
+      }
+    },
+  });
+
+  useListenToSocketEvent({
+    eventToListen: "stop-typing-public-message",
+    onUpdate: () => {
+      setSomeOneTyping(false);
+    },
+  });
+
   return (
-    <div className="relative w-full bg-[#0a071670] flex flex-col items-center p-2">
-      <span className="hidden sm:flex text-xs text-[#a2a345] -mt-1 mr-auto">
-        <RiBaseStationLine className="opacity-70" />
-        <span className="text-[#7ff349] mx-2">{onlineUsers.length}</span> Online
-        Now
-      </span>
-      {!currentUser && (
-        <div className="absolute w-full h-full left-0 flex items-center justify-center gap-4 text-md text-[#62f744] font-bold pr-4 ">
-          <span className="py-1 px-2 rounded-md bg-[#000000]">
-            <FcLock className="text-xl" />
-          </span>
-          SIGN IN TO UNLOCK
-        </div>
-      )}
+    <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">
+      <div className="flex items-center w-full">
+        <span className="hidden sm:flex items-center justify-center text-xs text-[#a2a345]">
+          <RiBaseStationLine className="opacity-70" />
+          <span className="text-[#7ff349] mx-1">{onlineUsers.length}</span>
+          Online Now
+        </span>
+        <span
+          className={`transition-all ${
+            somoneTyping ? "opacity-100" : "opacity-0"
+          } pl-3 text-xs text-[#f58585]`}
+        >
+          somone typing ...
+        </span>
+      </div>
       {openMentionList && (
         <div
           ref={mentionListRef}
@@ -191,10 +209,18 @@ const SendMessage = ({
           />
         </div>
       )}
+      {!currentUser && (
+        <div className="absolute z-[1] sm:top-5 top-1 w-full sm:h-[48px] h-[55px] flex sm:pt-1 sm:items-start items-center justify-center gap-4 text-lg font-bold">
+          <span className="py-1 px-2 rounded-md bg-[#000000]">
+            <FcLock className="text-xl" />
+          </span>
+          Sign Up To Unlock
+        </div>
+      )}
       <form
-        className={`w-full ${
-          !currentUser && " blur-sm"
-        } relative flex items-end justify-between gap-1`}
+        className={`${
+          !currentUser && "blur-sm"
+        } w-full relative flex items-end justify-between gap-1`}
       >
         <textarea
           ref={inputRef}
@@ -202,7 +228,7 @@ const SendMessage = ({
           readOnly={!currentUser}
           value={message}
           placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
-          style={{ lineHeight: "1", maxHeight: "300px" }}
+          style={{ lineHeight: "1", maxHeight: "250px" }}
           rows={1}
           className={`${
             user ? "pl-[60px] pt-3 py-3" : "p-3"
