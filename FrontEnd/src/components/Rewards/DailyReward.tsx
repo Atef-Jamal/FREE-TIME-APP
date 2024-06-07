@@ -34,6 +34,14 @@ const DailyReward = () => {
     }
   }, [currentUser?._id, currentAccountRequestFullfiled]);
 
+  const handleUpdateNextTimerDay = () => {
+    if (dayWhichTimmerIsLocated) {
+      const copied = new Date(dayWhichTimmerIsLocated);
+      const nextDay = new Date(copied.setDate(copied.getDate() + 1));
+      setDayWhichTimmerIsLocated(nextDay.toISOString());
+    }
+  };
+
   console.log(dayWhichTimmerIsLocated);
 
   return (
@@ -104,7 +112,8 @@ const DailyReward = () => {
                 key={item.day}
                 dayInfo={item}
                 dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+                // setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+                handleUpdateNextTimerDay={handleUpdateNextTimerDay}
               />
             ))}
 
@@ -130,7 +139,8 @@ const DailyReward = () => {
                     isCollected: false,
                   }}
                   dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-                  setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+                  // setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+                  handleUpdateNextTimerDay={handleUpdateNextTimerDay}
                 />
               );
             })}

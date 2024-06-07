@@ -5,14 +5,16 @@ const Timer = ({
   date,
   setIsActive,
   dayWhichTimmerIsLocated,
-  setDayWhichTimmerIsLocated,
+  // setDayWhichTimmerIsLocated,
+  handleUpdateNextTimerDay,
 }: {
   date: Date;
   dayWhichTimmerIsLocated: string | null;
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setDayWhichTimmerIsLocated: React.Dispatch<
-    React.SetStateAction<string | null>
-  >;
+  // setDayWhichTimmerIsLocated: React.Dispatch<
+  //   React.SetStateAction<string | null>
+  // >;
+  handleUpdateNextTimerDay: () => void;
 }) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
   const [helper, setHelper] = useState(false);
@@ -37,11 +39,12 @@ const Timer = ({
 
   useEffect(() => {
     if (helper && dayWhichTimmerIsLocated) {
+      handleUpdateNextTimerDay();
       // const copied = new Date(dayWhichTimmerIsLocated);
       // const nextDay = new Date(copied.setDate(copied.getDate() + 1));
 
       // setDayWhichTimmerIsLocated(nextDay.toISOString());
-      setDayWhichTimmerIsLocated("2024-06-08T00:00:00.000Z");
+      // setDayWhichTimmerIsLocated("2024-06-08T00:00:00.000Z");
     }
   }, [helper]);
 

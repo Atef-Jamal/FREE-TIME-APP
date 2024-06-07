@@ -15,14 +15,16 @@ interface TypeProps {
     isCollected: boolean;
   };
   dayWhichTimmerIsLocated: string | null;
-  setDayWhichTimmerIsLocated: React.Dispatch<
-    React.SetStateAction<string | null>
-  >;
+  // setDayWhichTimmerIsLocated: React.Dispatch<
+  //   React.SetStateAction<string | null>
+  // >;
+  handleUpdateNextTimerDay: () => void;
 }
 const DailyStreakRewardCard = ({
   dayInfo,
   dayWhichTimmerIsLocated,
-  setDayWhichTimmerIsLocated,
+  // setDayWhichTimmerIsLocated,
+  handleUpdateNextTimerDay,
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,7 +109,8 @@ const DailyStreakRewardCard = ({
               date={new Date(dayInfo.availableAt)}
               setIsActive={setIsActive}
               dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
-              setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+              // setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
+              handleUpdateNextTimerDay={handleUpdateNextTimerDay}
             />
           ) : (
             "Next"
