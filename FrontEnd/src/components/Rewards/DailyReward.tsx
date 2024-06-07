@@ -33,7 +33,8 @@ const DailyReward = () => {
     }
   }, [currentUser?._id, currentAccountRequestFullfiled]);
 
-  // console.log(dayWhichTimmerIsLocated);
+  console.log(dayWhichTimmerIsLocated);
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">

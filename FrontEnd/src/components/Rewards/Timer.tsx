@@ -41,7 +41,7 @@ const Timer = ({
       //   (item) => item.availableAt > date.toISOString()
       // );
       const copied = new Date(date);
-      const nextDay = new Date(copied.setDate(copied.getDay() + 3));
+      const nextDay = new Date(copied.setDate(copied.getDate() + 1));
 
       // if (nearestNextDay) {
       setDayWhichTimmerIsLocated(nextDay.toISOString());
