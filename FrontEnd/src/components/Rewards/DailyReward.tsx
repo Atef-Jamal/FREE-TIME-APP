@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
     useAppSelector((state) => state.stateManeger);
-
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<
     string | null
   >(null);
@@ -34,6 +33,7 @@ const DailyReward = () => {
     }
   }, [currentUser?._id, currentAccountRequestFullfiled]);
 
+  // console.log(dayWhichTimmerIsLocated);
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="relative rounded-lg h-[200px] overflow-hidden">
@@ -67,14 +67,16 @@ const DailyReward = () => {
           </Link>
         </div>
       </div>
-      <div className="flex flex-col bg-[#2C2C44] gap-4 p-5 rounded-md sm:p-4 xs:p-2 ">
-        <div className="flex justify-between items-center flex-wrap">
-          <p className="text-yellow-300 text-xl sm:text-lg lg:text-lg font-bold tracking-widest">
+      <div className="flex flex-col bg-[#2C2C44] gap-4 sm:gap-2 p-5 rounded-md sm:p-4 xs:p-2 ">
+        <div className="flex justify-between items-center gap-x-10 flex-wrap">
+          <p className="text-[#4cf871] text-xl sm:text-lg lg:text-lg font-bold tracking-wider">
             7 Day Streak Rewards
           </p>
-          <span className="text-yellow-300 text-xl sm:text-lg lg:text-lg font-bold  tracking-widest">
-            week : {currentUser?.week}
-          </span>
+          {currentUser && (
+            <span className="text-[#4cf871] text-xl sm:text-lg lg:text-lg font-bold  tracking-widest">
+              week : {currentUser?.week}
+            </span>
+          )}
         </div>
         <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
           Earn 1,000 <span className="text-sm">or more</span> coins{" "}

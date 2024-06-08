@@ -113,15 +113,6 @@ const DailyStreakRewardCard = ({
           )}
         </button>
       ) : undefined}
-      {/* {active && (
-        <button
-          ref={btnRef}
-          onClick={handleUpdate}
-          className="hidden border text-xs"
-        >
-          Click
-        </button>
-      )} */}
     </div>
   );
 };
