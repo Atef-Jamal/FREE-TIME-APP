@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { calculateTimeLeft } from "../../utils/common";
-// import { useAppSelector } from "../../context/Hooks";
 
 const Timer = ({
   date,
@@ -15,7 +14,6 @@ const Timer = ({
     React.SetStateAction<string | null>
   >;
 }) => {
-  // const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
   const [helper, setHelper] = useState(false);
 
@@ -39,24 +37,11 @@ const Timer = ({
 
   useEffect(() => {
     if (helper && dayWhichTimmerIsLocated) {
-      // const nearestNextDay = currentUser?.dailyReward.find(
-      //   (item) => item.availableAt > date.toISOString()
-      // );
       const copied = new Date(dayWhichTimmerIsLocated);
       const nextDay = new Date(copied.setDate(copied.getDate() + 1));
-
-      // if (nearestNextDay) {
       setDayWhichTimmerIsLocated(nextDay.toISOString());
-      // }
     }
   }, [helper]);
-
-  // console.log("old", new Date(date.setHours(0, 0, 0, 0)));
-  // console.log(
-  //   "new",
-  //   new Date(new Date(copied.setDate(copied.getDay() + 3)).setHours(0, 0, 0, 0))
-  // );
-  // console.log(date.toISOString());
 
   return (
     <span className="flex items-center justify-center gap-1">

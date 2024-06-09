@@ -6,41 +6,33 @@ import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
-import {
-  // useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
     useAppSelector((state) => state.stateManeger);
 
-  const today = new Date();
-  const nearstNexttDay = currentUser!.dailyReward.find(
-    (item) => new Date(item.availableAt) > today
-  );
-
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<
     string | null
-  >(nearstNexttDay?.availableAt || null);
+  >(null);
 
-  // useEffect(() => {
-  //   const today = new Date();
-  //   const nearstNexttDay = currentUser?.dailyReward.find(
-  //     (item) => new Date(item.availableAt) > today
-  //   );
-  //   if (currentUser && nearstNexttDay) {
-  //     setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
-  //   }
-  //   if (currentAccountRequestFullfiled && !currentUser) {
-  //     const nextDay = new Date(
-  //       new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-  //         new Date().getDay() + 3
-  //       )
-  //     ).toISOString();
-  //     setDayWhichTimmerIsLocated(nextDay);
-  //   }
-  // }, [currentUser?._id, currentAccountRequestFullfiled]);
+  useEffect(() => {
+    const today = new Date();
+    const nearstNexttDay = currentUser?.dailyReward.find(
+      (item) => new Date(item.availableAt) > today
+    );
+    if (currentUser && nearstNexttDay) {
+      setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
+    }
+    if (currentAccountRequestFullfiled && !currentUser) {
+      const nextDay = new Date(
+        new Date(new Date().setHours(0, 0, 0, 0)).setDate(
+          new Date().getDay() + 3
+        )
+      ).toISOString();
+      setDayWhichTimmerIsLocated(nextDay);
+    }
+  }, [currentUser?._id, currentAccountRequestFullfiled]);
 
   console.log(dayWhichTimmerIsLocated);
 
@@ -101,17 +93,11 @@ const DailyReward = () => {
               : "grid-cols-3 lg:grid-cols-2"
           }  sm:grid-cols-3 xs:grid-cols-2`}
         >
-          {!currentAccountRequestFullfiled && (
-            <>
-              <DailyStreakRewardCardSkeleton />
-              <DailyStreakRewardCardSkeleton />
-              <DailyStreakRewardCardSkeleton />
-              <DailyStreakRewardCardSkeleton />
-              <DailyStreakRewardCardSkeleton />
-              <DailyStreakRewardCardSkeleton />
-              <DailyStreakRewardCardSkeleton />
-            </>
-          )}
+          {!currentAccountRequestFullfiled &&
+            [...Array(7).keys()].map((item) => (
+              <DailyStreakRewardCardSkeleton key={item} />
+            ))}
+
           {currentAccountRequestFullfiled &&
             currentUser?.dailyReward.map((item) => (
               <DailyStreakRewardCard
@@ -121,6 +107,7 @@ const DailyReward = () => {
                 setDayWhichTimmerIsLocated={setDayWhichTimmerIsLocated}
               />
             ))}
+
           {currentAccountRequestFullfiled &&
             !currentUser &&
             [...Array(7).keys()].map((item) => {
