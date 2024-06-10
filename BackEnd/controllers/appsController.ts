@@ -3,8 +3,9 @@ import Task from "../models/task";
 import User from "../models/user";
 import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
-import { io, onLineUsers } from "../app";
+import { io } from "../app";
 import AppsReview from "../models/appsReview";
+import { onLineUsers } from "../socketIo/socketIo";
 
 export const getAllApps = async (req: Request, res: Response) => {
   const filter = req.query.filter || "ALL";

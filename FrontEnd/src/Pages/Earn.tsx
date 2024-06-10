@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect, useRef, useState } from "react";
-import { SiApple, SiFirewalla } from "react-icons/si";
+import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop, IoFilter } from "react-icons/io5";
 import { DiAndroid } from "react-icons/di";
@@ -9,11 +9,9 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
 import { Helmet } from "react-helmet-async";
-import { FaHeart, FaStar } from "react-icons/fa";
 import { TypeFilterQuery } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
-import { VscExpandAll } from "react-icons/vsc";
-import { useCloseMenuOnClickOutSideListener, useFetchAllApps } from "../hooks";
+import { useFetchAllApps } from "../hooks";
 import AppDetail from "../components/Earn/AppDetail";
 import AppSkeleton from "../components/Earn/AppSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
@@ -21,14 +19,13 @@ import AppCard from "../components/Earn/AppCard";
 import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import SearchBar from "../components/Search/SearchBar";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCaretDown } from "react-icons/fa6";
-import { CgClose } from "react-icons/cg";
 import { useSearchParams } from "react-router-dom";
+import FilterByDeviceMenu from "../components/Earn/FilterByDeviceMenu";
+import FilteringMenu from "../components/Earn/FilteringMenu";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
-
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
@@ -37,9 +34,6 @@ const Earn = () => {
   const [appId, setAppId] = useState<string | null>(null);
   const [filterQuery, setFilterQuery] = useState<TypeFilterQuery>("ALL");
   const [searchParams] = useSearchParams();
-
-  const deviceMenuRef = useRef<HTMLDivElement>(null);
-  const filterMenuRef = useRef<HTMLDivElement>(null);
 
   const allDevicesRef = useRef<HTMLDivElement>(null);
   const desktopRef = useRef<HTMLDivElement>(null);
@@ -85,16 +79,6 @@ const Earn = () => {
       setAppId(appIdFromUrlSearchParam);
     }
   }, [searchParams, apps]);
-
-  useCloseMenuOnClickOutSideListener({
-    menuRef: filterMenuRef,
-    onClose: () => setOpenFilterMenu(false),
-  });
-
-  useCloseMenuOnClickOutSideListener({
-    menuRef: deviceMenuRef,
-    onClose: () => setSelectDevice(false),
-  });
 
   const selectApp = () => {
     setTranslate("-translate-x-[0%]");
@@ -145,7 +129,7 @@ const Earn = () => {
               <span className="mr-1 text-[#bedf65]">EARN</span> ON
             </span>
             <div
-              ref={deviceMenuRef}
+              // ref={deviceMenuRef}
               onClick={() => setSelectDevice((prev) => !prev)}
               className="flex items-center justify-center gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4 cursor-pointer"
             >
@@ -155,92 +139,17 @@ const Earn = () => {
               <FaCaretDown className="text-lg ml-auto" />
             </div>
           </div>
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className={`transition-shadow ${
-              selectDevice
-                ? "border border-[#3c4053] p-2 xs:p-1"
-                : "overflow-hidden p-0 h-0"
-            } sm:relative ml-auto absolute right-0 z-[1] w-[200px] xs:w-full bg-[#161033] rounded-md mt-1 flex flex-col items-center justify-center cursor-pointer`}
-          >
-            <div
-              ref={allDevicesRef}
-              onClick={(e) => activeFilteringItem(e, "ALL")}
-              className={` w-full flex items-center justify-between p-2 sm:p-1  rounded-sm`}
-            >
-              <div className="flex items-center gap-3">
-                <GiHamburgerMenu className="text-lg" />
-
-                <span className="text-gray-400">ALL DEVICES</span>
-              </div>
-              <span
-                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
-              >
-                <span
-                  className={`${
-                    filterQuery === "ALL" && "bg-[#43da63]"
-                  } w-full h-full rounded-full`}
-                ></span>
-              </span>
-            </div>
-            <div
-              ref={desktopRef}
-              onClick={(e) => activeFilteringItem(e, "DESKTOP")}
-              className={` w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
-            >
-              <div className="flex items-center gap-3">
-                <IoDesktop className="text-lg" />
-                <span className="text-gray-400">DESKTOP</span>
-              </div>
-              <span
-                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
-              >
-                <span
-                  className={`${
-                    filterQuery === "DESKTOP" && "bg-[#43da63]"
-                  } w-full h-full rounded-full`}
-                ></span>
-              </span>
-            </div>
-            <div
-              ref={androidRef}
-              onClick={(e) => activeFilteringItem(e, "ANDROID")}
-              className={`w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
-            >
-              <div className="flex items-center gap-3">
-                <DiAndroid className="text-lg" />
-                <span className="text-gray-400">ANDROID</span>
-              </div>
-              <span
-                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
-              >
-                <span
-                  className={`${
-                    filterQuery === "ANDROID" && "bg-[#43da63]"
-                  } w-full h-full rounded-full`}
-                ></span>
-              </span>
-            </div>
-            <div
-              ref={macRef}
-              onClick={(e) => activeFilteringItem(e, "MAC")}
-              className={` w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
-            >
-              <div className="flex items-center gap-3">
-                <SiApple className="text-lg" />
-                <span className="text-gray-400">MAC</span>
-              </div>
-              <span
-                className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
-              >
-                <span
-                  className={`${
-                    filterQuery === "MAC" && "bg-[#43da63]"
-                  } w-full h-full rounded-full`}
-                ></span>
-              </span>
-            </div>
-          </div>
+          {selectDevice && (
+            <FilterByDeviceMenu
+              allDevicesRef={allDevicesRef}
+              androidRef={androidRef}
+              desktopRef={desktopRef}
+              macRef={macRef}
+              filterQuery={filterQuery}
+              setSelectDevice={setSelectDevice}
+              activeFilteringItem={activeFilteringItem}
+            />
+          )}
         </div>
         <div className="relative w-[60%] gap-2 sm:w-full ">
           <div className="flex xs:flex-col items-center gap-2 justify-between">
@@ -252,7 +161,7 @@ const Earn = () => {
             </div>
             <div
               onClick={() => setOpenFilterMenu((prev) => !prev)}
-              ref={filterMenuRef}
+              // ref={filterMenuRef}
               className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2 sm:gap-1 cursor-pointer"
             >
               <IoFilter />
@@ -265,48 +174,14 @@ const Earn = () => {
             </div>
           </div>
           {openFilterMenu && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="sm:relative absolute top-9 sm:top-0 right-0 z-[2] w-[300px] xs:w-full h- ml-auto mt-2 p-1 border border-gray-700 bg-[#2f2f38] flex flex-col rounded-md cursor-pointer"
-            >
-              <span
-                onClick={() => setOpenFilterMenu(false)}
-                className="absolute top-0 right-0  rounded-sm ml-auto p-2"
-              >
-                <CgClose className="text-xl" />
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "ALL")}
-                ref={allRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <VscExpandAll className="text-lg" />
-                All
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "REWARD")}
-                ref={heighestRewardRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <SiFirewalla className="text-lg" />
-                Highest Reward
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "POPULAR")}
-                ref={popularRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <FaHeart className="text-lg" />
-                Most Popular
-              </span>
-              <span
-                onClick={(e) => activeFilteringItem(e, "RAITING")}
-                ref={heighestRatingRef}
-                className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
-              >
-                <FaStar className="text-lg" /> Highest Rating
-              </span>
-            </div>
+            <FilteringMenu
+              allRef={allRef}
+              activeFilteringItem={activeFilteringItem}
+              setOpenFilterMenu={setOpenFilterMenu}
+              heighestRatingRef={heighestRatingRef}
+              popularRef={popularRef}
+              heighestRewardRef={heighestRewardRef}
+            />
           )}
         </div>
       </div>

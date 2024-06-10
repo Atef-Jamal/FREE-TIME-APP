@@ -1,19 +1,26 @@
 import mongoose from "mongoose";
+import { generateNewWeekRewards } from "../utils";
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is Required"],
+      minlength: [3, "Name must be at least 3 characters long"],
+      maxlength: [18, "Name cannot be longer than 18 characters"],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is Required"],
     },
     email: {
       type: String,
       unique: true,
-      required: true,
+      required: [true, "Email is Required"],
+      match: [
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+        "Please provide a valid Email address",
+      ],
     },
     profilePicture: {
       type: String,
@@ -35,74 +42,7 @@ const userSchema = new mongoose.Schema(
     week: { type: Number, default: 1 },
     dailyReward: {
       type: Array,
-      default: [
-        {
-          day: 1,
-          reward: 50,
-          availableAt: new Date(new Date().setHours(0, 0, 0, 0)),
-          isCollected: false,
-        },
-        {
-          day: 2,
-          reward: 100,
-          availableAt: new Date(
-            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-              new Date().getDate() + 1
-            )
-          ),
-          isCollected: false,
-        },
-        {
-          day: 3,
-          reward: 150,
-          availableAt: new Date(
-            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-              new Date().getDate() + 2
-            )
-          ),
-          isCollected: false,
-        },
-        {
-          day: 4,
-          reward: 200,
-          availableAt: new Date(
-            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-              new Date().getDate() + 3
-            )
-          ),
-          isCollected: false,
-        },
-        {
-          day: 5,
-          reward: 250,
-          availableAt: new Date(
-            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-              new Date().getDate() + 4
-            )
-          ),
-          isCollected: false,
-        },
-        {
-          day: 6,
-          reward: 300,
-          availableAt: new Date(
-            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-              new Date().getDate() + 5
-            )
-          ),
-          isCollected: false,
-        },
-        {
-          day: 7,
-          reward: 350,
-          availableAt: new Date(
-            new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-              new Date().getDate() + 6
-            )
-          ),
-          isCollected: false,
-        },
-      ],
+      default: [],
     },
     emailVerified: {
       type: Boolean,
@@ -140,6 +80,14 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", function (next) {
+  if (this.isNew) {
+    const newWeek = generateNewWeekRewards();
+    this.dailyReward = newWeek;
+  }
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 export default User;

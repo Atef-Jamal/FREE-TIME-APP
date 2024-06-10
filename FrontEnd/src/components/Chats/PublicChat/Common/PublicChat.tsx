@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useListenToDocumentEvent,
-  useListenToSocketEvent,
+  useListenToSocketEvents,
 } from "../../../../hooks/listenersHooks";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { useScrollToElement } from "../../../../hooks/commonHooks";
@@ -29,9 +29,9 @@ const PublicChat = () => {
 
   useScrollToElement([messages], "end", "messageId");
 
-  useListenToSocketEvent<TypePublicChatItem>({
-    eventToListen: "public-message",
-    onUpdate: handleAddNewMessage,
+  useListenToSocketEvents({
+    eventToListen: ["public-message"],
+    onUpdate: [handleAddNewMessage],
   });
 
   useListenToDocumentEvent({
@@ -78,9 +78,7 @@ const PublicChat = () => {
       <div className="w-full h-full px-2 sm:px-1 pb-2 sm:pb-1 flex flex-col items-center gap-[5px] overflow-y-scroll sm:scrollbar-none transition-all">
         {loading && <Spinner className="m-auto w-12 h-12 border-[4px]" />}
         {error && (
-          <div className="m-auto w-full text-center text-gray-400">
-            {error}an eror
-          </div>
+          <div className="m-auto w-full text-center text-gray-400">{error}</div>
         )}
         {messagesList}
       </div>

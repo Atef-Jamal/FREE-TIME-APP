@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
-import egypt from "../../assets/images/eg.svg";
 import { crown, verifiedImage } from "../../assets";
 import { useAppSelector } from "../../context/Hooks";
 import { Link } from "react-router-dom";
@@ -9,11 +8,8 @@ import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../../components/Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
-import {
-  useCloseMenuOnClickOutSideListener,
-  useFetchAllUsers,
-  useListenToSocketEvent,
-} from "../../hooks";
+import { useFetchAllUsers, useListenToSocketEvents } from "../../hooks";
+import LangMenu from "./LangMenu";
 
 const LiveStats = () => {
   const { currentUser, onlineUsers } = useAppSelector(
@@ -25,16 +21,6 @@ const LiveStats = () => {
     null
   );
   const [toggleLanguage, setToggleLanguage] = useState(false);
-  const langRef = useRef<HTMLDivElement>(null);
-
-  const languages = [
-    { title: "Global", lang: "en" },
-    { title: "Egypt", lang: "ar" },
-  ];
-
-  const handleAddUser = (newUser: User) => {
-    setUsers((prev) => [...prev, newUser]);
-  };
 
   const sorted = [...users].sort((a, b) => {
     const aIsOnline = onlineUsers.includes(a._id);
@@ -55,32 +41,26 @@ const LiveStats = () => {
     }
   });
 
-  useListenToSocketEvent<User>({
-    eventToListen: "user-updated",
-    onUpdate: (updatedUser) => {
-      setUsers((prevUsers) => {
-        const newArr = prevUsers.map((userItem) => {
-          if (userItem._id === updatedUser._id) {
-            return updatedUser;
-          } else {
-            return userItem;
-          }
-        });
-        return newArr;
+  const handleAddUser = (newUser: User) => {
+    setUsers((prev) => [...prev, newUser]);
+  };
+
+  const handlUpdateUser = (updatedUser: User) => {
+    setUsers((prevUsers) => {
+      const newArr = prevUsers.map((userItem) => {
+        if (userItem._id === updatedUser._id) {
+          return updatedUser;
+        } else {
+          return userItem;
+        }
       });
-    },
-  });
+      return newArr;
+    });
+  };
 
-  useListenToSocketEvent<User>({
-    eventToListen: "new-user-joined",
-    onUpdate: handleAddUser,
-  });
-
-  useCloseMenuOnClickOutSideListener({
-    menuRef: langRef,
-    onClose: () => {
-      setToggleLanguage(false);
-    },
+  useListenToSocketEvents({
+    eventToListen: ["new-user-joined", "user-updated"],
+    onUpdate: [handleAddUser, handlUpdateUser],
   });
 
   useEffect(() => {
@@ -97,38 +77,11 @@ const LiveStats = () => {
     <div className={`flex w-full`}>
       <div
         onClick={() => setToggleLanguage(!toggleLanguage)}
-        ref={langRef}
         className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md my-1 relative"
       >
         <MdLanguage />
         <IoIosArrowDown />
-        {toggleLanguage && (
-          <div className="select__languages absolute top-[60px] lg:top-[64px] sm:top-[45px] left-3 sm:left-1 z-[10s0] rounded-md w-56 sm:w-40  bg-[#33334d] flex flex-col justify-center py-1">
-            {languages.map((item) => (
-              <button
-                key={item.lang}
-                onClick={(e) => e.stopPropagation()}
-                className="flex gap-4 items-center hover:bg-slate-500 py-1 pl-2"
-              >
-                {item.title === "Global" ? (
-                  <MdLanguage className="xs:text-sm text-xl" />
-                ) : (
-                  <img
-                    alt={""}
-                    src={egypt}
-                    className="xs:w-4 xs:h-4 w-5 h-5 rounded-full"
-                  />
-                )}
-                <span className="xs:text-xs font-[500] text-gray-300">
-                  {item.title}
-                </span>
-                <span className="text-xs font-[500] text-gray-300">
-                  ( {item.lang.toUpperCase()} )
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
+        {toggleLanguage && <LangMenu />}
       </div>
       <div className=" flex items-center gap-2 xs:gap-[6px] overflow-scroll scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
         {loading && <LiveStatsSkeleton />}

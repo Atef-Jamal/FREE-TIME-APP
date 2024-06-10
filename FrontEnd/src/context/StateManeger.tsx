@@ -17,7 +17,7 @@ const initialState: TypeInitialState = {
     message: "",
   },
   openRegisterForm: false,
-  isChatOpen: false,
+  isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")) || false,
   isSignInMode: false,
   openSidebarMobile: false,
   resizeSidebare: window.innerWidth < 1300 ? true : false,

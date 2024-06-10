@@ -11,6 +11,7 @@
 
 @layer base {
   html {
+    font-size: medium;
     font-family: "poppins", system-ui, sans-serif;
   }
 }

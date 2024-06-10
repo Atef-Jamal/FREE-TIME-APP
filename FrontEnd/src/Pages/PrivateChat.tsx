@@ -9,20 +9,19 @@ import {
   TypeConversation,
   TypePrivateMessage,
 } from "../types/privateChatTypes";
-import { useListenToSocketEvent } from "../hooks";
+import { useListenToSocketEvents } from "../hooks";
 import { makeRequest } from "../utils";
 import { useSearchParams } from "react-router-dom";
 
 const PrivateChat = () => {
   const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
     useAppSelector((state) => state.stateManeger);
+  const [searchParams] = useSearchParams();
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const [conversations, setConversations] = useState<TypeConversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<string | null>(
     null
   );
-
-  const [searchParams] = useSearchParams();
 
   const secondPartyId = searchParams.get("chat-with");
 
@@ -112,14 +111,9 @@ const PrivateChat = () => {
     }
   }, []);
 
-  useListenToSocketEvent<User>({
-    eventToListen: "new-user-joined",
-    onUpdate: handleAddNewUser,
-  });
-
-  useListenToSocketEvent<TypePrivateMessage>({
-    eventToListen: "private-message",
-    onUpdate: handleNewPrivateMessage,
+  useListenToSocketEvents({
+    eventToListen: ["new-user-joined", "private-message"],
+    onUpdate: [handleAddNewUser, handleNewPrivateMessage],
     dependencies: [activeConversation],
   });
 

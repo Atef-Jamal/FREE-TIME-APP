@@ -12,12 +12,14 @@ import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
 import { TypeBounusCode } from "../types/rewardsTypes";
 import { useScrollToElement } from "../hooks/commonHooks";
+import { useTranslation } from "react-i18next";
 
 const Rewards = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
+  const { t } = useTranslation("rewards");
   const dispatch = useAppDispatch();
 
   useScrollToElement();
@@ -94,7 +96,7 @@ const Rewards = () => {
             {loading ? (
               <Spinner className="w-6 h-6 border-[3px] mx-auto border-b-blue-800 border-l-blue-800" />
             ) : (
-              "Bonus Code"
+              t("Bonus Code")
             )}
           </span>
         </button>

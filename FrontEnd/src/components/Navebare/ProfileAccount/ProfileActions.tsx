@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import {
   showPopup,
@@ -16,10 +16,7 @@ import UserImage from "../../Others/UserImage";
 import ProfileMenu from "../../Navebare/ProfileAccount/ProfileMenu";
 import NotificationMenu from "../../Navebare/Notifications/NotificationMenu";
 import { TypeNotifications } from "../../../types/notificationTypes";
-import {
-  useCloseMenuOnClickOutSideListener,
-  useListenToSocketEvent,
-} from "../../../hooks";
+import { useListenToSocketEvents } from "../../../hooks";
 import { FaPlus } from "react-icons/fa6";
 
 const ProfileActions = () => {
@@ -29,7 +26,6 @@ const ProfileActions = () => {
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [notifications, setNotifications] = useState<TypeNotifications[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -61,21 +57,14 @@ const ProfileActions = () => {
     notifySound.play();
   };
 
-  const handleCloseProfileMenu = () => setOpenProfileMenu(false);
-
   useEffect(() => {
     if (!currentUser) return;
     fetchNotifications();
   }, [currentUser?._id]);
 
-  useListenToSocketEvent<TypeNotifications>({
-    eventToListen: "new-notification",
-    onUpdate: handleAddNewNotification,
-  });
-
-  useCloseMenuOnClickOutSideListener({
-    menuRef: profileMenuRef,
-    onClose: handleCloseProfileMenu,
+  useListenToSocketEvents({
+    eventToListen: ["new-notification"],
+    onUpdate: [handleAddNewNotification],
   });
 
   return (
@@ -104,7 +93,6 @@ const ProfileActions = () => {
           </div>
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
-            ref={profileMenuRef}
             className="w-[55%] h-full bg-[#3a3e58b7] flex items-center justify-around rounded-md "
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
@@ -115,10 +103,7 @@ const ProfileActions = () => {
             </span>
             <BsArrowDown className="sm:text-sm" />
             {openProfileMenu && (
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="bg-[#32324c] absolute top-[60px] sm:top-12 right-7 sm:right-4 w-[65%] rounded-lg"
-              >
+              <div className="bg-[#32324c] absolute top-[60px] sm:top-12 right-7 sm:right-4 w-[65%] rounded-lg">
                 <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
               </div>
             )}

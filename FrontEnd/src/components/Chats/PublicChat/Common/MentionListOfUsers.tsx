@@ -2,6 +2,8 @@ import { useAppSelector } from "../../../../context/Hooks";
 import { User } from "../../../../types/userTypes";
 import { useFetchAllUsers } from "../../../../hooks";
 import Spinner from "../../../Others/Spinner";
+import { useCloseMenuOnClickOutSide } from "../../../../hooks";
+import { useRef } from "react";
 
 interface TypeProps {
   setUser: React.Dispatch<
@@ -13,6 +15,13 @@ interface TypeProps {
 const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const { users, loading, error } = useFetchAllUsers();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = () => {
+    setOpenMentionList(false);
+  };
+
+  useCloseMenuOnClickOutSide({ menuRef, handleClose });
 
   if (!currentUser) {
     return;
@@ -20,6 +29,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
 
   return (
     <div
+      ref={menuRef}
       onClick={() => setOpenMentionList(false)}
       className="bg-[#141a36] w-full h-full flex flex-col items-center p-1 gap-1 overflow-auto scrollbar-thin"
     >

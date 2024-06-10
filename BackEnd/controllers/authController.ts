@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
-import { io, onLineUsers } from "../app";
+import { io } from "../app";
 import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import fs from "fs";
+import { onLineUsers } from "../socketIo/socketIo";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;

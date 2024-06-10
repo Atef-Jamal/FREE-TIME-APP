@@ -2,13 +2,14 @@ import { useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { showPopup, toggleThisEntity } from "../../context/StateManeger";
+import { useAppDispatch } from "../../context/Hooks";
+import { showPopup } from "../../context/StateManeger";
 import Input from "../Navebare/Registration/Input";
 import { handleApiError } from "../../utils/common";
+import { useTranslation } from "react-i18next";
 
 const HeroSection = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const { t } = useTranslation("home");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
@@ -39,36 +40,25 @@ const HeroSection = () => {
         } flex flex-col items-start justify-center sm:items-center gap-2 sm:gap-1`}
       >
         <h1 className="w-full text-center text-6xl sm:text-4xl font-bold text-[#af5a5a] mb-4">
-          Get Paid For
+          {t("getPaidFor")}
         </h1>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          opening up bank accounts
+          {t("openBank")}
         </p>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          Refer Your Friends through your Referrer Link
-          {currentUser && (
-            <button
-              onClick={() =>
-                dispatch(
-                  toggleThisEntity({ entity: "openRegisterForm", value: true })
-                )
-              }
-              className="ml-1 text-[#54b360] underline text-xl sm:text-sm"
-            >
-              Sign up to get your owen Link
-            </button>
-          )}
+          {t("referYour")}
         </p>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          complete Tasks and apps, offers and much more
+          {t("completeTasks")}
         </p>
         <p className="w-full text-center text-lg sm:text-xs text-[#95afff]">
-          Earn up to <span className="text-red-400 text-xs">$2.05</span> per
-          offer 20 Offers available
+          {t("earnUp")}
+          {/* <span className="text-red-400 text-xs">$2.05</span> per
+          offer 20 Offers available */}
         </p>
-        <p className="w-full text-center text-lg  sm:text-xs text-[#95afff]">
+        {/* <p className="w-full text-center text-lg  sm:text-xs text-[#95afff]">
           See our 33,225 reviews on Trustpilot
-        </p>
+        </p> */}
         <div className="w-full text-center flex items-center justify-center gap-1 rounded-sm mb-6">
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />

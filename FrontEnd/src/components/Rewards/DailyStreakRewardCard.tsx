@@ -6,6 +6,7 @@ import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
+import { useTranslation } from "react-i18next";
 
 interface TypeProps {
   dayInfo: {
@@ -24,6 +25,7 @@ const DailyStreakRewardCard = ({
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation("rewards");
   const [, setRefresh] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -81,15 +83,15 @@ const DailyStreakRewardCard = ({
       <div className="flex items-center justify-center w-full gap-3">
         <BsClockHistory className="text-4xl" />
         <span className="text-[#c9c6c6] text-xl sm:text-lg font-bold">
-          Day {dayInfo.day}
+          {t("Day")} {dayInfo.day}
         </span>
       </div>
       <div className="w-full flex items-center justify-center flex-wrap gap-3 text-[#aec94f] text-xl xl:text-base font-bold ">
-        Reward : <span className="text-[#aec94f]">{dayInfo.reward}</span>
+        {t("Reward")} : <span className="text-[#aec94f]">{dayInfo.reward}</span>
       </div>
       {dayInfo.isCollected ? (
         <button className="w-full py-1 bg-[#170e27]  font-bold rounded-md">
-          Collected
+          {t("Collected")}
         </button>
       ) : undefined}
 
@@ -101,7 +103,7 @@ const DailyStreakRewardCard = ({
           {isLoading ? (
             <Spinner className="mx-auto w-6 h-6 border-b-blue-950 border-r-blue-950" />
           ) : (
-            "Collect"
+            t("Collect")
           )}
         </button>
       ) : undefined}
@@ -114,7 +116,7 @@ const DailyStreakRewardCard = ({
               handleUpdateNextTimerDay={handleUpdateNextTimerDay}
             />
           ) : (
-            "Next"
+            t("Next")
           )}
         </button>
       ) : undefined}

@@ -12,7 +12,10 @@ const DisktopChat = () => {
   return (
     <div className="relative flex flex-col items-center bg-[#241f31c0] h-full w-full">
       <span
-        onClick={() => dispatch(toggleThisEntity({ entity: "isChatOpen" }))}
+        onClick={() => {
+          dispatch(toggleThisEntity({ entity: "isChatOpen" }));
+          localStorage.setItem("isDesktopChatOpen", !isChatOpen ? "open" : "");
+        }}
         className="w-10 h-10 absolute top-[7%] -left-[42px] bg-[#513d80f8] rounded-sm flex items-center justify-center cursor-pointer"
       >
         {isChatOpen ? (

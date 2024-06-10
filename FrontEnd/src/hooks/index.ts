@@ -4,8 +4,8 @@ import {
 } from "./chatsHooks";
 import { useFetchAllApps, useFetchTaskApp } from "./appsHooks";
 import {
-  useListenToSocketEvent,
-  useCloseMenuOnClickOutSideListener,
+  useListenToSocketEvents,
+  useCloseMenuOnClickOutSide,
 } from "./listenersHooks";
 import { useFetchFrames } from "./framesHooks";
 import {
@@ -20,11 +20,11 @@ export {
   useFetchUser,
   useFetchActivities,
   useFetchMusics,
-  useCloseMenuOnClickOutSideListener,
+  useCloseMenuOnClickOutSide,
   useFetchPublicMessages,
   useFetchPrivateChatMessages,
   useFetchAllApps,
   useFetchTaskApp,
   useFetchFrames,
-  useListenToSocketEvent,
+  useListenToSocketEvents,
 };

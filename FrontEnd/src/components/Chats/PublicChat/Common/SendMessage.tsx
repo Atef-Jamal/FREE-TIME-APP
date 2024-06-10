@@ -12,10 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
 import { makeRequest } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
-import {
-  useCloseMenuOnClickOutSideListener,
-  useListenToSocketEvent,
-} from "../../../../hooks";
+import { useListenToSocketEvents } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 
@@ -39,7 +36,7 @@ const SendMessage = ({
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
 
-  const mentionListRef = useRef<HTMLDivElement>(null);
+  // const menuRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
 
@@ -128,12 +125,6 @@ const SendMessage = ({
     }
   };
 
-  useCloseMenuOnClickOutSideListener({
-    menuRef: mentionListRef,
-    onClose: () => {
-      setOpenMentionList(false);
-    },
-  });
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const contentText = e.target;
 
@@ -166,20 +157,18 @@ const SendMessage = ({
     setOpenMentionList((prev) => !prev);
   }, []);
 
-  useListenToSocketEvent({
-    eventToListen: "typing-public-message",
-    onUpdate: () => {
-      if (!somoneTyping) {
-        setSomeOneTyping(true);
-      }
-    },
-  });
+  const handleTyping = () => {
+    if (!somoneTyping) {
+      setSomeOneTyping(true);
+    }
+  };
+  const handleStopTyping = () => {
+    setSomeOneTyping(false);
+  };
 
-  useListenToSocketEvent({
-    eventToListen: "stop-typing-public-message",
-    onUpdate: () => {
-      setSomeOneTyping(false);
-    },
+  useListenToSocketEvents({
+    eventToListen: ["typing-public-message", "stop-typing-public-message"],
+    onUpdate: [handleTyping, handleStopTyping],
   });
 
   return (
@@ -199,10 +188,7 @@ const SendMessage = ({
         </span>
       </div>
       {openMentionList && (
-        <div
-          ref={mentionListRef}
-          className="absolute -top-[152px] left-2 w-[95%] h-[150px] border border-gray-500"
-        >
+        <div className="absolute -top-[152px] left-2 w-[95%] h-[150px] border border-gray-500">
           <MentionListOfUsers
             setUser={setUser}
             setOpenMentionList={setOpenMentionList}

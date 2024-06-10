@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import PublicMessage from "../models/publicMessage";
 import Notification from "../models/notification";
-import { io, onLineUsers } from "../app";
+import { io } from "../app";
+import { onLineUsers } from "../socketIo/socketIo";
 
 export const getAllPublicMessages = async (_: Request, res: Response) => {
   try {

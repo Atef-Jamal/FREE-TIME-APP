@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import User from "../models/user";
-import { io, onLineUsers } from "../app";
+import { io } from "../app";
 import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
+import { onLineUsers } from "../socketIo/socketIo";
 
 export const buySong = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;

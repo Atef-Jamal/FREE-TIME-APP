@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../../components/Others/UserImage";
 import { makeRequest } from "../../../../utils";
 import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
-import { useListenToSocketEvent } from "../../../../hooks";
+import { useListenToSocketEvents } from "../../../../hooks";
 import { User } from "../../../../types/userTypes";
 import { formateDate, handleApiError } from "../../../../utils/common";
 import { verifiedImage } from "../../../../assets";
@@ -75,6 +75,7 @@ const Message = ({
       setIsDeleting(false);
     }
   };
+
   const reactToMessage = async (
     fieldName: TypeFieldName,
     otherFieldOne: TypeFieldName,
@@ -122,11 +123,13 @@ const Message = ({
       );
     }
   };
+
   const handleUpdateMessage = (updatedMessage: TypePublicChatMessage) => {
     if (updatedMessage._id === _id) {
       setMessageItem(updatedMessage);
     }
   };
+
   const handleUpdateUser = (updatedUser: User) => {
     if (sender._id === updatedUser._id) {
       setMessageItem((prevMessageItem) => ({
@@ -136,14 +139,9 @@ const Message = ({
     }
   };
 
-  useListenToSocketEvent<TypePublicChatMessage>({
-    eventToListen: "interact-with-public-message",
-    onUpdate: handleUpdateMessage,
-  });
-
-  useListenToSocketEvent<User>({
-    eventToListen: "user-updated",
-    onUpdate: handleUpdateUser,
+  useListenToSocketEvents({
+    eventToListen: ["interact-with-public-message", "user-updated"],
+    onUpdate: [handleUpdateMessage, handleUpdateUser],
   });
 
   return (

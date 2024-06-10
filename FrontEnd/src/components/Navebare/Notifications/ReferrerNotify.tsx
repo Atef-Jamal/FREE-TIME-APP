@@ -55,7 +55,6 @@ const ReferrerNotify = ({
       setIsLoading(false);
     }
   };
-
   const date = formateDate(createdAt);
 
   return (
@@ -86,7 +85,7 @@ const ReferrerNotify = ({
         <button
           onClick={collect}
           disabled={isLoading}
-          className="text-sm bg-[#53ec68ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto"
+          className="text-white bg-[#01D676] text-sm  w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto"
         >
           {isLoading ? (
             <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />

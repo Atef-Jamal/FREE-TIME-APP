@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import {
-  setOnlineUsers,
-  setSocet,
-  showPopup,
-  toggleThisEntity,
-} from "../context/StateManeger";
+import { showPopup, toggleThisEntity } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import Model from "../components/Others/Model";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -17,7 +11,6 @@ import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
 import OpenPopup from "../components/Others/OpenPopup";
 import { Helmet } from "react-helmet-async";
-import { useListenToSocketEvent } from "../hooks";
 import MusicPlayer from "../components/Music/MusicPlayer";
 
 const Layout = () => {
@@ -37,26 +30,6 @@ const Layout = () => {
 
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
-
-  const handleUpdateOnlineUsers = (data: string[]) => {
-    const filtered = data.filter((userId) => userId !== "undefined");
-    dispatch(setOnlineUsers(filtered));
-  };
-
-  useEffect(() => {
-    const establishSocetConnection = () => {
-      const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-        query: { userId: currentUser?._id },
-      });
-      dispatch(setSocet(socket));
-    };
-    establishSocetConnection();
-  }, [currentUser?._id]);
-
-  useListenToSocketEvent<string[]>({
-    eventToListen: "online-users",
-    onUpdate: handleUpdateOnlineUsers,
-  });
 
   useEffect(() => {
     if (refQuery && !currentUser && currentAccountRequestFullfiled) {

@@ -8,7 +8,7 @@ import "./index.css";
 import LoadingWebsite from "./components/Others/LoadingWebsite";
 import "@fontsource/poppins";
 import "@fontsource/roboto";
-
+import "./i18next";
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(

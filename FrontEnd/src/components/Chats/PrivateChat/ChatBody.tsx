@@ -14,11 +14,11 @@ import {
   TypeConversation,
   TypePrivateMessage,
 } from "../../../types/privateChatTypes";
+import { useFetchPrivateChatMessages } from "../../../hooks";
 import {
-  useFetchPrivateChatMessages,
-  useListenToSocketEvent,
-} from "../../../hooks";
-import { useListenToDocumentEvent } from "../../../hooks/listenersHooks";
+  useListenToDocumentEvent,
+  useListenToSocketEvents,
+} from "../../../hooks/listenersHooks";
 import { showPopup } from "../../../context/StateManeger";
 import { handleApiError } from "../../../utils/common";
 import { makeRequest } from "../../../utils";
@@ -28,6 +28,9 @@ import { TypeConversationSocketData } from "../../../types/othersTypes";
 interface TypeProps {
   activeConversation: string;
   setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
+}
+interface TypeImmediatelyMessage {
+  detail: { message: TypePrivateMessage; recieverId: string };
 }
 
 const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
@@ -95,32 +98,22 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
     }
   };
 
-  const handleAddMessage = useCallback(
-    (data: { detail: { message: TypePrivateMessage; recieverId: string } }) => {
-      setMessages((prev) => [...prev, data.detail.message]);
-    },
-    []
-  );
+  const handleAddMessage = (data: TypeImmediatelyMessage) => {
+    setMessages((prev) => [...prev, data.detail.message]);
+  };
 
   const scrollToLastMessage = useCallback(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  useListenToSocketEvent<TypePrivateMessage>({
-    eventToListen: "private-message",
-    onUpdate: handleNewPrivateMessage,
+  useListenToSocketEvents({
+    eventToListen: ["private-message", "conversation-readed", "user-updated"],
+    onUpdate: [
+      handleNewPrivateMessage,
+      handleConversationReaded,
+      handleUpdateUser,
+    ],
     dependencies: [activeConversation],
-  });
-
-  useListenToSocketEvent<TypeConversationSocketData>({
-    eventToListen: "conversation-readed",
-    onUpdate: handleConversationReaded,
-    dependencies: [activeConversation],
-  });
-
-  useListenToSocketEvent<User>({
-    eventToListen: "user-updated",
-    onUpdate: handleUpdateUser,
   });
 
   useListenToDocumentEvent({

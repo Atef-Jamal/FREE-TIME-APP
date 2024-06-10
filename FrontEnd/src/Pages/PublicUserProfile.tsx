@@ -14,7 +14,7 @@ import { PublicUserProfileSkeleton } from "../components/PublicUserProfile/Publi
 import {
   useFetchActivities,
   useFetchUser,
-  useListenToSocketEvent,
+  useListenToSocketEvents,
 } from "../hooks";
 import { User } from "../types/userTypes";
 import { verifiedImage } from "../assets";
@@ -42,9 +42,9 @@ const PublicUserProfile = () => {
     }
   };
 
-  useListenToSocketEvent<User>({
-    eventToListen: "user-updated",
-    onUpdate: handleUpdateUser,
+  useListenToSocketEvents({
+    eventToListen: ["user-updated"],
+    onUpdate: [handleUpdateUser],
     dependencies: [id],
   });
 

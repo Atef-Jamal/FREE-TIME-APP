@@ -1,12 +1,16 @@
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { crown } from "../../assets";
-import TopWinsLast24Hours from "./TopWinsLast24Hours"
+import TopWinsLast24Hours from "./TopWinsLast24Hours";
+import { useTranslation } from "react-i18next";
 
 const Ladder = () => {
+  const { t } = useTranslation("rewards");
   return (
     <div className="flex flex-col gap-10 py-6 px-4 lg:px-2 bg-[#2C2C44] w-[42%] max-w-[800px] rounded-lg sm:w-full">
       <div className="flex gap-2">
-        <h1 className="text-green-400 font-bold text-xl">Daily Bonus Laddar</h1>
+        <h1 className="text-green-400 font-bold text-xl">
+          {t("Daily Bonus Laddar")}
+        </h1>
 
         <IoIosHelpCircleOutline />
       </div>
@@ -75,28 +79,28 @@ const Ladder = () => {
       </div>
       <div className="flex gap-4 lg:gap-2 justify-center items-center bg-[#242438] py-4">
         <button className="bg-[#01D676] rounded-md text-white px-6 text-sm lg:px-4 py-2">
-          Double or 0
+          {t("Double or 0")}
         </button>
         <button className="bg-[#01D676] rounded-md text-white px-8 text-sm lg:px-4 py-2">
-          Claim 10
+          {t("Claim 10")}
         </button>
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <span className="text-xs ">Level 0</span>
-          <span className="text-xs ">Level 1</span>
+          <span className="text-xs ">{t("Level 0")}</span>
+          <span className="text-xs ">{t("Level 1")}</span>
         </div>
         <div className="relative reach__level w-full h-3 bg-[#242438] rounded-lg"></div>
         <div className="flex justify-between px-5 mt-[-6px]">
           <span className="text-xs text-yellow-200 ml-1">10</span>
           <span className="text-[10px]">
-            Reach level 1 to Double or Claim your first daily reward{" "}
+            {t("Reach level 1 to Double or Claim your first daily reward")}
           </span>
           <span className="text-xs">10</span>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center bg-[#242438]  py-8 gap-6 ">
-        <h1 className="text-sm">Top Wins Last 24 Hours</h1>
+        <h1 className="text-sm">{t("Top Wins Last 24 Hours")}</h1>
         <div className="flex gap-2 w-full px-2 ">
           <TopWinsLast24Hours name={"John"} money={"22,963"} color={"one"} />
           <TopWinsLast24Hours name={"Max"} money={"22,963"} color={"two"} />

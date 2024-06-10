@@ -5,6 +5,8 @@ import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
 import { MdContactSupport } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
+import { useRef } from "react";
+import { useCloseMenuOnClickOutSide } from "../../../hooks";
 
 interface ProfilTypeProp {
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,6 +14,7 @@ interface ProfilTypeProp {
 
 const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
+  const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
   const handleLogOut = async () => {
@@ -24,8 +27,13 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
     dispatch(toggleThisEntity({ entity: "hiddenLiveStats" }));
   };
 
+  const handleClose = () => {
+    setOpenProfileMenu(false);
+  };
+  useCloseMenuOnClickOutSide({ menuRef, handleClose });
+
   return (
-    <div className="py-2">
+    <div ref={menuRef} className="py-2">
       <Link
         to={"myprofile"}
         onClick={() => setOpenProfileMenu((previos) => !previos)}

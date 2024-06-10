@@ -1,22 +1,28 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../context/Hooks";
 
-export const useListenToSocketEvent = <T>({
+type HandleUpdate = (arg: any) => void;
+
+export const useListenToSocketEvents = ({
   eventToListen,
   onUpdate,
   dependencies = [],
 }: {
-  eventToListen: string;
-  onUpdate: (arg: T) => void;
+  eventToListen: string[];
+  onUpdate: HandleUpdate[];
   dependencies?: any[];
 }) => {
   const { socket } = useAppSelector((state) => state.stateManeger);
 
   useEffect(() => {
     if (socket) {
-      socket.on(eventToListen, onUpdate);
+      for (let index = 0; index < eventToListen.length; index++) {
+        socket.on(eventToListen[index], onUpdate[index]);
+      }
       return () => {
-        socket.off(eventToListen, onUpdate);
+        for (let index = 0; index < eventToListen.length; index++) {
+          socket.off(eventToListen[index], onUpdate[index]);
+        }
       };
     }
   }, [socket, ...dependencies]);
@@ -37,24 +43,28 @@ export const useListenToDocumentEvent = <T>({
   }, dependencies);
 };
 
-export const useCloseMenuOnClickOutSideListener = ({
+export const useCloseMenuOnClickOutSide = ({
   menuRef,
-  onClose,
+  handleClose,
 }: {
   menuRef: React.RefObject<HTMLElement>;
-  onClose: () => void;
+  handleClose: () => void;
 }) => {
-  const handleClose = useCallback(
-    (event: MouseEvent) => {
-      if (!menuRef.current?.contains(event.target as Node)) {
-        onClose();
-      }
-    },
-    [menuRef, onClose]
-  );
+  const [initialRender, setInitialRender] = useState(false);
 
   useEffect(() => {
-    document.addEventListener("click", handleClose);
-    return () => document.removeEventListener("click", handleClose);
-  }, [handleClose]);
+    if (initialRender) {
+      const handleClick = (e: any) => {
+        if (!menuRef.current?.contains(e.target)) {
+          handleClose();
+        }
+      };
+      document.addEventListener("click", handleClick);
+      return () => document.removeEventListener("click", handleClick);
+    }
+  }, [initialRender]);
+
+  useEffect(() => {
+    setInitialRender(true);
+  }, []);
 };

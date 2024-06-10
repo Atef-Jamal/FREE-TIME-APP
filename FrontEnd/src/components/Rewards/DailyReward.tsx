@@ -7,6 +7,7 @@ import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
@@ -15,6 +16,7 @@ const DailyReward = () => {
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<
     string | null
   >(null);
+  const { t } = useTranslation("rewards");
 
   useEffect(() => {
     const today = new Date();
@@ -57,39 +59,43 @@ const DailyReward = () => {
         />
         <div className="absolute flex flex-col gap-3 w-[95%] xs:w-[90%] mt-5 xs:mx-2 mx-5">
           <p className="text-white text-xl lg:text-sm font-bold tracking-wider ">
-            The Most Rewarding Affiliate System in The Mareket is Now Live!
+            {t(
+              "The Most Rewarding Affiliate System in The Mareket is Now Live!"
+            )}
           </p>
           <p className="text-white lg:text-sm tracking-wider">
-            Earn Up to
+            {t("Earn Up to")}
             <span className="text-yellow-400 ">30% Commission!</span>
           </p>
           <p className="text-sm lg:text-xs sm:text-[#99a1ce]">
-            Git Your Friend A Free time and Earn Up to 30% Commission From What
-            They Earn
+            {t(
+              "Git Your Friend A Free time and Earn Up to 30% Commission From What They Earn"
+            )}
           </p>
           <Link
             to={"/affiliates"}
             className="w-[200px] bg-[#87ec8ec7] text-black rounded-md font-bold  py-1 text-center"
           >
-            Go To Affiliate Page
+            {t("Go To Affiliate Page")}
           </Link>
         </div>
       </div>
       <div className="flex flex-col bg-[#2C2C44] gap-4 sm:gap-2 p-5 rounded-md sm:p-4 xs:p-2 ">
         <div className="flex justify-between items-center gap-x-10 flex-wrap">
           <p className="text-[#4cf871] text-xl sm:text-lg lg:text-lg font-bold tracking-wider">
-            7 Day Streak Rewards
+            {t("7 Day Streak Rewards")}
           </p>
           {currentUser && (
             <span className="text-[#4cf871] text-xl sm:text-lg lg:text-lg font-bold  tracking-widest">
-              week : {currentUser?.week}
+              {t("week")} : {currentUser?.week}
             </span>
           )}
         </div>
         <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
-          Earn 1,000 <span className="text-sm">or more</span> coins{" "}
+          {t("Earn 1,000 or more points within 24 hours to keep you streak")}
+          {/* Earn 1,000 <span className="text-sm">or more</span> coins{" "}
           <span className="text-sm">within </span> 24 hours{" "}
-          <span className="text-sm">to keep you streak</span>
+          <span className="text-sm">to keep you streak</span> */}
         </p>
         <div
           id="daily-reward"
@@ -137,7 +143,7 @@ const DailyReward = () => {
         </div>
         <div className="flex items-center gap-2 text-orange-400 text-sm bg-[#a5a5a425] px-4 py-2 rounded-md">
           <MdOutlineGppMaybe className="min-w-fit h-8 opacity-70" />
-          Earn 1000 more coins today to keep your streak! Time left d
+          {t("Earn 1000 more coins today to keep your streak! Time left")}
         </div>
       </div>
       <div className="flex items-center gap-4 flex-wrap sm:flex-col overflow-hidden">
@@ -148,10 +154,10 @@ const DailyReward = () => {
 
           <div className="w-[68%] flex flex-col items-center justify-center gap-1 ">
             <span className=" text-[#b3ddb1] font-bold ">
-              Follow Us On Twitter
+              {t("Follow Us On Twitter")}
             </span>
             <button className="text-black bg-[#87ec8ed0] rounded-sm w-full border border-gray-400 flex items-center justify-center font-bold ml-auto">
-              Claim Coins
+              {t("Claim Points")}
             </button>
           </div>
         </div>
@@ -161,9 +167,11 @@ const DailyReward = () => {
           </div>
 
           <div className="w-[68%] flex flex-col items-center gap-1  ">
-            <span className=" text-[#b3ddb1] font-bold ">Download Our App</span>
+            <span className=" text-[#b3ddb1] font-bold ">
+              {t("Download Our App")}
+            </span>
             <button className="text-black bg-[#87ec8ed0] rounded-sm w-full border border-gray-400 flex items-center justify-center  font-bold ">
-              Download For Coins
+              {t("Download For Points")}
             </button>
           </div>
         </div>

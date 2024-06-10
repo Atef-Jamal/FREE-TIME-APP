@@ -1,8 +1,12 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import "./App.css";
 import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
+import io from "socket.io-client";
+import { setOnlineUsers, setSocet } from "./context/StateManeger";
+import { useListenToSocketEvents } from "./hooks";
 import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
 import LoadingWebsite from "./components/Others/LoadingWebsite";
+import { useAppDispatch, useAppSelector } from "./context/Hooks";
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
 const Earn = lazy(() => import("./Pages/Earn"));
@@ -175,6 +179,30 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const dispatch = useAppDispatch();
+
+  const handleUpdateOnlineUsers = (data: string[]) => {
+    const filtered = data.filter((userId) => userId !== "undefined");
+    dispatch(setOnlineUsers(filtered));
+  };
+
+  useListenToSocketEvents({
+    eventToListen: ["online-users"],
+    onUpdate: [handleUpdateOnlineUsers],
+  });
+
+  useEffect(() => {
+    const establishSocetConnection = () => {
+      const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
+        query: { userId: currentUser?._id },
+      });
+      dispatch(setSocet(socket));
+      return () => socket.close();
+    };
+    establishSocetConnection();
+  }, [currentUser?._id]);
+
   return <RouterProvider router={router} />;
 };
 
