@@ -35,7 +35,7 @@ const UploadImage = ({ formData, setFormData }: TypeProps) => {
   return (
     <div
       onClick={handleClick}
-      className="w-[150px] h-[120px] lg:w-[120px] lg:h-[80px]"
+      className="w-[150px] h-[150px] lg:w-[100px] lg:h-[100px]"
     >
       <input
         ref={inputRef}

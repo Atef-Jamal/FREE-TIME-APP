@@ -71,6 +71,7 @@ const PublicChat = () => {
   useEffect(() => {
     const element = messageContainerRef.current;
     let timeout: NodeJS.Timeout;
+    let cleanSearchParamTimeout: NodeJS.Timeout;
     const handleFunc = () => {
       if (!element) return;
       clearTimeout(timeout);
@@ -82,11 +83,14 @@ const PublicChat = () => {
           setStopScrolling(true);
         } else {
           if (queryParam) {
-            setSearchParams((prev) => {
-              prev.delete("messageId");
-              return prev;
-            });
-            setElement(null);
+            clearTimeout(cleanSearchParamTimeout);
+            cleanSearchParamTimeout = setTimeout(() => {
+              setSearchParams((prev) => {
+                prev.delete("messageId");
+                return prev;
+              });
+              setElement(null);
+            }, 500);
           }
           setStagingMessages(0);
           setStopScrolling(false);
@@ -98,6 +102,7 @@ const PublicChat = () => {
     return () => {
       messageContainerRef.current?.removeEventListener("scroll", handleFunc);
       clearTimeout(timeout);
+      clearTimeout(cleanSearchParamTimeout);
     };
   }, []);
 

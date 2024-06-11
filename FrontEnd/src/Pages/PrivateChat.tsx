@@ -100,12 +100,12 @@ const PrivateChat = () => {
 
   useEffect(() => {
     fetchAllConversations();
-    if (secondPartyId) {
+    if (secondPartyId && secondPartyId !== currentUser?._id) {
       setActiveConversation(secondPartyId);
       localStorage.setItem("active-converstaion", secondPartyId);
     } else {
       const savedSecondPartyId = localStorage.getItem("active-converstaion");
-      if (savedSecondPartyId) {
+      if (savedSecondPartyId && savedSecondPartyId !== currentUser?._id) {
         setActiveConversation(savedSecondPartyId);
       }
     }

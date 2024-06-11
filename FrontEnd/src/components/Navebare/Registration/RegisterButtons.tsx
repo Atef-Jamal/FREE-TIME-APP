@@ -8,7 +8,7 @@ const RegisterButtons = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="h-full flex items-center gap-2 overflow-scroll scrollbar-none">
+    <div className="h-full flex items-center gap-2 xs:gap-1 overflow-scroll scrollbar-none">
       <button
         onClick={() => {
           dispatch(

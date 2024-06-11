@@ -57,7 +57,7 @@ const People = ({
               {date}
             </span>
           )) || (
-            <span className="text-xs font-bold text-gray-400 ml-1">
+            <span className="text-xs xs:text-[9px] font-bold text-gray-400 ml-1">
               -- : --
             </span>
           )}
@@ -69,11 +69,8 @@ const People = ({
         ) : undefined}
       </div>
       <span className="text-gray-400 text-xs font-400 tracking-wide overflow-hidden h-6 truncate w-[265px] xl:w-[175px]">
-        {(convInfo.lastMessage && convInfo.lastMessage.message) || (
-          <span className="text-gray-400 text-xs font-400 tracking-wide overflow-hidden h-6 truncate w-[265px] xl:w-[175px] mx-auto">
-            Start Chating With ${convInfo.secondParty.name}
-          </span>
-        )}
+        {(convInfo.lastMessage && convInfo.lastMessage.message) ||
+          ` Start Chating With ${convInfo.secondParty.name}`}
       </span>
     </div>
   );
