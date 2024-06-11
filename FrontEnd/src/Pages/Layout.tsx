@@ -9,7 +9,7 @@ import Footer from "../components/Footer/Footer";
 import DisktopChat from "../components/Chats/PublicChat/DisktopChat/DisktopChat";
 import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
-import OpenPopup from "../components/Others/OpenPopup";
+import ToastNotify from "../components/Others/ToastNotify";
 import { Helmet } from "react-helmet-async";
 import MusicPlayer from "../components/Music/MusicPlayer";
 
@@ -30,6 +30,8 @@ const Layout = () => {
 
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
+
+  const isMobile = window.innerWidth <= 867;
 
   useEffect(() => {
     if (refQuery && !currentUser && currentAccountRequestFullfiled) {
@@ -64,7 +66,23 @@ const Layout = () => {
     }
   }, [redirectQuery]);
 
-  const isMobile = window.innerWidth <= 867;
+  useEffect(() => {
+    const handleNetworkOnline = () => {
+      dispatch(showPopup({ message: "Back online", type: "SUCESS" }));
+    };
+    const handleNetworkOffline = () => {
+      dispatch(
+        showPopup({ message: "No internet connection", type: "ERROR_GENERAL" })
+      );
+    };
+
+    window.addEventListener("online", handleNetworkOnline);
+    window.addEventListener("offline", handleNetworkOffline);
+    return () => {
+      window.removeEventListener("online", handleNetworkOnline);
+      window.removeEventListener("offline", handleNetworkOffline);
+    };
+  }, []);
 
   return (
     <div className="w-full">
@@ -81,7 +99,7 @@ const Layout = () => {
         >
           <MusicPlayer />
         </div>
-        <OpenPopup />
+        <ToastNotify />
       </div>
       <div className="flex flex-1">
         <div

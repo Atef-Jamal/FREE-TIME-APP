@@ -211,4 +211,6 @@ export const useScrollToElement = (
       element?.removeEventListener("click", handleRemoveAnimation);
     };
   }, [element]);
+
+  return { setElement };
 };

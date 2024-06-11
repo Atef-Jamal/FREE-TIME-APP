@@ -6,9 +6,9 @@ import { IoLockClosed } from "react-icons/io5";
 import Spinner from "./Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 
-const OpenPopup = () => {
+const ToastNotify = () => {
   const {
-    openPopup: { type, message },
+    ToastNotify: { type, message },
   } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
 
@@ -44,4 +44,4 @@ const OpenPopup = () => {
   );
 };
 
-export default OpenPopup;
+export default ToastNotify;

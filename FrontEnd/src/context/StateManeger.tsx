@@ -12,7 +12,7 @@ const initialState: TypeInitialState = {
   currentUserIsLoading: false,
   currentAccountRequestFullfiled: false,
   openNotification: false,
-  openPopup: {
+  ToastNotify: {
     type: null,
     message: "",
   },
@@ -76,8 +76,8 @@ const StateManegerSlice = createSlice({
     },
 
     showPopup(state, action: PayloadAction<TypePopup>) {
-      state.openPopup.message = action.payload.message;
-      state.openPopup.type = action.payload.type;
+      state.ToastNotify.message = action.payload.message;
+      state.ToastNotify.type = action.payload.type;
     },
     openModel(
       state,
@@ -91,8 +91,8 @@ const StateManegerSlice = createSlice({
       state.model.children = null;
     },
     resetPopup(state) {
-      state.openPopup.type = null;
-      state.openPopup.message = null;
+      state.ToastNotify.type = null;
+      state.ToastNotify.message = null;
     },
     handleAddMusic(state, action: PayloadAction<TypeMusicInfo>) {
       state.activeMusic.audio.src = action.payload.musicSrc;

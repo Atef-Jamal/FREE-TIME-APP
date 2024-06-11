@@ -35,15 +35,14 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
+  // const [searchParams, setSearchParams] = useSearchParams();
 
-  // const menuRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
 
   const handleSendMessage = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!currentUser) return;
-
     if (message.trim() === "") {
       dispatch(
         showPopup({
@@ -57,7 +56,9 @@ const SendMessage = ({
       setSomeOneTyping(false);
       socket?.emit("stop-typing-public-message");
     }
+
     setLoading(true);
+
     if (stopScrolling) {
       setStopScrolling(false);
     }
