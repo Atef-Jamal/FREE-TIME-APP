@@ -75,16 +75,16 @@ const PublicChat = () => {
         ) {
           setStopScrolling(true);
         } else {
-          if (queryParam) {
+          setStagingMessages(0);
+          setStopScrolling(false);
+        }
+        if (queryParam) {
             setSearchParams((prev) => {
               prev.delete("messageId");
               return prev;
             });
             setElement(null);
           }
-          setStagingMessages(0);
-          setStopScrolling(false);
-        }
       }, 700);
     };
 
