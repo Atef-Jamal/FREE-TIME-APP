@@ -63,12 +63,6 @@ const PublicChat = () => {
   };
 
   useEffect(() => {
-    if (!stopScrolling && !queryParam) {
-      scrollToLastMessage();
-    }
-  }, [messages]);
-
-  useEffect(() => {
     const element = messageContainerRef.current;
     let timeout: NodeJS.Timeout;
     const handleFunc = () => {
@@ -126,6 +120,12 @@ const PublicChat = () => {
     });
   }, [messages]);
 
+  useEffect(() => {
+    if (!stopScrolling && !queryParam) {
+      scrollToLastMessage();
+    }
+  }, [messages]);
+
   return (
     <>
       <div
@@ -142,7 +142,7 @@ const PublicChat = () => {
         {stagingMessages > 0 && (
           <button
             onClick={scrollToLastMessage}
-            className="absolute -top-[40px] px-2 py-1 bg-[#1564d1ee] text-sm sm:text-xs  rounded-full font-bold tracking-wider flex items-center justify-center gap-1"
+            className="absolute -top-[30px] px-2 py-1 bg-[#1564d1ee] text-sm sm:text-xs  rounded-full font-bold tracking-wider flex items-center justify-center gap-1"
           >
             <FaArrowDownLong />
             {stagingMessages} new Message{stagingMessages > 1 ? "s" : ""}
