@@ -40,25 +40,23 @@ const HeroSection = () => {
         } flex flex-col items-start justify-center sm:items-center gap-2 sm:gap-1`}
       >
         <h1 className="w-full text-center text-6xl sm:text-4xl font-bold text-[#af5a5a] mb-4">
-          {t("getPaidFor")}
+          {t("Get Paid For")}
         </h1>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          {t("openBank")}
+          {t("Opening Bank Account")}
         </p>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          {t("referYour")}
+          {t("Refer Your Friend Through your Referal Link")}
         </p>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          {t("completeTasks")}
+          {t("complete Tasks and apps, offers and much more")}
         </p>
         <p className="w-full text-center text-lg sm:text-xs text-[#95afff]">
-          {t("earnUp")}
-          {/* <span className="text-red-400 text-xs">$2.05</span> per
-          offer 20 Offers available */}
+          {t(
+            "Earn up to $2.05 per offer 20 Offers available See our 33,225 reviews on Trustpilot"
+          )}
         </p>
-        {/* <p className="w-full text-center text-lg  sm:text-xs text-[#95afff]">
-          See our 33,225 reviews on Trustpilot
-        </p> */}
+
         <div className="w-full text-center flex items-center justify-center gap-1 rounded-sm mb-6">
           <FaStar className="bg-red-300  w-6 h-6" />
           <FaStar className="bg-red-300  w-6 h-6" />

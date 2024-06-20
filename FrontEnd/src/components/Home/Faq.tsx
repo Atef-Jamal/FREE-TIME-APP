@@ -19,11 +19,15 @@ const Faq = () => {
         >
           <div className="flex gap-2 items-center cursor-pointer pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
-            <p className="text-white xs:text-[14px]  ">{t("HowToMakeMoney")}</p>
+            <p className="text-white xs:text-[14px]  ">
+              {t("How to make money on Freetime")}
+            </p>
           </div>
           <div className={"h-0 px-4 transition-all bg-[rgb(44,16,51)]"}>
             <p className="pb-4 text-sm tracking-wide">
-              {t("freeTimeWorkingTogther")}
+              {t(
+                "Freetime.com works together with companies that want to advertise their apps, surveys and products. A task could be: Download an app and reach level 5 within 2 days to earn 4000 coins. To get started choose an offer or survey. We can recommend the featured offers at the top of the Earn page. These tasks are very simple and many people have already successfully completed them in the past . After you have completed a task you will get coins. 1000 coins equal $1.00. You can cashout the coins for PayPal, VISA cards, Bitcoin, CS:GO Skins Amazon gift cards and multiple other types of gift cards"
+              )}
             </p>
           </div>
         </div>
@@ -33,12 +37,16 @@ const Faq = () => {
         >
           <div className="flex gap-2 items-center cursor-pointer  pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
-            <p className="text-white xs:text-[14px]  ">{t("howisFreetime")}</p>
+            <p className="text-white xs:text-[14px]  ">
+              {t("How is Freetime able to pay users")}
+            </p>
           </div>
 
           <div className={"h-0 px-4 transition-all bg-[#2c1033]"}>
             <p className="pb-4 text-sm tracking-wide">
-              {t("usersCompleteTasksFrom")}
+              {t(
+                "Users complete tasks from advertisers Advertisers provide various tasks for users, including downloading an app, signing up for a website, watching videos, reaching a certain in-game level and much more. Advertisers pay Freetime for promotion For every completed task, advertisers pay Freetime a commission. Freetime sends user payouts After completing all task requirements, Freetime will send the user a payout"
+              )}
             </p>
           </div>
         </div>
@@ -49,13 +57,15 @@ const Faq = () => {
           <div className="flex gap-2 items-center cursor-pointer  pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
             <p className="text-white xs:text-[14px]  ">
-              {t("howMuchMoenyCan")}
+              {t("How much money can you really earn on Freetime")}
             </p>
           </div>
 
           <div className={"h-0 px-4 transition-all bg-[#2c1033]"}>
             <p className="pb-4 text-sm tracking-wide">
-              {t("itIsEasyPossible")}
+              {t(
+                "It is easily possible to earn more than $100 per month on Freetime, some users even reach $1000+ each month. You can check out the Leaderboard to see how much the most active Freetime users earn"
+              )}
             </p>
           </div>
         </div>
@@ -65,12 +75,16 @@ const Faq = () => {
         >
           <div className="flex gap-2 items-center cursor-pointer  pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
-            <p className="text-white xs:text-[14px]  ">{t("howLongDoesIt")}</p>
+            <p className="text-white xs:text-[14px]  ">
+              {t("How long does it take to cash out your money")}
+            </p>
           </div>
 
           <div className={"h-0 px-4 transition-all bg-[#2c1033]"}>
             <p className="pb-4 text-sm tracking-wide">
-              {t("freetimeHasAliveSupport")}
+              {t(
+                "Freetime.com has a live support that is always online. Our team is working 24/7 and you can contact us any time at the top of the chat. If you request a withdrawal, it will most likely get approved in less than 2 minutes"
+              )}
             </p>
           </div>
         </div>

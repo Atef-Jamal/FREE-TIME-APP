@@ -97,7 +97,7 @@ const TestimonialSection = () => {
   return (
     <div className="w-full py-4 bg-[#1f3346]">
       <h1 className="text-2xl sm:text-xl tracking-wider font-bold text-center text-[#b0d870]">
-        {t("whatDoOurUsersSay")}
+        {t("What do our users say")}
       </h1>
       <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mb-10 mx-auto ">
         <Swiper
@@ -162,7 +162,7 @@ const TestimonialSection = () => {
               id="comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder={t("addYourTestimonial")}
+              placeholder={t("Add Your Testimonial")}
               className="placeholder:text-gray-500 outline-none p-4 sm:p-2 w-full min-h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee] resize-none"
             />
           </div>
@@ -218,14 +218,16 @@ const TestimonialSection = () => {
               className="bg-[#9dec6f] px-6 py-1 rounded-md text-black font-bold"
               type="submit"
             >
-              {t("submitButton")}
+              {t("submit")}
             </button>
           </div>
         </div>
       </form>
       <div className="flex items-center justify-center gap-6 xs:gap-3 my-16">
         <div className="w-[45%] max-w-[300px] h-[250px] border-yellow-200 bg-gradient-to-br from-slate-900 to-zinc-800 rounded-lg flex flex-col items-center pt-20 relative">
-          <p className="text-xl font-bold mb-2 text-center">{t("yesterday")}</p>
+          <p className="text-xl font-bold mb-2 text-center">
+            {t("Yesterday Users Cashed Out")}
+          </p>
           <span className="font-extrabold text-yellow-400 text-4xl xs:text-2xl">
             $37,392
           </span>
@@ -237,10 +239,10 @@ const TestimonialSection = () => {
         </div>
         <div className="w-[45%] max-w-[300px] h-[250px] rounded-md flex flex-col items-center justify-center bg-[#1d1e31] gap-5 ">
           <h1 className="text-white font-bold w-[80%] text-center sm:text-lg text-xl">
-            {t("signUpNowAnd")}
+            {t("Sign up now and Start earnig money")}
           </h1>
           <div className="bg-[#01d676] text-lg rounded-md text-black font-bold px-3 py-1 xs:text-sm">
-            {t("StartEarningMoney")}
+            {t("Start Earning Money")}
           </div>
         </div>
       </div>
