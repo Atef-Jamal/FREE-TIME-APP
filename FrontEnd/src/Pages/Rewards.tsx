@@ -61,7 +61,6 @@ const Rewards = () => {
       );
     }
   };
-
   return (
     <div className="flex flex-col bg-[#242438] gap-8 py-6 xs:pt-2 xs:pb-5">
       <div className="flex justify-between items-center bg-[#242438] px-6 sm:flex-col sm:items-start sm:gap-6">
@@ -72,7 +71,7 @@ const Rewards = () => {
             className="w-10 h-10 p-2 bg-neutral-700 rounded-md"
           />
           <h1 className="text-3xl font-bold text-yellow-500 tracking-wider sm:text-2xl">
-            FREETIME REWARDS
+            {t("FREETIME REWARDS")}
           </h1>
         </div>
         <button
@@ -92,7 +91,7 @@ const Rewards = () => {
             </span>
           </span>
           <MdCardGiftcard />
-          <span id="bonus-code" className="text-white w-[100px]">
+          <span id="bonus-code" className="text-white w-[120px]">
             {loading ? (
               <Spinner className="w-6 h-6 border-[3px] mx-auto border-b-blue-800 border-l-blue-800" />
             ) : (

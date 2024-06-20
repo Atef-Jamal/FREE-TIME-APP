@@ -1,9 +1,14 @@
 import egypt from "../../assets/images/eg.svg";
 import { MdLanguage } from "react-icons/md";
-import { useRef } from "react";
+import { SetStateAction, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useCloseMenuOnClickOutSide } from "../../hooks";
 
-const LangMenu = () => {
+const LangMenu = ({
+  setOpenLangMenu,
+}: {
+  setOpenLangMenu: React.Dispatch<SetStateAction<boolean>>;
+}) => {
   const langRef = useRef<HTMLDivElement>(null);
   const { i18n } = useTranslation();
 
@@ -16,14 +21,19 @@ const LangMenu = () => {
     i18n.changeLanguage(lang);
   };
 
-  // useEffect(() => {
-  //   document.body.dir = i18n.dir();
-  // }, [i18n, i18n.language]);
+  const handleClose = () => {
+    setOpenLangMenu(false);
+  };
+
+  useCloseMenuOnClickOutSide({
+    menuRef: langRef,
+    handleClose,
+  });
 
   return (
     <div
       ref={langRef}
-      className="select__languages absolute top-[60px] lg:top-[64px] sm:top-[45px] left-3 sm:left-1 z-[10s0] rounded-md w-56 sm:w-40  bg-[#33334d] flex flex-col justify-center py-1"
+      className="select__languages absolute top-[60px] lg:top-[64px] sm:top-[35px] left-3 sm:left-1 z-[10s0] rounded-md w-56 sm:w-40  bg-[#33334d] flex flex-col justify-center py-1"
     >
       {languages.map((item) => (
         <button

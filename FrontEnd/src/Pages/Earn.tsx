@@ -55,16 +55,14 @@ const Earn = () => {
   useScrollToElement([apps]);
 
   useEffect(() => {
-    if (appId !== null) {
-      setTranslate("-translate-x-[50%]");
-      const timout = setTimeout(() => {
-        window.scrollTo({
-          top:
-            window.innerWidth < 500 ? 155 : window.innerWidth < 867 ? 110 : 0,
-        });
-      }, 500);
-      return () => clearTimeout(timout);
-    }
+    if (!appId) return;
+    setTranslate("-translate-x-[50%]");
+    const timout = setTimeout(() => {
+      window.scrollTo({
+        top: window.innerWidth < 500 ? 155 : window.innerWidth < 867 ? 110 : 0,
+      });
+    }, 500);
+    return () => clearTimeout(timout);
   }, [appId]);
 
   useEffect(() => {
@@ -106,10 +104,9 @@ const Earn = () => {
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
-    const timeout = setTimeout(() => {
+    setTimeout(() => {
       setAppId(null);
     }, 1000);
-    return () => clearTimeout(timeout);
   };
 
   const prev = () => {

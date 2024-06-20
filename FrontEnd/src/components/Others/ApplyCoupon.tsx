@@ -100,11 +100,6 @@ const ApplyCoupon = () => {
                 <button
                   onClick={() => {
                     navigate("/rewards?to=bonus-code");
-                    //this timout to resolve some problem
-                    const timout = setTimeout(() => {
-                      dispatch(resetModel());
-                    }, 0);
-                    return () => clearTimeout(timout);
                   }}
                   className="ml-1 underline text-[#aa7ee4]"
                 >

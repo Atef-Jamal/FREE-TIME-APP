@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
@@ -49,8 +49,9 @@ const Message = ({
     isSended,
   } = messageItem;
 
+  const [date, setDate] = useState(formateDate(createdAt));
+
   const dispatch = useAppDispatch();
-  const date = formateDate(createdAt);
 
   const deleteMessage = async (messageId: string) => {
     setIsDeleting(true);
@@ -144,6 +145,13 @@ const Message = ({
     onUpdate: [handleUpdateMessage, handleUpdateUser],
   });
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDate(formateDate(createdAt));
+    }, 1000 * 60);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       ref={messageRef}
@@ -162,11 +170,11 @@ const Message = ({
           }
           className={`ml-2 sm:ml-[6px] max-w-[60%] h-full overflow-hidden `}
         >
-          <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-3">
+          <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-[10px]">
             {sender?.name}
           </span>
           {createdAt && (
-            <span className="text-[10px] sm:text-[8px] text-gray-500 font-bold">
+            <span className="text-[12px] sm:text-[10px] text-[#857272] font-bold">
               {date}
             </span>
           )}
@@ -223,7 +231,7 @@ const Message = ({
                 {loves.length || 0}
               </span>
             </button>
-            
+
             <button
               onClick={() => reactToMessage("likes", "dislikes", "loves")}
               className="flex items-center gap-1"

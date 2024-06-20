@@ -15,16 +15,17 @@ export const useListenToSocketEvents = ({
   const { socket } = useAppSelector((state) => state.stateManeger);
 
   useEffect(() => {
-    if (socket) {
-      for (let index = 0; index < eventToListen.length; index++) {
-        socket.on(eventToListen[index], onUpdate[index]);
-      }
-      return () => {
-        for (let index = 0; index < eventToListen.length; index++) {
-          socket.off(eventToListen[index], onUpdate[index]);
-        }
-      };
+    if (!socket) return;
+
+    for (let index = 0; index < eventToListen.length; index++) {
+      socket.on(eventToListen[index], onUpdate[index]);
     }
+
+    return () => {
+      for (let index = 0; index < eventToListen.length; index++) {
+        socket.off(eventToListen[index], onUpdate[index]);
+      }
+    };
   }, [socket, ...dependencies]);
 };
 
@@ -52,16 +53,16 @@ export const useCloseMenuOnClickOutSide = ({
 }) => {
   const [initialRender, setInitialRender] = useState(false);
 
-  useEffect(() => {
-    if (initialRender) {
-      const handleClick = (e: any) => {
-        if (!menuRef.current?.contains(e.target)) {
-          handleClose();
-        }
-      };
-      document.addEventListener("click", handleClick);
-      return () => document.removeEventListener("click", handleClick);
+  const handler = (e: any) => {
+    if (!menuRef.current?.contains(e.target)) {
+      handleClose();
     }
+  };
+
+  useEffect(() => {
+    if (!initialRender) return;
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
   }, [initialRender]);
 
   useEffect(() => {

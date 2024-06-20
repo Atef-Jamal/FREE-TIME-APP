@@ -10,6 +10,7 @@ import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
 import { useFetchAllUsers, useListenToSocketEvents } from "../../hooks";
 import LangMenu from "./LangMenu";
+import { useTranslation } from "react-i18next";
 
 const LiveStats = () => {
   const { currentUser, onlineUsers } = useAppSelector(
@@ -20,7 +21,13 @@ const LiveStats = () => {
   const [userHieghestPoints, setUserHieghestPoints] = useState<string | null>(
     null
   );
-  const [toggleLanguage, setToggleLanguage] = useState(false);
+  const [openLangMenu, setOpenLangMenu] = useState(false);
+  const { i18n } = useTranslation();
+
+  let example = false;
+  if (example) {
+    console.log(i18n);
+  }
 
   const sorted = [...users].sort((a, b) => {
     const aIsOnline = onlineUsers.includes(a._id);
@@ -76,12 +83,12 @@ const LiveStats = () => {
   return (
     <div className={`flex w-full`}>
       <div
-        onClick={() => setToggleLanguage(!toggleLanguage)}
+        onClick={() => setOpenLangMenu(!openLangMenu)}
         className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md my-1 relative"
       >
         <MdLanguage />
         <IoIosArrowDown />
-        {toggleLanguage && <LangMenu />}
+        {openLangMenu && <LangMenu setOpenLangMenu={setOpenLangMenu} />}
       </div>
       <div className=" flex items-center gap-2 xs:gap-[6px] overflow-scroll scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
         {loading && <LiveStatsSkeleton />}

@@ -31,22 +31,22 @@ const MusicPlayer = () => {
   };
 
   useEffect(() => {
-    const timeUpdated = (event: Event) => {
+    const handleTimeUpdate = (event: Event) => {
       const element = event.target as HTMLAudioElement;
       setTrackValue(element.currentTime);
     };
 
-    const musicEnd = () => {
+    const handleMusicEnded = () => {
       dispatch(handlePauseMusic());
       setTrackValue(0);
     };
 
-    activeMusic.audio.addEventListener("timeupdate", timeUpdated);
-    activeMusic.audio.addEventListener("ended", musicEnd);
+    activeMusic.audio.addEventListener("timeupdate", handleTimeUpdate);
+    activeMusic.audio.addEventListener("ended", handleMusicEnded);
 
     return () => {
-      activeMusic.audio.removeEventListener("timeupdate", timeUpdated);
-      activeMusic.audio.removeEventListener("ended", musicEnd);
+      activeMusic.audio.removeEventListener("timeupdate", handleTimeUpdate);
+      activeMusic.audio.removeEventListener("ended", handleMusicEnded);
     };
   }, []);
 

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 import Frame from "../models/frame";
+import ProfileVisits from "../models/profileVisits";
 
 export const allUsers = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string);
@@ -43,21 +44,6 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
-// export const updateUser = async (req: Request, res: Response) => {
-//   try {
-//     const { userId } = req.params;
-//     const updatedBody = req.body;
-//     const updatedUser = await User.findByIdAndUpdate(userId, updatedBody, {
-//       new: true,
-//     });
-//     if (updatedUser) {
-//       return res.status(200).json(updatedUser);
-//     }
-//   } catch (error) {
-//     return res.status(404).json({ error: "an Error occurred" });
-//   }
-// };
-
 export const userVisited = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const userVisitedId = req.params.userId;
@@ -66,17 +52,14 @@ export const userVisited = async (req: Request, res: Response) => {
     const userVisited = await User.findById(userVisitedId);
 
     if (!currentUser || !userVisited) {
-      return res.status(404).json({ error: "an Error occurred" });
+      return res.status(404).json({ error: "user not found" });
     }
-
-    userVisited.usersVisitedMe.push({
-      _id: currentUserId,
-      name: currentUser.name,
-      profilPicture: currentUser.profilePicture,
-      createdAt: new Date(),
+    const newVisit = new ProfileVisits({
+      visited: userVisitedId,
+      visiter: currentUserId,
     });
 
-    await userVisited.save();
+    await newVisit.save();
     return res.status(200).json({ message: "sucess" });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred" });
@@ -102,11 +85,6 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
         new: true,
       }
     );
-
-    // io.emit("user-photo-frame-changed", {
-    //   belongsTo: currentUserId,
-    //   frameObj: frame,
-    // });
 
     return res.status(200).json(frame);
   } catch (error) {
@@ -141,10 +119,13 @@ export const getWhoVisitMe = async (req: Request, res: Response) => {
 
     user.points = user.points - 5;
 
+    const visiters = await ProfileVisits.find({
+      visited: currentUserId,
+    }).populate("visiter", "_id name profilePicture activeFrame");
+
     const savedUser = await user.save();
-    return res
-      .status(200)
-      .json({ users: savedUser.usersVisitedMe, points: savedUser.points });
+
+    return res.status(200).json({ users: visiters, points: savedUser.points });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
   }

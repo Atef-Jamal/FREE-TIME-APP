@@ -13,13 +13,14 @@ const ToastNotify = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (message) {
-      const timeOut = setTimeout(() => {
-        dispatch(resetPopup());
-      }, 5000);
-      return () => clearTimeout(timeOut);
-    }
-  }, [message]);
+    if (!message) return;
+
+    const timeOut = setTimeout(() => {
+      dispatch(resetPopup());
+    }, 5000);
+
+    return () => clearTimeout(timeOut);
+  }, [message, dispatch]);
 
   return (
     <div

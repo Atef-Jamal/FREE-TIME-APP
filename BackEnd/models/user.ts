@@ -62,21 +62,6 @@ const userSchema = new mongoose.Schema(
       type: Object,
       default: null,
     },
-    usersVisitedMe: {
-      type: [
-        {
-          name: { type: String, required: true },
-          _id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-          },
-          profilPicture: { type: String, default: "uploads/avatar.jpeg" },
-          createdAt: { type: Date, default: new Date() },
-        },
-      ],
-      default: [],
-    },
   },
   { timestamps: true }
 );

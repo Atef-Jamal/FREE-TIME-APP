@@ -25,8 +25,11 @@ const Navbare = () => {
     currentAccountRequestFullfiled,
     openRegisterForm,
   } = useAppSelector((state) => state.stateManeger);
+
   const dispatch = useAppDispatch();
   const token = localStorage.getItem("token");
+
+  let timeOut: NodeJS.Timeout;
 
   const getCurrentUser = async () => {
     try {
@@ -44,15 +47,15 @@ const Navbare = () => {
       );
     } finally {
       dispatch(setCurrentUserIsLoading(false));
-      const timout = setTimeout(() => {
+      timeOut = setTimeout(() => {
         dispatch(setCurrentAccountRequestFullfiled(true));
       }, 1500);
-      return () => clearTimeout(timout);
     }
   };
 
   useEffect(() => {
     getCurrentUser();
+    return () => clearTimeout(timeOut);
   }, [token]);
 
   return (

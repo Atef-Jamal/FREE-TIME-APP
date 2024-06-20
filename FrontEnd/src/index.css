@@ -12,7 +12,7 @@
 @layer base {
   html {
     font-size: medium;
-    font-family: "poppins", system-ui, sans-serif;
+    font-family: "Poppins", system-ui, sans-serif;
   }
 }
 
@@ -44,14 +44,14 @@ body {
 }
 
 .sing-up-free {
-  background-image: url(./assets/images/signuporfree.png);
+  background-image: url("./assets/images/signuporfree.png");
   background-size: cover;
 }
 
 .select__languages::before {
   content: "";
   position: absolute;
-  top: -6px;
+  top: -5px;
   left: 30px;
   width: 10px;
   height: 10px;

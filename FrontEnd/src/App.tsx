@@ -198,9 +198,16 @@ const App = () => {
         query: { userId: currentUser?._id },
       });
       dispatch(setSocet(socket));
-      return () => socket.close();
+      return socket;
     };
-    establishSocetConnection();
+
+    const socket = establishSocetConnection();
+
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
   }, [currentUser?._id]);
 
   return <RouterProvider router={router} />;

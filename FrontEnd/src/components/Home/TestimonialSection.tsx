@@ -218,7 +218,7 @@ const TestimonialSection = () => {
               className="bg-[#9dec6f] px-6 py-1 rounded-md text-black font-bold"
               type="submit"
             >
-              {t("submit")}
+              {t("Submit")}
             </button>
           </div>
         </div>

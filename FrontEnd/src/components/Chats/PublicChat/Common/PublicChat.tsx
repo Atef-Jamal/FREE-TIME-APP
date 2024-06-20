@@ -66,7 +66,7 @@ const PublicChat = () => {
     const element = messageContainerRef.current;
     let timeout: NodeJS.Timeout;
     let cleanSearchParamTimeout: NodeJS.Timeout;
-    const handleFunc = () => {
+    const handleScroll = () => {
       if (!element) return;
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -92,9 +92,9 @@ const PublicChat = () => {
       }, 700);
     };
 
-    messageContainerRef.current?.addEventListener("scroll", handleFunc);
+    messageContainerRef.current?.addEventListener("scroll", handleScroll);
     return () => {
-      messageContainerRef.current?.removeEventListener("scroll", handleFunc);
+      messageContainerRef.current?.removeEventListener("scroll", handleScroll);
       clearTimeout(timeout);
       clearTimeout(cleanSearchParamTimeout);
     };

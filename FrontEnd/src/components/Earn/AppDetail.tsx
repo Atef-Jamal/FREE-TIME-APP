@@ -77,14 +77,14 @@ const AppDetail = ({ appId }: { appId: string }) => {
 
   useEffect(() => {
     const searchQuery = searchParams.get("to");
-    if (searchQuery) {
-      return () => {
+    return () => {
+      if (searchQuery) {
         setSearchParams((prev) => {
           prev.delete("to");
           return prev;
         });
-      };
-    }
+      }
+    };
   }, []);
 
   if (loading) return <AppDetailsSkeleton />;

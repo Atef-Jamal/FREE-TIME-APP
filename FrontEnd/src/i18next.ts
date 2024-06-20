@@ -10,7 +10,7 @@ i18next
   .init({
     supportedLngs: ["en", "ar"],
     fallbackLng: "en",
-    // debug: true,
+    debug: true,
     backend: "/locales/{{lang}}/{{ns}}.json",
     ns: ["home", "rewards"],
     defaultNS: "common",

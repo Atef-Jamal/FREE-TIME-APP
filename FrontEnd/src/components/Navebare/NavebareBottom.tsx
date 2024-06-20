@@ -1,37 +1,18 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { NavLink } from "react-router-dom";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
-import { toggleThisEntity } from "../../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
 const NavebareBottom = ({
   setOpenSidbareMobile,
 }: {
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { openSidebarMobile } = useAppSelector((state) => state.stateManeger);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    function toggle(e: any) {
-      const element = document.getElementById("mobile-sidebar");
-      if (
-        element !== e.target &&
-        openSidebarMobile === true &&
-        !element?.contains(e.target)
-      ) {
-        dispatch(toggleThisEntity({ entity: "openSidebarMobile" }));
-      }
-    }
-    document.addEventListener("click", toggle);
-    return () => document.removeEventListener("click", toggle);
-  }, [openSidebarMobile]);
-
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
+
   return (
     <ul className="w-full flex items-center justify-between gap-1">
       <li className="w-[17%] h-[65px] flex items-center justify-center">

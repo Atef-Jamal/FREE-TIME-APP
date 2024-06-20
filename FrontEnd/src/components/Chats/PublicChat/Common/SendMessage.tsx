@@ -4,7 +4,7 @@ import React, {
   useCallback,
   useRef,
   useState,
-  useEffect
+  useEffect,
 } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
@@ -36,7 +36,7 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
-  const [timeoutId, setTimeoutId] = useState<any>(null)
+  const [timeoutId, setTimeoutId] = useState<any>(null);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -139,22 +139,22 @@ const SendMessage = ({
       socket?.emit("typing-public-message");
     }
 
-    if(contentText.value.trim() === ""){
+    if (contentText.value.trim() === "") {
       socket?.emit("stop-typing-public-message");
       setSomeOneTyping(false);
-    }else{
+    } else {
       const lastTypingTime = new Date().getTime();
-    const timmerLenth = 3000;
-    const timmer = setTimeout(() => {
-      const now = new Date().getTime();
-      const timDiff = now - lastTypingTime;
+      const timmerLenth = 3000;
+      const timmer = setTimeout(() => {
+        const now = new Date().getTime();
+        const timDiff = now - lastTypingTime;
 
-      if (timDiff >= timmerLenth && somoneTyping) {
-        socket?.emit("stop-typing-public-message");
-        setSomeOneTyping(false);
-      }
-    }, timmerLenth);
-    setTimeoutId(timmer)
+        if (timDiff >= timmerLenth && somoneTyping) {
+          socket?.emit("stop-typing-public-message");
+          setSomeOneTyping(false);
+        }
+      }, timmerLenth);
+      setTimeoutId(timmer);
     }
   };
 
@@ -177,19 +177,19 @@ const SendMessage = ({
     onUpdate: [handleTyping, handleStopTyping],
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     return () => {
-      if(timeoutId){
-        clearTimeout(timeoutId)
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
-    }
-  }, [timeoutId])
+    };
+  }, [timeoutId]);
 
   useEffect(() => {
     return () => {
       socket?.emit("stop-typing-public-message");
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">
