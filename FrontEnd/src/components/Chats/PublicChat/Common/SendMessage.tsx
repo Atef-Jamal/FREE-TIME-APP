@@ -180,6 +180,12 @@ const SendMessage = ({
     }
   }, [timeoutId])
 
+  useEffect(() => {
+    return () => {
+      socket?.emit("stop-typing-public-message");
+    }
+  }, [])
+
   return (
     <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">
       <div className="flex items-center w-full">
