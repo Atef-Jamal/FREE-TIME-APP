@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useRef,
   useState,
+  useEffect
 } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
@@ -174,7 +175,7 @@ const SendMessage = ({
   useEffect(()=>{
     return () => {
       if(timeoutId){
-        clearTimout(timeoutId)
+        clearTimeout(timeoutId)
       }
     }
   }, [timeoutId])
