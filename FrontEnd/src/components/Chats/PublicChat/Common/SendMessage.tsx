@@ -35,7 +35,7 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
-  // const [searchParams, setSearchParams] = useSearchParams();
+  const [timeoutId, setTimeoutId] = useState<any>(null)
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -149,8 +149,7 @@ const SendMessage = ({
         setSomeOneTyping(false);
       }
     }, timmerLenth);
-
-    return () => clearTimeout(timmer);
+    setTimeoutId(timmer)
   };
 
   const handleOpenMentionList = useCallback((e: MouseEvent) => {
@@ -171,6 +170,14 @@ const SendMessage = ({
     eventToListen: ["typing-public-message", "stop-typing-public-message"],
     onUpdate: [handleTyping, handleStopTyping],
   });
+
+  useEffect(()=>{
+    return () => {
+      if(timeoutId){
+        clearTimout(timeoutId)
+      }
+    }
+  }, [timeoutId])
 
   return (
     <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">
