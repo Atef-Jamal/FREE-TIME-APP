@@ -134,12 +134,16 @@ const SendMessage = ({
     inputRef.current!.style.height = `${contentText.scrollHeight}px`;
 
     setMessage(contentText.value);
-    if (!somoneTyping) {
+    if (!somoneTyping && contentText.value.trim() !== "") {
       setSomeOneTyping(true);
       socket?.emit("typing-public-message");
     }
 
-    const lastTypingTime = new Date().getTime();
+    if(contentText.value.trim() === ""){
+      socket?.emit("stop-typing-public-message");
+      setSomeOneTyping(false);
+    }else{
+      const lastTypingTime = new Date().getTime();
     const timmerLenth = 3000;
     const timmer = setTimeout(() => {
       const now = new Date().getTime();
@@ -151,6 +155,7 @@ const SendMessage = ({
       }
     }, timmerLenth);
     setTimeoutId(timmer)
+    }
   };
 
   const handleOpenMentionList = useCallback((e: MouseEvent) => {
