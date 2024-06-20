@@ -45,7 +45,7 @@ const PublicChat = () => {
     setMessages((prev) => [...prev, data.detail]);
   };
 
-  const { setElement } = useScrollToElement([messages], "end", "messageId");
+  const { setElement } = useScrollToElement([messages], "start", "messageId");
 
   useListenToSocketEvents({
     eventToListen: ["public-message"],

@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useRef,
   useState,
+  useEffect
 } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
@@ -35,7 +36,7 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
-  // const [searchParams, setSearchParams] = useSearchParams();
+  const [timeoutId, setTimeoutId] = useState<any>(null)
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -133,12 +134,16 @@ const SendMessage = ({
     inputRef.current!.style.height = `${contentText.scrollHeight}px`;
 
     setMessage(contentText.value);
-    if (!somoneTyping) {
+    if (!somoneTyping && contentText.value.trim() !== "") {
       setSomeOneTyping(true);
       socket?.emit("typing-public-message");
     }
 
-    const lastTypingTime = new Date().getTime();
+    if(contentText.value.trim() === ""){
+      socket?.emit("stop-typing-public-message");
+      setSomeOneTyping(false);
+    }else{
+      const lastTypingTime = new Date().getTime();
     const timmerLenth = 3000;
     const timmer = setTimeout(() => {
       const now = new Date().getTime();
@@ -149,8 +154,8 @@ const SendMessage = ({
         setSomeOneTyping(false);
       }
     }, timmerLenth);
-
-    return () => clearTimeout(timmer);
+    setTimeoutId(timmer)
+    }
   };
 
   const handleOpenMentionList = useCallback((e: MouseEvent) => {
@@ -171,6 +176,20 @@ const SendMessage = ({
     eventToListen: ["typing-public-message", "stop-typing-public-message"],
     onUpdate: [handleTyping, handleStopTyping],
   });
+
+  useEffect(()=>{
+    return () => {
+      if(timeoutId){
+        clearTimeout(timeoutId)
+      }
+    }
+  }, [timeoutId])
+
+  useEffect(() => {
+    return () => {
+      socket?.emit("stop-typing-public-message");
+    }
+  }, [])
 
   return (
     <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">
