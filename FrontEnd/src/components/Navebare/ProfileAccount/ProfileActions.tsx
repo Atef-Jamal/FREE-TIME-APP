@@ -63,8 +63,8 @@ const ProfileActions = () => {
   }, [currentUser?._id]);
 
   useListenToSocketEvents({
-    eventToListen: ["new-notification"],
-    onUpdate: [handleAddNewNotification],
+    eventsToListen: ["new-notification"],
+    handlers: [handleAddNewNotification],
   });
 
   return (

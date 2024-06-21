@@ -141,8 +141,8 @@ const Message = ({
   };
 
   useListenToSocketEvents({
-    eventToListen: ["interact-with-public-message", "user-updated"],
-    onUpdate: [handleUpdateMessage, handleUpdateUser],
+    eventsToListen: ["interact-with-public-message", "user-updated"],
+    handlers: [handleUpdateMessage, handleUpdateUser],
   });
 
   useEffect(() => {

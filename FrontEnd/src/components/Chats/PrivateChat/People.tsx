@@ -28,7 +28,7 @@ const People = ({
         localStorage.setItem("active-converstaion", convInfo.secondParty._id);
       }}
       className={`relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1 ${
-        activeConversation === convInfo.secondParty._id && "bg-[#1c1b2e]"
+        activeConversation === convInfo.secondParty._id && "bg-[#24233b]"
       } `}
     >
       <div className="w-full flex gap-2">
@@ -42,13 +42,13 @@ const People = ({
               {convInfo.secondParty.name}
             </span>
             {onlineUsers.includes(convInfo.secondParty._id) && (
-              <span className="text-xs text-[#74a3d8] tracking-wider font-[400]">
-                (online)
+              <span className="text-xs text-[#4c9af3] tracking-wider font-[400]">
+                online
               </span>
             )}
             {!onlineUsers.includes(convInfo.secondParty._id) && (
-              <span className="text-xs text-[#927f55] tracking-wider font-[400]">
-                (offline)
+              <span className="text-xs text-[#72664b] tracking-wider font-[400]">
+                offline
               </span>
             )}
           </span>

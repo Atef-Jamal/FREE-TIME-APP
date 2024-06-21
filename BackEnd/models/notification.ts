@@ -11,6 +11,7 @@ const notificationSchema = new mongoose.Schema(
       type: String,
       enum: [
         "MENTION",
+        "INTERACT-WITH-MESSAGE",
         "EMAIL-VERIFIED",
         "REFERRER",
         "BUY-FRAME",
@@ -32,6 +33,14 @@ const notificationSchema = new mongoose.Schema(
     mentionedUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+    interactedUser: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    typeOfInteraction: {
+      type: String,
+      enum: ["loves", "likes", "dislikes"],
     },
     isCollected: {
       type: Boolean,

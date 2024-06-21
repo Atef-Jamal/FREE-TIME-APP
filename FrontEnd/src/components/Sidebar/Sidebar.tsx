@@ -12,7 +12,7 @@ import {
 } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
-import messageSoundSrc from "../../assets/images/messageSound.wav";
+import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import { RiCloseFill } from "react-icons/ri";
 
 const Sidebar = ({
@@ -64,8 +64,8 @@ const Sidebar = ({
   };
 
   useListenToSocketEvents({
-    eventToListen: ["private-message"],
-    onUpdate: [handleAddNewPrivateMessage],
+    eventsToListen: ["private-message"],
+    handlers: [handleAddNewPrivateMessage],
   });
 
   useEffect(() => {

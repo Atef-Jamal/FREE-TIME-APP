@@ -19,16 +19,12 @@ import {
 interface TypeProps {
   id: string;
   setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
-  conversationReaded: boolean;
-  setConversationReaded: React.Dispatch<SetStateAction<boolean>>;
   setMessages: React.Dispatch<SetStateAction<TypePrivateMessage[]>>;
 }
 
 const SendMessagePrivateChat = ({
-  conversationReaded,
-  setConversationReaded,
-  setMessages,
   id,
+  setMessages,
   setConversations,
 }: TypeProps) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
@@ -72,10 +68,9 @@ const SendMessagePrivateChat = ({
       isRead: false,
       isSended: "PENDING",
     };
-    const customEvent = new CustomEvent("immediatelyPrivateMessage", {
+    const customEvent = new CustomEvent("fastSendPrivateMessage", {
       detail: { message: msg, recieverId: id },
     });
-    if (conversationReaded === true) setConversationReaded(false);
     document.dispatchEvent(customEvent);
     setMessage("");
     inputRef.current?.focus();

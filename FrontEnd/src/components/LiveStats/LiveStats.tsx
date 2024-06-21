@@ -66,8 +66,8 @@ const LiveStats = () => {
   };
 
   useListenToSocketEvents({
-    eventToListen: ["new-user-joined", "user-updated"],
-    onUpdate: [handleAddUser, handlUpdateUser],
+    eventsToListen: ["new-user-joined", "user-updated"],
+    handlers: [handleAddUser, handlUpdateUser],
   });
 
   useEffect(() => {

@@ -43,8 +43,8 @@ const PublicUserProfile = () => {
   };
 
   useListenToSocketEvents({
-    eventToListen: ["user-updated"],
-    onUpdate: [handleUpdateUser],
+    eventsToListen: ["user-updated"],
+    handlers: [handleUpdateUser],
     dependencies: [id],
   });
 

@@ -14,7 +14,6 @@ interface TypeProps {
   messages: TypePrivateMessage[];
   message: TypePrivateMessage;
   lastMessageRef: RefObject<HTMLDivElement>;
-  conversationReaded: boolean;
   index: number;
 }
 
@@ -22,7 +21,6 @@ const PrivateMessageItem = ({
   messages,
   message,
   lastMessageRef,
-  conversationReaded,
   index,
 }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
@@ -67,7 +65,17 @@ const PrivateMessageItem = ({
             >
               {date}
             </span>
-            {conversationReaded &&
+            {message.isRead && message.sender._id === currentUser?._id && (
+              <span>
+                <IoCheckmarkDoneSharp className="font-bold opacity-50" />
+              </span>
+            )}
+            {!message.isRead && message.sender._id === currentUser?._id && (
+              <span>
+                <IoCheckmarkSharp className="font-bold opacity-50 " />
+              </span>
+            )}
+            {/* {conversationReaded &&
               index === messages.length - 1 &&
               message.sender._id === currentUser?._id && (
                 <span>
@@ -80,7 +88,7 @@ const PrivateMessageItem = ({
                 <span>
                   <IoCheckmarkSharp className="font-bold opacity-50 " />
                 </span>
-              )}
+              )} */}
             {message.isSended !== undefined &&
               message.isSended === "PENDING" && <BiCircle />}
             {message.isSended !== undefined &&

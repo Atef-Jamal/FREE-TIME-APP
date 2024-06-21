@@ -98,6 +98,31 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
       message[fieldName].splice(index, 1);
     } else {
       message[fieldName].push(currentUserId);
+      const interactedWithMessageBefore = await Notification.findOne({
+        belongsTo: message.sender._id,
+        interactedUser: currentUserId,
+        messageLocation: message._id,
+        typeOfInteraction: fieldName,
+      });
+
+      if (!interactedWithMessageBefore) {
+        const createNotification = new Notification({
+          type: "INTERACT-WITH-MESSAGE",
+          belongsTo: message.sender._id,
+          messageLocation: message._id,
+          typeOfInteraction: fieldName,
+          interactedUser: currentUserId,
+        });
+
+        const savedNotification = await (
+          await createNotification.save()
+        ).populate("interactedUser", "_id name profilePicture activeFrame");
+
+        io.to(onLineUsers[savedNotification.belongsTo.toString()]).emit(
+          "new-notification",
+          savedNotification
+        );
+      }
     }
 
     if (

@@ -9,6 +9,16 @@ export interface TypeMentionNotify {
   messageLocation: string;
   mentionedUser: User;
 }
+
+export interface TypeInteractWithMessageNotify {
+  _id: string;
+  type: "INTERACT-WITH-MESSAGE";
+  typeOfInteraction: "loves" | "likes" | "dislikes";
+  createdAt: Date;
+  isRead: boolean;
+  messageLocation: string;
+  interactedUser: User;
+}
 export interface TypeEmailVerifiedNotify {
   _id: string;
   type: "EMAIL-VERIFIED";
@@ -75,4 +85,5 @@ export type TypeNotifications =
   | TypeQuizAppNotify
   | TypeAnnouncementNoify
   | TypeGuessCardNotify
-  | TypeMusicNotify;
+  | TypeMusicNotify
+  | TypeInteractWithMessageNotify;

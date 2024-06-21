@@ -1,9 +1,8 @@
-import { MdArrowForwardIos } from "react-icons/md";
-import { MdArrowBackIosNew } from "react-icons/md";
 import { toggleThisEntity } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import ChatHeader from "../Common/ChatHeader";
 import PublicChat from "../Common/PublicChat";
+import { BsChatLeftText } from "react-icons/bs";
 
 const DisktopChat = () => {
   const { isChatOpen } = useAppSelector((state) => state.stateManeger);
@@ -18,11 +17,7 @@ const DisktopChat = () => {
         }}
         className="w-10 h-10 absolute top-[7%] -left-[42px] bg-[#513d80f8] rounded-sm flex items-center justify-center cursor-pointer"
       >
-        {isChatOpen ? (
-          <MdArrowForwardIos className="text-3xl" />
-        ) : (
-          <MdArrowBackIosNew className="text-3xl" />
-        )}
+        <BsChatLeftText className="text-3xl" />
       </span>
       <ChatHeader />
       <PublicChat />

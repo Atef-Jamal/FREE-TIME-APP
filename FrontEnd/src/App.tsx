@@ -167,8 +167,8 @@ const App = () => {
   };
 
   useListenToSocketEvents({
-    eventToListen: ["online-users"],
-    onUpdate: [handleUpdateOnlineUsers],
+    eventsToListen: ["online-users"],
+    handlers: [handleUpdateOnlineUsers],
   });
 
   useEffect(() => {

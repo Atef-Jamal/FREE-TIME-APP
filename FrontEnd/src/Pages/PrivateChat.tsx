@@ -13,10 +13,15 @@ import { useListenToSocketEvents } from "../hooks";
 import { makeRequest } from "../utils";
 import { useSearchParams } from "react-router-dom";
 import { handleApiError } from "../utils/common";
+import messageSoundSrc from "../assets/images/messageSound.mp3";
 
 const PrivateChat = () => {
-  const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
-    useAppSelector((state) => state.stateManeger);
+  const {
+    currentUser,
+    currentAccountRequestFullfiled,
+    onlineUsers,
+    hiddenLiveStats,
+  } = useAppSelector((state) => state.stateManeger);
   const [searchParams] = useSearchParams();
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,6 +31,9 @@ const PrivateChat = () => {
   const [activeConversation, setActiveConversation] = useState<string | null>(
     null
   );
+
+  const messageSound = new Audio();
+  messageSound.src = messageSoundSrc;
 
   const secondPartyId = searchParams.get("chat-with");
 
@@ -46,6 +54,18 @@ const PrivateChat = () => {
           } else {
             return 0;
           }
+        }
+        if (
+          onlineUsers.includes(a.secondParty._id) &&
+          !onlineUsers.includes(b.secondParty._id)
+        ) {
+          return -1;
+        }
+        if (
+          !onlineUsers.includes(a.secondParty._id) &&
+          onlineUsers.includes(b.secondParty._id)
+        ) {
+          return 1;
         }
         return 0;
       });
@@ -74,6 +94,11 @@ const PrivateChat = () => {
   };
 
   const handleNewPrivateMessage = (data: TypePrivateMessage) => {
+    if (activeConversation) {
+      if (data.sender._id !== activeConversation) {
+        messageSound.play();
+      }
+    }
     setConversations((prev) => {
       const newArry = prev.map((conv) => {
         if (data.sender._id === conv.secondParty._id) {
@@ -100,6 +125,18 @@ const PrivateChat = () => {
             return 0;
           }
         }
+        if (
+          onlineUsers.includes(a.secondParty._id) &&
+          !onlineUsers.includes(b.secondParty._id)
+        ) {
+          return -1;
+        }
+        if (
+          !onlineUsers.includes(a.secondParty._id) &&
+          onlineUsers.includes(b.secondParty._id)
+        ) {
+          return 1;
+        }
         return 0;
       });
       return newArry;
@@ -123,8 +160,8 @@ const PrivateChat = () => {
   }, []);
 
   useListenToSocketEvents({
-    eventToListen: ["new-user-joined", "private-message"],
-    onUpdate: [handleAddNewUser, handleNewPrivateMessage],
+    eventsToListen: ["new-user-joined", "private-message"],
+    handlers: [handleAddNewUser, handleNewPrivateMessage],
     dependencies: [activeConversation],
   });
 

@@ -80,7 +80,7 @@ const ChatSidbare = ({
           </>
         )}
         {loading &&
-          [...Array(isMobile ? 6 : 12).keys()].map((skeleton) => (
+          [...Array(isMobile ? 6 : 11).keys()].map((skeleton) => (
             <PeopleSkeleton key={skeleton} />
           ))}
         {!loading &&

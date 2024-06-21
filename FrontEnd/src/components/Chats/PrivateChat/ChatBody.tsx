@@ -1,10 +1,4 @@
-import {
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { SetStateAction, useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
@@ -29,13 +23,15 @@ interface TypeProps {
   activeConversation: string;
   setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
 }
-interface TypeImmediatelyMessage {
+
+interface TypeFastSendPrivateMessage {
   detail: { message: TypePrivateMessage; recieverId: string };
 }
 
 const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
-  const [conversationReaded, setConversationReaded] = useState<boolean>(false);
+  const { currentUser, socket, onlineUsers } = useAppSelector(
+    (state) => state.stateManeger
+  );
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -53,7 +49,7 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
 
   const handleConversationReaded = (data: TypeConversationSocketData) => {
     if (data.sender === activeConversation) {
-      setConversationReaded(true);
+      setMessages((prev) => prev.map((msg) => ({ ...msg, isRead: true })));
     }
   };
 
@@ -64,41 +60,38 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   };
 
   const markAsReaded = async () => {
-    const lastMessage = messages[messages.length - 1];
-    const lastMessageIsnotReaded =
-      lastMessage?.sender._id === activeConversation &&
-      lastMessage?.isRead === false;
-
-    if (messages.length > 0 && lastMessageIsnotReaded) {
-      try {
-        await makeRequest.patch(`api/conversations/${activeConversation}`, {
-          FOR_CONSISTENCY: "FOR_CONSISTENCY",
+    const isThereMessagesUnReaded = messages.some(
+      (msg) => !msg.isRead && msg.sender._id === activeConversation
+    );
+    if (messages.length === 0 || !isThereMessagesUnReaded) return;
+    try {
+      await makeRequest.patch(`api/conversations/${activeConversation}`, {
+        FOR_CONSISTENCY: "FOR_CONSISTENCY",
+      });
+      socket?.emit("conversation-readed", {
+        reciever: activeConversation,
+        sender: currentUser?._id,
+      });
+      setConversations((prev) => {
+        return prev.map((conv) => {
+          if (conv.secondParty._id === activeConversation) {
+            return { ...conv, unreadedCount: 0 };
+          } else {
+            return conv;
+          }
         });
-        socket?.emit("conversation-readed", {
-          reciever: activeConversation,
-          sender: currentUser?._id,
-        });
-        setConversations((prev) => {
-          return prev.map((conv) => {
-            if (conv.secondParty._id === activeConversation) {
-              return { ...conv, unreadedCount: 0 };
-            } else {
-              return conv;
-            }
-          });
-        });
-      } catch (error) {
-        dispatch(
-          showPopup({
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-      }
+      });
+    } catch (error) {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
     }
   };
 
-  const handleAddMessage = (data: TypeImmediatelyMessage) => {
+  const handleAddMessage = (data: TypeFastSendPrivateMessage) => {
     setMessages((prev) => [...prev, data.detail.message]);
   };
 
@@ -107,8 +100,8 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   }, []);
 
   useListenToSocketEvents({
-    eventToListen: ["private-message", "conversation-readed", "user-updated"],
-    onUpdate: [
+    eventsToListen: ["private-message", "conversation-readed", "user-updated"],
+    handlers: [
       handleNewPrivateMessage,
       handleConversationReaded,
       handleUpdateUser,
@@ -117,7 +110,7 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   });
 
   useListenToDocumentEvent({
-    eventToListen: "immediatelyPrivateMessage",
+    eventToListen: "fastSendPrivateMessage",
     onUpdate: handleAddMessage,
     dependencies: [activeConversation],
   });
@@ -125,15 +118,6 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   useEffect(() => {
     scrollToLastMessage();
     markAsReaded();
-    const getMyLastMessage = messages.filter((item) => {
-      return item.sender._id === currentUser?._id;
-    });
-    const lastOne = getMyLastMessage[getMyLastMessage.length - 1];
-    if (lastOne?.isRead === true) {
-      setConversationReaded(true);
-    } else {
-      setConversationReaded(false);
-    }
   }, [messages, activeConversation]);
 
   if (loading) {
@@ -160,6 +144,11 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
         </div>
         <span className=" flex flex-col items-center ">
           <span className="text-sm text-[#62e66d]">{secondUser?.name}</span>
+          {onlineUsers.includes(activeConversation) ? (
+            <span className="text-xs text-[#4c9af3] xs:-mt-[4px]">online</span>
+          ) : (
+            <span className="text-xs text-[#72664b] xs:-mt-[4px]">offline</span>
+          )}
         </span>
       </div>
 
@@ -171,7 +160,6 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
             message={msg}
             index={index}
             lastMessageRef={lastMessageRef}
-            conversationReaded={conversationReaded}
           />
         ))}
       </div>
@@ -180,8 +168,6 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
           id={activeConversation}
           setMessages={setMessages}
           setConversations={setConversations}
-          conversationReaded={conversationReaded}
-          setConversationReaded={setConversationReaded}
         />
       </div>
     </div>

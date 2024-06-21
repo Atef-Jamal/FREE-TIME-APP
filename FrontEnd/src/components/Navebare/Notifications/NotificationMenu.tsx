@@ -16,6 +16,7 @@ import { handleApiError } from "../../../utils/common";
 import Spinner from "../../Others/Spinner";
 import { TypeNotifications } from "../../../types/notificationTypes";
 import Empty from "../../Others/Empty";
+import MessageReactionNotify from "./InteractwithMessageNotify";
 
 const NotificationMenu = ({
   notifications,
@@ -176,6 +177,17 @@ const NotificationMenu = ({
                       messageLocation={item.messageLocation}
                       createdAt={item.createdAt}
                       mentionedUser={item.mentionedUser}
+                    />
+                  );
+                }
+                if (item.type === "INTERACT-WITH-MESSAGE") {
+                  return (
+                    <MessageReactionNotify
+                      key={item._id}
+                      messageLocation={item.messageLocation}
+                      createdAt={item.createdAt}
+                      interactedUser={item.interactedUser}
+                      typeOfInteraction={item.typeOfInteraction}
                     />
                   );
                 }

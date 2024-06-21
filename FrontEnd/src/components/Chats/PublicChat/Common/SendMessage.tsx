@@ -69,7 +69,7 @@ const SendMessage = ({
       Date.now()
     ).toString();
 
-    const customEvent = new CustomEvent("immediatelyMessage", {
+    const customEvent = new CustomEvent("fastSendPublicMessage", {
       detail: {
         _id: uniqeIdForRollback,
         sender: currentUser,
@@ -79,7 +79,7 @@ const SendMessage = ({
         likes: [],
         dislikes: [],
         isDeleted: false,
-        mentioned: user?.name || null,
+        mentioned: user || null,
         createdAt: new Date().toLocaleString("en-US"),
         updatedAt: new Date().toLocaleString("en-US"),
         isSended: "PENDING",
@@ -173,8 +173,8 @@ const SendMessage = ({
   };
 
   useListenToSocketEvents({
-    eventToListen: ["typing-public-message", "stop-typing-public-message"],
-    onUpdate: [handleTyping, handleStopTyping],
+    eventsToListen: ["typing-public-message", "stop-typing-public-message"],
+    handlers: [handleTyping, handleStopTyping],
   });
 
   useEffect(() => {

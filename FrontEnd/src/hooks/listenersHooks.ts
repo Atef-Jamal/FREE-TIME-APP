@@ -4,12 +4,12 @@ import { useAppSelector } from "../context/Hooks";
 type HandleUpdate = (arg: any) => void;
 
 export const useListenToSocketEvents = ({
-  eventToListen,
-  onUpdate,
+  eventsToListen,
+  handlers,
   dependencies = [],
 }: {
-  eventToListen: string[];
-  onUpdate: HandleUpdate[];
+  eventsToListen: string[];
+  handlers: HandleUpdate[];
   dependencies?: any[];
 }) => {
   const { socket } = useAppSelector((state) => state.stateManeger);
@@ -17,13 +17,13 @@ export const useListenToSocketEvents = ({
   useEffect(() => {
     if (!socket) return;
 
-    for (let index = 0; index < eventToListen.length; index++) {
-      socket.on(eventToListen[index], onUpdate[index]);
+    for (let index = 0; index < eventsToListen.length; index++) {
+      socket.on(eventsToListen[index], handlers[index]);
     }
 
     return () => {
-      for (let index = 0; index < eventToListen.length; index++) {
-        socket.off(eventToListen[index], onUpdate[index]);
+      for (let index = 0; index < eventsToListen.length; index++) {
+        socket.off(eventsToListen[index], handlers[index]);
       }
     };
   }, [socket, ...dependencies]);

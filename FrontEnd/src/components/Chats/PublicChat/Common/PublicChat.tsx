@@ -20,8 +20,9 @@ const PublicChat = () => {
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get("messageId");
-
   const [stagingMessages, setStagingMessages] = useState(0);
+
+  const { setElement } = useScrollToElement([messages], "start", "messageId");
 
   const handleAddNewMessage = (data: TypePublicChatItem) => {
     const element = messageContainerRef.current!;
@@ -35,25 +36,16 @@ const PublicChat = () => {
   };
 
   const handleAddMessage = (data: any) => {
-    // const element = messageContainerRef.current!;
-    // const addToStaging =
-    //   element.scrollHeight - element.scrollTop > element.clientHeight + 70;
-
-    // if (addToStaging) {
-    //   setStagingMessages((prev) => prev + 1);
-    // }
     setMessages((prev) => [...prev, data.detail]);
   };
 
-  const { setElement } = useScrollToElement([messages], "start", "messageId");
-
   useListenToSocketEvents({
-    eventToListen: ["public-message"],
-    onUpdate: [handleAddNewMessage],
+    eventsToListen: ["public-message"],
+    handlers: [handleAddNewMessage],
   });
 
   useListenToDocumentEvent({
-    eventToListen: "immediatelyMessage",
+    eventToListen: "fastSendPublicMessage",
     onUpdate: handleAddMessage,
   });
 
