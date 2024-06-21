@@ -7,11 +7,11 @@ import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { useScrollToElement } from "../../../../hooks/commonHooks";
 import { useSearchParams } from "react-router-dom";
 import { useFetchPublicMessages } from "../../../../hooks";
-import Spinner from "../../../Others/Spinner";
 import SendMessage from "./SendMessage";
 import Message from "./Message";
 import FreeTime from "./FreeTime";
 import { FaArrowDownLong } from "react-icons/fa6";
+import MessageSkeleton from "./MessageSkeleton";
 
 const PublicChat = () => {
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
@@ -35,13 +35,13 @@ const PublicChat = () => {
   };
 
   const handleAddMessage = (data: any) => {
-    const element = messageContainerRef.current!;
-    const addToStaging =
-      element.scrollHeight - element.scrollTop > element.clientHeight + 70;
+    // const element = messageContainerRef.current!;
+    // const addToStaging =
+    //   element.scrollHeight - element.scrollTop > element.clientHeight + 70;
 
-    if (addToStaging) {
-      setStagingMessages((prev) => prev + 1);
-    }
+    // if (addToStaging) {
+    //   setStagingMessages((prev) => prev + 1);
+    // }
     setMessages((prev) => [...prev, data.detail]);
   };
 
@@ -131,15 +131,26 @@ const PublicChat = () => {
     }
   }, [messages]);
 
+  let numofSkeleton = 5;
+
+  if (messageContainerRef.current) {
+    numofSkeleton = Math.floor(messageContainerRef.current.clientHeight / 80);
+  }
+
   return (
     <>
       <div
         ref={messageContainerRef}
         className="w-full h-full px-2 sm:px-1 pb-2 sm:pb-1 flex flex-col items-center gap-[5px] overflow-y-scroll sm:scrollbar-none transition-all"
       >
-        {loading && <Spinner className="m-auto w-12 h-12 border-[4px]" />}
-        {error && (
-          <div className="m-auto w-full text-center text-gray-400">{error}</div>
+        {loading &&
+          [...Array(numofSkeleton).keys()].map((skeleton) => (
+            <MessageSkeleton key={skeleton} />
+          ))}
+        {!error && (
+          <div className="m-auto w-full text-center text-lg font-bold text-[#d15e5e]">
+            {error}
+          </div>
         )}
         {messagesList}
       </div>

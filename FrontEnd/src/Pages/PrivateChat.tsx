@@ -12,12 +12,16 @@ import {
 import { useListenToSocketEvents } from "../hooks";
 import { makeRequest } from "../utils";
 import { useSearchParams } from "react-router-dom";
+import { handleApiError } from "../utils/common";
 
 const PrivateChat = () => {
   const { currentUser, currentAccountRequestFullfiled, hiddenLiveStats } =
     useAppSelector((state) => state.stateManeger);
   const [searchParams] = useSearchParams();
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [refetch, setRefetch] = useState<boolean>(false);
   const [conversations, setConversations] = useState<TypeConversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<string | null>(
     null
@@ -26,6 +30,8 @@ const PrivateChat = () => {
   const secondPartyId = searchParams.get("chat-with");
 
   const fetchAllConversations = async () => {
+    if (error) setError(null);
+    setLoading(true);
     try {
       const response = await makeRequest.get(
         "api/conversations/all-conversations/allusers"
@@ -45,7 +51,9 @@ const PrivateChat = () => {
       });
       setConversations(sorted);
     } catch (error) {
-      console.log(error);
+      setError(handleApiError(error));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,6 +108,9 @@ const PrivateChat = () => {
 
   useEffect(() => {
     fetchAllConversations();
+  }, [refetch]);
+
+  useEffect(() => {
     if (secondPartyId && secondPartyId !== currentUser?._id) {
       setActiveConversation(secondPartyId);
       localStorage.setItem("active-converstaion", secondPartyId);
@@ -156,6 +167,9 @@ const PrivateChat = () => {
             conversations={conversations}
             activeConversation={activeConversation}
             setActiveConversation={setActiveConversation}
+            loading={loading}
+            error={error}
+            setRefetch={setRefetch}
           />
         </div>
         <div className="h-full flex-1 max-w-[800px] mx-auto">

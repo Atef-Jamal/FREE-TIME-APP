@@ -101,7 +101,12 @@ const Layout = () => {
         </div>
         <ToastNotify />
       </div>
-      <div className="flex flex-1">
+      <div
+        style={{
+          minHeight: `calc(100dvh - 70px)`,
+        }}
+        className="flex"
+      >
         <div
           onClick={() => {
             if (openSidbareMobile) setOpenSidbareMobile(false);

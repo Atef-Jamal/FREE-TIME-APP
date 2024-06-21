@@ -8,9 +8,7 @@ import { BiErrorAlt } from "react-icons/bi";
 import { useFetchTaskApp, useFetchUser } from "../hooks";
 
 const Playing = () => {
-  const { currentUser, currentAccountRequestFullfiled } = useAppSelector(
-    (state) => state.stateManeger
-  );
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const { id } = useParams();
 
   const {
@@ -41,7 +39,7 @@ const Playing = () => {
     }
   }
 
-  if (loadingUser || loadingTaskApp || !currentAccountRequestFullfiled) {
+  if (loadingUser || loadingTaskApp) {
     return (
       <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
         <Spinner className="w-20 h-20" />
@@ -49,13 +47,6 @@ const Playing = () => {
     );
   }
 
-  if (!currentUser) {
-    return (
-      <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
-        sign In first
-      </div>
-    );
-  }
   if (!id) {
     return (
       <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
@@ -63,6 +54,7 @@ const Playing = () => {
       </div>
     );
   }
+
   if (isCompletedBefore) {
     return (
       <div className="flex items-center justify-center gap-2 h-full min-h-[800px] sm:min-h-[490px] opacity-70 text-lg">
@@ -92,6 +84,7 @@ const Playing = () => {
   if (taskApp?.type === "GAME_APP" && taskApp.isAvailable === "AVAILABLE") {
     return <GuessCardApp taskApp={taskApp} />;
   }
+
   return null;
 };
 

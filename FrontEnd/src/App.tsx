@@ -1,12 +1,16 @@
 import { Suspense, lazy, useEffect } from "react";
 import "./App.css";
-import { Link, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import io from "socket.io-client";
 import { setOnlineUsers, setSocet } from "./context/StateManeger";
 import { useListenToSocketEvents } from "./hooks";
 import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
 import LoadingWebsite from "./components/Others/LoadingWebsite";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
+import ProtectedPage from "./components/Others/ProtectedPage";
+import PageNotFound from "./components/Errors/PageNotFound";
+import AppError from "./components/Errors/AppError";
+
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
 const Earn = lazy(() => import("./Pages/Earn"));
@@ -25,32 +29,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    errorElement: (
-      <div className="w-screen h-screen flex flex-col items-center justify-center">
-        <span className="text-[150px] font-bold sm:text-[50px] text-[#56c760]">
-          404
-        </span>
-        <span className="text-3xl font-bold text-[#56c760]">
-          Page Not Found!
-        </span>
-        <div className="flex items-center gap-3 mt-2">
-          <Link
-            to={"/"}
-            className="bg-[#4fca74] py-1 px-4 rounded-md text-black font-bold"
-          >
-            GO TO HOMEPAGE
-          </Link>
-          <button
-            onClick={() =>
-              (window.location.href = import.meta.env.VITE_CLIENT_BASE_URL)
-            }
-            className="bg-[#4fca74] py-1 px-4 rounded-md text-black font-bold"
-          >
-            RELOAD APP
-          </button>
-        </div>
-      </div>
-    ),
+    errorElement: <AppError />,
     children: [
       {
         path: "",
@@ -114,7 +93,9 @@ const router = createBrowserRouter([
         path: "myprofile",
         element: (
           <Suspense fallback={<LoadingWebsite />}>
-            <MyProfile />
+            <ProtectedPage>
+              <MyProfile />
+            </ProtectedPage>
           </Suspense>
         ),
       },
@@ -138,20 +119,12 @@ const router = createBrowserRouter([
         path: "privatechat",
         element: (
           <Suspense fallback={<LoadingWebsite />}>
-            <PrivateChat />
+            <ProtectedPage>
+              <PrivateChat />
+            </ProtectedPage>
           </Suspense>
         ),
         errorElement: <div>an error occurred!</div>,
-        // children: [
-        //   {
-        //     path: ":id",
-        //     element: (
-        //       <Suspense fallback={<LoadingWebsite />}>
-        //         <ChatBody />
-        //       </Suspense>
-        //     ),
-        //   },
-        // ],
       },
       {
         path: "user/:id",
@@ -168,11 +141,17 @@ const router = createBrowserRouter([
             path: ":id",
             element: (
               <Suspense fallback={<LoadingWebsite />}>
-                <Playing />
+                <ProtectedPage>
+                  <Playing />
+                </ProtectedPage>
               </Suspense>
             ),
           },
         ],
+      },
+      {
+        path: "*",
+        element: <PageNotFound />,
       },
     ],
   },

@@ -59,7 +59,6 @@ const WhoVisitProfile = () => {
       setIsLoading(false);
     }
   };
-  console.log(usersVisitsMyProfile);
   return (
     <div className="w-[70%] sm:w-full mx-auto mt-3 flex flex-col items-center justify-center gap-2 pb-3">
       <div className="flex items-center gap-y-3 justify-around flex-wrap w-full py-2">

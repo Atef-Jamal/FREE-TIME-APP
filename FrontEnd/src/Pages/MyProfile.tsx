@@ -21,15 +21,13 @@ import { handleApiError } from "../utils/common";
 import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frameTypes";
-import Spinner from "../components/Others/Spinner";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
 
 const MyProfile = () => {
-  const { currentUser, currentAccountRequestFullfiled, socket } =
-    useAppSelector((state) => state.stateManeger);
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const { musics } = useFetchMusics();
   const dispatch = useAppDispatch();
 
@@ -119,21 +117,7 @@ const MyProfile = () => {
     );
   };
 
-  if (!currentAccountRequestFullfiled) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <Spinner className="w-12 h-12 border-4" />
-      </div>
-    );
-  }
-
-  if (!currentUser) {
-    return (
-      <div className="bg-[#141523] h-full text-gray-400 font-bold  font-serif flex items-center justify-center ">
-        Login To View Your Profile
-      </div>
-    );
-  }
+  if (!currentUser) return;
 
   return (
     <div className="bg-[#141523] py-6 sm:py-4 h-full w-full flex items-center justify-center">

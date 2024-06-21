@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import Spinner from "../../Others/Spinner";
 import UserImage from "../../../components/Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
@@ -24,6 +23,7 @@ import { handleApiError } from "../../../utils/common";
 import { makeRequest } from "../../../utils";
 import { User } from "../../../types/userTypes";
 import { TypeConversationSocketData } from "../../../types/othersTypes";
+import { ImSpinner3 } from "react-icons/im";
 
 interface TypeProps {
   activeConversation: string;
@@ -139,14 +139,14 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <Spinner className="w-11 h-11 border-[5px] border-l-[#8394f5] border-b-[#8394f5]" />
+        <ImSpinner3 className="text-6xl sm:text-4xl animate-spin" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-gray-300">
+      <div className="w-full h-full flex items-center justify-center font-bold text-lg text-[#b95b5b]">
         {error}
       </div>
     );

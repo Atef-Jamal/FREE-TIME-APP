@@ -60,7 +60,7 @@ const DailyReward = () => {
         <div className="absolute flex flex-col gap-3 w-[95%] xs:w-[90%] mt-5 xs:mx-2 mx-5">
           <p className="text-white text-xl lg:text-sm font-bold tracking-wider ">
             {t(
-              "The Most Rewarding Affiliate System in The Mareket is Now Live!"
+              "The Most Rewarding Affiliate System in The Mareket is Now Live"
             )}
           </p>
           <p className="text-white lg:text-sm tracking-wider">
