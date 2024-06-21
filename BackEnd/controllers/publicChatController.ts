@@ -105,7 +105,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
         typeOfInteraction: fieldName,
       });
 
-      if (!interactedWithMessageBefore) {
+      if (!interactedWithMessageBefore && message.sender._id !== currentUserId ) {
         const createNotification = new Notification({
           type: "INTERACT-WITH-MESSAGE",
           belongsTo: message.sender._id,
