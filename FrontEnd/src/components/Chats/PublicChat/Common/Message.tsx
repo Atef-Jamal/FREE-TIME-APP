@@ -15,23 +15,31 @@ import { verifiedImage } from "../../../../assets";
 import { BiCircle } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
+import html2canvas from "html2canvas";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
   messageRef: React.RefObject<HTMLDivElement> | null;
-  stopScrolling: boolean;
-  setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
+  // stopScrolling: boolean;
+  // setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenChatModelDeletion: React.Dispatch<
+    React.SetStateAction<{
+      messageId: string;
+      messageUrlScreenshot: string;
+    } | null>
+  >;
 }
 
 type TypeFieldName = "loves" | "likes" | "dislikes";
 
 const Message = ({
   singleMessage,
-  setStopScrolling,
-  stopScrolling,
+  // setStopScrolling,
+  // stopScrolling,
   messageRef,
+  setOpenChatModelDeletion,
 }: TypeMessageProp) => {
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  // const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [messageItem, setMessageItem] =
     useState<TypePublicChatMessage>(singleMessage);
@@ -53,29 +61,29 @@ const Message = ({
 
   const dispatch = useAppDispatch();
 
-  const deleteMessage = async (messageId: string) => {
-    setIsDeleting(true);
-    try {
-      if (stopScrolling === false) {
-        setStopScrolling(true);
-      }
-      setMessageItem((prev) => ({ ...prev, isDeleted: true }));
-      const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
-        isDeleted: true,
-      });
-      socket?.emit("interact-with-public-message", response.data);
-    } catch (error) {
-      setMessageItem((prev) => ({ ...prev, isDeleted: false }));
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+  // const deleteMessage = async (messageId: string) => {
+  //   setIsDeleting(true);
+  //   try {
+  //     if (stopScrolling === false) {
+  //       setStopScrolling(true);
+  //     }
+  //     setMessageItem((prev) => ({ ...prev, isDeleted: true }));
+  //     const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
+  //       isDeleted: true,
+  //     });
+  //     socket?.emit("interact-with-public-message", response.data);
+  //   } catch (error) {
+  //     setMessageItem((prev) => ({ ...prev, isDeleted: false }));
+  //     dispatch(
+  //       showPopup({
+  //         type: "ERROR_GENERAL",
+  //         message: handleApiError(error),
+  //       })
+  //     );
+  //   } finally {
+  //     setIsDeleting(false);
+  //   }
+  // };
 
   const reactToMessage = async (
     fieldName: TypeFieldName,
@@ -155,7 +163,7 @@ const Message = ({
   return (
     <div
       ref={messageRef}
-      id={_id}
+      id={`publicMessage${_id}`}
       className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex relative ">
@@ -188,8 +196,24 @@ const Message = ({
         )}
         {currentUser?._id === sender._id && !isDeleted && (
           <button
-            onClick={() => deleteMessage(_id)}
-            disabled={isDeleting}
+            onClick={async () => {
+              const messageElement = document.getElementById(
+                `publicMessage${_id}`
+              );
+              messageElement?.classList.add("bg-[#2c2047]");
+              let messageUrl = "";
+              if (messageElement) {
+                const canvas = await html2canvas(messageElement);
+                messageUrl = canvas.toDataURL("image/png");
+                messageElement?.classList.remove("bg-[#2c2047]");
+              }
+
+              setOpenChatModelDeletion({
+                messageId: _id,
+                messageUrlScreenshot: messageUrl,
+              });
+            }}
+            // disabled={isDeleting}
             className="ml-auto flex items-center justify-center rounded-sm"
           >
             <FaRegTrashCan className="text-lg sm:text-sm opacity-70" />
