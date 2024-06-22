@@ -21,7 +21,7 @@ export const getNotification = async (req: Request, res: Response) => {
   try {
     const notifications = await Notification.find({
       belongsTo: userid,
-    }).populate(["mentionedUser", "referredUser", "frame"]);
+    }).populate(["mentionedUser", "referredUser", "frame", "interactedUser"]);
 
     return res.status(200).json(notifications);
   } catch (error) {
