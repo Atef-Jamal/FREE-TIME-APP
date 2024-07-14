@@ -7,6 +7,8 @@ import { MdContactSupport } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import { useRef } from "react";
 import { useCloseMenuOnClickOutSide } from "../../../hooks";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../firebase";
 
 interface ProfilTypeProp {
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +22,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const handleLogOut = async () => {
     localStorage.setItem("token", "");
     localStorage.setItem("active-converstaion", "");
+    await signOut(auth);
     setOpenProfileMenu((previos) => !previos);
     window.location.href = `${window.location.origin}/?redirectedfrom=logout`;
   };

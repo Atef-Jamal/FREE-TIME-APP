@@ -11,13 +11,15 @@ const ToastNotify = () => {
     ToastNotify: { type, message },
   } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     if (!message) return;
 
-    const timeOut = setTimeout(() => {
-      dispatch(resetPopup());
-    }, 5000);
+    const timeOut = setTimeout(
+      () => {
+        dispatch(resetPopup());
+      },
+      type === "LOADING" ? 15000 : 5000
+    );
 
     return () => clearTimeout(timeOut);
   }, [message, dispatch]);
@@ -33,9 +35,7 @@ const ToastNotify = () => {
       <span className="text-xl">
         {type === "ERROR_LOCK" && <IoLockClosed />}
         {type === "ERROR_GENERAL" && <BiErrorAlt />}
-        {type === "LOADING" && (
-          <Spinner className="w-6 h-6 border-b-[#1d0f36ee] border-l-[#1d0f36ee]" />
-        )}
+        {type === "LOADING" && <Spinner className="w-6 h-6 border-[4px]" />}
         {type === "SUCESS" && <FaRegCheckCircle />}
       </span>
       <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">

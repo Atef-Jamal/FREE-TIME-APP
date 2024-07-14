@@ -23,7 +23,7 @@ const protectedRoute = async (
     if (!token) {
       return res
         .status(401)
-        .json({ error: "unAuthorized Request, Log in with your credientials" });
+        .json({ error: "UnAuthorized Request, Log in with your credientials" });
     }
 
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "");
@@ -31,7 +31,7 @@ const protectedRoute = async (
     if (!decoded) {
       return res
         .status(404)
-        .json({ error: "unAuthorized, Invalid credientials" });
+        .json({ error: "UnAuthorized, Invalid credientials" });
     }
 
     const user = await User.findById(decoded.userId).select("-password");

@@ -55,9 +55,7 @@ const PeopleList = () => {
             <span className="w-[60%]  flex items-center justify-evenly overflow-scroll scrollbar-none font-bold text-[#86b3ee] h-full border-r">
               <span className="xs:w-5 xs:h-5 w-7 h-7 rounded-full min-w-fit min-h-fit">
                 <img
-                  src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
-                    user.profilePicture
-                  }`}
+                  src={user.profilePicture}
                   alt=""
                   className="w-full h-full rounded-full object-cover"
                 />

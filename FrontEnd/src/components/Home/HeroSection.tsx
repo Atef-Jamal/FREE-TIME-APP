@@ -7,6 +7,7 @@ import { showPopup } from "../../context/StateManeger";
 import Input from "../Navebare/Registration/Input";
 import { handleApiError } from "../../utils/common";
 import { useTranslation } from "react-i18next";
+import { login, signInWithGoogle } from "../../utils/auth";
 
 const HeroSection = () => {
   const { t } = useTranslation("home");
@@ -18,6 +19,9 @@ const HeroSection = () => {
   const handlaSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
+      const response = await login({ email, password }, dispatch);
+      localStorage.setItem("token", response.data.token);
+      window.location.href = `${window.location.origin}/?redirectedfrom=login`;
     } catch (error: any) {
       dispatch(
         showPopup({
@@ -28,11 +32,27 @@ const HeroSection = () => {
     }
   };
 
+  const handleSignInWithGoogle = async (
+    e: React.FormEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    try {
+      await signInWithGoogle(dispatch);
+    } catch (error) {
+      dispatch(
+        showPopup({
+          message: handleApiError(error),
+          type: "ERROR_GENERAL",
+        })
+      );
+    }
+  };
+
   return (
     <div
       className={`w-[90%] max-w-[1400px] mx-auto flex ${
-        !isTokenExists ? "justify-between" : "justify-center"
-      } lg:flex-col lg:items-center px-16 lg:px-0`}
+        !isTokenExists ? "justify-between " : "justify-center px-16"
+      } lg:flex-col lg:items-center lg:px-0`}
     >
       <div
         className={`${
@@ -92,7 +112,7 @@ const HeroSection = () => {
         </div>
       </div>
       {!isTokenExists && (
-        <div className="flex flex-col gap-2 w-[44%] bg-[#33334c] p-8 sm:px-2 sm:py-3 rounded-md sm:w-[92%] lg:w-[87%] lg:mt-10 border border-gray-600 sm:mx-auto ">
+        <div className="flex flex-col gap-2 w-[50%] bg-[#33334c] p-8 sm:px-2 sm:py-3 rounded-md sm:w-[92%] lg:w-[87%] lg:mt-10 border border-gray-600 sm:mx-auto ">
           <div className="text-center mb-4 sm:bg-[#18193fb4] sm:py-3 sm:rounded-md ">
             <h1 className="font-bold text-2xl tracking-wider text-white mb-2">
               Sign Up For Free
@@ -105,11 +125,14 @@ const HeroSection = () => {
           </div>
           <div className="bg-blue-900 h-12 mb-4 rounded-md sing-up-free"></div>
           <div className="flex flex-col items-center gap-1">
-            <button className="text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md w-full px-4 py-2 sm:text-xs text-[#f7d0d0]">
-              Sign Up With Google <FcGoogle />
+            <button
+              onClick={handleSignInWithGoogle}
+              className="text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md w-full px-4 py-2 sm:text-xs text-[#f7d0d0]"
+            >
+              Sign In With Google <FcGoogle />
             </button>
             <button className=" text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md px-4 py-2 sm:text-xs w-full text-[#f7d0d0]">
-              Sign Up With GitHub <VscGithub />
+              Sign In With GitHub <VscGithub />
             </button>
           </div>
           <div className="flex w-[90%] mx-auto gap-2 items-center my-1">

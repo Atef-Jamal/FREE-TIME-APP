@@ -141,9 +141,7 @@ const TestimonialSection = () => {
                     </div>
                     <div className="w-16 h-16 xs:w-9 xs:h-9 rounded-full border border-yellow-500">
                       <img
-                        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
-                          item.user.profilePicture
-                        }`}
+                        src={item.user.profilePicture}
                         alt=""
                         className="w-full h-full rounded-full"
                       />

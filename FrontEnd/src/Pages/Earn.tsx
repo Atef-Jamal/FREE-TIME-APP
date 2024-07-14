@@ -126,7 +126,6 @@ const Earn = () => {
               <span className="mr-1 text-[#bedf65]">EARN</span> ON
             </span>
             <div
-              // ref={deviceMenuRef}
               onClick={() => setSelectDevice((prev) => !prev)}
               className="flex items-center justify-center gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4 cursor-pointer"
             >
@@ -242,7 +241,7 @@ const Earn = () => {
                 <Spinner className="w-8 h-8 border-[3px] border-b-yellow-400 border-l-yellow-400 mx-auto" />
               </div>
             )}
-            {!loading && apps.length === 0 && (
+            {!loading && apps.length === 0 && !error && (
               <Empty
                 emptyText="No Apps Matches your Filter Query"
                 imgWidthHeight=""
@@ -253,7 +252,7 @@ const Earn = () => {
                 {errorLoadMore}
               </span>
             )}
-            {!noMoreApps && (
+            {!noMoreApps && !error && (
               <button
                 onClick={() => setPage((prev) => prev + 1)}
                 className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"

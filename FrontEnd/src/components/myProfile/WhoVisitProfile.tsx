@@ -94,9 +94,7 @@ const WhoVisitProfile = () => {
                 <div className="flex items-center justify-center gap-3">
                   <div className="w-8 h-8 rounded-full">
                     <img
-                      src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
-                        item.visiter.profilePicture
-                      }`}
+                      src={item.visiter.profilePicture}
                       alt=""
                       className="object-contain rounded-full"
                     />

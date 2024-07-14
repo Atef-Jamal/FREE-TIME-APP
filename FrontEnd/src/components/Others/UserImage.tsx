@@ -21,7 +21,7 @@ const UserImage = ({ user }: TypeProps) => {
             ? "top-[15%] left-[14%] w-[70%] h-[70%] rounded-sm"
             : "w-full h-full rounded-md "
         } `}
-        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${user.profilePicture}`}
+        src={user.profilePicture}
         alt=""
       />
     </div>

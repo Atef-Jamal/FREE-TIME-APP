@@ -11,6 +11,7 @@ import testimonialRoute from "../testimonialRoutes";
 import couponRoute from "../couponRoutes";
 import searchRoute from "../searchRoute";
 import rewardsRoutes from "../rewardsRoutes";
+import dateRoutes from "../dateRoutes";
 
 const router = express.Router();
 
@@ -37,5 +38,7 @@ router.use("/coupons", couponRoute);
 router.use("/search", searchRoute);
 
 router.use("/rewards", rewardsRoutes);
+
+router.use("/date", dateRoutes);
 
 export default Router().use("/api", router);

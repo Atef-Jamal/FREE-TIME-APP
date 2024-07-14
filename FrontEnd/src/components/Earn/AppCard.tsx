@@ -39,7 +39,7 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
         <div className="w-full mx-auto  overflow-hidden">
           <img
             alt={""}
-            src={`${import.meta.env.VITE_SERVER_BASE_URL}/${image}`}
+            src={image}
             className={`w-full h-[95px] rounded-sm  object-fill`}
           />
         </div>

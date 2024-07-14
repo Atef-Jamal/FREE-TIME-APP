@@ -99,7 +99,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
         </h1>
         <img
           className="w-full h-[300px] object-cover mb-3"
-          src={`${import.meta.env.VITE_SERVER_BASE_URL}/${appDetail.image}`}
+          src={appDetail.image}
           alt=""
         />
         <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
@@ -180,9 +180,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
                 >
                   <div className="w-full flex items-center gap-2">
                     <img
-                      src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
-                        review.user.profilePicture
-                      }`}
+                      src={review.user.profilePicture}
                       alt=""
                       className="w-8 h-8 sm:w-6 sm:h-6 rounded-full object-fill"
                     />

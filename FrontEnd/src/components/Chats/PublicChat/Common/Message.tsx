@@ -61,30 +61,6 @@ const Message = ({
 
   const dispatch = useAppDispatch();
 
-  // const deleteMessage = async (messageId: string) => {
-  //   setIsDeleting(true);
-  //   try {
-  //     if (stopScrolling === false) {
-  //       setStopScrolling(true);
-  //     }
-  //     setMessageItem((prev) => ({ ...prev, isDeleted: true }));
-  //     const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
-  //       isDeleted: true,
-  //     });
-  //     socket?.emit("interact-with-public-message", response.data);
-  //   } catch (error) {
-  //     setMessageItem((prev) => ({ ...prev, isDeleted: false }));
-  //     dispatch(
-  //       showPopup({
-  //         type: "ERROR_GENERAL",
-  //         message: handleApiError(error),
-  //       })
-  //     );
-  //   } finally {
-  //     setIsDeleting(false);
-  //   }
-  // };
-
   const reactToMessage = async (
     fieldName: TypeFieldName,
     otherFieldOne: TypeFieldName,

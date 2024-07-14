@@ -9,7 +9,7 @@ import Input from "./Input";
 import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
 import { handleApiError, validation } from "../../../utils/common";
-import { login, register } from "../../../utils/auth";
+import { login, register, signInWithGoogle } from "../../../utils/auth";
 import { TypeFormData } from "../../../types/othersTypes";
 
 const initialValue = {
@@ -71,22 +71,10 @@ const RegisterationForm = () => {
 
     try {
       if (isSignInMode) {
-        dispatch(
-          showPopup({
-            message: "Logging In....",
-            type: "LOADING",
-          })
-        );
-        const response = await login({ email, password });
+        const response = await login({ email, password }, dispatch);
         localStorage.setItem("token", response.data.token);
         window.location.href = `${window.location.origin}/?redirectedfrom=login`;
       } else {
-        dispatch(
-          showPopup({
-            message: "Registering....",
-            type: "LOADING",
-          })
-        );
         const formDtaa = new FormData();
         formDtaa.append("name", name);
         formDtaa.append("email", email);
@@ -94,7 +82,7 @@ const RegisterationForm = () => {
         formDtaa.append("confirmPassword", confirmPassword);
         formDtaa.append("profilePicture", profilePicture as File);
 
-        const response = await register(formDtaa, queryParam);
+        const response = await register(formDtaa, dispatch, queryParam);
         localStorage.setItem("token", response.data.token);
         socket?.emit("new-user-joined", response.data._doc);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
@@ -117,6 +105,7 @@ const RegisterationForm = () => {
   ) => {
     e.preventDefault();
     try {
+      await signInWithGoogle(dispatch);
     } catch (error) {
       dispatch(
         showPopup({

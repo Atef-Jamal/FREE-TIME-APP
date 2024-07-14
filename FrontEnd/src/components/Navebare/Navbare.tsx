@@ -30,7 +30,6 @@ const Navbare = () => {
   const token = localStorage.getItem("token");
 
   let timeOut: NodeJS.Timeout;
-
   const getCurrentUser = async () => {
     try {
       if (token) {
@@ -47,6 +46,7 @@ const Navbare = () => {
       );
     } finally {
       dispatch(setCurrentUserIsLoading(false));
+      clearTimeout(timeOut);
       timeOut = setTimeout(() => {
         dispatch(setCurrentAccountRequestFullfiled(true));
       }, 1500);

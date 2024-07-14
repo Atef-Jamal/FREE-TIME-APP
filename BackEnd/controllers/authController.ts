@@ -38,7 +38,9 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture: req.file ? req.file.path : "uploads/avatar.jpeg",
+      profilePicture: `${process.env.SERVER_BASE_URL}/${
+        req.file ? req.file.path : "uploads/avatar.jpeg"
+      }`,
     });
 
     const savedUser = await newUser.save();
@@ -130,6 +132,35 @@ export const login = async (req: Request, res: Response) => {
     return res
       .status(404)
       .json({ error: "an Error occurred, Try again later" });
+  }
+};
+
+export const signInWithGoogle = async (req: Request, res: Response) => {
+  try {
+    const { name, email, profilePicture, accessToken } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY!);
+      return res.status(200).json({ ...user, token });
+    } else {
+      const newUser = new User({
+        name,
+        email,
+        password: accessToken,
+        emailVerified: true,
+        profilePicture,
+      });
+      const savedUser = await newUser.save();
+      const token = jwt.sign(
+        { userId: savedUser._id },
+        process.env.JWT_SECRET_KEY!
+      );
+
+      return res.status(200).json({ ...savedUser, token });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ error: "failed to sign in with google" });
   }
 };
 

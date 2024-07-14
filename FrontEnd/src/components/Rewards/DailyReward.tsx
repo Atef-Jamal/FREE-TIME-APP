@@ -8,6 +8,7 @@ import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-bann
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { makeRequest } from "../../utils";
 
 const DailyReward = () => {
   const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
@@ -16,6 +17,7 @@ const DailyReward = () => {
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<
     string | null
   >(null);
+  const [today, setToday] = useState("");
   const { t } = useTranslation("rewards");
 
   useEffect(() => {
@@ -43,6 +45,19 @@ const DailyReward = () => {
     const nextTimerDay = datePart + "T00:00:00.000Z";
     setDayWhichTimmerIsLocated(nextTimerDay);
   };
+
+  useEffect(() => {
+    const getDate = async () => {
+      try {
+        const response = await makeRequest.get("api/date");
+        setToday(response.data);
+      } catch (error) {
+        console.log(error);
+        console.log("fail to get date");
+      }
+    };
+    getDate();
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -91,11 +106,23 @@ const DailyReward = () => {
             </span>
           )}
         </div>
-        <p className="text-yellow-400 text-sm sm:text-xs lg:text-xs">
+        <p className="text-yellow-400  sm:text-sm lg:text-xs ">
           {t("Earn 1,000 or more points within 24 hours to keep you streak")}
-          {/* Earn 1,000 <span className="text-sm">or more</span> coins{" "}
-          <span className="text-sm">within </span> 24 hours{" "}
-          <span className="text-sm">to keep you streak</span> */}
+        </p>
+        <p className="text-yellow-400 sm:text-sm lg:text-xs">
+          according to your timezoon the day beginning at{" "}
+          <span className="font-bold text-[#646df5]">
+            {" "}
+            {new Date(today)
+              .toLocaleTimeString()
+              .split(" ")[0]
+              .slice(0, -3)}{" "}
+            {new Date(today)
+              .toLocaleTimeString()
+              .split(" ")[1]
+              .toLocaleLowerCase()}
+          </span>{" "}
+          o'clock
         </p>
         <div
           id="daily-reward"

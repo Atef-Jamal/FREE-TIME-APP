@@ -196,15 +196,6 @@ const NotificationMenu = ({
         </div>
         {notifications.length === 0 && (
           <Empty emptyText="Empty Notifications" />
-          // <div className="flex flex-col items-center justify-center w-[90%] mb-4 ">
-          //   <img alt={""} src={empty} className="w-[40px]" />
-          //   <span className="text-gray-500 tracking-wider font-extrabold mt-4 text-sm">
-          //     Empty
-          //   </span>
-          //   <span className="text-gray-500 tracking-wider font-bold text-sm ">
-          //     You have No Notifications
-          //   </span>
-          // </div>
         )}
       </div>
     </>

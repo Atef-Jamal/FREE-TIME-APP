@@ -99,6 +99,7 @@ const ApplyCoupon = () => {
                 go to Reward Page click on Bonus code Button
                 <button
                   onClick={() => {
+                    dispatch(resetModel());
                     navigate("/rewards?to=bonus-code");
                   }}
                   className="ml-1 underline text-[#aa7ee4]"

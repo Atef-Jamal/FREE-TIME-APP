@@ -4,6 +4,7 @@ import { User } from "./userTypes";
 export interface TypePopup {
   type: "ERROR_GENERAL" | "ERROR_LOCK" | "SUCESS" | "LOADING" | null;
   message: string | null;
+  time?: number;
 }
 
 export interface TypeMusicInfo {
