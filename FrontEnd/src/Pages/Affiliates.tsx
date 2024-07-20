@@ -28,7 +28,7 @@ const Affiliates = () => {
         <img
           alt={""}
           src={affiliateExplained}
-          className="w-[80%] sm:w-full  mt-8"
+          className="w-[80%] sm:w-full mt-8"
         />
       </div>
       <div className="flex flex-col gap-12 justify-center items-center py-6">

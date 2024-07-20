@@ -2,7 +2,7 @@ import Skeleton from "../../Others/Skeleton";
 
 const PeopleSkeleton = () => {
   return (
-    <div className="w-full flex flex-col gap-y-[6px] p-1 bg-[#24242efb] rounded-md">
+    <div className="w-full flex flex-col gap-y-2 p-2 bg-[#27273afb] rounded-md">
       <div className="flex items-center gap-2">
         <Skeleton className="w-7 h-6 rounded-lg" />
         <div>

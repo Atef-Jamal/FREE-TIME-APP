@@ -4,6 +4,7 @@ import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types/earnTypes";
+import Image from "../Others/Image";
 
 interface TypeAppCard {
   taskDetail: TypeTaskApp;
@@ -37,9 +38,10 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
 
       <div className="relative overflow-hidden">
         <div className="w-full mx-auto  overflow-hidden">
-          <img
+          <Image
             alt={""}
             src={image}
+            width={"100%"}
             className={`w-full h-[95px] rounded-sm  object-fill`}
           />
         </div>
