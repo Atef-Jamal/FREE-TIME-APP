@@ -75,14 +75,14 @@ const RegisterationForm = () => {
         localStorage.setItem("token", response.data.token);
         window.location.href = `${window.location.origin}/?redirectedfrom=login`;
       } else {
-        const formDtaa = new FormData();
-        formDtaa.append("name", name);
-        formDtaa.append("email", email);
-        formDtaa.append("password", password);
-        formDtaa.append("confirmPassword", confirmPassword);
-        formDtaa.append("profilePicture", profilePicture as File);
+        const userFormData = new FormData();
+        userFormData.append("name", name);
+        userFormData.append("email", email);
+        userFormData.append("password", password);
+        userFormData.append("confirmPassword", confirmPassword);
+        userFormData.append("profilePicture", profilePicture as File);
 
-        const response = await register(formDtaa, dispatch, queryParam);
+        const response = await register(userFormData, dispatch, queryParam);
         localStorage.setItem("token", response.data.token);
         socket?.emit("new-user-joined", response.data._doc);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
