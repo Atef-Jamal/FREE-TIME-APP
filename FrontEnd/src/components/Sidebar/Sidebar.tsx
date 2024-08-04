@@ -14,6 +14,7 @@ import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import { RiCloseFill } from "react-icons/ri";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = ({
   setOpenSidbareMobile,
@@ -24,6 +25,7 @@ const Sidebar = ({
     (state) => state.stateManeger
   );
   const dispatch = useAppDispatch();
+  const { t } = useTranslation("sidebar");
   const messageSound = new Audio();
   messageSound.src = messageSoundSrc;
 
@@ -143,7 +145,7 @@ const Sidebar = ({
                     resizeSidebare && "hidden sm:flex"
                   } font-bold tracking-wide text-gray-400 text-sm `}
                 >
-                  {item.title}
+                  {t(item.title)}
                 </span>
                 {currentUser &&
                   allUnReadedMesseges.length > 0 &&

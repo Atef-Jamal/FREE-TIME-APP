@@ -11,7 +11,7 @@ i18next
     // debug: true,
     backend: "/locales/{{lang}}/{{ns}}.json",
     ns: ["home", "rewards"],
-    defaultNS: "common",
+    defaultNS: "comon",
     interpolation: { escapeValue: false },
   });
 

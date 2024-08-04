@@ -5,6 +5,7 @@ import { VscExpandAll } from "react-icons/vsc";
 import { TypeFilterQuery } from "../../types/earnTypes";
 import { Dispatch, RefObject, SetStateAction, useRef } from "react";
 import { useCloseMenuOnClickOutSide } from "../../hooks";
+import { useTranslation } from "react-i18next";
 
 interface TypeProps {
   allRef: RefObject<HTMLSpanElement>;
@@ -27,6 +28,7 @@ const FilteringMenu = ({
   activeFilteringItem,
 }: TypeProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation("earn");
 
   const handleClose = () => {
     setOpenFilterMenu(false);
@@ -54,7 +56,7 @@ const FilteringMenu = ({
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
         <VscExpandAll className="text-lg" />
-        All
+        {t("ALL")}
       </span>
       <span
         onClick={(e) => activeFilteringItem(e, "REWARD")}
@@ -62,7 +64,7 @@ const FilteringMenu = ({
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
         <SiFirewalla className="text-lg" />
-        Highest Reward
+        {t("REWARD")}
       </span>
       <span
         onClick={(e) => activeFilteringItem(e, "POPULAR")}
@@ -70,14 +72,14 @@ const FilteringMenu = ({
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
         <FaHeart className="text-lg" />
-        Most Popular
+        {t("POPULAR")}
       </span>
       <span
         onClick={(e) => activeFilteringItem(e, "RAITING")}
         ref={heighestRatingRef}
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
-        <FaStar className="text-lg" /> Highest Rating
+        <FaStar className="text-lg" /> {t("RAITING")}
       </span>
     </div>
   );

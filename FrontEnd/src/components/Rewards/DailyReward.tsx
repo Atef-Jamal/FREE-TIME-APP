@@ -110,19 +110,16 @@ const DailyReward = () => {
           {t("Earn 1,000 or more points within 24 hours to keep you streak")}
         </p>
         <p className="text-yellow-400 sm:text-sm lg:text-xs">
-          according to your timezoon the day beginning at{" "}
+          {t("according to your timezoon the day beginning at")}{" "}
           <span className="font-bold text-[#646df5]">
-            {" "}
-            {new Date(today)
-              .toLocaleTimeString()
-              .split(" ")[0]
-              .slice(0, -3)}{" "}
-            {new Date(today)
-              .toLocaleTimeString()
-              .split(" ")[1]
-              .toLocaleLowerCase()}
-          </span>{" "}
-          o'clock
+            {new Date(today).toLocaleTimeString().split(" ")[0].slice(0, -3)}{" "}
+            {t(
+              new Date(today)
+                .toLocaleTimeString()
+                .split(" ")[1]
+                .toLocaleLowerCase()
+            )}
+          </span>
         </p>
         <div
           id="daily-reward"

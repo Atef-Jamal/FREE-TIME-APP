@@ -17,6 +17,7 @@ import RegisterationForm from "./Registration/RegisterationForm";
 import Search from "../Search/Search";
 import SearchBar from "../Search/SearchBar";
 import { BiSearch } from "react-icons/bi";
+import { useTranslation } from "react-i18next";
 
 const Navbare = () => {
   const {
@@ -25,6 +26,7 @@ const Navbare = () => {
     currentAccountRequestFullfiled,
     openRegisterForm,
   } = useAppSelector((state) => state.stateManeger);
+  const { t } = useTranslation("navbar");
 
   const dispatch = useAppDispatch();
   const token = localStorage.getItem("token");
@@ -75,7 +77,7 @@ const Navbare = () => {
         className="xs:hidden w-[600px] xl:w-[30%] sm:w-[35%] xs:w-[10%] h-full ml-auto mx-auto rounded-md overflow-hidden cursor-pointer"
       >
         <SearchBar
-          placeholder="search EveryThing..."
+          placeholder={t("search Everything")}
           onChange={() => {}}
           readOnly
         />

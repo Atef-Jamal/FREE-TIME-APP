@@ -11,6 +11,7 @@ import UploadImage from "./UploadImage";
 import { handleApiError, validation } from "../../../utils/common";
 import { login, register, signInWithGoogle } from "../../../utils/auth";
 import { TypeFormData } from "../../../types/othersTypes";
+import { useTranslation } from "react-i18next";
 
 const initialValue = {
   name: "",
@@ -28,8 +29,9 @@ const RegisterationForm = () => {
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
   const [searchParams] = useSearchParams();
-  const queryParam = searchParams.get("referrerUser");
   const dispatch = useAppDispatch();
+  const { t } = useTranslation("register");
+  const queryParam = searchParams.get("referrerUser");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((previous) => {
@@ -129,7 +131,7 @@ const RegisterationForm = () => {
       <div className="absolute top-16 xl:top-9 sm:top-0 w-[60%] max-w-[1300px] min-w-[650px]  h-[75%] sm:min-w-full sm:max-w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-auto ">
         <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-0 ">
           <span className="text-white text-2xl font-bold sm:hidden">
-            Welcome
+            {t("Welcome")}
           </span>
           <div className="flex gap-5">
             <button
@@ -144,7 +146,7 @@ const RegisterationForm = () => {
                   : " text-gray-600"
               } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
             >
-              Sign In
+              {t("Sign In")}
             </button>
 
             <button
@@ -159,7 +161,7 @@ const RegisterationForm = () => {
                   : "text-gray-600"
               }  sm:text-md  font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
             >
-              Sign Up
+              {t("Sign Up")}
             </button>
           </div>
           <button
@@ -194,41 +196,41 @@ const RegisterationForm = () => {
               {!isSignInMode && (
                 <Input
                   type="text"
-                  label="Name"
+                  label={t("Name")}
                   name="name"
                   id="name"
                   value={formData.name}
                   onChange={handleFormChange}
-                  placeholder="Enter Your name"
+                  placeholder={t("Enter Your Name")}
                 />
               )}
               <Input
                 type="email"
-                label="Email address"
+                label={t("Email Address")}
                 name="email"
                 id="email"
                 value={formData.email}
                 onChange={handleFormChange}
-                placeholder="Enter Your E-Email"
+                placeholder={t("Enter Your Email")}
               />
               <Input
                 type={"password"}
-                label="Password"
+                label={t("Password")}
                 name="password"
                 id="password"
                 value={formData.password}
                 onChange={handleFormChange}
-                placeholder="Enter Your Password"
+                placeholder={t("Enter Your Password")}
               />
               {!isSignInMode && (
                 <Input
                   type="password"
-                  label="Confirm Your Paaword"
+                  label={t("Confirm Your Password")}
                   name="confirmPassword"
                   id="confirm-password"
                   value={formData.confirmPassword}
                   onChange={handleFormChange}
-                  placeholder="Confirm Your Paaword"
+                  placeholder={t("Confirm Your Password")}
                 />
               )}
               {!isSignInMode && (
@@ -245,8 +247,9 @@ const RegisterationForm = () => {
                     ></button>
                   </div>
                   <p className="text-sm font-[600] sm:text-[10px] text-[#97b4a2] max-w-[85%] ml-4">
-                    By Signing Up You Are Agreeing of our privacy Policy and
-                    Terms of Service
+                    {t(
+                      "By Signing Up You Are Agreeing of our privacy Policy and Terms of Service"
+                    )}
                   </p>
                 </div>
               )}
@@ -257,12 +260,12 @@ const RegisterationForm = () => {
                 disabled={submiting}
               >
                 {!isSignInMode
-                  ? `${submiting ? "Submiting" : "SIGN UP"} `
-                  : `${submiting ? "Submiting" : "SIGN IN"} `}
+                  ? `${submiting ? "Submiting" : t("Sign Up")} `
+                  : `${submiting ? "Submiting" : t("Sign In")} `}
               </button>
               <div className="flex w-full mx-auto gap-2 items-center ">
                 <div className="w-[45%] h-[1.5px] bg-gradient-to-l from-blue-300 to-[#201557] "></div>
-                <span>or</span>
+                <span>OR</span>
                 <div className="w-[45%] h-[1.5px] bg-gradient-to-r from-blue-300 to-[#201557] "></div>
               </div>
               <div className="flex gap-4 sm:gap-2 mb-4">
@@ -272,13 +275,15 @@ const RegisterationForm = () => {
                 >
                   <FcGoogle className="text-2xl" />
                   <span className="text-sm font-[500] ">
-                    <span className="sm:hidden"> Sign In With </span>Google
+                    <span className="sm:hidden">{t("Sign In With")}</span>
+                    {t("Google")}
                   </span>
                 </button>
                 <button className="text-xs flex justify-between items-center bg-[#7474bb52] rounded-md w-[49%] py-3 sm:py-[6px] px-3">
                   <GrGithub className="text-2xl" />
                   <span className="text-sm font-[500] ">
-                    <span className="sm:hidden"> Sign In With </span> GitHub
+                    <span className="sm:hidden"> {t("Sign In With")} </span>{" "}
+                    {t("GitHub")}
                   </span>
                 </button>
               </div>

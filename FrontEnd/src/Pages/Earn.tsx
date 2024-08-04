@@ -23,6 +23,7 @@ import { FaCaretDown } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 import FilterByDeviceMenu from "../components/Earn/FilterByDeviceMenu";
 import FilteringMenu from "../components/Earn/FilteringMenu";
+import { useTranslation } from "react-i18next";
 
 const Earn = () => {
   const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
@@ -34,6 +35,7 @@ const Earn = () => {
   const [appId, setAppId] = useState<string | null>(null);
   const [filterQuery, setFilterQuery] = useState<TypeFilterQuery>("ALL");
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation("earn");
 
   const allDevicesRef = useRef<HTMLDivElement>(null);
   const desktopRef = useRef<HTMLDivElement>(null);
@@ -117,13 +119,13 @@ const Earn = () => {
   return (
     <div className="flex flex-col p-4 lg:p-3 xs:p-2 gap-4 bg-[#21223a]">
       <Helmet>
-        <title>Earn</title>
+        <title>{t("Earn")}</title>
       </Helmet>
       <div className="flex items-ceneter sm:flex-col sm:gap-1 gap-2">
         <div className="relative w-[40%] sm:w-full">
           <div className=" flex justify-between overflow-hidden">
             <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap mr-1">
-              <span className="mr-1 text-[#bedf65]">EARN</span> ON
+              <span className="mr-1 text-[#bedf65]">{t("EARN")}</span> {t("ON")}
             </span>
             <div
               onClick={() => setSelectDevice((prev) => !prev)}
@@ -151,20 +153,19 @@ const Earn = () => {
           <div className="flex xs:flex-col items-center gap-2 justify-between">
             <div className="w-full h-10  rounded-md overflow-hidden">
               <SearchBar
-                placeholder="search apps and offers..."
+                placeholder={t("search apps and offers...")}
                 onChange={() => {}}
               />
             </div>
             <div
               onClick={() => setOpenFilterMenu((prev) => !prev)}
-              // ref={filterMenuRef}
               className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2 sm:gap-1 cursor-pointer"
             >
               <IoFilter />
               <span className="text-gray-400 font-bold">
                 {["ALL", "POPULAR", "RAITING", "REWARD"].includes(filterQuery)
-                  ? filterQuery
-                  : "ALL"}
+                  ? t(filterQuery)
+                  : t("ALL")}
               </span>
               <IoMdArrowDropdown className="text-2xl" />
             </div>
@@ -186,7 +187,7 @@ const Earn = () => {
           <div className="flex items-center gap-3">
             <ImFire className="text-xl" />
             <h1 className="text-[#8a9fff] text-xl font-bold sm:text-lg">
-              FEATURED OFFERS
+              {t("FEATURED OFFERS")}
             </h1>
           </div>
           <div className="flex items-center gap-3 justify-end">
@@ -242,10 +243,7 @@ const Earn = () => {
               </div>
             )}
             {!loading && apps.length === 0 && !error && (
-              <Empty
-                emptyText="No Apps Matches your Filter Query"
-                imgWidthHeight=""
-              />
+              <Empty emptyText={t("No Apps Matches your Filter Query")} />
             )}
             {errorLoadMore && (
               <span className="text-sm text-[#4b9734] mx-auto">
@@ -257,7 +255,7 @@ const Earn = () => {
                 onClick={() => setPage((prev) => prev + 1)}
                 className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"
               >
-                Load More
+                {t("Load More")}
               </button>
             )}
           </div>
@@ -269,7 +267,7 @@ const Earn = () => {
                   onClick={selectApp}
                   className="w-[90%] max-w-[500px] p-5 mt-5 text-gray-500 underline text-xl font-bold"
                 >
-                  select an app to preview
+                  {t("select an app to preview")}
                 </button>
               )}
             </div>
@@ -279,7 +277,9 @@ const Earn = () => {
       <div>
         <div className="flex items-center gap-3">
           <ImFire className="text-2xl" />
-          <h1 className="text-xl font-bold text-[#8a9fff]">OFFER PARTNERS</h1>
+          <h1 className="text-xl font-bold text-[#8a9fff]">
+            {t("OFFER PARTNERS")}
+          </h1>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 xs:gap-2 mt-4">
           {arrayoffers.map(({ image }, index) => (
@@ -290,7 +290,9 @@ const Earn = () => {
       <div className="mt-5">
         <div className="flex items-center gap-3">
           <ImFire className="text-2xl" />
-          <h1 className="text-xl font-bold text-[#8a9fff]">SURVEY PARTNERS</h1>
+          <h1 className="text-xl font-bold text-[#8a9fff]">
+            {t("SURVEY PARTNERS")}
+          </h1>
         </div>
         <div className="flex justify-center gap-3  xs:gap-2  flex-wrap mt-4">
           {[notikLogo, AdscendMediaGlow, tapresearch].map((item) => (

@@ -115,12 +115,10 @@ const HeroSection = () => {
         <div className="flex flex-col gap-2 w-[50%] bg-[#33334c] p-8 sm:px-2 sm:py-3 rounded-md sm:w-[92%] lg:w-[87%] lg:mt-10 border border-gray-600 sm:mx-auto ">
           <div className="text-center mb-4 sm:bg-[#18193fb4] sm:py-3 sm:rounded-md ">
             <h1 className="font-bold text-2xl tracking-wider text-white mb-2">
-              Sign Up For Free
+              {t("Sign Up For Free")}
             </h1>
             <p className="text-sm text-[#a6ada0] ">
-              and win up to
-              <span className="text-sm text-[#83dd1c]"> $250</span> in the free
-              time
+              {t("and win up to $250 in the free time")}
             </p>
           </div>
           <div className="bg-blue-900 h-12 mb-4 rounded-md sing-up-free"></div>
@@ -129,32 +127,33 @@ const HeroSection = () => {
               onClick={handleSignInWithGoogle}
               className="text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md w-full px-4 py-2 sm:text-xs text-[#f7d0d0]"
             >
-              Sign In With Google <FcGoogle />
+              {t("Sign In With Google")} <FcGoogle />
             </button>
             <button className=" text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md px-4 py-2 sm:text-xs w-full text-[#f7d0d0]">
-              Sign In With GitHub <VscGithub />
+              {t("Sign In With GitHub")}
+              <VscGithub />
             </button>
           </div>
           <div className="flex w-[90%] mx-auto gap-2 items-center my-1">
             <div className="w-[45%] h-[1px] bg-gradient-to-l from-blue-300 to-[#2b2350] "></div>
-            <span>or</span>
+            <span>{t("OR")}</span>
             <div className="w-[45%] h-[1px] bg-gradient-to-r from-blue-300 to-[#342872] "></div>
           </div>
           <form className="flex flex-col gap-2">
             <Input
-              label={"Email"}
+              label={t("Email")}
               id={"hom-email"}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={"Enter Your Email"}
+              placeholder={t("Enter Your Email")}
               value={email}
               type={"email"}
               name={"email"}
             />
             <Input
-              label={"Password"}
+              label={t("Password")}
               id={"home-password"}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={"Enter Password"}
+              placeholder={t("Enter Your Password")}
               value={password}
               type={"password"}
               name={"password"}
@@ -165,7 +164,7 @@ const HeroSection = () => {
                 onClick={handlaSignIn}
                 className="bg-[#05BA6B] text-black py-2 w-[45%] font-[600] rounded-md border-[0.2px] border-white "
               >
-                Sign In
+                {t("Sign In")}
               </button>
             </div>
           </form>

@@ -5,6 +5,7 @@ import { IoDesktop } from "react-icons/io5";
 import { SiApple } from "react-icons/si";
 import { TypeFilterQuery } from "../../types/earnTypes";
 import { useCloseMenuOnClickOutSide } from "../../hooks";
+import { useTranslation } from "react-i18next";
 
 interface TypeProps {
   allDevicesRef: RefObject<HTMLDivElement>;
@@ -29,7 +30,7 @@ const FilterByDeviceMenu = ({
   activeFilteringItem,
 }: TypeProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const { t } = useTranslation("earn");
   const handleClose = () => {
     setSelectDevice(false);
   };
@@ -49,7 +50,7 @@ const FilterByDeviceMenu = ({
         <div className="flex items-center gap-3">
           <GiHamburgerMenu className="text-lg" />
 
-          <span className="text-gray-400">ALL DEVICES</span>
+          <span className="text-gray-400">{t("ALL DEVICES")}</span>
         </div>
         <span
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
@@ -68,7 +69,7 @@ const FilterByDeviceMenu = ({
       >
         <div className="flex items-center gap-3">
           <IoDesktop className="text-lg" />
-          <span className="text-gray-400">DESKTOP</span>
+          <span className="text-gray-400">{t("DESKTOP")}</span>
         </div>
         <span
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
@@ -87,7 +88,7 @@ const FilterByDeviceMenu = ({
       >
         <div className="flex items-center gap-3">
           <DiAndroid className="text-lg" />
-          <span className="text-gray-400">ANDROID</span>
+          <span className="text-gray-400">{t("ANDROID")}</span>
         </div>
         <span
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
@@ -106,7 +107,7 @@ const FilterByDeviceMenu = ({
       >
         <div className="flex items-center gap-3">
           <SiApple className="text-lg" />
-          <span className="text-gray-400">MAC</span>
+          <span className="text-gray-400">{t("MAC")}</span>
         </div>
         <span
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}

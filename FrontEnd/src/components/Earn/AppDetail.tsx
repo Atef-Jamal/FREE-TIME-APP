@@ -12,6 +12,7 @@ import { showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import AppDetailsSkeleton from "./AppDetailsSkeleton";
 import { User } from "../../types/userTypes";
+import { useTranslation } from "react-i18next";
 
 interface TypeReview {
   _id: string;
@@ -29,7 +30,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState<TypeReview[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const { t } = useTranslation("earn");
   const dispatch = useAppDispatch();
 
   let isCompleted;
@@ -95,7 +96,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
     return (
       <>
         <h1 className="text-2xl font-bold text-[#78bd4f] mb-3">
-          Offer Details
+          {t("Offer Details")}
         </h1>
         <img
           className="w-full h-[300px] object-cover mb-3"
@@ -104,16 +105,18 @@ const AppDetail = ({ appId }: { appId: string }) => {
         />
         <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
           <span className="w-full text-[#537692] text-sm">
-            <span className="mr-2 text-[#aebeb5] text-base">Name :</span>{" "}
+            <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span>{" "}
             {appDetail?.title}
           </span>
           <span className="w-full text-[#537692] text-sm">
-            <span className="mr-2 text-[#aebeb5] text-base">Description :</span>
+            <span className="mr-2 text-[#aebeb5] text-base">
+              {t("Description")} :
+            </span>
             {appDetail?.description}
           </span>
           <span className="w-full text-[#537692] text-sm">
             <span className="mr-2 text-[#aebeb5] text-base">
-              available on :
+              {t("available on")} :
             </span>
             {appDetail?.devices === "ALL" ? "ALL DEVICES" : appDetail.devices}
           </span>
@@ -122,7 +125,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
             className="w-full bg-[#333030] rounded-md flex item-center justify-between p-2 my-2"
           >
             <span className="text-[#73f1a8]">
-              People who completed this app
+              {t("People who completed this app")}
             </span>
             <FaRegArrowAltCircleDown className="opacity-50 text-xl" />
           </div>
@@ -133,8 +136,8 @@ const AppDetail = ({ appId }: { appId: string }) => {
           >
             {appDetail.completedBy.length === 0 && (
               <span className="text-gray-400 text-sm w-full flex items-center justify-center gap-2">
-                <img src={empty} alt="" className="w-5 h-5 object-cover" /> No
-                one complete this app before
+                <img src={empty} alt="" className="w-5 h-5 object-cover" />
+                {t("No one complete this app before")}
               </span>
             )}
             {appDetail.completedBy.length > 0 &&
@@ -149,7 +152,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
               ))}
           </div>
           <span className="flex items-center gap-3 w-full text-[#aebeb5]">
-            Rating :
+            {t("Rating")} :
             <span className="flex items-center justify-center gap-1">
               {[...Array(appDetail.rating).keys()].map((item) => (
                 <IoMdStar key={item} />
@@ -163,7 +166,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
             onClick={() => setOpenReviews((prev) => !prev)}
             className="w-full flex items-center justify-between bg-[#333030] p-2 rounded-md my-2"
           >
-            <span className="text-[#cec8c8]">Rewies</span>
+            <span className="text-[#cec8c8]">{t("Reviews")}</span>
             <BsArrowDownCircle className="text-xl opacity-50" />
           </span>
           <div
@@ -196,7 +199,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
             })}
             {reviews?.length === 0 && (
               <Empty
-                emptyText="There is not Reviews on this offer"
+                emptyText={t("There is not Reviews on this offer")}
                 imgWidthHeight="w-8 h-8"
               />
             )}
@@ -213,9 +216,9 @@ const AppDetail = ({ appId }: { appId: string }) => {
             </form>
           </div>
           <span className="text-[#aebeb5] flex items-center gap-3 w-full mb-2">
-            Reward :
+            {t("Reward")} :
             <span className="text-[#6676ff] text-sm">
-              {appDetail.prize} Points
+              {appDetail.prize} {t("Points")}
             </span>
           </span>
           {isCompleted && (
@@ -230,14 +233,14 @@ const AppDetail = ({ appId }: { appId: string }) => {
               to={`/playing/${appDetail._id}`}
               className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
             >
-              START NOW
+              {t("START NOW")}
             </Link>
           )}
           {appDetail.isAvailable === "UNAVAILABLE" && (
             <button
               className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
             >
-              Not Available
+              {t("Not Available")}
             </button>
           )}
         </div>

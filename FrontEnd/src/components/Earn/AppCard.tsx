@@ -5,6 +5,7 @@ import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types/earnTypes";
 import Image from "../Others/Image";
+import { useTranslation } from "react-i18next";
 
 interface TypeAppCard {
   taskDetail: TypeTaskApp;
@@ -16,6 +17,7 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
   const { currentUser, currentUserIsLoading } = useAppSelector(
     (state) => state.stateManeger
   );
+  const { t } = useTranslation("earn");
   const { _id, description, image, prize, title, isAvailable, devices } =
     taskDetail;
   const isCompleted = currentUser?.completedTasks.includes(_id);
@@ -32,7 +34,9 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
       {currentUser?.completedTasks.includes(_id) ? (
         <div className="absolute z-[1] top-7 -left-7 py-1 px-6 -rotate-45 flex items-center justify-center gap-2 bg-[#9cf155]">
           <BsCheckCircleFill />
-          <span className="font-bold text-xs text-[#5e5656]">Completed</span>
+          <span className="font-bold text-xs text-[#5e5656]">
+            {t("Completed")}
+          </span>
         </div>
       ) : undefined}
 
@@ -64,7 +68,9 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
         <p className="font-bold text-sm text-[#8ad657]  truncate">{title}</p>
         <p className="text-xs text-[#cea5a5] h-4 truncate">{description}</p>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-300 font-bold py-1">Reward</span>
+          <span className="text-xs text-gray-300 font-bold py-1">
+            {t("Reward")}
+          </span>
           <span className="text-sm sm:text-xs text-[#5dd140] text-center font-bold pr-1 ">
             {prize}
           </span>
@@ -74,21 +80,21 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
         <button
           className={`w-full py-2 sm:text-xs bg-[#171430d5] text-sm text-white rounded-md border border-gray-700`}
         >
-          Completed
+          {t("Completed")}
         </button>
       )}
       {!isCompleted && isAvailable === "AVAILABLE" && (
         <button
           className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
         >
-          START NOW
+          {t("START NOW")}
         </button>
       )}
       {isAvailable === "UNAVAILABLE" && (
         <button
           className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
         >
-          Not Available
+          {t("Not Available")}
         </button>
       )}
     </div>
