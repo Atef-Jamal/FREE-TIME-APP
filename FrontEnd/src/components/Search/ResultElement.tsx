@@ -5,6 +5,7 @@ import ResultText from "./ResultText";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { MdOutlineWeb } from "react-icons/md";
+import Image from "../Others/Image";
 
 const ResultElement = ({
   type,
@@ -31,25 +32,40 @@ const ResultElement = ({
           {type === "FRAMES" && (
             <div className="relative w-10 h-10 sm:w-7 sm:h-7 object-fill ">
               <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#19181b]"></span>
-              <img
+              {/* <img
                 alt=""
+                src={item.image}
+                className="w-full h-full object-contain"
+              /> */}
+              <Image
+                alt={""}
                 src={item.image}
                 className="w-full h-full object-contain"
               />
             </div>
           )}
           {type === "APPS" && (
-            <img
-              alt=""
+            // <img
+            //   alt=""
+            //   src={item.image}
+            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
+            // />
+            <Image
+              alt={""}
               src={item.image}
-              className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
+              className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
           )}
           {type === "USERS" && (
-            <img
-              alt=""
+            // <img
+            //   alt=""
+            //   src={item.image}
+            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
+            // />
+            <Image
+              alt={""}
               src={item.image}
-              className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
+              className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
           )}
           <Link
