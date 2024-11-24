@@ -1,5 +1,4 @@
 import { User } from "../../types/userTypes";
-import Image from "./Image";
 
 interface TypeProps {
   user: User | null;
@@ -7,22 +6,16 @@ interface TypeProps {
 
 const UserImage = ({ user }: TypeProps) => {
   if (!user) return;
-  console.log(user);
   return (
     <div className={`relative w-full h-full rounded-sm `}>
       {user.activeFrame ? (
-        // <img
-        //   className=" absolute top-0 w-full h-full rounded-sm"
-        //   src={user.activeFrame.image}
-        //   alt=""
-        // />
-        <Image
-          alt={user.name}
+        <img
+          className=" absolute top-0 w-full h-full rounded-sm"
           src={user.activeFrame.image}
-          className="absolute top-0 w-full h-full rounded-sm"
+          alt=""
         />
       ) : undefined}
-      {/* <img
+      <img
         className={`absolute transition-all ${
           user.activeFrame
             ? "top-[15%] left-[14%] w-[70%] h-[70%] rounded-sm"
@@ -30,15 +23,6 @@ const UserImage = ({ user }: TypeProps) => {
         } `}
         src={user.profilePicture}
         alt=""
-      /> */}
-      <Image
-        alt={user.name}
-        src={user.profilePicture}
-        className={`absolute z-[100] transition-all ${
-          user.activeFrame
-            ? "top-[15%] left-[14%] w-[70%] h-[70%] rounded-sm"
-            : "w-full h-full rounded-md "
-        } `}
       />
     </div>
   );
