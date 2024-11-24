@@ -32,11 +32,6 @@ const ResultElement = ({
           {type === "FRAMES" && (
             <div className="relative w-10 h-10 sm:w-7 sm:h-7 object-fill ">
               <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#19181b]"></span>
-              {/* <img
-                alt=""
-                src={item.image}
-                className="w-full h-full object-contain"
-              /> */}
               <Image
                 alt={""}
                 src={item.image.replace(
@@ -48,11 +43,6 @@ const ResultElement = ({
             </div>
           )}
           {type === "APPS" && (
-            // <img
-            //   alt=""
-            //   src={item.image}
-            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
-            // />
             <Image
               alt={""}
               src={item.image.replace(
@@ -63,11 +53,6 @@ const ResultElement = ({
             />
           )}
           {type === "USERS" && (
-            // <img
-            //   alt=""
-            //   src={item.image}
-            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full "
-            // />
             <Image
               alt={""}
               src={item.image.replace(
