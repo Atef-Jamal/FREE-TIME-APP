@@ -117,7 +117,10 @@ const Layout = () => {
             !openSidbareMobile && "sm:-translate-x-[100%]"
           } sm:w-full sm:h-screen sm:fixed sm:top-[55px] left-0 z-[5] bg-[#0a02026c] `}
         >
-          <div className="sm:w-[250px] bg-[#29293a] h-full p-2 border-r border-[#f8cdcd36]">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="sm:w-[250px] bg-[#29293a] h-full p-2 border-r border-[#f8cdcd36]"
+          >
             <Sidebar setOpenSidbareMobile={setOpenSidbareMobile} />
           </div>
         </div>
