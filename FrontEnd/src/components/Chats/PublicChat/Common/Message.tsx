@@ -115,7 +115,7 @@ const Message = ({
     }
     setOpenChatModelDeletion({
       messageId: _id,
-      messageUrlScreenshot: "messageUrl",
+      messageUrlScreenshot: messageUrl,
     });
   };
 
