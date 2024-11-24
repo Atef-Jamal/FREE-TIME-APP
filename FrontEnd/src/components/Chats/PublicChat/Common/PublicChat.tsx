@@ -17,6 +17,7 @@ import { makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { handleApiError } from "../../../../utils/common";
 import Spinner from "../../../Others/Spinner";
+import Image from "../../../Others/Image";
 
 const PublicChat = () => {
   const { socket } = useAppSelector((state) => state.stateManeger);
@@ -138,6 +139,7 @@ const PublicChat = () => {
   if (messageContainerRef.current) {
     numofSkeleton = Math.floor(messageContainerRef.current.clientHeight / 80);
   }
+
   const deleteMessage = async (messageId: string) => {
     setIsDeleting(true);
     if (stopScrolling === false) {
@@ -146,7 +148,7 @@ const PublicChat = () => {
 
     setMessages((prev) => {
       return prev.map((msg) => {
-        if (msg._id === messageId) {
+        if (msg._id === messageId && msg.type === "MESSAGE") {
           return { ...msg, isDeleted: true };
         } else {
           return msg;
@@ -158,6 +160,7 @@ const PublicChat = () => {
       const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
         isDeleted: true,
       });
+
       socket?.emit("interact-with-public-message", response.data);
     } catch (error) {
       setMessages((prev) => {
@@ -202,9 +205,9 @@ const PublicChat = () => {
               <p className="text-sm text-[#87abc9] font-bold text-center mb-1">
                 Are your sure to delete your message ?
               </p>
-              <img
+              <Image
+                alt="Message-preview"
                 src={openChatModelDeletion.messageUrlScreenshot}
-                alt="message preview"
                 className="w-full object-contain h-[75px] mb-[6px] overflow-hidden rounded-xl"
               />
               <div className="flex items-center justify-center gap-x-4">
@@ -228,10 +231,12 @@ const PublicChat = () => {
             </div>
           </div>
         )}
+
         {loading &&
           [...Array(numofSkeleton).keys()].map((skeleton) => (
             <MessageSkeleton key={skeleton} />
           ))}
+
         {!error && (
           <div className="m-auto w-full text-center text-lg font-bold text-[#d15e5e]">
             {error}

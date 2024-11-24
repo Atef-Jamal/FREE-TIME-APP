@@ -20,6 +20,7 @@ import html2canvas from "html2canvas";
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
   messageRef: React.RefObject<HTMLDivElement> | null;
+
   setOpenChatModelDeletion: React.Dispatch<
     React.SetStateAction<{
       messageId: string;
@@ -33,6 +34,7 @@ type TypeFieldName = "loves" | "likes" | "dislikes";
 const Message = ({
   singleMessage,
   messageRef,
+
   setOpenChatModelDeletion,
 }: TypeMessageProp) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
