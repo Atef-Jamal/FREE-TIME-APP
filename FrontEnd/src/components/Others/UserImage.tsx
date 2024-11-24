@@ -7,6 +7,7 @@ interface TypeProps {
 
 const UserImage = ({ user }: TypeProps) => {
   if (!user) return;
+  console.log(user);
   return (
     <div className={`relative w-full h-full rounded-sm `}>
       {user.activeFrame ? (
@@ -33,7 +34,7 @@ const UserImage = ({ user }: TypeProps) => {
       <Image
         alt={user.name}
         src={user.profilePicture}
-        className={`absolute transition-all ${
+        className={`absolute z-[100] transition-all ${
           user.activeFrame
             ? "top-[15%] left-[14%] w-[70%] h-[70%] rounded-sm"
             : "w-full h-full rounded-md "
