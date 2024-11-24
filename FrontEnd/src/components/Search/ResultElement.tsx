@@ -39,7 +39,10 @@ const ResultElement = ({
               /> */}
               <Image
                 alt={""}
-                src={item.image}
+                src={item.image.replace(
+                  "http://localhost:3000",
+                  import.meta.env.VITE_SERVER_BASE_URL
+                )}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -52,7 +55,10 @@ const ResultElement = ({
             // />
             <Image
               alt={""}
-              src={item.image}
+              src={item.image.replace(
+                "http://localhost:3000",
+                import.meta.env.VITE_SERVER_BASE_URL
+              )}
               className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
           )}
@@ -64,7 +70,10 @@ const ResultElement = ({
             // />
             <Image
               alt={""}
-              src={item.image}
+              src={item.image.replace(
+                "http://localhost:3000",
+                import.meta.env.VITE_SERVER_BASE_URL
+              )}
               className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
           )}
