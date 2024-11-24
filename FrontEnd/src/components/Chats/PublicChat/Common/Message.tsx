@@ -20,8 +20,6 @@ import html2canvas from "html2canvas";
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
   messageRef: React.RefObject<HTMLDivElement> | null;
-  // stopScrolling: boolean;
-  // setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenChatModelDeletion: React.Dispatch<
     React.SetStateAction<{
       messageId: string;
@@ -34,12 +32,9 @@ type TypeFieldName = "loves" | "likes" | "dislikes";
 
 const Message = ({
   singleMessage,
-  // setStopScrolling,
-  // stopScrolling,
   messageRef,
   setOpenChatModelDeletion,
 }: TypeMessageProp) => {
-  // const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [messageItem, setMessageItem] =
     useState<TypePublicChatMessage>(singleMessage);
@@ -109,6 +104,21 @@ const Message = ({
     }
   };
 
+  const handleDelete = async () => {
+    const messageElement = document.getElementById(`publicMessage${_id}`);
+    let messageUrl = "";
+    if (messageElement) {
+      messageElement?.classList.add("bg-black");
+      const canvas = await html2canvas(messageElement);
+      messageElement?.classList.remove("bg-black");
+      messageUrl = canvas.toDataURL("image/png");
+    }
+    setOpenChatModelDeletion({
+      messageId: _id,
+      messageUrlScreenshot: "messageUrl",
+    });
+  };
+
   const handleUpdateMessage = (updatedMessage: TypePublicChatMessage) => {
     if (updatedMessage._id === _id) {
       setMessageItem(updatedMessage);
@@ -172,24 +182,7 @@ const Message = ({
         )}
         {currentUser?._id === sender._id && !isDeleted && (
           <button
-            onClick={async () => {
-              const messageElement = document.getElementById(
-                `publicMessage${_id}`
-              );
-              messageElement?.classList.add("bg-[#2c2047]");
-              let messageUrl = "";
-              if (messageElement) {
-                const canvas = await html2canvas(messageElement);
-                messageUrl = canvas.toDataURL("image/png");
-                messageElement?.classList.remove("bg-[#2c2047]");
-              }
-
-              setOpenChatModelDeletion({
-                messageId: _id,
-                messageUrlScreenshot: messageUrl,
-              });
-            }}
-            // disabled={isDeleting}
+            onClick={handleDelete}
             className="ml-auto flex items-center justify-center rounded-sm"
           >
             <FaRegTrashCan className="text-lg sm:text-sm opacity-70" />

@@ -111,8 +111,6 @@ const PublicChat = () => {
             key={msg._id}
             singleMessage={msg}
             messageRef={index === messages.length - 1 ? lastMessageRef : null}
-            // stopScrolling={stopScrolling}
-            // setStopScrolling={setStopScrolling}
             setOpenChatModelDeletion={setOpenChatModelDeletion}
           />
         );
