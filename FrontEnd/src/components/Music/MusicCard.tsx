@@ -14,6 +14,7 @@ import { useState } from "react";
 import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
+import Image from "../Others/Image";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const { currentUser, activeMusic, musicIsPlaying, openMusicModal } =
@@ -103,9 +104,14 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
             : ""
         } w-[80px] h-[80px] rounded-full border-2 border-l-[#cef03a] border-t-[#222770] border-r-[#cef03a] border-b-[#222770]`}
       >
-        <img
+        {/* <img
           src={songDetails.album.cover}
           alt=""
+          className="w-full h-full rounded-full object-contain"
+        /> */}
+        <Image
+          alt={""}
+          src={songDetails.album.cover}
           className="w-full h-full rounded-full object-contain"
         />
       </span>
