@@ -4,11 +4,11 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import io from "socket.io-client";
 import { setOnlineUsers, setSocet } from "./context/StateManeger";
 import { useListenToSocketEvents } from "./hooks";
-// import MobileChat from "./components/chats/publicChat/mobileChat/MobileChat";
-// import LoadingWebsite from "./components/others/LoadingWebsite";
-// import ProtectedPage from "./components/others/ProtectedPage";
-// import PageNotFound from "./components/errors/PageNotFound";
-// import AppError from "./components/errors/AppError";
+import MobileChat from "./components/chats/publicChat/mobileChat/MobileChat";
+import LoadingWebsite from "./components/others/LoadingWebsite";
+import ProtectedPage from "./components/others/ProtectedPage";
+import PageNotFound from "./components/errors/PageNotFound";
+import AppError from "./components/errors/AppError";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
 
 const Layout = lazy(() => import("./Pages/Layout"));
