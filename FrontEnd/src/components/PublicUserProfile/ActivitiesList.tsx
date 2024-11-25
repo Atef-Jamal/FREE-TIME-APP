@@ -3,7 +3,7 @@ import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
 import { User } from "../../types/userTypes";
 import { TypeNotifications } from "../../types/notificationTypes";
-import Empty from "../Others/Empty";
+import Empty from "../others/Empty";
 import { verifiedImage } from "../../assets";
 
 interface TypeProps {

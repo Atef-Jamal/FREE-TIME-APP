@@ -13,9 +13,9 @@ import EmailVerifiedNotify from "./EmailVerifiedNotify";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
 
-import Spinner from "../../Others/Spinner";
+import Spinner from "../../others/Spinner";
 import { TypeNotifications } from "../../../types/notificationTypes";
-import Empty from "../../Others/Empty";
+import Empty from "../../others/Empty";
 import MessageReactionNotify from "./InteractwithMessageNotify";
 
 const NotificationMenu = ({

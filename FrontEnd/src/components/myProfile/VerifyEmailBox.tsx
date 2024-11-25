@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { CgClose } from "react-icons/cg";
 import { resetModel, showPopup } from "../../context/StateManeger";
-import Spinner from "../Others/Spinner";
+import Spinner from "../others/Spinner";
 import EnterVerificationCode from "./EnterVerificationCode";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";

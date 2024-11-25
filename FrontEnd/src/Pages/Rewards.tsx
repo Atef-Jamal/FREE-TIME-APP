@@ -7,7 +7,7 @@ import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
 import { dollarInHand } from "../assets";
-import Spinner from "../components/Others/Spinner";
+import Spinner from "../components/others/Spinner";
 import Ladder from "../components/rewards/Ladder";
 import DailyReward from "../components/rewards/DailyReward";
 import { TypeBounusCode } from "../types/rewardsTypes";

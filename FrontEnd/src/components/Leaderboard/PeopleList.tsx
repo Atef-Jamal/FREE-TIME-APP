@@ -1,8 +1,8 @@
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
 import { useFetchAllUsers } from "../../hooks";
-import Spinner from "../Others/Spinner";
+import Spinner from "../others/Spinner";
 import { useState } from "react";
-import Empty from "../Others/Empty";
+import Empty from "../others/Empty";
 
 const PeopleList = () => {
   const [page, setPage] = useState(1);

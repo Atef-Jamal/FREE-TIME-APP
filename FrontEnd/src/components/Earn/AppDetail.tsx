@@ -7,13 +7,13 @@ import { FaRegArrowAltCircleDown } from "react-icons/fa";
 import { empty } from "../../assets";
 import { BsArrowDownCircle } from "react-icons/bs";
 import { makeRequest } from "../../utils";
-import Empty from "../Others/Empty";
+import Empty from "../others/Empty";
 import { showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import AppDetailsSkeleton from "./AppDetailsSkeleton";
 import { User } from "../../types/userTypes";
 import { useTranslation } from "react-i18next";
-import Image from "../Others/Image";
+import Image from "../others/Image";
 
 interface TypeReview {
   _id: string;

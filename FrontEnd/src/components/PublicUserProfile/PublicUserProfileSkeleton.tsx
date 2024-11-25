@@ -1,4 +1,4 @@
-import Skeleton from "../Others/Skeleton";
+import Skeleton from "../others/Skeleton";
 
 export const PublicUserProfileSkeleton = () => {
   return (

@@ -4,7 +4,7 @@ import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types/earnTypes";
-import Image from "../Others/Image";
+import Image from "../others/Image";
 import { useTranslation } from "react-i18next";
 
 interface TypeAppCard {

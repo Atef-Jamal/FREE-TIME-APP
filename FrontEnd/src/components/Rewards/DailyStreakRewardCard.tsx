@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
-import Spinner from "../Others/Spinner";
+import Spinner from "../others/Spinner";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import { BsClockHistory } from "react-icons/bs";

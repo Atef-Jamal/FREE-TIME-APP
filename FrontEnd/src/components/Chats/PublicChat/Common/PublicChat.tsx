@@ -16,8 +16,8 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { handleApiError } from "../../../../utils/common";
-import Spinner from "../../../Others/Spinner";
-import Image from "../../../Others/Image";
+import Spinner from "../../../others/Spinner";
+import Image from "../../../others/Image";
 
 const PublicChat = () => {
   const { socket } = useAppSelector((state) => state.stateManeger);

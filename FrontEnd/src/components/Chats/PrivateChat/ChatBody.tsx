@@ -1,6 +1,6 @@
 import { SetStateAction, useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import UserImage from "../../Others/UserImage";
+import UserImage from "../../others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import {
