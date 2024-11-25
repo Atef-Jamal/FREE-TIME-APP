@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../context/Hooks";
-import Welcome from "../components/chats/PrivateChat/Welcome";
+import Welcome from "../components/chats/privateChat/Welcome";
 import Spinner from "../components/others/Spinner";
-import ChatSidbare from "../components/chats/PrivateChat/ChatSidbare";
-import ChatBody from "../components/chats/PrivateChat/ChatBody";
+import ChatSidbare from "../components/chats/privateChat/ChatSidbare";
+import ChatBody from "../components/chats/privateChat/ChatBody";
 import { User } from "../types/userTypes";
 import {
   TypeConversation,
