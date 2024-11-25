@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../../../context/Hooks";
-import PublicChat from "../Common/PublicChat";
+import PublicChat from "../common/PublicChat";
 
 const MobileChat = () => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);

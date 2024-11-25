@@ -1,7 +1,7 @@
 import { toggleThisEntity } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import ChatHeader from "../Common/ChatHeader";
-import PublicChat from "../Common/PublicChat";
+import ChatHeader from "../common/ChatHeader";
+import PublicChat from "../common/PublicChat";
 import { BsChatLeftText } from "react-icons/bs";
 
 const DisktopChat = () => {

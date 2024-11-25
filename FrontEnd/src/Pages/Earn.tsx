@@ -12,17 +12,17 @@ import { Helmet } from "react-helmet-async";
 import { TypeFilterQuery } from "../types/earnTypes";
 import Spinner from "../components/others/Spinner";
 import { useFetchAllApps } from "../hooks";
-import AppDetail from "../components/Earn/AppDetail";
-import AppSkeleton from "../components/Earn/AppSkeleton";
-import ParnterCard from "../components/Earn/ParnterCard";
-import AppCard from "../components/Earn/AppCard";
+import AppDetail from "../components/earn/AppDetail";
+import AppSkeleton from "../components/earn/AppSkeleton";
+import ParnterCard from "../components/earn/ParnterCard";
+import AppCard from "../components/earn/AppCard";
 import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/others/Empty";
 import SearchBar from "../components/search/SearchBar";
 import { FaCaretDown } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
-import FilterByDeviceMenu from "../components/Earn/FilterByDeviceMenu";
-import FilteringMenu from "../components/Earn/FilteringMenu";
+import FilterByDeviceMenu from "../components/earn/FilterByDeviceMenu";
+import FilteringMenu from "../components/earn/FilteringMenu";
 import { useTranslation } from "react-i18next";
 
 const Earn = () => {

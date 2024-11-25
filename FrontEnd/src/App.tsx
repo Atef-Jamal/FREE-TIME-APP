@@ -4,7 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import io from "socket.io-client";
 import { setOnlineUsers, setSocet } from "./context/StateManeger";
 import { useListenToSocketEvents } from "./hooks";
-import MobileChat from "./components/chats/PublicChat/MobileChat/MobileChat";
+import MobileChat from "./components/chats/PublicChat/mobileChat/MobileChat";
 import LoadingWebsite from "./components/others/LoadingWebsite";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
 import ProtectedPage from "./components/others/ProtectedPage";
