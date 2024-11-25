@@ -1,4 +1,4 @@
-import Skeleton from "../../../others/Skeleton";
+import Skeleton from "../../../Others/Skeleton";
 
 const MessageSkeleton = () => {
   return (

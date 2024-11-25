@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
-import Spinner from "../../others/Spinner";
+import Spinner from "../../Others/Spinner";
 import {
   handleApiError,
   formateDate,

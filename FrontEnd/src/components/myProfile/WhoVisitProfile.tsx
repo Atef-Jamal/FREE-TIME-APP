@@ -3,10 +3,10 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
 import { makeRequest } from "../../utils";
-import Spinner from "../others/Spinner";
+import Spinner from "../Others/Spinner";
 import { Link } from "react-router-dom";
 import { formateDate, handleApiError } from "../../utils/common";
-import Empty from "../others/Empty";
+import Empty from "../Others/Empty";
 import { User } from "../../types/userTypes";
 
 interface TypeVisiter {

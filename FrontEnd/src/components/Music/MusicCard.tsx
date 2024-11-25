@@ -11,10 +11,10 @@ import {
 } from "../../context/StateManeger";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import Spinner from "../others/Spinner";
+import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import Image from "../others/Image";
+import Image from "../Others/Image";
 
 const MusicCard = ({ songDetails }: { songDetails: any }) => {
   const { currentUser, activeMusic, musicIsPlaying, openMusicModal } =

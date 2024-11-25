@@ -5,9 +5,9 @@ import io from "socket.io-client";
 import { setOnlineUsers, setSocet } from "./context/StateManeger";
 import { useListenToSocketEvents } from "./hooks";
 import MobileChat from "./components/chats/PublicChat/mobileChat/MobileChat";
-import LoadingWebsite from "./components/others/LoadingWebsite";
+import LoadingWebsite from "./components/Others/LoadingWebsite";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
-import ProtectedPage from "./components/others/ProtectedPage";
+import ProtectedPage from "./components/Others/ProtectedPage";
 import PageNotFound from "./components/errors/PageNotFound";
 import AppError from "./components/errors/AppError";
 

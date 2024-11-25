@@ -3,7 +3,7 @@ import { useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
 import GuessCardApp from "../components/tasks/GuessCardApp";
 import QuizApp from "../components/tasks/QuizApp";
-import Spinner from "../components/others/Spinner";
+import Spinner from "../components/Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { useFetchTaskApp, useFetchUser } from "../hooks";
 

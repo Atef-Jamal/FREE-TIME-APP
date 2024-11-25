@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import ProfileSettings from "../components/myProfile/ProfileSettings";
 
 import MusicCard from "../components/music/MusicCard";
-import UserImage from "../components/others/UserImage";
+import UserImage from "../components/Others/UserImage";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 import Statistics from "../components/myProfile/Statistics";
@@ -23,7 +23,7 @@ import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frameTypes";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
-import Empty from "../components/others/Empty";
+import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
 
 const MyProfile = () => {

@@ -1,6 +1,6 @@
 import { FcMusic } from "react-icons/fc";
 import MusicCard from "../components/music/MusicCard";
-import Skeleton from "../components/others/Skeleton";
+import Skeleton from "../components/Others/Skeleton";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
 

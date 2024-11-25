@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { HelmetProvider } from "react-helmet-async";
 import store from "./context/store";
 import "./index.css";
-import LoadingWebsite from "./components/others/LoadingWebsite";
+import LoadingWebsite from "./components/Others/LoadingWebsite";
 import "@fontsource/poppins";
 import "@fontsource/roboto";
 import "./i18next";
