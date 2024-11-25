@@ -18,7 +18,7 @@ import ParnterCard from "../components/earn/ParnterCard";
 import AppCard from "../components/earn/AppCard";
 import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/others/Empty";
-import SearchBar from "../components/search/SearchBar";
+import SearchBar from "../components/Search/SearchBar";
 import { FaCaretDown } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 import FilterByDeviceMenu from "../components/earn/FilterByDeviceMenu";

@@ -3,7 +3,7 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { SetStateAction, useEffect, useState } from "react";
 import { useAppSelector } from "../../../context/Hooks";
 import Empty from "../../others/Empty";
-import SearchBar from "../../search/SearchBar";
+import SearchBar from "../../Search/SearchBar";
 import { TypeConversation } from "../../../types/privateChatTypes";
 import PeopleSkeleton from "./PeopleSkeleton";
 

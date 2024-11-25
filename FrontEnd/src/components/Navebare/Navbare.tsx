@@ -14,8 +14,8 @@ import ProfileSkeleton from "./profileAccount/ProfileSkeleton";
 import ProfileActions from "./profileAccount/ProfileActions";
 import RegisterButtons from "./registration/RegisterButtons";
 import RegisterationForm from "./registration/RegisterationForm";
-import Search from "../search/Search";
-import SearchBar from "../search/SearchBar";
+import Search from "../Search/Search";
+import SearchBar from "../Search/SearchBar";
 import { BiSearch } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 
