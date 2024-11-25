@@ -1,11 +1,11 @@
 import { TypeSearchItem } from "../../types/othersTypes";
-import Empty from "../Others/Empty";
+import Empty from "../others/Empty";
 import { Link } from "react-router-dom";
 import ResultText from "./ResultText";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { MdOutlineWeb } from "react-icons/md";
-import Image from "../Others/Image";
+import Image from "../others/Image";
 
 const ResultElement = ({
   type,

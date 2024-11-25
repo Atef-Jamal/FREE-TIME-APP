@@ -16,25 +16,26 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { handleApiError } from "../../../../utils/common";
-import Spinner from "../../../Others/Spinner";
-import Image from "../../../Others/Image";
+import Spinner from "../../../others/Spinner";
+import Image from "../../../others/Image";
 
 const PublicChat = () => {
   const { socket } = useAppSelector((state) => state.stateManeger);
-  const [stopScrolling, setStopScrolling] = useState<boolean>(false);
-  const lastMessageRef = useRef<HTMLDivElement>(null);
-  const messageContainerRef = useRef<HTMLDivElement>(null);
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
+  const { setElement } = useScrollToElement([messages], "start", "messageId");
+  const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const queryParam = searchParams.get("messageId");
   const [stagingMessages, setStagingMessages] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const messageContainerRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const queryParam = searchParams.get("messageId");
   const [openChatModelDeletion, setOpenChatModelDeletion] = useState<{
     messageId: string;
     messageUrlScreenshot: string;
   } | null>(null);
+
   const dispatch = useAppDispatch();
-  const { setElement } = useScrollToElement([messages], "start", "messageId");
 
   const handleAddNewMessage = (data: TypePublicChatItem) => {
     const element = messageContainerRef.current!;

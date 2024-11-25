@@ -1,4 +1,4 @@
-import UserImage from "../../Others/UserImage";
+import UserImage from "../../others/UserImage";
 import { formateDate } from "../../../utils/common";
 import { useAppSelector } from "../../../context/Hooks";
 import { SetStateAction } from "react";

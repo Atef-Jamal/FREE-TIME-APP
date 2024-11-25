@@ -10,12 +10,12 @@ import {
 } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
-import ProfileActions from "../Navebare/ProfileAccount/ProfileActions";
-import RegisterButtons from "../Navebare/Registration/RegisterButtons";
-import RegisterationForm from "./Registration/RegisterationForm";
-import Search from "../Search/Search";
-import SearchBar from "../Search/SearchBar";
+import ProfileSkeleton from "./profileAccount/ProfileSkeleton";
+import ProfileActions from "./profileAccount/ProfileActions";
+import RegisterButtons from "./registration/RegisterButtons";
+import RegisterationForm from "./registration/RegisterationForm";
+import Search from "../search/Search";
+import SearchBar from "../search/SearchBar";
 import { BiSearch } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 

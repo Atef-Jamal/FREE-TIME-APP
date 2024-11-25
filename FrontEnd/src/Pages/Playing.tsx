@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
-import GuessCardApp from "../components/Tasks/GuessCardApp";
-import QuizApp from "../components/Tasks/QuizApp";
-import Spinner from "../components/Others/Spinner";
+import GuessCardApp from "../components/tasks/GuessCardApp";
+import QuizApp from "../components/tasks/QuizApp";
+import Spinner from "../components/others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { useFetchTaskApp, useFetchUser } from "../hooks";
 

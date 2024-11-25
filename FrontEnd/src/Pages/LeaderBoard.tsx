@@ -1,8 +1,8 @@
 import { dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
-import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
+import UsersWinnerCard from "../components/leaderboard/UsersWinnerCard";
 import { useFetchAllUsers } from "../hooks";
-import PeopleList from "../components/Leaderboard/PeopleList";
+import PeopleList from "../components/leaderboard/PeopleList";
 
 const LeaderBoard = () => {
   const { users } = useFetchAllUsers();

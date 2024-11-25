@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
-import Spinner from "../Others/Spinner";
+import Spinner from "../others/Spinner";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import { BsClockHistory } from "react-icons/bs";
@@ -23,7 +23,7 @@ const DailyStreakRewardCard = ({
   dayWhichTimmerIsLocated,
   handleUpdateNextTimerDay,
 }: TypeProps) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation("rewards");
   const [, setRefresh] = useState(false);
@@ -42,14 +42,14 @@ const DailyStreakRewardCard = ({
         `api/rewards/daily-reward/collect`,
         { day: dayInfo.day }
       );
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          points: response.data.points,
-          dailyReward: response.data.dailyReward,
-          week: response.data.week,
-        })
-      );
+      const updatedUser = {
+        ...currentUser,
+        points: response.data.points,
+        dailyReward: response.data.dailyReward,
+        week: response.data.week,
+      };
+      dispatch(setCurrentUser(updatedUser));
+      socket?.emit("user-updated", updatedUser);
       dispatch(
         showPopup({
           message: `successfully collect ${dayInfo.reward} points`,

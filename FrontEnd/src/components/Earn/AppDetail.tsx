@@ -7,7 +7,7 @@ import { FaRegArrowAltCircleDown } from "react-icons/fa";
 import { empty } from "../../assets";
 import { BsArrowDownCircle } from "react-icons/bs";
 import { makeRequest } from "../../utils";
-import Empty from "../Others/Empty";
+import Empty from "../others/Empty";
 import { showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import AppDetailsSkeleton from "./AppDetailsSkeleton";

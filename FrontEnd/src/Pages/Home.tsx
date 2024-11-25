@@ -1,8 +1,8 @@
-import Faq from "../components/Home/Faq";
-import HeroSection from "../components/Home/HeroSection";
-import HowToStart from "../components/Home/HowToStart";
-import WhyIsFreeTime from "../components/Home/WhyIsFreeTime";
-import TestimonialSection from "../components/Home/TestimonialSection";
+import Faq from "../components/home/Faq";
+import HeroSection from "../components/home/HeroSection";
+import HowToStart from "../components/home/HowToStart";
+import WhyIsFreeTime from "../components/home/WhyIsFreeTime";
+import TestimonialSection from "../components/home/TestimonialSection";
 
 const Home = () => {
   return (

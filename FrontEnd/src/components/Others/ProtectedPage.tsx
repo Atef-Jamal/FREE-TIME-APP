@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../context/Hooks";
-import LockedPage from "../Errors/LockedPage";
+import LockedPage from "../errors/LockedPage";
 import LoadingWebsite from "./LoadingWebsite";
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => {

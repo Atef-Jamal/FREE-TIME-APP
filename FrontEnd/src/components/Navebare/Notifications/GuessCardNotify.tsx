@@ -2,7 +2,7 @@ import { FcApproval } from "react-icons/fc";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useState } from "react";
-import Spinner from "../../Others/Spinner";
+import Spinner from "../../others/Spinner";
 import {
   handleApiError,
   formateDate,

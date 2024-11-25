@@ -8,7 +8,7 @@ import {
 } from "../../../utils/common";
 
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import Spinner from "../../Others/Spinner";
+import Spinner from "../../others/Spinner";
 
 import { TypeQuizAppNotify } from "../../../types/notificationTypes";
 

@@ -4,26 +4,26 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import io from "socket.io-client";
 import { setOnlineUsers, setSocet } from "./context/StateManeger";
 import { useListenToSocketEvents } from "./hooks";
-import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
-import LoadingWebsite from "./components/Others/LoadingWebsite";
+import MobileChat from "./components/chats/PublicChat/MobileChat/MobileChat";
+import LoadingWebsite from "./components/others/LoadingWebsite";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
-import ProtectedPage from "./components/Others/ProtectedPage";
-import PageNotFound from "./components/Errors/PageNotFound";
-import AppError from "./components/Errors/AppError";
+import ProtectedPage from "./components/others/ProtectedPage";
+import PageNotFound from "./components/errors/PageNotFound";
+import AppError from "./components/errors/AppError";
 
-const Layout = lazy(() => import("./Pages/Layout"));
-const Home = lazy(() => import("./Pages/Home"));
-const Earn = lazy(() => import("./Pages/Earn"));
-const Affiliates = lazy(() => import("./Pages/Affiliates"));
-const LeaderBoard = lazy(() => import("./Pages/LeaderBoard"));
-const CashOut = lazy(() => import("./Pages/CashOut"));
-const Rewards = lazy(() => import("./Pages/Rewards"));
-const MyProfile = lazy(() => import("./Pages/MyProfile"));
-const PublicUserProfile = lazy(() => import("./Pages/PublicUserProfile"));
-const MarketPlace = lazy(() => import("./Pages/MarketPlace"));
-const PrivateChat = lazy(() => import("./Pages/PrivateChat"));
-const Playing = lazy(() => import("./Pages/Playing"));
-const Musics = lazy(() => import("./Pages/Musics"));
+const Layout = lazy(() => import("./pages/Layout"));
+const Home = lazy(() => import("./pages/Home"));
+const Earn = lazy(() => import("./pages/Earn"));
+const Affiliates = lazy(() => import("./pages/Affiliates"));
+const LeaderBoard = lazy(() => import("./pages/LeaderBoard"));
+const CashOut = lazy(() => import("./pages/CashOut"));
+const Rewards = lazy(() => import("./pages/Rewards"));
+const MyProfile = lazy(() => import("./pages/MyProfile"));
+const PublicUserProfile = lazy(() => import("./pages/PublicUserProfile"));
+const MarketPlace = lazy(() => import("./pages/MarketPlace"));
+const PrivateChat = lazy(() => import("./pages/PrivateChat"));
+const Playing = lazy(() => import("./pages/Playing"));
+const Musics = lazy(() => import("./pages/Musics"));
 
 const router = createBrowserRouter([
   {

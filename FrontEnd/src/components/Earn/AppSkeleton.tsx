@@ -1,4 +1,4 @@
-import Skeleton from "../Others/Skeleton";
+import Skeleton from "../others/Skeleton";
 
 const AppSkeleton = () => (
   <div className="h-[250px] p-3 rounded-md flex flex-col items-center justify-between bg-[#2a244481] border border-gray-700">

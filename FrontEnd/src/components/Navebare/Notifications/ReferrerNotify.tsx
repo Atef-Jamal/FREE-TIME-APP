@@ -3,7 +3,7 @@ import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { FcConferenceCall } from "react-icons/fc";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
-import Spinner from "../../Others/Spinner";
+import Spinner from "../../others/Spinner";
 import {
   handleApiError,
   formateDate,
