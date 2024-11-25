@@ -176,7 +176,6 @@ const ApplyCoupon = () => {
         </div>
       </div>
     </div>
-    // </div>
   );
 };
 
