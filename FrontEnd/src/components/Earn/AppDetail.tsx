@@ -13,6 +13,7 @@ import { handleApiError } from "../../utils/common";
 import AppDetailsSkeleton from "./AppDetailsSkeleton";
 import { User } from "../../types/userTypes";
 import { useTranslation } from "react-i18next";
+import Image from "../../components/Others/Image";
 
 interface TypeReview {
   _id: string;
@@ -98,11 +99,8 @@ const AppDetail = ({ appId }: { appId: string }) => {
         <h1 className="text-2xl font-bold text-[#78bd4f] mb-3">
           {t("Offer Details")}
         </h1>
-        <img
-          className="w-full h-[300px] object-cover mb-3"
-          src={appDetail.image}
-          alt=""
-        />
+       
+<Image alt="" src={appDetail.image.replace("http://localhost:3000",import.meta.env.VITE_SERVER_BASE_URL)} className="w-full h-[300px] object-cover mb-3" />
         <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
           <span className="w-full text-[#537692] text-sm">
             <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span>{" "}
