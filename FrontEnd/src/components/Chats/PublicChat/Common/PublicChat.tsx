@@ -201,7 +201,7 @@ const PublicChat = () => {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="sticky top-[50%] border border-[#645252] bg-[#242222] h-[150px] rounded-lg mx-2 p-2"
+              className="sticky top-[35%] border border-[#645252] bg-[#242222] rounded-lg mx-2 p-2"
             >
               <p className="text-sm text-[#87abc9] font-bold text-center mb-1">
                 Are your sure to delete your message ?

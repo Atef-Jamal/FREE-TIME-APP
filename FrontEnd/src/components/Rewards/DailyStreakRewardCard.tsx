@@ -57,7 +57,6 @@ const DailyStreakRewardCard = ({
         })
       );
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" })
       );
