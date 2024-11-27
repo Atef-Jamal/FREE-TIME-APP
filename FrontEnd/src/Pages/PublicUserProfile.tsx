@@ -8,8 +8,8 @@ import { useAppSelector } from "../context/Hooks";
 import { useEffect } from "react";
 import { makeRequest } from "../utils";
 import UserImage from "../components/others/UserImage";
-import ActivitiesList from "../components/publicUserProfile/ActivitiesList";
-import { PublicUserProfileSkeleton } from "../components/publicUserProfile/PublicUserProfileSkeleton";
+import ActivitiesList from "../components/PublicUserProfile/ActivitiesList";
+import { PublicUserProfileSkeleton } from "../components/PublicUserProfile/PublicUserProfileSkeleton";
 
 import {
   useFetchActivities,
