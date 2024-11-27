@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { showPopup, toggleThisEntity } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import Model from "../components/others/Model";
-import Sidebar from "../components/sidebar/Sidebar";
-import Navbare from "../components/navebare/Navbare";
-import Footer from "../components/footer/Footer";
-import DisktopChat from "../components/chats/publicChat/disktopChat/DisktopChat";
-import LiveStats from "../components/liveStats/LiveStats";
-import NavebareBottom from "../components/navebare/NavebareBottom";
-import ToastNotify from "../components/others/ToastNotify";
+import Model from "../components/Others/Model";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Navbare from "../components/Navebare/Navbare";
+import Footer from "../components/Footer/Footer";
+import DisktopChat from "../components/Chats/PublicChat/DisktopChat/DisktopChat";
+import LiveStats from "../components/LiveStats/LiveStats";
+import NavebareBottom from "../components/Navebare/NavebareBottom";
+import ToastNotify from "../components/Others/ToastNotify";
 import { Helmet } from "react-helmet-async";
-import MusicPlayer from "../components/music/MusicPlayer";
+import MusicPlayer from "../components/Music/MusicPlayer";
 
 const Layout = () => {
   const {

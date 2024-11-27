@@ -1,7 +1,7 @@
 import { useAppSelector } from "../../../../context/Hooks";
 import { User } from "../../../../types/userTypes";
 import { useFetchAllUsers } from "../../../../hooks";
-import Spinner from "../../../others/Spinner";
+import Spinner from "../../../Others/Spinner";
 import { useCloseMenuOnClickOutSide } from "../../../../hooks";
 import { useRef } from "react";
 

@@ -4,7 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-import Input from "../navebare/registration/Input";
+import Input from "../Navebare/Registration/Input";
 import { handleApiError } from "../../utils/common";
 import { useTranslation } from "react-i18next";
 import { login, signInWithGoogle } from "../../utils/auth";

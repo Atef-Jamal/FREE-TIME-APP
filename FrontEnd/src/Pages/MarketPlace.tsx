@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MdStorefront } from "react-icons/md";
 import { showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import FrameItem from "../components/marketPlace/FrameItem";
+import FrameItem from "../components/MarketPlace/FrameItem";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 

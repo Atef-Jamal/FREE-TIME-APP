@@ -7,9 +7,9 @@ import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
 import { dollarInHand } from "../assets";
-import Spinner from "../components/others/Spinner";
-import Ladder from "../components/rewards/Ladder";
-import DailyReward from "../components/rewards/DailyReward";
+import Spinner from "../components/Others/Spinner";
+import Ladder from "../components/Rewards/Ladder";
+import DailyReward from "../components/Rewards/DailyReward";
 import { TypeBounusCode } from "../types/rewardsTypes";
 import { useScrollToElement } from "../hooks/commonHooks";
 import { useTranslation } from "react-i18next";

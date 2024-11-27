@@ -7,7 +7,7 @@ import { BsFillClockFill } from "react-icons/bs";
 import { useAppSelector } from "../context/Hooks";
 import { useEffect } from "react";
 import { makeRequest } from "../utils";
-import UserImage from "../components/others/UserImage";
+import UserImage from "../components/Others/UserImage";
 import ActivitiesList from "../components/PublicUserProfile/ActivitiesList";
 import { PublicUserProfileSkeleton } from "../components/PublicUserProfile/PublicUserProfileSkeleton";
 

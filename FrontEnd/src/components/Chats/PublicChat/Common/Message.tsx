@@ -5,7 +5,7 @@ import { AiTwotoneDislike } from "react-icons/ai";
 import { FcLike, FcOk } from "react-icons/fc";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import UserImage from "../../../others/UserImage";
+import UserImage from "../../../Others/UserImage";
 import { makeRequest } from "../../../../utils";
 import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
 import { useListenToSocketEvents } from "../../../../hooks";

@@ -5,7 +5,7 @@ import { crown, verifiedImage } from "../../assets";
 import { useAppSelector } from "../../context/Hooks";
 import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
-import UserImage from "../others/UserImage";
+import UserImage from "../Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
 import { useFetchAllUsers, useListenToSocketEvents } from "../../hooks";

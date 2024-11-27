@@ -10,7 +10,7 @@ import VerifyEmailBox from "./VerifyEmailBox";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
-import Spinner from "../others/Spinner";
+import Spinner from "../Others/Spinner";
 
 const ProfileSettings = () => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
