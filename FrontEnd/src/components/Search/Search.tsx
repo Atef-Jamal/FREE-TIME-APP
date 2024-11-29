@@ -15,6 +15,15 @@ const Search = () => {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
+  const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
+  const musicOptions = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": import.meta.env.VITE_X_RAPIDAPI_KEY,
+      "X-RapidAPI-Host": import.meta.env.VITE_X_RAPIDAPI_HOST,
+    },
+  };
+
   let resultsCounts = 0;
 
   if (results) {
@@ -22,7 +31,8 @@ const Search = () => {
       results.features.length +
       results.users.length +
       results.apps.length +
-      results.frames.length;
+      results.frames.length +
+      results.musics.length;
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,17 +41,35 @@ const Search = () => {
       if (results !== null) setResults(null);
       return;
     }
-    setSearchQ(searchTerm);
+    setSearchQ(searchTerm.toLocaleLowerCase());
   };
 
   const getResults = async () => {
     if (error) setError(null);
     if (!loading) setLoading(true);
 
+    const musicResponse = await fetch(deezerUrl, musicOptions);
+    const musics = await musicResponse.json();
+    const res = musics?.data?.filter((item: any) =>
+      item.title.toLocaleLowerCase().includes(searchQ)
+    );
+    const mappedMusics = res?.map((item: any) => ({
+      _id: item.id.toString(),
+      description: item.title,
+      image: item.album.cover,
+      title: item.title,
+      link: `/musics?to=${item.id.toString()}`,
+    }));
+
     try {
       const response = await makeRequest.get(`api/search?q=${searchQ}`);
-      setResults(response.data);
+
+      setResults({
+        ...response.data,
+        musics: mappedMusics || [],
+      });
     } catch (error) {
+      console.log(error);
       setError(handleApiError(error));
     } finally {
       setLoading(false);
@@ -134,6 +162,15 @@ const Search = () => {
               results={results.frames}
               searchTerm={searchQ}
               emptyText={"No Frames Found"}
+            />
+            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+              Musics
+            </h1>
+            <ResultElement
+              type="MUSICS"
+              results={results.musics}
+              searchTerm={searchQ}
+              emptyText={"No Musics Found"}
             />
           </div>
         )}

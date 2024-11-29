@@ -30,7 +30,7 @@ const Musics = () => {
             </div>
           ))}
 
-        {musics.map((song: any) => (
+        {musics?.map((song: any) => (
           <MusicCard key={song.id} songDetails={song} />
         ))}
       </div>

@@ -16,7 +16,7 @@ const ResultElement = ({
   results: TypeSearchItem[];
   searchTerm: string;
   emptyText: string;
-  type: "FRAMES" | "APPS" | "USERS" | "FEATURES";
+  type: "FRAMES" | "APPS" | "USERS" | "FEATURES" | "MUSICS";
 }) => {
   const dispatch = useAppDispatch();
   return (
@@ -49,6 +49,13 @@ const ResultElement = ({
                 "http://localhost:3000",
                 import.meta.env.VITE_SERVER_BASE_URL
               )}
+              className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
+            />
+          )}
+          {type === "MUSICS" && (
+            <Image
+              alt={""}
+              src={item.image}
               className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
           )}

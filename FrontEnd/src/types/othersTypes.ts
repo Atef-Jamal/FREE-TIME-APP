@@ -19,6 +19,7 @@ export interface TypeSearchResults {
   users: TypeSearchItem[];
   apps: TypeSearchItem[];
   frames: TypeSearchItem[];
+  musics: TypeSearchItem[];
 }
 
 export interface TypeConversationSocketData {
