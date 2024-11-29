@@ -31,7 +31,8 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
     <div
       ref={menuRef}
       onClick={() => setOpenMentionList(false)}
-      className="bg-[#141a36] w-full h-full flex flex-col items-center p-1 gap-1 overflow-auto scrollbar-thin"
+      style={{ scrollbarColor: "red" }}
+      className="bg-[#141a36] w-full h-full flex flex-col items-center p-1 gap-1 overflow-auto sm:scrollbar-thin"
     >
       {error && <div className="w-full my-4">{error}</div>}
       {loading && (

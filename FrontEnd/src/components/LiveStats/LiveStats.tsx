@@ -78,7 +78,18 @@ const LiveStats = () => {
       })[0];
       setUserHieghestPoints(hieghestPoints._id);
     }
-  }, [users, onlineUsers, currentUser]);
+  }, [users, onlineUsers]);
+
+  useEffect(() => {
+    setUsers((prev) =>
+      prev.map((user) => {
+        if (user._id === currentUser?._id) {
+          return currentUser;
+        }
+        return user;
+      })
+    );
+  }, [currentUser?.points]);
 
   return (
     <div className={`flex w-full`}>
