@@ -163,7 +163,7 @@ const Message = ({
   return (
     <div
       ref={messageRef}
-      id={`publicMessage${_id}`}
+      id={_id}
       className={`bg-[#2f2f4e88] w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex relative ">

@@ -136,7 +136,6 @@ const PublicChat = () => {
   }, [messages]);
 
   let numofSkeleton = 5;
-
   if (messageContainerRef.current) {
     numofSkeleton = Math.floor(messageContainerRef.current.clientHeight / 80);
   }
@@ -233,7 +232,7 @@ const PublicChat = () => {
         {stagingMessages > 0 && (
           <button
             onClick={scrollToLastMessage}
-            className="absolute -top-[30px] px-2 py-1 bg-[#1564d1ee] text-sm sm:text-xs  rounded-full font-bold tracking-wider flex items-center justify-center gap-1"
+            className="absolute -top-[40px] sm:-top-[35px] px-2 py-1 bg-[#1564d1ee] text-sm sm:text-xs  rounded-full font-bold tracking-wider flex items-center justify-center gap-1"
           >
             <FaArrowDownLong />
             {stagingMessages} new Message{stagingMessages > 1 ? "s" : ""}
