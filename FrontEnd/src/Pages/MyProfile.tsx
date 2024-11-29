@@ -12,14 +12,14 @@ import { FcOk } from "react-icons/fc";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import ProfileSettings from "../components/myProfile/ProfileSettings";
+import ProfileSettings from "../components/MyProfile/ProfileSettings";
 
 import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
-import Statistics from "../components/myProfile/Statistics";
-import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
+import Statistics from "../components/MyProfile/Statistics";
+import WhoVisitProfile from "../components/MyProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frameTypes";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
@@ -272,7 +272,7 @@ const MyProfile = () => {
           <h1 className="text-[#a0e965ee] font-bold text-center ">My Musics</h1>
           <div className="w-full grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2">
             {musics
-              .filter((item) => {
+              ?.filter((item) => {
                 if (currentUser?.mySongs?.includes(item.id.toString())) {
                   return item;
                 }
