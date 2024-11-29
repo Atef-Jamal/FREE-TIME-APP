@@ -12,14 +12,14 @@ import { FcOk } from "react-icons/fc";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
 import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import ProfileSettings from "../components/MyProfile/ProfileSettings";
+import ProfileSettings from "../components/myProfile/ProfileSettings";
 
 import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
-import Statistics from "../components/MyProfile/Statistics";
-import WhoVisitProfile from "../components/MyProfile/WhoVisitProfile";
+import Statistics from "../components/myProfile/Statistics";
+import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
 import { TypeFrame } from "../types/frameTypes";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
