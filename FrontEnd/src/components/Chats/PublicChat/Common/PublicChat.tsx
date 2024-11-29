@@ -127,7 +127,7 @@ const PublicChat = () => {
         );
       }
     });
-  }, [messages]);
+  }, [messages, setOpenChatModelDeletion]);
 
   useEffect(() => {
     if (!stopScrolling && !queryParam) {
@@ -147,32 +147,16 @@ const PublicChat = () => {
       setStopScrolling(true);
     }
 
-    setMessages((prev) => {
-      return prev.map((msg) => {
-        if (msg._id === messageId && msg.type === "MESSAGE") {
-          return { ...msg, isDeleted: true };
-        } else {
-          return msg;
-        }
-      });
-    });
-
     try {
-      const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
+      const response = await makeRequest.patch(`api/publicchatw/${messageId}`, {
         isDeleted: true,
       });
-
       socket?.emit("interact-with-public-message", response.data);
-    } catch (error) {
-      setMessages((prev) => {
-        return prev.map((msg) => {
-          if (msg._id === messageId) {
-            return { ...msg, isDeleted: false };
-          } else {
-            return msg;
-          }
-        });
+      const customEvent = new CustomEvent("fastDeletePublicMessage", {
+        detail: response.data,
       });
+      document.dispatchEvent(customEvent);
+    } catch (error) {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",

@@ -16,11 +16,11 @@ import { BiCircle } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import html2canvas from "html2canvas";
+import { useListenToDocumentEvent } from "../../../../hooks/listenersHooks";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
   messageRef: React.RefObject<HTMLDivElement> | null;
-
   setOpenChatModelDeletion: React.Dispatch<
     React.SetStateAction<{
       messageId: string;
@@ -34,7 +34,6 @@ type TypeFieldName = "loves" | "likes" | "dislikes";
 const Message = ({
   singleMessage,
   messageRef,
-
   setOpenChatModelDeletion,
 }: TypeMessageProp) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
@@ -115,6 +114,7 @@ const Message = ({
       messageElement?.classList.remove("bg-black");
       messageUrl = canvas.toDataURL("image/png");
     }
+
     setOpenChatModelDeletion({
       messageId: _id,
       messageUrlScreenshot: messageUrl,
@@ -148,11 +148,23 @@ const Message = ({
     return () => clearInterval(interval);
   }, []);
 
+  const onUpdate = ({ detail }: { detail: TypePublicChatMessage }) => {
+    if (detail._id === _id) {
+      setMessageItem(detail);
+    }
+    return;
+  };
+
+  useListenToDocumentEvent({
+    eventToListen: "fastDeletePublicMessage",
+    onUpdate,
+  });
+
   return (
     <div
       ref={messageRef}
       id={`publicMessage${_id}`}
-      className={`bg-[#2f2f4e88] relative w-full flex flex-col gap-1  rounded-md p-[6px]`}
+      className={`bg-[#2f2f4e88] w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex relative ">
         <div className="w-[35px] h-[30px] sm:w-[30px] sm:h-[25px]">

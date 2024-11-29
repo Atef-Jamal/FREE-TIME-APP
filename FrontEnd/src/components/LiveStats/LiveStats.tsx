@@ -78,7 +78,7 @@ const LiveStats = () => {
       })[0];
       setUserHieghestPoints(hieghestPoints._id);
     }
-  }, [users, onlineUsers, currentUser?.points]);
+  }, [users, onlineUsers, currentUser]);
 
   return (
     <div className={`flex w-full`}>
