@@ -15,7 +15,7 @@ import { TypeQuizAppNotify } from "../../../types/notificationTypes";
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 
 const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -27,12 +27,12 @@ const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
     try {
       const response = await collectReward(_id);
       setIsRewadCollected(response.isCollected);
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          points: currentUser.points + response.prize,
-        })
-      );
+      const updatedUser = {
+        ...currentUser,
+        points: currentUser.points + response.prize,
+      };
+      dispatch(setCurrentUser(updatedUser));
+      socket?.emit("user-updated", updatedUser);
       dispatch(
         showPopup({
           message: "collected successfully ",
