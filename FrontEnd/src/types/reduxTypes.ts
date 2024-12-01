@@ -38,4 +38,5 @@ export interface TypeInitialState {
   reFetchThisUserId: string;
   allUnReadedMesseges: string[];
   model: { status: boolean; children: React.ReactNode };
+  publicMsgRedPoint: boolean;
 }

@@ -33,6 +33,7 @@ const initialState: TypeInitialState = {
   reFetchThisUserId: "",
   allUnReadedMesseges: [],
   model: { status: false, children: null },
+  publicMsgRedPoint: false,
 };
 
 export interface TypeTogglActionPayload {
@@ -120,6 +121,9 @@ const StateManegerSlice = createSlice({
     setOnlineUsers(state, action: PayloadAction<string[]>) {
       state.onlineUsers = action.payload;
     },
+    setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
+      state.publicMsgRedPoint = action.payload;
+    },
     updateSidebarUnReadedMsgCount(
       state,
       action: PayloadAction<TypeSidbareUnreadedMsgs>
@@ -160,6 +164,7 @@ export const {
   openModel,
   resetModel,
   toggleThisEntity,
+  setPublicMsgRedPoint,
 } = StateManegerSlice.actions;
 
 export default StateManegerSlice;

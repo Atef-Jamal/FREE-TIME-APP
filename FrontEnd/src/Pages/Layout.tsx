@@ -25,7 +25,7 @@ const Layout = () => {
   } = useAppSelector((state) => state.stateManeger);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
-  const [redPointForRecievingMsg, setRedPointForRecievingMsg] = useState(false);
+  const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -88,7 +88,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (openSidbareMobile) {
-      setRedPointForRecievingMsg(false);
+      setPrivateMsgRedPoint(false);
     }
   }, [openSidbareMobile]);
 
@@ -169,8 +169,8 @@ const Layout = () => {
         <NavebareBottom
           setOpenSidbareMobile={setOpenSidbareMobile}
           openSidbareMobile={openSidbareMobile}
-          redPointForRecievingMsg={redPointForRecievingMsg}
-          setRedPointForRecievingMsg={setRedPointForRecievingMsg}
+          privateMsgRedPoint={privateMsgRedPoint}
+          setPrivateMsgRedPoint={setPrivateMsgRedPoint}
         />
       </div>
     </div>

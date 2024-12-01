@@ -1,8 +1,15 @@
-import { useAppSelector } from "../../../../context/Hooks";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import PublicChat from "../Common/PublicChat";
+import { setPublicMsgRedPoint } from "../../../../context/StateManeger";
 
 const MobileChat = () => {
   const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setPublicMsgRedPoint(false));
+  }, []);
 
   return (
     <div

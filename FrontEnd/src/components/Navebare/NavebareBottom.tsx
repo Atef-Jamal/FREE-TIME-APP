@@ -7,23 +7,27 @@ import { IoChatbubblesSharp } from "react-icons/io5";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { useListenToSocketEvents } from "../../hooks";
 import { TypePrivateMessage } from "../../types/privateChatTypes";
+import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { setPublicMsgRedPoint } from "../../context/StateManeger";
 
 const NavebareBottom = ({
   setOpenSidbareMobile,
   openSidbareMobile,
-  redPointForRecievingMsg,
-  setRedPointForRecievingMsg,
+  privateMsgRedPoint,
+  setPrivateMsgRedPoint,
 }: {
+  privateMsgRedPoint: boolean;
+  setPrivateMsgRedPoint: Dispatch<SetStateAction<boolean>>;
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
   openSidbareMobile: boolean;
-  redPointForRecievingMsg: boolean;
-  setRedPointForRecievingMsg: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { publicMsgRedPoint } = useAppSelector((state) => state.stateManeger);
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
+  const dispatch = useAppDispatch();
 
   const handleAddNewPrivateMessage = (_: TypePrivateMessage) => {
     if (location.pathname !== "/privatechat" && !openSidbareMobile) {
-      setRedPointForRecievingMsg(true);
+      setPrivateMsgRedPoint(true);
     }
   };
 
@@ -32,12 +36,23 @@ const NavebareBottom = ({
     handlers: [handleAddNewPrivateMessage],
   });
 
+  const handleNotify = () => {
+    if (location.pathname !== "/chat") {
+      dispatch(setPublicMsgRedPoint(true));
+    }
+  };
+
+  useListenToSocketEvents({
+    eventsToListen: ["public-message"],
+    handlers: [handleNotify],
+  });
+
   return (
     <ul className="w-full flex items-center justify-between gap-1">
       <li className="relative w-[17%] h-[65px] flex items-center justify-center">
         <FaList className="text-xl" onClick={handleToggleMobileSidbare} />
-        {redPointForRecievingMsg && (
-          <span className="absolute top-2 left-2 bg-[#f82929] w-3 h-3"></span>
+        {privateMsgRedPoint && (
+          <span className="absolute top-[10%] left-[30%] rounded-full bg-[#f82929] w-3 h-3"></span>
         )}
       </li>
 
@@ -94,9 +109,12 @@ const NavebareBottom = ({
               isActive
                 ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
                 : undefined
-            } flex flex-col items-center justify-center gap-2 text-gray-200 text-xs  font-[500] h-full rounded-md`
+            } relative flex flex-col items-center justify-center gap-2 text-gray-200 text-xs  font-[500] h-full rounded-md`
           }
         >
+          {publicMsgRedPoint && (
+            <span className="absolute top-[10%] left-[30%] w-3 h-3 rounded-full bg-[#f70606ee]"></span>
+          )}
           <IoChatbubblesSharp className="text-2xl" />
           Chat
         </NavLink>

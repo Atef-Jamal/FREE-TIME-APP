@@ -85,13 +85,18 @@ const SendMessagePrivateChat = ({
           .concat([{ ...response.data, isSended: "SUCCESS" }]);
       });
       setConversations((prev) => {
-        return prev.map((conv) => {
-          if (conv.secondParty._id === id) {
-            return { ...conv, lastMessage: response.data };
-          } else {
-            return conv;
-          }
-        });
+        return prev
+          .map((conv) => {
+            if (conv.secondParty._id === id) {
+              return { ...conv, lastMessage: response.data };
+            } else {
+              return conv;
+            }
+          })
+          .sort((a) => {
+            if (a.secondParty._id === id) return -1;
+            return 1;
+          });
       });
 
       socket?.emit("private-message", { to: id, data: response.data });
