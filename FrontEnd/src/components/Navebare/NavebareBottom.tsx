@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { NavLink } from "react-router-dom";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
@@ -11,12 +11,15 @@ import { TypePrivateMessage } from "../../types/privateChatTypes";
 const NavebareBottom = ({
   setOpenSidbareMobile,
   openSidbareMobile,
+  redPointForRecievingMsg,
+  setRedPointForRecievingMsg,
 }: {
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
   openSidbareMobile: boolean;
+  redPointForRecievingMsg: boolean;
+  setRedPointForRecievingMsg: Dispatch<SetStateAction<boolean>>;
 }) => {
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
-  const [redPointForRecievingMsg, setRedPointForRecievingMsg] = useState(false);
 
   const handleAddNewPrivateMessage = (_: TypePrivateMessage) => {
     if (location.pathname !== "/privatechat" && !openSidbareMobile) {

@@ -12,11 +12,6 @@ import NavebareBottom from "../components/Navebare/NavebareBottom";
 import ToastNotify from "../components/Others/ToastNotify";
 import { Helmet } from "react-helmet-async";
 import MusicPlayer from "../components/Music/MusicPlayer";
-// import { useListenToSocketEvents } from "../../hooks";
-// import { TypePrivateMessage } from "../../types/privateChatTypes";
-import messageSoundSrc from "../../assets/images/messageSound.mp3";
-// import { TypePrivateMessage } from "../types/privateChatTypes";
-// import { useListenToSocketEvents } from "../hooks";
 
 const Layout = () => {
   const {
@@ -30,10 +25,10 @@ const Layout = () => {
   } = useAppSelector((state) => state.stateManeger);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
+  const [redPointForRecievingMsg, setRedPointForRecievingMsg] = useState(false);
+
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const messageSound = new Audio();
-  messageSound.src = messageSoundSrc;
 
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
@@ -90,6 +85,12 @@ const Layout = () => {
       window.removeEventListener("offline", handleNetworkOffline);
     };
   }, []);
+
+  useEffect(() => {
+    if (openSidbareMobile) {
+      setRedPointForRecievingMsg(false);
+    }
+  }, [openSidbareMobile]);
 
   return (
     <div className="w-full">
@@ -168,6 +169,8 @@ const Layout = () => {
         <NavebareBottom
           setOpenSidbareMobile={setOpenSidbareMobile}
           openSidbareMobile={openSidbareMobile}
+          redPointForRecievingMsg={redPointForRecievingMsg}
+          setRedPointForRecievingMsg={setRedPointForRecievingMsg}
         />
       </div>
     </div>
