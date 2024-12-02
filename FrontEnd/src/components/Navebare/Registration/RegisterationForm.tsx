@@ -18,7 +18,7 @@ const initialValue = {
   email: "",
   password: "",
   confirmPassword: "",
-  profilePicture: null,
+  profilePicture: "",
 };
 
 const RegisterationForm = () => {
@@ -28,6 +28,7 @@ const RegisterationForm = () => {
   const [formData, setFormData] = useState<TypeFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
+  const [imageIsUploading, setImageIsUploading] = useState(false);
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("register");
@@ -45,12 +46,12 @@ const RegisterationForm = () => {
   const handleSubmite = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (currentUser) return;
+    if (imageIsUploading) return;
     setSubmiting(true);
 
-    const { name, email, password, confirmPassword, profilePicture } = formData;
+    const { name, email, password, confirmPassword } = formData;
 
     let errorMessage;
-
     if (isSignInMode) {
       errorMessage = validation([email, password], true);
     } else {
@@ -77,14 +78,14 @@ const RegisterationForm = () => {
         localStorage.setItem("token", response.data.token);
         window.location.href = `${window.location.origin}/?redirectedfrom=login`;
       } else {
-        const userFormData = new FormData();
-        userFormData.append("name", name);
-        userFormData.append("email", email);
-        userFormData.append("password", password);
-        userFormData.append("confirmPassword", confirmPassword);
-        userFormData.append("profilePicture", profilePicture as File);
-
-        const response = await register(userFormData, dispatch, queryParam);
+        const newUser = {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          profilePicture: formData.profilePicture,
+        };
+        const response = await register(newUser, dispatch, queryParam);
         localStorage.setItem("token", response.data.token);
         socket?.emit("new-user-joined", response.data._doc);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
@@ -179,14 +180,17 @@ const RegisterationForm = () => {
           <div className="w-[39%] sm:hidden">
             <LeftSide
               isSignInMode={isSignInMode}
-              formData={formData}
               setFormData={setFormData}
+              setImageIsUploading={setImageIsUploading}
             />
           </div>
           <div className="w-[60%] sm:w-full sm:px-4 mt-1">
             {!isSignInMode && (
               <div className="hidden sm:flex items-center justify-center">
-                <UploadImage formData={formData} setFormData={setFormData} />
+                <UploadImage
+                  setImageIsUploading={setImageIsUploading}
+                  setFormData={setFormData}
+                />
               </div>
             )}
             <form
@@ -257,7 +261,7 @@ const RegisterationForm = () => {
                 type="submit"
                 className=" disabled:opacity-60 bg-[#05BA6B] text-black py-2 w-[35%] font-[600] rounded-md border-[0.2px] border-white mt-2 sm:w-[90%] sm:mx-auto"
                 onClick={handleSubmite}
-                disabled={submiting}
+                disabled={submiting || imageIsUploading}
               >
                 {!isSignInMode
                   ? `${submiting ? "Submiting" : t("Sign Up")} `

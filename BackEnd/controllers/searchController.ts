@@ -16,7 +16,9 @@ export const searchController = async (req: Request, res: Response) => {
     const getFeatures = features.filter((item) =>
       item.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
     );
-    const getUsers = await User.find({ name: regex }).select("-password");
+    const getUsers = await User.find({
+      name: regex,
+    }).select("-password");
     const getApps = await Task.find({ title: regex });
     const getFrames = await Frame.find({ title: regex });
 

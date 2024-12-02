@@ -5,7 +5,7 @@ import { auth } from "../firebase";
 import { showPopup } from "../context/StateManeger";
 
 export const register = async (
-  formData: any,
+  formData: TypeFormData,
   dispatch: any,
   referrerUser?: string | null
 ) => {

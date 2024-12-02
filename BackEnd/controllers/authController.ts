@@ -7,26 +7,19 @@ import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import fs from "fs";
 import { onLineUsers } from "../socketIo/socketIo";
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password, confirmPassword, profilePicture } = req.body;
   const referrerUser = req.query.referrerUser;
 
   if (!name || !email || !password || !confirmPassword) {
-    if (req.file) {
-      fs.unlink(req.file.path, () => {});
-    }
     return res.status(404).json({ error: "all field required" });
   }
   try {
     const userExisted = await User.findOne({ email });
 
     if (userExisted) {
-      if (req.file) {
-        fs.unlink(req.file.path, () => {});
-      }
       return res
         .status(404)
         .json({ error: "User already existed, Try Log in" });
@@ -38,17 +31,13 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture: `${process.env.SERVER_BASE_URL}/${
-        req.file ? req.file.path : "uploads/avatar.jpeg"
-      }`,
+      profilePicture:
+        profilePicture || `${process.env.SERVER_BASE_URL}/uploads/avatar.jpeg`,
     });
 
     const savedUser = await newUser.save();
 
     if (!process.env.JWT_SECRET_KEY) {
-      if (req.file) {
-        fs.unlink(req.file.path, () => {});
-      }
       return res
         .status(404)
         .json({ error: "an Error occurred, try again later" });
@@ -95,9 +84,6 @@ export const register = async (req: Request, res: Response) => {
     io.emit("new-user-joined", savedUser);
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
-    if (req.file) {
-      fs.unlink(req.file.path, () => {});
-    }
     return res
       .status(404)
       .json({ error: "an Error occurred, Try again Later" });

@@ -3,7 +3,7 @@ export interface TypeFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  profilePicture: File | null;
+  profilePicture: string;
 }
 
 export interface TypeSearchItem {

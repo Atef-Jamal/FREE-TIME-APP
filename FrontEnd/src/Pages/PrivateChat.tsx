@@ -22,7 +22,7 @@ const PrivateChat = () => {
     onlineUsers,
     hiddenLiveStats,
   } = useAppSelector((state) => state.stateManeger);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -151,13 +151,17 @@ const PrivateChat = () => {
     if (secondPartyId && secondPartyId !== currentUser?._id) {
       setActiveConversation(secondPartyId);
       localStorage.setItem("active-converstaion", secondPartyId);
+      setSearchParams((prev) => {
+        prev.delete("chat-with");
+        return prev;
+      });
     } else {
       const savedSecondPartyId = localStorage.getItem("active-converstaion");
       if (savedSecondPartyId && savedSecondPartyId !== currentUser?._id) {
         setActiveConversation(savedSecondPartyId);
       }
     }
-  }, []);
+  }, [searchParams]);
 
   useListenToSocketEvents({
     eventsToListen: ["new-user-joined", "private-message"],

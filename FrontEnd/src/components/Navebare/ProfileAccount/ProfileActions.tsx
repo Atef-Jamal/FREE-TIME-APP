@@ -93,7 +93,7 @@ const ProfileActions = () => {
           </div>
           <div
             onClick={() => setOpenProfileMenu(!openProfileMenu)}
-            className="w-[55%] h-full bg-[#3a3e58b7] flex items-center justify-around rounded-md "
+            className="cursor-pointer w-[55%] h-full bg-[#3a3e58b7] flex items-center justify-around rounded-md "
           >
             <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
               <UserImage user={currentUser} />

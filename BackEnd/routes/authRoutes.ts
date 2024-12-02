@@ -10,11 +10,11 @@ import {
   signInWithGoogle,
 } from "../controllers/authController";
 import protectedRoute from "../middleware";
-import { fileUpload } from "../middleware/fileUpload";
+// import { fileUpload } from "../middleware/fileUpload";
 
 const router = express.Router();
 
-router.post("/register", fileUpload.single("profilePicture"), register);
+router.post("/register", register);
 router.post("/login", login);
 router.post("/login-with-google", signInWithGoogle);
 router.get("/currentuser", getCurrentUser);

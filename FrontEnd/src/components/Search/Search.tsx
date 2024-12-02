@@ -3,12 +3,13 @@ import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../context/StateManeger";
-import { useAppDispatch } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
 
 const Search = () => {
+  const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [searchQ, setSearchQ] = useState("");
   const [results, setResults] = useState<TypeSearchResults | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -69,7 +70,6 @@ const Search = () => {
         musics: mappedMusics || [],
       });
     } catch (error) {
-      console.log(error);
       setError(handleApiError(error));
     } finally {
       setLoading(false);
@@ -139,7 +139,9 @@ const Search = () => {
             </h1>
             <ResultElement
               type="USERS"
-              results={results.users}
+              results={results.users.filter(
+                (usr) => usr._id !== currentUser?._id
+              )}
               searchTerm={searchQ}
               emptyText={"No People Found"}
             />
