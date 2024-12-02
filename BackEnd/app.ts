@@ -17,11 +17,29 @@ app.use(cookieParser());
 
 const server = http.createServer(app);
 
+// app.use(
+//   cors({
+//     origin: [process.env.CLIENT_BASE_URL!],
+//   })
+// );
+
+const allowedOrigins = process.env.CLIENT_BASE_URL!;
+
 app.use(
   cors({
-    origin: [process.env.CLIENT_BASE_URL!],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORSSSSSS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.options("*", cors());
 
 export const io = new Server(server, {
   cors: {
