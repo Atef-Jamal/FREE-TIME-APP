@@ -12,6 +12,11 @@ import NavebareBottom from "../components/Navebare/NavebareBottom";
 import ToastNotify from "../components/Others/ToastNotify";
 import { Helmet } from "react-helmet-async";
 import MusicPlayer from "../components/Music/MusicPlayer";
+// import { useListenToSocketEvents } from "../../hooks";
+// import { TypePrivateMessage } from "../../types/privateChatTypes";
+import messageSoundSrc from "../../assets/images/messageSound.mp3";
+// import { TypePrivateMessage } from "../types/privateChatTypes";
+// import { useListenToSocketEvents } from "../hooks";
 
 const Layout = () => {
   const {
@@ -27,6 +32,8 @@ const Layout = () => {
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const messageSound = new Audio();
+  messageSound.src = messageSoundSrc;
 
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
@@ -158,7 +165,10 @@ const Layout = () => {
         )}
       </div>
       <div className="hidden sm:block w-full bg-[#2b2b55] fixed bottom-0 z-[3]">
-        <NavebareBottom setOpenSidbareMobile={setOpenSidbareMobile} />
+        <NavebareBottom
+          setOpenSidbareMobile={setOpenSidbareMobile}
+          openSidbareMobile={openSidbareMobile}
+        />
       </div>
     </div>
   );

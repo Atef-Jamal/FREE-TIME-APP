@@ -3,9 +3,11 @@ import { MdLiveHelp } from "react-icons/md";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import { useFetchAllUsers } from "../hooks";
 import PeopleList from "../components/Leaderboard/PeopleList";
+import { useScrollToElement } from "../hooks/commonHooks";
 
 const LeaderBoard = () => {
   const { users } = useFetchAllUsers();
+  useScrollToElement([users]);
 
   return (
     <div className=" bg-[#1d2c35] relative pt-8">
@@ -37,9 +39,12 @@ const LeaderBoard = () => {
           for you this month!
         </div>
         <div className="flex items-center justify-evenly sm:gap-32 gap-24 flex-wrap py-32">
-          {users.slice(0, 2).map((usr, index) => {
-            return <UsersWinnerCard key={index} user={usr} index={index} />;
-          })}
+          {users
+            .sort((a, b) => b.points - a.points)
+            .slice(0, 3)
+            .map((usr, index) => {
+              return <UsersWinnerCard key={index} user={usr} index={index} />;
+            })}
         </div>
         <div className="flex flex-col sm:w-[98%] w-[90%] max-w-[1400px] mx-auto mb-10">
           <PeopleList />

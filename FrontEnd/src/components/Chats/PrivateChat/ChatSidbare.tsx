@@ -59,7 +59,7 @@ const ChatSidbare = ({
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
         onClick={toggleSidbare}
-        className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 sm:h-9 bg-[#423e3e] rounded-sm"
+        className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 sm:h-9 bg-[#554d4d] rounded-sm"
       >
         <MdKeyboardDoubleArrowRight className="text-2xl" />
       </span>
@@ -80,7 +80,7 @@ const ChatSidbare = ({
           </>
         )}
         {loading &&
-          [...Array(isMobile ? 6 : 11).keys()].map((skeleton) => (
+          [...Array(isMobile ? 4 : 7).keys()].map((skeleton) => (
             <PeopleSkeleton key={skeleton} />
           ))}
         {!loading &&

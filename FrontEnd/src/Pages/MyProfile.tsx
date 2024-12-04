@@ -25,10 +25,14 @@ import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
+import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const MyProfile = () => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
   const { musics } = useFetchMusics();
+  const [searchParams] = useSearchParams();
+  const queryParam = searchParams.get("to");
   const dispatch = useAppDispatch();
 
   let mathLevel: number = currentUser?.points
@@ -43,6 +47,7 @@ const MyProfile = () => {
   } else {
     progress = Number(mathLevel?.toString().slice(-1).concat("0"));
   }
+
   useScrollToElement([musics]);
 
   const handleOpenSetting = () => {
@@ -116,6 +121,12 @@ const MyProfile = () => {
       })
     );
   };
+
+  useEffect(() => {
+    if (queryParam === "settings") {
+      handleOpenSetting();
+    }
+  }, [queryParam]);
 
   if (!currentUser) return;
 
@@ -193,7 +204,9 @@ const MyProfile = () => {
           </div>
           <Statistics />
         </div>
-        <WhoVisitProfile />
+        <div id="who-visite-profile">
+          <WhoVisitProfile />
+        </div>
         <div
           id={"my-referral-link"}
           className="w-full bg-slate-700 rounded-md py-2 px-4 sm:px-2 sm:mx-auto flex flex-col gap-2 my-7"
@@ -225,7 +238,10 @@ const MyProfile = () => {
             points as a Reward
           </p>
         </div>
-        <div className=" mt-5 flex flex-col gap-2 p-2 items-center justify-center bg-[#222339] rounded-md">
+        <div
+          id="my-frames"
+          className=" mt-5 flex flex-col gap-2 p-2 items-center justify-center bg-[#222339] rounded-md"
+        >
           <span className="text-[#7dec73] font-bold">My Frames</span>
           <div
             className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2`}
@@ -268,7 +284,10 @@ const MyProfile = () => {
             <Empty emptyText="No Frames Buyed" />
           )}
         </div>
-        <div className=" w-full flex flex-col items-center gap-2 mt-5 bg-[#222339] p-2 rounded-md">
+        <div
+          id="my-musics"
+          className=" w-full flex flex-col items-center gap-2 mt-5 bg-[#222339] p-2 rounded-md"
+        >
           <h1 className="text-[#a0e965ee] font-bold text-center ">My Musics</h1>
           <div className="w-full grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2">
             {musics

@@ -1,22 +1,41 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
+import { useListenToSocketEvents } from "../../hooks";
+import { TypePrivateMessage } from "../../types/privateChatTypes";
 
 const NavebareBottom = ({
   setOpenSidbareMobile,
+  openSidbareMobile,
 }: {
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
+  openSidbareMobile: boolean;
 }) => {
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
+  const [redPointForRecievingMsg, setRedPointForRecievingMsg] = useState(false);
+
+  const handleAddNewPrivateMessage = (_: TypePrivateMessage) => {
+    if (location.pathname !== "/privatechat" && !openSidbareMobile) {
+      setRedPointForRecievingMsg(true);
+    }
+  };
+
+  useListenToSocketEvents({
+    eventsToListen: ["private-message"],
+    handlers: [handleAddNewPrivateMessage],
+  });
 
   return (
     <ul className="w-full flex items-center justify-between gap-1">
-      <li className="w-[17%] h-[65px] flex items-center justify-center">
+      <li className="relative w-[17%] h-[65px] flex items-center justify-center">
         <FaList className="text-xl" onClick={handleToggleMobileSidbare} />
+        {redPointForRecievingMsg && (
+          <span className="absolute top-2 left-2 bg-[#f82929] w-3 h-3"></span>
+        )}
       </li>
 
       <li className="flex-1 h-[60px]">

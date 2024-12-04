@@ -77,8 +77,22 @@ const DailyStreakRewardCard = ({
     }
   }, [dayWhichTimmerIsLocated]);
 
+  const convertToDate = new Date(dayInfo.availableAt);
+
+  const timeDifference = Math.abs((convertToDate as any) - (today as any));
+
+  // Convert time difference from milliseconds to days
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  const dayDifference = timeDifference / millisecondsPerDay;
+
+  const scrollToThisCard =
+    Math.ceil(dayDifference) === 1 ? "daily-reward" : undefined;
+
   return (
-    <div className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#242438] rounded-md">
+    <div
+      id={scrollToThisCard}
+      className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#242438] rounded-md"
+    >
       <div className="flex items-center justify-center w-full gap-3">
         <BsClockHistory className="text-4xl" />
         <span className="text-[#c9c6c6] text-xl sm:text-lg font-bold">

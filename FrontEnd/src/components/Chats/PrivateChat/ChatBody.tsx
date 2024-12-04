@@ -138,18 +138,22 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
 
   return (
     <div className="w-full flex flex-col items-center h-full gap-1 pb-2 bg-[#332342]">
-      <div className="flex items-center gap-4 sm:gap-2 w-full justify-center bg-[#1f1f2e9a]  border border-gray-700 py-1 xs:py-[2px]">
-        <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-          <UserImage user={secondUser} />
+      <div className="flex items-center justify-evenly w-full bg-[#1f1f2e9a] border border-gray-700 py-1">
+        <div className="flex items-center gap-3">
+          <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
+            <UserImage user={secondUser} />
+          </div>
+          <span className="sm:text-sm text-[#3785fa]">{secondUser?.name}</span>
         </div>
-        <span className=" flex flex-col items-center ">
-          <span className="text-sm text-[#62e66d]">{secondUser?.name}</span>
-          {onlineUsers.includes(activeConversation) ? (
-            <span className="text-xs text-[#4c9af3] xs:-mt-[4px]">online</span>
-          ) : (
-            <span className="text-xs text-[#72664b] xs:-mt-[4px]">offline</span>
-          )}
-        </span>
+        {onlineUsers.includes(activeConversation) ? (
+          <span className="text-[13px] font-bold text-[#68e44a] tracking-wide">
+            online
+          </span>
+        ) : (
+          <span className="text-[13px] font-bold text-[#54724c] tracking-wide">
+            offline
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col items-center w-full gap-2 sm:gap-[3px] overflow-auto scrollbar-none grow">

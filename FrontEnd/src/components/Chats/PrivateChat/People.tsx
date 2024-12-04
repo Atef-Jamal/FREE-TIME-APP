@@ -38,16 +38,16 @@ const People = ({
 
         <div className="flex flex-col w-full overflow-hidden ">
           <span className="flex items-center w-[210px] xl:w-[180px] ">
-            <span className=" w-[65%] text-sm sm:text-xs text-[#afe670] truncate">
+            <span className=" w-[65%] text-sm sm:text-xs text-[#3785fa] truncate">
               {convInfo.secondParty.name}
             </span>
             {onlineUsers.includes(convInfo.secondParty._id) && (
-              <span className="text-xs text-[#4c9af3] tracking-wider font-[400]">
+              <span className="text-xs text-[#68e44a] tracking-wider font-[400]">
                 online
               </span>
             )}
             {!onlineUsers.includes(convInfo.secondParty._id) && (
-              <span className="text-xs text-[#72664b] tracking-wider font-[400]">
+              <span className="text-xs text-[#54724c] tracking-wider font-[400]">
                 offline
               </span>
             )}

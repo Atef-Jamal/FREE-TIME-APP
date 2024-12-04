@@ -13,6 +13,7 @@ type TypeProps = {
 const UsersWinnerCard = ({ user, index }: TypeProps) => {
   return (
     <div
+      id={index === 0 ? "top-earner" : undefined}
       className={`relative py-10 flex flex-col items-center justify-center rounded-md ${
         index === 0
           ? "bg-gradient-to-b from-[#69ff054b] to-[#1e29169c]"
@@ -26,7 +27,7 @@ const UsersWinnerCard = ({ user, index }: TypeProps) => {
             src={`${import.meta.env.VITE_SERVER_BASE_URL}/${
               user.profilePicture
             }`}
-            alt="user profile image"
+            alt=""
             className="w-full h-full rounded-full"
           />
         </span>

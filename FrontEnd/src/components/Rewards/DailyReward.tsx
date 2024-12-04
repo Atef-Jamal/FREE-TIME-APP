@@ -122,7 +122,7 @@ const DailyReward = () => {
           </span>
         </p>
         <div
-          id="daily-reward"
+          id={!currentUser ? "daily-reward" : undefined}
           className={`gap-2 grid ${
             resizeSidebare
               ? "grid-cols-4 lg:grid-cols-3"

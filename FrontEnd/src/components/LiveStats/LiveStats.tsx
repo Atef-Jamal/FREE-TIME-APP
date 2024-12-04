@@ -105,8 +105,8 @@ const LiveStats = () => {
         {loading && <LiveStatsSkeleton />}
 
         {error && (
-          <div className="text-sm text-gray-400 w-full flex items-center justify-center gap-3 py-1">
-            <FaExclamationCircle />
+          <div className="xs:text-xs tracking-wide font-bold text-red-400 w-full flex items-center justify-center gap-3 py-1">
+            <FaExclamationCircle className="text-lg" />
             somthing went wrong
           </div>
         )}
@@ -136,7 +136,7 @@ const LiveStats = () => {
                   </span>
                   <div className="flex items-center gap-8">
                     {isOnline && (
-                      <span className="text-xs text-[#5cb945] font-bold tracking-wide sm:text-[9px]">
+                      <span className="text-xs text-[#68e44a] font-bold tracking-wide sm:text-[9px]">
                         online
                       </span>
                     )}

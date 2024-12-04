@@ -35,7 +35,7 @@ const PrivateMessageItem = ({
     >
       <div className="w-10 h-10 sm:w-6 sm:h-6 rounded-full">
         <img
-          alt="profile-image"
+          alt=""
           src={message.sender.profilePicture}
           className="w-full h-full rounded-full "
         />
@@ -73,20 +73,6 @@ const PrivateMessageItem = ({
                 <IoCheckmarkSharp className="font-bold opacity-50 " />
               </span>
             )}
-            {/* {conversationReaded &&
-              index === messages.length - 1 &&
-              message.sender._id === currentUser?._id && (
-                <span>
-                  <IoCheckmarkDoneSharp className="font-bold opacity-50" />
-                </span>
-              )}
-            {!conversationReaded &&
-              index === messages.length - 1 &&
-              message.sender._id === currentUser?._id && (
-                <span>
-                  <IoCheckmarkSharp className="font-bold opacity-50 " />
-                </span>
-              )} */}
             {message.isSended !== undefined &&
               message.isSended === "PENDING" && <BiCircle />}
             {message.isSended !== undefined &&
