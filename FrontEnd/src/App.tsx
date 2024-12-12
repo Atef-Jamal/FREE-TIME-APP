@@ -10,6 +10,7 @@ import ProtectedPage from "./components/Others/ProtectedPage";
 import PageNotFound from "./components/Errors/PageNotFound";
 import AppError from "./components/Errors/AppError";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
+import { useTranslation } from "react-i18next";
 
 const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
@@ -160,6 +161,12 @@ const router = createBrowserRouter([
 const App = () => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
+  const { i18n } = useTranslation();
+
+  const example = false;
+  if (example) {
+    console.log(i18n);
+  }
 
   const handleUpdateOnlineUsers = (data: string[]) => {
     const filtered = data.filter((userId) => userId !== "undefined");
@@ -181,7 +188,6 @@ const App = () => {
     };
 
     const socket = establishSocetConnection();
-
     return () => {
       if (socket) {
         socket.close();

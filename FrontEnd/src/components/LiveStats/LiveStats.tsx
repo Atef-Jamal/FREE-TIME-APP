@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, verifiedImage } from "../../assets";
@@ -10,7 +10,6 @@ import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
 import { useFetchAllUsers, useListenToSocketEvents } from "../../hooks";
 import LangMenu from "./LangMenu";
-import { useTranslation } from "react-i18next";
 
 const LiveStats = () => {
   const { currentUser, onlineUsers } = useAppSelector(
@@ -22,31 +21,27 @@ const LiveStats = () => {
     null
   );
   const [openLangMenu, setOpenLangMenu] = useState(false);
-  const { i18n } = useTranslation();
 
-  let example = false;
-  if (example) {
-    console.log(i18n);
-  }
+  const sorted = useCallback(() => {
+    return [...users].sort((a, b) => {
+      const aIsOnline = onlineUsers.includes(a._id);
+      const bIsOnline = onlineUsers.includes(b._id);
 
-  const sorted = [...users].sort((a, b) => {
-    const aIsOnline = onlineUsers.includes(a._id);
-    const bIsOnline = onlineUsers.includes(b._id);
-
-    if (aIsOnline && !bIsOnline) {
-      return -1;
-    }
-    if (!aIsOnline && bIsOnline) {
-      return 1;
-    } else {
-      if (a.points === b.points) {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+      if (aIsOnline && !bIsOnline) {
+        return -1;
       }
-      return b.points - a.points;
-    }
-  });
+      if (!aIsOnline && bIsOnline) {
+        return 1;
+      } else {
+        if (a.points === b.points) {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+        return b.points - a.points;
+      }
+    });
+  }, [onlineUsers, users]);
 
   const handleAddUser = (newUser: User) => {
     setUsers((prev) => [...prev, newUser]);
@@ -78,18 +73,19 @@ const LiveStats = () => {
       })[0];
       setUserHieghestPoints(hieghestPoints._id);
     }
-  }, [users, onlineUsers]);
+  }, [users, onlineUsers, sorted]);
 
   useEffect(() => {
+    if (!currentUser) return;
     setUsers((prev) =>
       prev.map((user) => {
-        if (user._id === currentUser?._id) {
+        if (user._id === currentUser._id) {
           return currentUser;
         }
         return user;
       })
     );
-  }, [currentUser?.points]);
+  }, [currentUser, setUsers]);
 
   return (
     <div className={`flex w-full`}>
