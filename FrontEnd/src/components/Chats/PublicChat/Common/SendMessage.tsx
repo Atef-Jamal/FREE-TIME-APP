@@ -16,6 +16,8 @@ import { handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
+import { User } from "../../../../types/userTypes";
+import { v4 as uuId } from "uuid";
 
 interface typeProps {
   stopScrolling: boolean;
@@ -34,10 +36,9 @@ const SendMessage = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [user, setUser] = useState<{ _id: string; name: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
-  const [timeoutId, setTimeoutId] = useState<any>(null);
-
+  const timeOutRef = useRef<NodeJS.Timeout>(undefined);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
 
@@ -57,17 +58,11 @@ const SendMessage = ({
       setSomeOneTyping(false);
       socket?.emit("stop-typing-public-message");
     }
-
     setLoading(true);
-
     if (stopScrolling) {
       setStopScrolling(false);
     }
-    const uniqeIdForRollback = (
-      Math.random() * 1000000 +
-      Date.now() +
-      Date.now()
-    ).toString();
+    const uniqeIdForRollback = uuId();
 
     const customEvent = new CustomEvent("fastSendPublicMessage", {
       detail: {
@@ -95,10 +90,14 @@ const SendMessage = ({
         messageText: message,
         mentioned: user?._id,
       });
+
       setMessages((prev) => {
-        return prev
-          .filter((item) => item._id !== uniqeIdForRollback)
-          .concat([{ ...response.data, isSended: "SUCCESS" }]);
+        return prev.map((item) => {
+          if (item._id === uniqeIdForRollback) {
+            return { ...response.data, isSended: "SUCCESS" };
+          }
+          return item;
+        });
       });
 
       socket?.emit("public-message", response.data);
@@ -127,41 +126,45 @@ const SendMessage = ({
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const contentText = e.target;
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const contentText = e.target;
 
-    inputRef.current!.style.height = "auto";
-    inputRef.current!.style.height = `${contentText.scrollHeight}px`;
+      inputRef.current!.style.height = "auto";
+      inputRef.current!.style.height = `${contentText.scrollHeight}px`;
 
-    setMessage(contentText.value);
-    if (!somoneTyping && contentText.value.trim() !== "") {
-      setSomeOneTyping(true);
-      socket?.emit("typing-public-message");
-    }
+      setMessage(contentText.value);
+      if (!somoneTyping && contentText.value.trim() !== "") {
+        setSomeOneTyping(true);
+        socket?.emit("typing-public-message");
+      }
 
-    if (contentText.value.trim() === "") {
-      socket?.emit("stop-typing-public-message");
-      setSomeOneTyping(false);
-    } else {
-      const lastTypingTime = new Date().getTime();
-      const timmerLenth = 3000;
-      const timmer = setTimeout(() => {
-        const now = new Date().getTime();
-        const timDiff = now - lastTypingTime;
+      if (contentText.value.trim() === "") {
+        socket?.emit("stop-typing-public-message");
+        setSomeOneTyping(false);
+      } else {
+        const lastTypingTime = new Date().getTime();
+        const timmerLenth = 3000;
+        const timmer = setTimeout(() => {
+          const now = new Date().getTime();
+          const timDiff = now - lastTypingTime;
 
-        if (timDiff >= timmerLenth && somoneTyping) {
-          socket?.emit("stop-typing-public-message");
-          setSomeOneTyping(false);
-        }
-      }, timmerLenth);
-      setTimeoutId(timmer);
-    }
-  };
+          if (timDiff >= timmerLenth) {
+            socket?.emit("stop-typing-public-message");
+            setSomeOneTyping(false);
+          }
+        }, timmerLenth);
+        if (timeOutRef) clearTimeout(timeOutRef.current);
+        timeOutRef.current = timmer;
+      }
+    },
+    [socket, somoneTyping]
+  );
 
-  const handleOpenMentionList = useCallback((e: MouseEvent) => {
+  const handleOpenMentionList = (e: MouseEvent) => {
     e.stopPropagation();
     setOpenMentionList((prev) => !prev);
-  }, []);
+  };
 
   const handleTyping = () => {
     if (!somoneTyping) {
@@ -179,17 +182,9 @@ const SendMessage = ({
 
   useEffect(() => {
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [timeoutId]);
-
-  useEffect(() => {
-    return () => {
       socket?.emit("stop-typing-public-message");
     };
-  }, []);
+  }, [socket]);
 
   return (
     <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">

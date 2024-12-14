@@ -4,7 +4,7 @@ import { makeRequest } from "../../utils";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypeSearchResults } from "../../types/othersTypes";
+import { TypeMusicDetail, TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
 
@@ -13,17 +13,9 @@ const Search = () => {
   const [searchQ, setSearchQ] = useState("");
   const [results, setResults] = useState<TypeSearchResults | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [refetch, setRefetch] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-
-  const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
-  const musicOptions = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": import.meta.env.VITE_X_RAPIDAPI_KEY,
-      "X-RapidAPI-Host": import.meta.env.VITE_X_RAPIDAPI_HOST,
-    },
-  };
 
   let resultsCounts = 0;
 
@@ -45,45 +37,55 @@ const Search = () => {
     setSearchQ(searchTerm.toLocaleLowerCase());
   };
 
-  const getResults = async () => {
-    if (error) setError(null);
-    if (!loading) setLoading(true);
-
-    const musicResponse = await fetch(deezerUrl, musicOptions);
-    const musics = await musicResponse.json();
-    const res = musics?.data?.filter((item: any) =>
-      item.title.toLocaleLowerCase().includes(searchQ)
-    );
-    const mappedMusics = res?.map((item: any) => ({
-      _id: item.id.toString(),
-      description: item.title,
-      image: item.album.cover,
-      title: item.title,
-      link: `/musics?to=${item.id.toString()}`,
-    }));
-
-    try {
-      const response = await makeRequest.get(`api/search?q=${searchQ}`);
-
-      setResults({
-        ...response.data,
-        musics: mappedMusics || [],
-      });
-    } catch (error) {
-      setError(handleApiError(error));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!searchQ) return;
+    const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
+    const musicOptions = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": import.meta.env.VITE_X_RAPIDAPI_KEY,
+        "X-RapidAPI-Host": import.meta.env.VITE_X_RAPIDAPI_HOST,
+      },
+    };
+    const getResults = async () => {
+      setError(null);
+      setLoading(true);
+
+      const musicResponse = await fetch(deezerUrl, musicOptions);
+      const musics = await musicResponse.json();
+      const res = musics?.data?.filter((item: TypeMusicDetail) =>
+        item.title.toLocaleLowerCase().includes(searchQ)
+      );
+      const mappedMusics = res?.map((item: TypeMusicDetail) => ({
+        _id: item.id.toString(),
+        description: item.title,
+        image: item.album.cover,
+        title: item.title,
+        link: `/musics?to=${item.id.toString()}`,
+      }));
+
+      try {
+        const response = await makeRequest.get(`api/search?q=${searchQ}`);
+        setResults({
+          ...response.data,
+          musics: mappedMusics || [],
+        });
+      } catch (error) {
+        setError(handleApiError(error));
+      } finally {
+        setLoading(false);
+      }
+    };
     const timout = setTimeout(() => {
       getResults();
     }, 500);
 
     return () => clearTimeout(timout);
-  }, [searchQ]);
+  }, [searchQ, refetch]);
+
+  const handleRefetch = () => {
+    setRefetch(!refetch);
+  };
 
   return (
     <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[79%] overflow-auto sm:scrollbar-thin absolute top-20 sm:top-[57px] translate-x-[-50%]  bg-[#19181b] rounded-lg">
@@ -105,9 +107,24 @@ const Search = () => {
         </button>
       </div>
       <div className="border-gray-600">
+        {error && (
+          <>
+            <p className="text-lg sm:text-base text-[#bd672e] text-center py-4">
+              {error}
+            </p>
+            <div className="flex mb-4">
+              <button
+                onClick={handleRefetch}
+                className="text-sm font-bold bg-[#51a549] text-[#1c1f2c] text-center py-1 px-4 rounded-md mx-auto"
+              >
+                Try Again
+              </button>
+            </div>
+          </>
+        )}
         {loading && <SearchSkeleton />}
 
-        {!results && !loading && (
+        {!results && !loading && !error && (
           <div className="flex flex-col items-center justify-center gap-3 py-10">
             <div className="text-center text-gray-500 font-bold">
               Start Searching

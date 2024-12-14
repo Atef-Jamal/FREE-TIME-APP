@@ -13,7 +13,6 @@ import { handleApiError } from "../../utils/common";
 import AppDetailsSkeleton from "./AppDetailsSkeleton";
 import { User } from "../../types/userTypes";
 import { useTranslation } from "react-i18next";
-import Image from "../Others/Image";
 
 interface TypeReview {
   _id: string;
@@ -75,7 +74,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
       }
     };
     fetchAppDetails();
-  }, [appId]);
+  }, [appId, dispatch]);
 
   useEffect(() => {
     const searchQuery = searchParams.get("to");
@@ -87,7 +86,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
         });
       }
     };
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   if (loading) return <AppDetailsSkeleton />;
 
@@ -99,8 +98,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
         <h1 className="text-2xl font-bold text-[#78bd4f] mb-3">
           {t("Offer Details")}
         </h1>
-
-        <Image
+        <img
           alt=""
           src={appDetail.image.replace(
             "http://localhost:3000",
@@ -108,6 +106,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
           )}
           className="w-full h-[300px] object-cover mb-3"
         />
+
         <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
           <span className="w-full text-[#537692] text-sm">
             <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span>{" "}

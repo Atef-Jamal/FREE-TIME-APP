@@ -6,7 +6,6 @@ import { FaList } from "react-icons/fa";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { useListenToSocketEvents } from "../../hooks";
-import { TypePrivateMessage } from "../../types/privateChatTypes";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
 
@@ -25,7 +24,7 @@ const NavebareBottom = ({
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
   const dispatch = useAppDispatch();
 
-  const handleAddNewPrivateMessage = (_: TypePrivateMessage) => {
+  const handleAddNewPrivateMessage = () => {
     if (location.pathname !== "/privatechat" && !openSidbareMobile) {
       setPrivateMsgRedPoint(true);
     }

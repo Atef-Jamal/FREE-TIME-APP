@@ -26,14 +26,10 @@ const PublicUserProfile = () => {
 
   const { user, setUser, loading, error } = useFetchUser({
     userId: id,
-    initialLoading: true,
-    dependencies: [id],
   });
 
   const { activities } = useFetchActivities({
     userId: id,
-    initialLoading: true,
-    dependencies: [id],
   });
 
   const handleUpdateUser = (updatedUser: User) => {

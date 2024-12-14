@@ -24,10 +24,10 @@ export const useFetchAllApps = ({
 
   useEffect(() => {
     const getApps = async () => {
-      if (page > 1) setLoadMore(true);
-      if (error) setError(null);
-      if (errorLoadMore) setErrorLoadMore(null);
+      setError(null);
+      setErrorLoadMore(null);
       if (page === 1) setLoading(true);
+      if (page > 1) setLoadMore(true);
 
       try {
         const response = await makeRequest.get(
@@ -44,17 +44,17 @@ export const useFetchAllApps = ({
       } catch (error) {
         if (page > 1) {
           setErrorLoadMore("Error while loading more apps");
-          return;
+        } else {
+          const err = handleApiError(error);
+          setError(err);
         }
-        const err = handleApiError(error);
-        setError(err);
       } finally {
         setLoading(false);
         setLoadMore(false);
       }
     };
     getApps();
-  }, [filterQuery, page]);
+  }, [filterQuery, page, limitPerPage]);
 
   return { loading, apps, error, loadMore, noMoreApps, errorLoadMore };
 };
@@ -62,11 +62,9 @@ export const useFetchAllApps = ({
 export const useFetchTaskApp = ({
   appId,
   initialLoading = false,
-  dependencies = [],
 }: {
   appId: string | undefined;
   initialLoading?: boolean;
-  dependencies?: any[];
 }) => {
   const [taskApp, setTaskApp] = useState<TypeTaskApp | null>(null);
   const [loading, setLoading] = useState<boolean>(initialLoading);
@@ -96,7 +94,7 @@ export const useFetchTaskApp = ({
       }
     };
     getApp();
-  }, dependencies);
+  }, [appId, dispatch]);
 
   return { taskApp, loading, error };
 };

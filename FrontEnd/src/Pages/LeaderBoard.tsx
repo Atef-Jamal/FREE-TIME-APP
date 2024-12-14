@@ -7,7 +7,7 @@ import { useScrollToElement } from "../hooks/commonHooks";
 
 const LeaderBoard = () => {
   const { users } = useFetchAllUsers();
-  useScrollToElement([users]);
+  useScrollToElement({ dependencies: [users] });
 
   return (
     <div className=" bg-[#1d2c35] relative pt-8">

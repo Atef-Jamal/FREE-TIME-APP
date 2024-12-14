@@ -7,6 +7,7 @@ import TestimonialSection from "../components/Home/TestimonialSection";
 const Home = () => {
   return (
     <div className="bg-[#222339] py-8">
+      <p id="kkkkkkkkkkkk"></p>
       <div className="mb-8">
         <HeroSection />
       </div>

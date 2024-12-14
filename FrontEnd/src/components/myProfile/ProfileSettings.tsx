@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
@@ -22,13 +22,13 @@ const ProfileSettings = () => {
   const [openEnterCode, setOpenEnterCode] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const handleChangeName = (e: any) => {
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     setNewName(e.target.value);
   };
-  const handleChangeOldPassword = (e: any) => {
+  const handleChangeOldPassword = (e: ChangeEvent<HTMLInputElement>) => {
     setOldPass(e.target.value);
   };
-  const handleChangeNewPassword = (e: any) => {
+  const handleChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
     setNewPass(e.target.value);
   };
   const handleSaveName = async () => {

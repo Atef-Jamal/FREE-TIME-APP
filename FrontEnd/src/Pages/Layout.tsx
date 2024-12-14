@@ -10,7 +10,6 @@ import DisktopChat from "../components/Chats/PublicChat/DisktopChat/DisktopChat"
 import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
 import ToastNotify from "../components/Others/ToastNotify";
-import { Helmet } from "react-helmet-async";
 import MusicPlayer from "../components/Music/MusicPlayer";
 
 const Layout = () => {
@@ -36,7 +35,7 @@ const Layout = () => {
   const isMobile = window.innerWidth <= 867;
 
   useEffect(() => {
-    if (refQuery && !currentUser && currentAccountRequestFullfiled) {
+    if (refQuery && !currentUser?._id && currentAccountRequestFullfiled) {
       dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
     }
   }, [dispatch, refQuery, currentUser?._id, currentAccountRequestFullfiled]);
@@ -66,7 +65,7 @@ const Layout = () => {
         });
       }
     }
-  }, [redirectQuery]);
+  }, [redirectQuery, searchParams, setSearchParams, dispatch]);
 
   useEffect(() => {
     const handleNetworkOnline = () => {
@@ -84,7 +83,7 @@ const Layout = () => {
       window.removeEventListener("online", handleNetworkOnline);
       window.removeEventListener("offline", handleNetworkOffline);
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (openSidbareMobile) {
@@ -94,19 +93,14 @@ const Layout = () => {
 
   return (
     <div className="w-full">
-      <Helmet>
-        <title>FREE TIME</title>
-      </Helmet>
       {model.status && <Model children={model.children} />}
       <div className=" h-[70px] sm:h-[55px] sticky top-0 z-[6] bg-[#22162c] flex items-center justify-center px-3 sm:px-1  border-b border-[#f8d3d32a]">
         <Navbare />
-        <div
-          className={`absolute top-0 left-0 z-[1] transition-all h-full  ${
-            openMusicModal ? "block" : "hidden"
-          }`}
-        >
-          <MusicPlayer />
-        </div>
+        {openMusicModal && (
+          <div className={`absolute top-0 left-0 z-[1] transition-all h-full`}>
+            <MusicPlayer />
+          </div>
+        )}
         <ToastNotify />
       </div>
       <div
@@ -156,8 +150,12 @@ const Layout = () => {
         </div>
         {!isMobile && (
           <div
-            style={{ height: `calc(100dvh - 70px)` }}
-            className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138] duration-300 border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
+            style={{
+              height: `calc(100dvh - 70px)`,
+              transitionTimingFunction: `cubic-bezier(1, 0.5, 0.5, 0.5)`,
+              transitionDuration: "300ms",
+            }}
+            className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138]  border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
               isChatOpen ? " translate-x-0" : " translate-x-[100%]"
             }`}
           >

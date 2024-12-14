@@ -12,8 +12,8 @@ export const useFetchFrames = () => {
 
   useEffect(() => {
     const fetchMusics = async () => {
-      if (error) setError(null);
-      if (!loading) setLoading(true);
+      setError(null);
+      setLoading(true);
 
       try {
         const response = await makeRequest("/api/frames");
@@ -27,12 +27,12 @@ export const useFetchFrames = () => {
           })
         );
       } finally {
-        if (loading) setLoading(false);
+        setLoading(false);
       }
     };
 
     fetchMusics();
-  }, []);
+  }, [dispatch]);
 
   return { frames, loading, error };
 };

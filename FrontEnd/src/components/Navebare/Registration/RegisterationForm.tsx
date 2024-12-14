@@ -74,7 +74,10 @@ const RegisterationForm = () => {
 
     try {
       if (isSignInMode) {
-        const response = await login({ email, password }, dispatch);
+        const response = await login({
+          formData: { email, password },
+          dispatch,
+        });
         localStorage.setItem("token", response.data.token);
         window.location.href = `${window.location.origin}/?redirectedfrom=login`;
       } else {
@@ -85,7 +88,11 @@ const RegisterationForm = () => {
           confirmPassword: formData.confirmPassword,
           profilePicture: formData.profilePicture,
         };
-        const response = await register(newUser, dispatch, queryParam);
+        const response = await register({
+          dispatch,
+          formData: newUser,
+          referrerUser: queryParam,
+        });
         localStorage.setItem("token", response.data.token);
         socket?.emit("new-user-joined", response.data._doc);
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
@@ -108,7 +115,7 @@ const RegisterationForm = () => {
   ) => {
     e.preventDefault();
     try {
-      await signInWithGoogle(dispatch);
+      await signInWithGoogle({ dispatch });
     } catch (error) {
       dispatch(
         showPopup({

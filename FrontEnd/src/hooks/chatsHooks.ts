@@ -35,17 +35,15 @@ export const useFetchPublicMessages = () => {
       }
     };
     getPublicChatMessages();
-  }, []);
+  }, [dispatch]);
 
   return { messages, setMessages, loading, error };
 };
 
 export const useFetchPrivateChatMessages = ({
   secondUserId,
-  dependencies = [],
 }: {
   secondUserId: string | undefined;
-  dependencies?: any[];
 }) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
@@ -56,7 +54,7 @@ export const useFetchPrivateChatMessages = ({
 
   useEffect(() => {
     const getMessages = async () => {
-      if (!secondUserId || !currentUser) return;
+      if (!secondUserId || !currentUser?._id) return;
       setError(null);
       setLoading(true);
       try {
@@ -75,7 +73,7 @@ export const useFetchPrivateChatMessages = ({
       }
     };
     getMessages();
-  }, dependencies);
+  }, [currentUser?._id, secondUserId, dispatch]);
 
   return { messages, setMessages, secondUser, setSecondUser, loading, error };
 };

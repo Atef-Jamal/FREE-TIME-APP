@@ -8,7 +8,6 @@ import { IoIosArrowBack, IoMdArrowDropdown } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
-import { Helmet } from "react-helmet-async";
 import { TypeFilterQuery } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
 import { useFetchAllApps } from "../hooks";
@@ -37,15 +36,15 @@ const Earn = () => {
   const [searchParams] = useSearchParams();
   const { t } = useTranslation("earn");
 
-  const allDevicesRef = useRef<HTMLDivElement>(null);
-  const desktopRef = useRef<HTMLDivElement>(null);
-  const androidRef = useRef<HTMLDivElement>(null);
-  const macRef = useRef<HTMLDivElement>(null);
+  const allDevicesRef = useRef<HTMLDivElement | null>(null);
+  const desktopRef = useRef<HTMLDivElement | null>(null);
+  const androidRef = useRef<HTMLDivElement | null>(null);
+  const macRef = useRef<HTMLDivElement | null>(null);
 
-  const allRef = useRef<HTMLSpanElement>(null);
-  const popularRef = useRef<HTMLSpanElement>(null);
-  const heighestRewardRef = useRef<HTMLSpanElement>(null);
-  const heighestRatingRef = useRef<HTMLSpanElement>(null);
+  const allRef = useRef<HTMLSpanElement | null>(null);
+  const popularRef = useRef<HTMLSpanElement | null>(null);
+  const heighestRewardRef = useRef<HTMLSpanElement | null>(null);
+  const heighestRatingRef = useRef<HTMLSpanElement | null>(null);
 
   const { loading, apps, error, loadMore, noMoreApps, errorLoadMore } =
     useFetchAllApps({
@@ -54,7 +53,7 @@ const Earn = () => {
       page,
     });
 
-  useScrollToElement([apps]);
+  useScrollToElement({ dependencies: [apps] });
 
   useEffect(() => {
     if (!appId) return;
@@ -78,7 +77,7 @@ const Earn = () => {
       if (isExistInAppList && !isAppDetailOpen) return;
       setAppId(appIdFromUrlSearchParam);
     }
-  }, [searchParams, apps]);
+  }, [searchParams, apps, translate]);
 
   const selectApp = () => {
     setTranslate("-translate-x-[0%]");
@@ -118,9 +117,6 @@ const Earn = () => {
 
   return (
     <div className="flex flex-col p-4 lg:p-3 xs:p-2 gap-4 bg-[#21223a]">
-      <Helmet>
-        <title>{t("Earn")}</title>
-      </Helmet>
       <div className="flex items-ceneter sm:flex-col sm:gap-1 gap-2">
         <div className="relative w-[40%] sm:w-full">
           <div className=" flex justify-between overflow-hidden">

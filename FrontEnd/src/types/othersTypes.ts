@@ -26,3 +26,18 @@ export interface TypeConversationSocketData {
   reciever: string;
   sender: string;
 }
+
+export interface TypeMusicDetail {
+  id: number;
+  title: string;
+  artist: { name: string };
+  album: { cover: string };
+  preview: string;
+}
+
+export interface TypeUseScrollToElementHook {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dependencies?: any[];
+  scrollPosition?: "center" | "start" | "end" | "nearest";
+  key?: string;
+}

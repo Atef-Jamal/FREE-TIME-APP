@@ -7,6 +7,10 @@ import { handleApiError } from "../utils/common";
 import { TypeNotifications } from "../types/notificationTypes";
 import { User } from "../types/userTypes";
 import { useSearchParams } from "react-router-dom";
+import {
+  TypeMusicDetail,
+  TypeUseScrollToElementHook,
+} from "../types/othersTypes";
 
 export const useFetchAllUsers = (page?: number) => {
   const [users, setUsers] = useState<User[]>([]);
@@ -42,22 +46,14 @@ export const useFetchAllUsers = (page?: number) => {
       }
     };
     getUsersData();
-  }, [page]);
+  }, [page, dispatch]);
 
   return { users, setUsers, loading, error };
 };
 
-export const useFetchUser = ({
-  userId,
-  initialLoading = false,
-  dependencies = [],
-}: {
-  userId: string | undefined;
-  initialLoading: boolean;
-  dependencies?: any[];
-}) => {
+export const useFetchUser = ({ userId }: { userId: string | undefined }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(initialLoading);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -77,22 +73,18 @@ export const useFetchUser = ({
       }
     };
     getUserData();
-  }, dependencies);
+  }, [userId]);
 
   return { user, setUser, loading, error };
 };
 
 export const useFetchActivities = ({
   userId,
-  initialLoading = false,
-  dependencies = [],
 }: {
   userId: string | undefined;
-  initialLoading?: boolean;
-  dependencies?: any[];
 }) => {
   const [activities, setActivities] = useState<TypeNotifications[]>([]);
-  const [loading, setLoading] = useState<boolean>(initialLoading);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
@@ -119,21 +111,21 @@ export const useFetchActivities = ({
       }
     };
     getUserActivities();
-  }, dependencies);
+  }, [userId, dispatch]);
 
   return { activities, loading, error };
 };
 
 export const useFetchMusics = () => {
-  const [musics, setMusics] = useState<any[]>([]);
+  const [musics, setMusics] = useState<TypeMusicDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchMusics = async () => {
-      if (error) setError(null);
-      if (!loading) setLoading(true);
+      setError(null);
+      setLoading(true);
       const url =
         "https://deezerdevs-deezer.p.rapidapi.com/search?q=amr%20diab";
       const options = {
@@ -158,21 +150,21 @@ export const useFetchMusics = () => {
           })
         );
       } finally {
-        if (loading) setLoading(false);
+        setLoading(false);
       }
     };
 
     fetchMusics();
-  }, []);
+  }, [dispatch]);
 
   return { musics, loading, error };
 };
 
-export const useScrollToElement = (
-  dependencies: any[] = [],
-  scrollPosition: "center" | "start" | "end" | "nearest" = "center",
-  key: string = "to"
-) => {
+export const useScrollToElement = ({
+  key = "to",
+  scrollPosition = "center",
+  dependencies = [],
+}: TypeUseScrollToElementHook) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [element, setElement] = useState<HTMLElement | null>(null);
   const styles = "activeElement";
@@ -183,7 +175,8 @@ export const useScrollToElement = (
       const targetElement = document.getElementById(queryParam);
       setElement(targetElement);
     }
-  }, [searchParams, ...dependencies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, searchParams, ...dependencies]);
 
   const handleRemoveAnimation = useCallback(
     (event: MouseEvent) => {
@@ -197,7 +190,7 @@ export const useScrollToElement = (
       }
       setElement(null);
     },
-    [element]
+    [element, key, setSearchParams]
   );
 
   useEffect(() => {
@@ -210,7 +203,7 @@ export const useScrollToElement = (
       element?.classList.remove(styles);
       element?.removeEventListener("click", handleRemoveAnimation);
     };
-  }, [element]);
+  }, [element, handleRemoveAnimation, scrollPosition]);
 
   return { setElement };
 };

@@ -32,27 +32,6 @@ const Sidebar = ({
   const handleCollaps = () =>
     dispatch(toggleThisEntity({ entity: "resizeSidebare" }));
 
-  const getAllUnReadedMsgs = async () => {
-    try {
-      const response = await makeRequest.get(
-        "api/conversations/all/all-unreaded-count"
-      );
-      dispatch(
-        updateSidebarUnReadedMsgCount({
-          type: "ADD-ALL",
-          userId: response.data,
-        })
-      );
-    } catch (error) {
-      dispatch(
-        showPopup({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        })
-      );
-    }
-  };
-
   const handleAddNewPrivateMessage = (data: TypePrivateMessage) => {
     if (location.pathname !== "/privatechat") {
       dispatch(
@@ -81,13 +60,34 @@ const Sidebar = ({
         })
       );
     }
-  }, [location.pathname, allUnReadedMesseges]);
+  }, [allUnReadedMesseges, dispatch]);
 
   useEffect(() => {
+    const getAllUnReadedMsgs = async () => {
+      try {
+        const response = await makeRequest.get(
+          "api/conversations/all/all-unreaded-count"
+        );
+        dispatch(
+          updateSidebarUnReadedMsgCount({
+            type: "ADD-ALL",
+            userId: response.data,
+          })
+        );
+      } catch (error) {
+        dispatch(
+          showPopup({
+            message: handleApiError(error),
+            type: "ERROR_GENERAL",
+          })
+        );
+      }
+    };
+
     if (currentUser?._id) {
       getAllUnReadedMsgs();
     }
-  }, [currentUser?._id]);
+  }, [currentUser?._id, dispatch]);
 
   const handleCloseSidbare = () => {
     setOpenSidbareMobile(false);

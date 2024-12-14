@@ -14,9 +14,9 @@ import { useState } from "react";
 import Spinner from "../Others/Spinner";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import Image from "../Others/Image";
+import { TypeMusicDetail } from "../../types/othersTypes";
 
-const MusicCard = ({ songDetails }: { songDetails: any }) => {
+const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
   const { currentUser, activeMusic, musicIsPlaying, openMusicModal } =
     useAppSelector((state) => state.stateManeger);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +104,7 @@ const MusicCard = ({ songDetails }: { songDetails: any }) => {
             : ""
         } w-[80px] h-[80px] rounded-full border-2 border-l-[#cef03a] border-t-[#222770] border-r-[#cef03a] border-b-[#222770]`}
       >
-        <Image
+        <img
           alt={""}
           src={songDetails.album.cover}
           className="w-full h-full rounded-full object-contain"

@@ -79,10 +79,11 @@ export function calculateTimeLeft(startDate: Date) {
   return { days, hours, minutes, seconds };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const handleApiError = (error: any) => {
   let errorMessage = "";
   if (
-    error?.response?.data?.error &&
+    error?.response.data?.error &&
     typeof error.response.data.error === "string"
   ) {
     errorMessage = error.response.data.error;
@@ -99,6 +100,5 @@ export const collectReward = async (notificationId: string) => {
       FOR_CONSISTENCY: "FOR_CONSISTENCY",
     }
   );
-
   return response.data;
 };

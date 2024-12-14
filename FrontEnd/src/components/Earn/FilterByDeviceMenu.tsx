@@ -8,10 +8,10 @@ import { useCloseMenuOnClickOutSide } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 interface TypeProps {
-  allDevicesRef: RefObject<HTMLDivElement>;
-  androidRef: RefObject<HTMLDivElement>;
-  desktopRef: RefObject<HTMLDivElement>;
-  macRef: RefObject<HTMLDivElement>;
+  allDevicesRef: RefObject<HTMLDivElement | null>;
+  androidRef: RefObject<HTMLDivElement | null>;
+  desktopRef: RefObject<HTMLDivElement | null>;
+  macRef: RefObject<HTMLDivElement | null>;
   filterQuery: string;
   setSelectDevice: Dispatch<SetStateAction<boolean>>;
   activeFilteringItem: (

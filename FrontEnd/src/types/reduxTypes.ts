@@ -1,5 +1,7 @@
 import { Socket } from "socket.io-client";
 import { User } from "./userTypes";
+import { Dispatch, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
+import { TypeFormData } from "./othersTypes";
 
 export interface TypePopup {
   type: "ERROR_GENERAL" | "ERROR_LOCK" | "SUCESS" | "LOADING" | null;
@@ -39,4 +41,23 @@ export interface TypeInitialState {
   allUnReadedMesseges: string[];
   model: { status: boolean; children: React.ReactNode };
   publicMsgRedPoint: boolean;
+}
+
+export type TypeDispatch = ThunkDispatch<
+  {
+    stateManeger: TypeInitialState;
+  },
+  undefined,
+  UnknownAction
+> &
+  Dispatch<UnknownAction>;
+
+export interface TypeRegisterProps {
+  formData: TypeFormData;
+  dispatch: TypeDispatch;
+  referrerUser?: string | null;
+}
+export interface TypeLoginProps {
+  formData: Omit<TypeFormData, "name" | "confirmPassword" | "profilePicture">;
+  dispatch: TypeDispatch;
 }

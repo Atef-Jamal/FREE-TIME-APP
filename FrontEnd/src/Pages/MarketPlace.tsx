@@ -14,24 +14,24 @@ const MarketPlace = () => {
   const [frames, setFrames] = useState<TypeFrame[]>([]);
   const dispatch = useAppDispatch();
 
-  useScrollToElement([frames]);
-  const getFrames = async () => {
-    try {
-      const response = await makeRequest.get("api/frames");
-      setFrames(response.data);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        })
-      );
-    }
-  };
+  useScrollToElement({ dependencies: [frames] });
 
   useEffect(() => {
+    const getFrames = async () => {
+      try {
+        const response = await makeRequest.get("api/frames");
+        setFrames(response.data);
+      } catch (error) {
+        dispatch(
+          showPopup({
+            message: handleApiError(error),
+            type: "ERROR_GENERAL",
+          })
+        );
+      }
+    };
     getFrames();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen p-5 sm:p-3 w-full">

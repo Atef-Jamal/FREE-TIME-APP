@@ -1,14 +1,18 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { makeRequest } from ".";
-import { TypeFormData } from "../types/othersTypes";
 import { auth } from "../firebase";
 import { showPopup } from "../context/StateManeger";
+import {
+  TypeDispatch,
+  TypeLoginProps,
+  TypeRegisterProps,
+} from "../types/reduxTypes";
 
-export const register = async (
-  formData: TypeFormData,
-  dispatch: any,
-  referrerUser?: string | null
-) => {
+export const register = async ({
+  formData,
+  dispatch,
+  referrerUser,
+}: TypeRegisterProps) => {
   dispatch(
     showPopup({
       message: "Registering....",
@@ -27,10 +31,7 @@ export const register = async (
   return response;
 };
 
-export const login = async (
-  formData: Omit<TypeFormData, "name" | "confirmPassword" | "profilePicture">,
-  dispatch: any
-) => {
+export const login = async ({ formData, dispatch }: TypeLoginProps) => {
   dispatch(
     showPopup({
       message: "Logging In....",
@@ -45,7 +46,11 @@ export const login = async (
   return response;
 };
 
-export const signInWithGoogle = async (dispatch: any) => {
+export const signInWithGoogle = async ({
+  dispatch,
+}: {
+  dispatch: TypeDispatch;
+}) => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   dispatch(

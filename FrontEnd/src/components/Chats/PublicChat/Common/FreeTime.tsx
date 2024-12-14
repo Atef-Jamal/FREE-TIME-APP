@@ -6,15 +6,15 @@ import { verifiedImage } from "../../../../assets";
 
 interface TypeProps {
   singleMessage: TypePublicChatFreeTime;
-  messageRef: React.RefObject<HTMLDivElement> | null;
+  lastMessageRef: React.RefObject<HTMLDivElement | null> | null;
 }
 
-const FreeTime = ({ singleMessage, messageRef }: TypeProps) => {
+const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const date = formateDate(singleMessage.createdAt);
   return (
     <div
-      ref={messageRef}
+      ref={lastMessageRef}
       className="w-full p-2 flex flex-col items-center justify-center gap-2 bg-[#2f2f4e88] rounded-md"
     >
       <div className="flex items-center justify-between w-full">

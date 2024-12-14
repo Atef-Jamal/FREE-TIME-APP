@@ -37,46 +37,6 @@ const PrivateChat = () => {
 
   const secondPartyId = searchParams.get("chat-with");
 
-  const fetchAllConversations = async () => {
-    if (error) setError(null);
-    setLoading(true);
-    try {
-      const response = await makeRequest.get(
-        "api/conversations/all-conversations/allusers"
-      );
-      const sorted = response.data.sort((a: any, b: any) => {
-        if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
-          if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
-            return -1;
-          }
-          if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
-        if (
-          onlineUsers.includes(a.secondParty._id) &&
-          !onlineUsers.includes(b.secondParty._id)
-        ) {
-          return -1;
-        }
-        if (
-          !onlineUsers.includes(a.secondParty._id) &&
-          onlineUsers.includes(b.secondParty._id)
-        ) {
-          return 1;
-        }
-        return 0;
-      });
-      setConversations(sorted);
-    } catch (error) {
-      setError(handleApiError(error));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const toggleSidbare = () => {
     setOpenSidbare((prev) => !prev);
   };
@@ -144,7 +104,50 @@ const PrivateChat = () => {
   };
 
   useEffect(() => {
+    const fetchAllConversations = async () => {
+      setError(null);
+      setLoading(true);
+      try {
+        const response = await makeRequest.get(
+          "api/conversations/all-conversations/allusers"
+        );
+
+        const sorted = response.data.sort(
+          (a: TypeConversation, b: TypeConversation) => {
+            if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
+              if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
+                return -1;
+              }
+              if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+            if (
+              onlineUsers.includes(a.secondParty._id) &&
+              !onlineUsers.includes(b.secondParty._id)
+            ) {
+              return -1;
+            }
+            if (
+              !onlineUsers.includes(a.secondParty._id) &&
+              onlineUsers.includes(b.secondParty._id)
+            ) {
+              return 1;
+            }
+            return 0;
+          }
+        );
+        setConversations(sorted);
+      } catch (error) {
+        setError(handleApiError(error));
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchAllConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch]);
 
   useEffect(() => {
@@ -161,7 +164,7 @@ const PrivateChat = () => {
         setActiveConversation(savedSecondPartyId);
       }
     }
-  }, [searchParams]);
+  }, [secondPartyId, currentUser?._id, setSearchParams]);
 
   useListenToSocketEvents({
     eventsToListen: ["new-user-joined", "private-message"],

@@ -5,7 +5,7 @@ import ResultText from "./ResultText";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { MdOutlineWeb } from "react-icons/md";
-import Image from "../Others/Image";
+// import Image from "../Others/Image";
 
 const ResultElement = ({
   type,
@@ -32,15 +32,28 @@ const ResultElement = ({
           {type === "FRAMES" && (
             <div className="relative w-10 h-10 sm:w-7 sm:h-7 object-fill ">
               <span className=" w-[55%] h-[65%] absolute z-[1] translate-x-[40%] translate-y-[30%] bg-[#19181b]"></span>
-              <Image
+              <img
                 alt={""}
                 src={item.image}
                 className="w-full h-full object-contain"
               />
+              {/* <Image
+                alt={""}
+                src={item.image}
+                className="w-full h-full object-contain"
+              /> */}
             </div>
           )}
           {type === "APPS" && (
-            <Image
+            // <Image
+            //   alt={""}
+            //   src={item.image.replace(
+            //     "http://localhost:3000",
+            //     import.meta.env.VITE_SERVER_BASE_URL
+            //   )}
+            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
+            // />
+            <img
               alt={""}
               src={item.image.replace(
                 "http://localhost:3000",
@@ -50,14 +63,24 @@ const ResultElement = ({
             />
           )}
           {type === "MUSICS" && (
-            <Image
+            <img
               alt={""}
               src={item.image}
               className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
+            // <Image
+            //   alt={""}
+            //   src={item.image}
+            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
+            // />
           )}
           {type === "USERS" && (
-            <Image
+            // <Image
+            //   alt={""}
+            //   src={item.image}
+            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
+            // />
+            <img
               alt={""}
               src={item.image}
               className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"

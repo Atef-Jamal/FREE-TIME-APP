@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   useListenToDocumentEvent,
   useListenToSocketEvents,
 } from "../../../../hooks/listenersHooks";
-import { TypePublicChatItem } from "../../../../types/publicChatTypes";
+import {
+  TypePublicChatItem,
+  TypePublicChatMessage,
+} from "../../../../types/publicChatTypes";
 import { useScrollToElement } from "../../../../hooks/commonHooks";
 import { useSearchParams } from "react-router-dom";
 import { useFetchPublicMessages } from "../../../../hooks";
@@ -17,25 +20,38 @@ import { makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { handleApiError } from "../../../../utils/common";
 import Spinner from "../../../Others/Spinner";
-import Image from "../../../Others/Image";
+
+interface TypeMsgModelDeletion {
+  messageId: string;
+  messageUrlScreenshot: string;
+}
 
 const PublicChat = () => {
   const { socket } = useAppSelector((state) => state.stateManeger);
   const { messages, setMessages, loading, error } = useFetchPublicMessages();
-  const { setElement } = useScrollToElement([messages], "start", "messageId");
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const messageContainerRef = useRef<HTMLDivElement>(null);
-  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const queryParam = searchParams.get("messageId");
-  const [openChatModelDeletion, setOpenChatModelDeletion] = useState<{
-    messageId: string;
-    messageUrlScreenshot: string;
-  } | null>(null);
-
+  const [openChatModelDeletion, setOpenChatModelDeletion] =
+    useState<TypeMsgModelDeletion | null>(null);
   const dispatch = useAppDispatch();
+
+  const { setElement } = useScrollToElement({
+    dependencies: [messages],
+    key: "messageId",
+    scrollPosition: "start",
+  });
+
+  const scrollToLastMessage = useCallback(() => {
+    lastMessageRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+    setStagingMessages(0);
+  }, []);
 
   const handleAddNewMessage = (data: TypePublicChatItem) => {
     const element = messageContainerRef.current!;
@@ -47,9 +63,35 @@ const PublicChat = () => {
     }
     setMessages((prev) => [...prev, data]);
   };
-
-  const handleAddMessage = (data: any) => {
+  const handleAddMessage = (data: { detail: TypePublicChatMessage }) => {
     setMessages((prev) => [...prev, data.detail]);
+  };
+  const deleteMessage = async (messageId: string) => {
+    setIsDeleting(true);
+    if (stopScrolling === false) {
+      setStopScrolling(true);
+    }
+
+    try {
+      const response = await makeRequest.patch(`api/publicchatw/${messageId}`, {
+        isDeleted: true,
+      });
+      socket?.emit("interact-with-public-message", response.data);
+      const customEvent = new CustomEvent("fastDeletePublicMessage", {
+        detail: response.data,
+      });
+      document.dispatchEvent(customEvent);
+    } catch (error) {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    } finally {
+      setIsDeleting(false);
+      setOpenChatModelDeletion(null);
+    }
   };
 
   useListenToSocketEvents({
@@ -61,11 +103,6 @@ const PublicChat = () => {
     eventToListen: "fastSendPublicMessage",
     onUpdate: handleAddMessage,
   });
-
-  const scrollToLastMessage = () => {
-    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-    setStagingMessages(0);
-  };
 
   useEffect(() => {
     const element = messageContainerRef.current;
@@ -97,13 +134,13 @@ const PublicChat = () => {
       }, 700);
     };
 
-    messageContainerRef.current?.addEventListener("scroll", handleScroll);
+    element?.addEventListener("scroll", handleScroll);
     return () => {
-      messageContainerRef.current?.removeEventListener("scroll", handleScroll);
+      element?.removeEventListener("scroll", handleScroll);
       clearTimeout(timeout);
       clearTimeout(cleanSearchParamTimeout);
     };
-  }, []);
+  }, [queryParam, setElement, setSearchParams]);
 
   const messagesList = useMemo(() => {
     return messages.map((msg, index) => {
@@ -112,7 +149,9 @@ const PublicChat = () => {
           <Message
             key={msg._id}
             singleMessage={msg}
-            messageRef={index === messages.length - 1 ? lastMessageRef : null}
+            lastMessageRef={
+              index === messages.length - 1 ? lastMessageRef : null
+            }
             setOpenChatModelDeletion={setOpenChatModelDeletion}
           />
         );
@@ -122,7 +161,9 @@ const PublicChat = () => {
           <FreeTime
             key={msg._id}
             singleMessage={msg}
-            messageRef={index === messages.length - 1 ? lastMessageRef : null}
+            lastMessageRef={
+              index === messages.length - 1 ? lastMessageRef : null
+            }
           />
         );
       }
@@ -133,46 +174,18 @@ const PublicChat = () => {
     if (!stopScrolling && !queryParam) {
       scrollToLastMessage();
     }
-  }, [messages]);
+  }, [messages, stopScrolling, queryParam, scrollToLastMessage]);
 
   let numofSkeleton = 5;
   if (messageContainerRef.current) {
     numofSkeleton = Math.floor(messageContainerRef.current.clientHeight / 80);
   }
 
-  const deleteMessage = async (messageId: string) => {
-    setIsDeleting(true);
-    if (stopScrolling === false) {
-      setStopScrolling(true);
-    }
-
-    try {
-      const response = await makeRequest.patch(`api/publicchatw/${messageId}`, {
-        isDeleted: true,
-      });
-      socket?.emit("interact-with-public-message", response.data);
-      const customEvent = new CustomEvent("fastDeletePublicMessage", {
-        detail: response.data,
-      });
-      document.dispatchEvent(customEvent);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    } finally {
-      setIsDeleting(false);
-      setOpenChatModelDeletion(null);
-    }
-  };
-
   return (
     <>
       <div
         ref={messageContainerRef}
-        className="w-full h-full px-2 sm:px-1 pb-2 sm:pb-1 flex flex-col items-center gap-[5px] overflow-y-scroll sm:scrollbar-none transition-all relative"
+        className="w-full h-full px-2 sm:px-1 pb-2 sm:pb-1 flex flex-col items-center gap-[5px] overflow-y-scroll sm:scrollbar-none relative"
       >
         {openChatModelDeletion && (
           <div
@@ -189,9 +202,9 @@ const PublicChat = () => {
               <p className="text-sm text-[#87abc9] font-bold text-center mb-1">
                 Are your sure to delete your message ?
               </p>
-              <Image
-                alt="Message-preview"
+              <img
                 src={openChatModelDeletion.messageUrlScreenshot}
+                alt="Message-preview"
                 className="w-full object-contain h-[75px] mb-[6px] overflow-hidden rounded-xl"
               />
               <div className="flex items-center justify-center gap-x-4">

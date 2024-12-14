@@ -3,10 +3,11 @@ import MusicCard from "../components/Music/MusicCard";
 import Skeleton from "../components/Others/Skeleton";
 import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
+import { TypeMusicDetail } from "../types/othersTypes";
 
 const Musics = () => {
   const { musics, loading, error } = useFetchMusics();
-  useScrollToElement([musics]);
+  useScrollToElement({ dependencies: [musics] });
 
   return (
     <div className="p-6 xs:p-3">
@@ -30,7 +31,7 @@ const Musics = () => {
             </div>
           ))}
 
-        {musics?.map((song: any) => (
+        {musics.map((song: TypeMusicDetail) => (
           <MusicCard key={song.id} songDetails={song} />
         ))}
       </div>

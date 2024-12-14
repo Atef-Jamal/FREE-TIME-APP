@@ -4,7 +4,6 @@ import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
 import { TypeTaskApp } from "../../types/earnTypes";
-import Image from "../Others/Image";
 import { useTranslation } from "react-i18next";
 
 interface TypeAppCard {
@@ -42,7 +41,7 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
 
       <div className="relative overflow-hidden">
         <div className="w-full mx-auto  overflow-hidden">
-          <Image
+          <img
             alt={""}
             src={image.replace(
               "http://localhost:3000",

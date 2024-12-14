@@ -39,7 +39,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
           })
         );
       }
-    } catch (error: any) {
+    } catch (error) {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",

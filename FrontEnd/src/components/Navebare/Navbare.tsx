@@ -31,34 +31,31 @@ const Navbare = () => {
   const dispatch = useAppDispatch();
   const token = localStorage.getItem("token");
 
-  let timeOut: NodeJS.Timeout;
-  const getCurrentUser = async () => {
-    try {
-      if (token) {
-        dispatch(setCurrentUserIsLoading(true));
-        const response = await makeRequest.get("api/auth/currentuser");
-        dispatch(setCurrentUser(response.data));
-      }
-    } catch (error) {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    } finally {
-      dispatch(setCurrentUserIsLoading(false));
-      clearTimeout(timeOut);
-      timeOut = setTimeout(() => {
-        dispatch(setCurrentAccountRequestFullfiled(true));
-      }, 1500);
-    }
-  };
-
   useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        if (token) {
+          dispatch(setCurrentUserIsLoading(true));
+          const response = await makeRequest.get("api/auth/currentuser");
+          dispatch(setCurrentUser(response.data));
+        }
+      } catch (error) {
+        dispatch(
+          showPopup({
+            type: "ERROR_GENERAL",
+            message: handleApiError(error),
+          })
+        );
+      } finally {
+        dispatch(setCurrentUserIsLoading(false));
+        dispatch(setCurrentAccountRequestFullfiled(true));
+      }
+    };
     getCurrentUser();
-    return () => clearTimeout(timeOut);
-  }, [token]);
+  }, [token, dispatch]);
+
+  const handleOpenSearch = () =>
+    dispatch(openModel({ status: true, children: <Search /> }));
 
   return (
     <div className="relative w-full h-[80%] flex items-center justify-between">
@@ -83,9 +80,7 @@ const Navbare = () => {
         />
       </div>
       <button
-        onClick={() =>
-          dispatch(openModel({ status: true, children: <Search /> }))
-        }
+        onClick={handleOpenSearch}
         className="hidden xs:flex items-center justify-center min-w-[40px] h-full bg-[#383847] ml-auto mr-1 rounded-md overflow-hidden"
       >
         <BiSearch className=" text-xl opacity-70" />

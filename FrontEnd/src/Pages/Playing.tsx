@@ -17,8 +17,6 @@ const Playing = () => {
     error: errorUser,
   } = useFetchUser({
     userId: currentUser?._id,
-    initialLoading: true,
-    dependencies: [id, currentUser?._id],
   });
 
   const {
@@ -28,7 +26,6 @@ const Playing = () => {
   } = useFetchTaskApp({
     appId: id,
     initialLoading: true,
-    dependencies: [id],
   });
 
   let isCompletedBefore: boolean = false;

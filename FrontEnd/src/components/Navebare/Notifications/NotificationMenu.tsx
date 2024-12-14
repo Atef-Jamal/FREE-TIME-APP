@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { MdOutlineClose, MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
@@ -30,7 +30,7 @@ const NotificationMenu = ({
   const { currentUser } = useAppSelector((state) => state.stateManeger);
   const dispatch = useAppDispatch();
 
-  const markNotificationasRead = async () => {
+  const markNotificationasRead = useCallback(async () => {
     try {
       await makeRequest.patch("api/notifications", { ddd: "ddd" });
       setNotifications((prev) => {
@@ -49,7 +49,7 @@ const NotificationMenu = ({
         })
       );
     }
-  };
+  }, [dispatch, setNotifications]);
 
   useEffect(() => {
     const isThereNotificationUnReaded = notifications.some(
@@ -58,7 +58,7 @@ const NotificationMenu = ({
     if (isThereNotificationUnReaded) {
       markNotificationasRead();
     }
-  }, [currentUser?._id]);
+  }, [currentUser?._id, markNotificationasRead, notifications]);
 
   return (
     <>

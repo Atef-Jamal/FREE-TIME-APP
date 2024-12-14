@@ -25,7 +25,7 @@ const Timer = ({
     ) {
       handleUpdateNextTimerDay();
     }
-  }, [timeLeft]);
+  }, [timeLeft, handleUpdateNextTimerDay]);
 
   return (
     <span className="flex items-center justify-center h-[30px] overflow-hidden ">

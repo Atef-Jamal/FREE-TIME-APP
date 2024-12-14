@@ -38,28 +38,36 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   const { messages, setMessages, secondUser, setSecondUser, loading, error } =
     useFetchPrivateChatMessages({
       secondUserId: activeConversation,
-      dependencies: [activeConversation],
     });
 
-  const handleNewPrivateMessage = (data: TypePrivateMessage) => {
-    if (data.sender._id === activeConversation) {
-      setMessages((prev) => [...prev, data]);
-    }
-  };
+  const handleNewPrivateMessage = useCallback(
+    (data: TypePrivateMessage) => {
+      if (data.sender._id === activeConversation) {
+        setMessages((prev) => [...prev, data]);
+      }
+    },
+    [activeConversation, setMessages]
+  );
 
-  const handleConversationReaded = (data: TypeConversationSocketData) => {
-    if (data.sender === activeConversation) {
-      setMessages((prev) => prev.map((msg) => ({ ...msg, isRead: true })));
-    }
-  };
+  const handleConversationReaded = useCallback(
+    (data: TypeConversationSocketData) => {
+      if (data.sender === activeConversation) {
+        setMessages((prev) => prev.map((msg) => ({ ...msg, isRead: true })));
+      }
+    },
+    [activeConversation, setMessages]
+  );
 
-  const handleUpdateUser = (updatedUser: User) => {
-    if (updatedUser._id === activeConversation) {
-      setSecondUser(updatedUser);
-    }
-  };
+  const handleUpdateUser = useCallback(
+    (updatedUser: User) => {
+      if (updatedUser._id === activeConversation) {
+        setSecondUser(updatedUser);
+      }
+    },
+    [activeConversation, setSecondUser]
+  );
 
-  const markAsReaded = async () => {
+  const markAsReaded = useCallback(async () => {
     const isThereMessagesUnReaded = messages.some(
       (msg) => !msg.isRead && msg.sender._id === activeConversation
     );
@@ -89,11 +97,21 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
         })
       );
     }
-  };
+  }, [
+    activeConversation,
+    setConversations,
+    dispatch,
+    socket,
+    messages,
+    currentUser?._id,
+  ]);
 
-  const handleAddMessage = (data: TypeFastSendPrivateMessage) => {
-    setMessages((prev) => [...prev, data.detail.message]);
-  };
+  const handleAddMessage = useCallback(
+    (data: TypeFastSendPrivateMessage) => {
+      setMessages((prev) => [...prev, data.detail.message]);
+    },
+    [setMessages]
+  );
 
   const scrollToLastMessage = useCallback(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -118,7 +136,7 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   useEffect(() => {
     scrollToLastMessage();
     markAsReaded();
-  }, [messages, activeConversation]);
+  }, [messages, activeConversation, markAsReaded, scrollToLastMessage]);
 
   if (loading) {
     return (

@@ -92,7 +92,7 @@ const TestimonialSection = () => {
       }
     };
     getAllTestimonials();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-full py-4 bg-[#1f3346]">

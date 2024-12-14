@@ -13,7 +13,7 @@ import { BiCircle } from "react-icons/bi";
 interface TypeProps {
   messages: TypePrivateMessage[];
   message: TypePrivateMessage;
-  lastMessageRef: RefObject<HTMLDivElement>;
+  lastMessageRef: RefObject<HTMLDivElement | null>;
   index: number;
 }
 

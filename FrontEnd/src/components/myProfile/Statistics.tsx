@@ -3,7 +3,7 @@ import { FaUsers } from "react-icons/fa";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { BiTask } from "react-icons/bi";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { showPopup } from "../../context/StateManeger";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
@@ -22,7 +22,7 @@ const Statistics = () => {
     (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP"
   ).length;
 
-  const getUserStatistics = async () => {
+  const getUserStatistics = useCallback(async () => {
     try {
       const response = await makeRequest.get("api/notifications");
       setStatistics(response.data);
@@ -34,13 +34,13 @@ const Statistics = () => {
         })
       );
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     if (currentUser) {
       getUserStatistics();
     }
-  }, [currentUser]);
+  }, [currentUser, getUserStatistics]);
 
   return (
     <div className=" flex flex-col gap-4 w-[49%] sm:w-[98%] h-[180px] sm:h-[170px] rounded-lg bg-[#222339] justify-center  ">

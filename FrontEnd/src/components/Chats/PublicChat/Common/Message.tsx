@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
@@ -20,9 +26,9 @@ import { useListenToDocumentEvent } from "../../../../hooks/listenersHooks";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
-  messageRef: React.RefObject<HTMLDivElement> | null;
-  setOpenChatModelDeletion: React.Dispatch<
-    React.SetStateAction<{
+  lastMessageRef: RefObject<HTMLDivElement | null> | null;
+  setOpenChatModelDeletion: Dispatch<
+    SetStateAction<{
       messageId: string;
       messageUrlScreenshot: string;
     } | null>
@@ -33,7 +39,7 @@ type TypeFieldName = "loves" | "likes" | "dislikes";
 
 const Message = ({
   singleMessage,
-  messageRef,
+  lastMessageRef,
   setOpenChatModelDeletion,
 }: TypeMessageProp) => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
@@ -106,12 +112,12 @@ const Message = ({
   };
 
   const handleDelete = async () => {
-    const messageElement = document.getElementById(`publicMessage${_id}`);
+    const messageElement = document.getElementById(`publicMessage-${_id}`);
     let messageUrl = "";
     if (messageElement) {
-      messageElement?.classList.add("bg-black");
+      messageElement.style.backgroundColor = "#16162c";
       const canvas = await html2canvas(messageElement);
-      messageElement?.classList.remove("bg-black");
+      messageElement.style.backgroundColor = "";
       messageUrl = canvas.toDataURL("image/png");
     }
 
@@ -146,7 +152,7 @@ const Message = ({
       setDate(formateDate(createdAt));
     }, 1000 * 60);
     return () => clearInterval(interval);
-  }, []);
+  }, [createdAt]);
 
   const onUpdate = ({ detail }: { detail: TypePublicChatMessage }) => {
     if (detail._id === _id) {
@@ -162,8 +168,8 @@ const Message = ({
 
   return (
     <div
-      ref={messageRef}
-      id={_id}
+      ref={lastMessageRef}
+      id={`publicMessage-${_id}`}
       className={`bg-[#2f2f4e88] w-full flex flex-col gap-1  rounded-md p-[6px]`}
     >
       <div className="w-full flex relative ">
@@ -218,17 +224,16 @@ const Message = ({
             {message}
           </p>
           <div className="flex items-center justify-end gap-3 ml-auto w-full">
-            {isSended !== undefined && isSended === "SUCCESS" && (
-              <FcOk className="mr-auto " />
-            )}
+            {isSended === "SUCCESS" && <FcOk className="mr-auto " />}
 
-            {isSended !== undefined && isSended === "PENDING" && (
+            {isSended === "PENDING" && (
               <BiCircle className="mr-auto opacity-70" />
             )}
 
-            {isSended !== undefined && isSended === "FAILED" && (
+            {isSended === "FAILED" && (
               <IoCloseCircleOutline className="mr-auto " />
             )}
+
             <button
               onClick={() => reactToMessage("loves", "dislikes", "likes")}
               className="flex items-center gap-1 "

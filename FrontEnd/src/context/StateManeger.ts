@@ -114,7 +114,7 @@ const StateManegerSlice = createSlice({
       state.activeMusic.audio.pause();
       state.musicIsPlaying = false;
     },
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setSocet(state, action: PayloadAction<any>) {
       state.socket = action.payload;
     },

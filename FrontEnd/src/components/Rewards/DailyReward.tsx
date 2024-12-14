@@ -6,7 +6,7 @@ import { useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { makeRequest } from "../../utils";
 
@@ -35,16 +35,16 @@ const DailyReward = () => {
           .split("T")[0] + "T00:00:00.000Z";
       setDayWhichTimmerIsLocated(nextDay);
     }
-  }, [currentUser?._id, currentAccountRequestFullfiled]);
+  }, [currentUser, currentAccountRequestFullfiled]);
 
-  const handleUpdateNextTimerDay = () => {
+  const handleUpdateNextTimerDay = useCallback(() => {
     const addOneDay = new Date(
       new Date().setDate(new Date().getDate() + 2)
     ).toISOString();
     const datePart = addOneDay.split("T")[0];
     const nextTimerDay = datePart + "T00:00:00.000Z";
     setDayWhichTimmerIsLocated(nextTimerDay);
-  };
+  }, []);
 
   useEffect(() => {
     const getDate = async () => {

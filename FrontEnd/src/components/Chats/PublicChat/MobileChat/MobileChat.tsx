@@ -9,7 +9,7 @@ const MobileChat = () => {
 
   useEffect(() => {
     dispatch(setPublicMsgRedPoint(false));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div

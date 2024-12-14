@@ -19,10 +19,10 @@ const HeroSection = () => {
   const handlaSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const response = await login({ email, password }, dispatch);
+      const response = await login({ formData: { email, password }, dispatch });
       localStorage.setItem("token", response.data.token);
       window.location.href = `${window.location.origin}/?redirectedfrom=login`;
-    } catch (error: any) {
+    } catch (error) {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
@@ -37,7 +37,7 @@ const HeroSection = () => {
   ) => {
     e.preventDefault();
     try {
-      await signInWithGoogle(dispatch);
+      await signInWithGoogle({ dispatch });
     } catch (error) {
       dispatch(
         showPopup({

@@ -75,11 +75,11 @@ const DailyStreakRewardCard = ({
       }, 1000);
       return () => clearTimeout(timmout);
     }
-  }, [dayWhichTimmerIsLocated]);
+  }, [dayWhichTimmerIsLocated, dayInfo.availableAt]);
 
   const convertToDate = new Date(dayInfo.availableAt);
 
-  const timeDifference = Math.abs((convertToDate as any) - (today as any));
+  const timeDifference = Math.abs(convertToDate.getTime() - today.getTime());
 
   // Convert time difference from milliseconds to days
   const millisecondsPerDay = 1000 * 60 * 60 * 24;

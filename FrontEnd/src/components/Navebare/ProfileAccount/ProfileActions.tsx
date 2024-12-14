@@ -36,31 +36,30 @@ const ProfileActions = () => {
     (element) => element.isRead === false
   ).length;
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await makeRequest.get("api/notifications");
-      setNotifications(response.data);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        })
-      );
-    } finally {
-      setLoadingNotifications(false);
-    }
-  };
-
   const handleAddNewNotification = (data: TypeNotifications) => {
     setNotifications((prev) => [...prev, data]);
     notifySound.play();
   };
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser?._id) return;
+    const fetchNotifications = async () => {
+      try {
+        const response = await makeRequest.get("api/notifications");
+        setNotifications(response.data);
+      } catch (error) {
+        dispatch(
+          showPopup({
+            message: handleApiError(error),
+            type: "ERROR_GENERAL",
+          })
+        );
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
     fetchNotifications();
-  }, [currentUser?._id]);
+  }, [currentUser?._id, dispatch]);
 
   useListenToSocketEvents({
     eventsToListen: ["new-notification"],

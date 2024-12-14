@@ -7,22 +7,21 @@ import Spinner from "./Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 
 const ToastNotify = () => {
-  const {
-    ToastNotify: { type, message },
-  } = useAppSelector((state) => state.stateManeger);
+  const { ToastNotify } = useAppSelector((state) => state.stateManeger);
+  const { type, message } = ToastNotify;
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (!message) return;
-
-    const timeOut = setTimeout(
+    const timeOutId = setTimeout(
       () => {
         dispatch(resetPopup());
       },
       type === "LOADING" ? 15000 : 5000
     );
 
-    return () => clearTimeout(timeOut);
-  }, [message, dispatch]);
+    return () => clearTimeout(timeOutId);
+  }, [type, message, dispatch]);
 
   return (
     <div

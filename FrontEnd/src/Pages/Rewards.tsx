@@ -22,7 +22,7 @@ const Rewards = () => {
   const { t } = useTranslation("rewards");
   const dispatch = useAppDispatch();
 
-  useScrollToElement();
+  useScrollToElement({});
 
   const getBonusCode = async () => {
     if (!currentUser) {

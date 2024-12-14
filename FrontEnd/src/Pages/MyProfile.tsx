@@ -26,7 +26,7 @@ import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const MyProfile = () => {
   const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
@@ -35,7 +35,7 @@ const MyProfile = () => {
   const queryParam = searchParams.get("to");
   const dispatch = useAppDispatch();
 
-  let mathLevel: number = currentUser?.points
+  const mathLevel: number = currentUser?.points
     ? currentUser.points / 100
     : 0 / 100;
 
@@ -48,16 +48,7 @@ const MyProfile = () => {
     progress = Number(mathLevel?.toString().slice(-1).concat("0"));
   }
 
-  useScrollToElement([musics]);
-
-  const handleOpenSetting = () => {
-    dispatch(
-      openModel({
-        status: true,
-        children: <ProfileSettings />,
-      })
-    );
-  };
+  useScrollToElement({ dependencies: [musics] });
 
   const changeFrame = async (frameObject: TypeFrame) => {
     if (!currentUser) {
@@ -122,11 +113,20 @@ const MyProfile = () => {
     );
   };
 
+  const handleOpenSetting = useCallback(() => {
+    dispatch(
+      openModel({
+        status: true,
+        children: <ProfileSettings />,
+      })
+    );
+  }, [dispatch]);
+
   useEffect(() => {
     if (queryParam === "settings") {
       handleOpenSetting();
     }
-  }, [queryParam]);
+  }, [queryParam, handleOpenSetting]);
 
   if (!currentUser) return;
 

@@ -20,7 +20,7 @@ const MusicPlayer = () => {
     (state) => state.stateManeger
   );
   const dispatch = useAppDispatch();
-
+  console.log("i am here");
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
@@ -31,6 +31,7 @@ const MusicPlayer = () => {
   };
 
   useEffect(() => {
+    const activeMusicAudio = activeMusic.audio;
     const handleTimeUpdate = (event: Event) => {
       const element = event.target as HTMLAudioElement;
       setTrackValue(element.currentTime);
@@ -41,14 +42,14 @@ const MusicPlayer = () => {
       setTrackValue(0);
     };
 
-    activeMusic.audio.addEventListener("timeupdate", handleTimeUpdate);
-    activeMusic.audio.addEventListener("ended", handleMusicEnded);
+    activeMusicAudio.addEventListener("timeupdate", handleTimeUpdate);
+    activeMusicAudio.addEventListener("ended", handleMusicEnded);
 
     return () => {
-      activeMusic.audio.removeEventListener("timeupdate", handleTimeUpdate);
-      activeMusic.audio.removeEventListener("ended", handleMusicEnded);
+      activeMusicAudio.removeEventListener("timeupdate", handleTimeUpdate);
+      activeMusicAudio.removeEventListener("ended", handleMusicEnded);
     };
-  }, []);
+  }, [activeMusic.audio, dispatch]);
 
   return (
     <div
@@ -63,7 +64,7 @@ const MusicPlayer = () => {
           } w-10 h-10 rounded-full border-2 border-l-[#ffae45] border-t-[#222770] border-r-[#cef03a] border-b-[#192461]`}
         >
           <img
-            src={activeMusic.musicInfo?.cover || ""}
+            src={activeMusic.musicInfo?.cover}
             alt=""
             className="w-full h-full rounded-full"
           />

@@ -47,7 +47,7 @@ const ChatSidbare = ({
     } else if (filterVlaue === "") {
       setFilteredUsers(conversations);
     }
-  }, [filterVlaue]);
+  }, [filterVlaue, conversations]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterValue(event.target.value);

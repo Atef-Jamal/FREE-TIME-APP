@@ -8,10 +8,10 @@ import { useCloseMenuOnClickOutSide } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 interface TypeProps {
-  allRef: RefObject<HTMLSpanElement>;
-  heighestRewardRef: RefObject<HTMLSpanElement>;
-  popularRef: RefObject<HTMLSpanElement>;
-  heighestRatingRef: RefObject<HTMLSpanElement>;
+  allRef: RefObject<HTMLSpanElement | null>;
+  heighestRewardRef: RefObject<HTMLSpanElement | null>;
+  popularRef: RefObject<HTMLSpanElement | null>;
+  heighestRatingRef: RefObject<HTMLSpanElement | null>;
   setOpenFilterMenu: Dispatch<SetStateAction<boolean>>;
   activeFilteringItem: (
     event: React.MouseEvent<HTMLSpanElement, MouseEvent>,
@@ -27,7 +27,7 @@ const FilteringMenu = ({
   setOpenFilterMenu,
   activeFilteringItem,
 }: TypeProps) => {
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation("earn");
 
   const handleClose = () => {

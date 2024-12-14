@@ -5,9 +5,7 @@ import { useCloseMenuOnClickOutSide } from "../../../../hooks";
 import { useRef } from "react";
 
 interface TypeProps {
-  setUser: React.Dispatch<
-    React.SetStateAction<{ _id: string; name: string } | null>
-  >;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setOpenMentionList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -16,9 +14,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
     (state) => state.stateManeger
   );
   const { users, loading, error } = useFetchAllUsers();
-  // const [sortedUsers, setSortedUsers] = useState(users);
-
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleClose = () => {
     setOpenMentionList(false);
@@ -60,7 +56,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
             return (
               <div
                 key={user._id}
-                onClick={() => setUser({ _id: user._id, name: user.name })}
+                onClick={() => setUser(user)}
                 className="px-3 py-2 w-full bg-[#475aa02c] rounded-sm hover:bg-[#475aa06b] flex items-center justify-between"
               >
                 <p className=" text-blue-700 text-xs font-bold tracking-wide ">
