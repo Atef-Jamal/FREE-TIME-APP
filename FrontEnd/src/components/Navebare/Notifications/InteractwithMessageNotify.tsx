@@ -14,10 +14,9 @@ const MessageReactionNotify = ({
   messageLocation,
   createdAt,
 }: PropType) => {
-  const { isChatOpen } = useAppSelector((state) => state.stateManeger);
+  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
   const dispatch = useAppDispatch();
   const location = useLocation();
-
   const date = formateDate(createdAt);
 
   return (

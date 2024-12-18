@@ -25,7 +25,9 @@ import FilteringMenu from "../components/Earn/FilteringMenu";
 import { useTranslation } from "react-i18next";
 
 const Earn = () => {
-  const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
+  const resizeSidebare = useAppSelector(
+    (state) => state.stateManeger.resizeSidebare
+  );
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);

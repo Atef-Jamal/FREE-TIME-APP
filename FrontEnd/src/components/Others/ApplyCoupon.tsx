@@ -11,58 +11,53 @@ import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import bonusImage from "../../assets/images/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { makeRequest } from "../../utils";
+import { applyCode } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
+import { useMutation } from "@tanstack/react-query";
 
 const ApplyCoupon = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [code, setCode] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [openHelp, setOpenHelp] = useState<boolean>(false);
   const navigate = useNavigate();
-
   const dispatch = useAppDispatch();
 
-  const handleApply = async () => {
-    if (!currentUser) return;
-    if (code.trim() === "") {
-      setError("Enter your code");
-      return;
-    }
-    try {
-      setError("");
-      setLoading(true);
-      const response = await makeRequest.post("api/coupons", {
-        code,
-      });
-
-      if (response.status === 200) {
-        dispatch(
-          setCurrentUser({ ...currentUser, points: response.data.points })
-        );
-        dispatch(
-          showPopup({
-            message: "successfully applied",
-            type: "SUCESS",
-          })
-        );
-      }
-      setLoading(false);
+  const mutation = useMutation({
+    mutationFn: applyCode,
+    onSuccess: (data) => {
+      if (!currentUser) return;
       setCode("");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setLoading(false);
-      setError(error?.response.data.error);
+      dispatch(setCurrentUser({ ...currentUser, points: data.points }));
+      dispatch(
+        showPopup({
+          message: "successfully applied",
+          type: "SUCESS",
+        })
+      );
+    },
+    onError: (error) => {
       dispatch(
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
       );
+    },
+  });
+
+  const applyHandler = () => {
+    if (!currentUser) return;
+    if (code.trim() === "") {
+      dispatch(
+        showPopup({
+          message: "Enter the code",
+          type: "ERROR_GENERAL",
+        })
+      );
+      return;
     }
   };
 
@@ -130,15 +125,18 @@ const ApplyCoupon = () => {
           </button>
           <span
             className={`transition-all flex items-center justify-center ${
-              error || loading ? "h-5" : "h-0 overflow-hidden"
+              mutation.isError || mutation.isPending
+                ? "h-5"
+                : "h-0 overflow-hidden"
             } w-full`}
           >
-            {loading && (
+            {mutation.isPending && (
               <Spinner className="w-5 h-5 mx-auto border-b-[#ace769] border-l-[#ace769]" />
             )}
-            {error && (
+            {mutation.error && (
               <span className="w-full flex items-center gap-2 text-red-400 text-sm pl-1">
-                <FaExclamationCircle className="opacity-60 text-sm" /> {error}
+                <FaExclamationCircle className="opacity-60 text-sm" />{" "}
+                {mutation.error.response?.data.error}
               </span>
             )}
           </span>
@@ -152,7 +150,7 @@ const ApplyCoupon = () => {
             />
             <div className="flex items-center gap-2 xs:gap-1 ml-1 ">
               <button
-                onClick={handleApply}
+                onClick={applyHandler}
                 className="rounded-md px-5 py-2 xs:py-1 bg-[#01D676] xs:text-sm text-black font-bold border border-gray-600"
               >
                 APPLY

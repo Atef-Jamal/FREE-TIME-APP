@@ -7,18 +7,18 @@ import {
   showPopup,
 } from "../../context/StateManeger";
 import VerifyEmailBox from "./VerifyEmailBox";
-import { makeRequest } from "../../utils";
+import { changeUserName, changeUserPassword } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
 import Spinner from "../Others/Spinner";
+import { useMutation } from "@tanstack/react-query";
 
 const ProfileSettings = () => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
-  const [loadingName, setLoadingName] = useState<boolean>(false);
-  const [loadingPass, setLoadingPass] = useState<boolean>(false);
   const [openEnterCode, setOpenEnterCode] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
@@ -31,16 +31,11 @@ const ProfileSettings = () => {
   const handleChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
     setNewPass(e.target.value);
   };
-  const handleSaveName = async () => {
-    if (!currentUser) {
-      return;
-    }
-    setLoadingName(true);
-    try {
-      const response = await makeRequest.post("api/auth/changename", {
-        newName,
-      });
-      dispatch(setCurrentUser({ ...currentUser, name: response.data.name }));
+  const nameMutation = useMutation({
+    mutationFn: changeUserName,
+    onSuccess: (data) => {
+      if (currentUser)
+        dispatch(setCurrentUser({ ...currentUser, name: data.name }));
       dispatch(
         showPopup({
           message: "Name changed successfully",
@@ -49,45 +44,55 @@ const ProfileSettings = () => {
       );
       socket?.emit("user-updated", {
         ...currentUser,
-        name: response.data.name,
+        name: data.name,
       });
-    } catch (error) {
+    },
+    onError: (error) => {
       dispatch(
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
       );
-    } finally {
-      setLoadingName(false);
-    }
-  };
-  const handleSavePassword = async () => {
-    if (!currentUser) {
-      return;
-    }
-    setLoadingPass(true);
-    try {
-      await makeRequest.post("api/auth/changepassword", {
-        newPass,
-        enterdOldPass: oldPass,
-      });
+    },
+  });
+  const passwordMutation = useMutation({
+    mutationFn: changeUserPassword,
+    onSuccess: () => {
       dispatch(
         showPopup({
           message: "Password changed successfully",
           type: "SUCESS",
         })
       );
-    } catch (error) {
+    },
+    onError: (error) => {
       dispatch(
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
       );
-    } finally {
-      setLoadingPass(false);
+    },
+  });
+
+  const changeNameHandler = () => {
+    if (!currentUser || !newName) return;
+    if (currentUser.name === newName) return;
+    nameMutation.mutate({ newName });
+  };
+  const changePasswordHandler = () => {
+    if (!currentUser || !newPass) return;
+    if (newPass.trim().length < 6) {
+      dispatch(
+        showPopup({
+          message: "Password must be at least 6 characters",
+          type: "ERROR_GENERAL",
+        })
+      );
+      return;
     }
+    passwordMutation.mutate({ newPassword: newPass, oldPassword: oldPass });
   };
 
   if (openEnterCode) {
@@ -122,10 +127,14 @@ const ProfileSettings = () => {
             className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
           />
           <button
-            onClick={handleSaveName}
+            onClick={changeNameHandler}
             className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
           >
-            {loadingName ? <Spinner className="w-4 h-4 mx-auto" /> : "save"}
+            {nameMutation.isPending ? (
+              <Spinner className="w-4 h-4 mx-auto" />
+            ) : (
+              "save"
+            )}
           </button>
         </div>
       </div>
@@ -195,10 +204,14 @@ const ProfileSettings = () => {
               className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
             />
             <button
-              onClick={handleSavePassword}
+              onClick={changePasswordHandler}
               className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
             >
-              {loadingPass ? <Spinner className="w-5 h-5 mx-auto" /> : "save"}
+              {passwordMutation.isPending ? (
+                <Spinner className="w-5 h-5 mx-auto" />
+              ) : (
+                "save"
+              )}
             </button>
           </div>
         </div>

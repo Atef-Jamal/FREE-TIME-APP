@@ -1,6 +1,12 @@
 import { FaPlay } from "react-icons/fa6";
 import { IoIosPause } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useLocation } from "react-router-dom";
+import Spinner from "../Others/Spinner";
+import { purshaseMusic } from "../../utils";
+import { handleApiError } from "../../utils/common";
+import { TypeMusicDetail } from "../../types/othersTypes";
+import { useMutation } from "@tanstack/react-query";
 import {
   handleAddMusic,
   handlePauseMusic,
@@ -9,25 +15,53 @@ import {
   showPopup,
   toggleThisEntity,
 } from "../../context/StateManeger";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
-import Spinner from "../Others/Spinner";
-import { makeRequest } from "../../utils";
-import { handleApiError } from "../../utils/common";
-import { TypeMusicDetail } from "../../types/othersTypes";
 
 const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
-  const { currentUser, activeMusic, musicIsPlaying, openMusicModal } =
-    useAppSelector((state) => state.stateManeger);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPurshased, setIsPurshased] = useState(
-    !!currentUser?.mySongs.includes(songDetails.id.toString())
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
+  const musicIsPlaying = useAppSelector(
+    (state) => state.stateManeger.musicIsPlaying
+  );
+  const openMusicModal = useAppSelector(
+    (state) => state.stateManeger.openMusicModal
+  );
+  const currentAccountRequestFullfiled = useAppSelector(
+    (state) => state.stateManeger.currentAccountRequestFullfiled
   );
 
-  const dispatch = useAppDispatch();
-  const location = useLocation();
+  const isAlreadyPurshased = !!currentUser?.mySongs.includes(
+    songDetails.id.toString()
+  );
 
-  const buySong = async () => {
+  const mutation = useMutation({
+    mutationFn: purshaseMusic,
+    onError: (error) => {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    },
+    onSuccess: (data) => {
+      if (!currentUser) return;
+      console.log(data);
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          points: data.points,
+          mySongs: [...currentUser.mySongs, data.musicId],
+        })
+      );
+      dispatch(
+        showPopup({
+          type: "SUCESS",
+          message: "successfully purshased",
+        })
+      );
+    },
+  });
+  const handlePurshase = () => {
     if (!currentUser) {
       dispatch(
         showPopup({
@@ -37,39 +71,10 @@ const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
       );
       return;
     }
-    try {
-      setIsLoading(true);
-      const response = await makeRequest.post(
-        `api/songs/buy-song/${songDetails.id}`,
-        {
-          musicTitle: songDetails.title,
-        }
-      );
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          points: response.data.points,
-          mySongs: [...currentUser.mySongs, response.data.songId],
-        })
-      );
-      dispatch(
-        showPopup({
-          type: "SUCESS",
-          message: "successfully purshased",
-        })
-      );
-      setIsPurshased(true);
-    } catch (error) {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    mutation.mutate({ musicId: songDetails.id.toString() });
   };
+  const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const handleAdd = () => {
     if (!openMusicModal) {
@@ -91,7 +96,7 @@ const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
       id={songDetails.id.toString()}
       className="relative p-2 flex items-center justify-between flex-col h-[200px] bg-[#354253ee] rounded-md overflow-hidden"
     >
-      {isPurshased && location.pathname !== "/myprofile" && (
+      {isAlreadyPurshased && location.pathname !== "/myprofile" && (
         <span className="absolute z-[1] top-5 -left-10 -rotate-45 bg-[#94d34b] font-extrabold text-sm xs:text-xs text-zinc-700 w-[90%] text-center py-1">
           My Music
         </span>
@@ -136,19 +141,24 @@ const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
           </span>
         </div>
       </div>
-      {!isPurshased && (
+      {!currentAccountRequestFullfiled && (
+        <button className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center">
+          <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
+        </button>
+      )}
+      {!isAlreadyPurshased && currentAccountRequestFullfiled && (
         <button
-          onClick={buySong}
+          onClick={handlePurshase}
           className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center"
         >
-          {isLoading ? (
+          {mutation.isPending ? (
             <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "Buy"
           )}
         </button>
       )}
-      {isPurshased && (
+      {isAlreadyPurshased && currentAccountRequestFullfiled && (
         <>
           {musicIsPlaying &&
             activeMusic.musicInfo?.id === songDetails.id.toString() && (

@@ -8,7 +8,8 @@ const Timer = ({
   date: Date;
   handleUpdateNextTimerDay: () => void;
 }) => {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(date));
+  const calcTimeLeft = calculateTimeLeft(date);
+  const [timeLeft, setTimeLeft] = useState(calcTimeLeft);
 
   useEffect(() => {
     const interval = setInterval(() => {

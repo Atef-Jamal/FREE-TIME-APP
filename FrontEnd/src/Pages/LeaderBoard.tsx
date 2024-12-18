@@ -1,12 +1,17 @@
 import { dailyleaderboard } from "../assets";
 import { MdLiveHelp } from "react-icons/md";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
-import { useFetchAllUsers } from "../hooks";
 import PeopleList from "../components/Leaderboard/PeopleList";
 import { useScrollToElement } from "../hooks/commonHooks";
+import { useQuery } from "@tanstack/react-query";
+import { getUsers } from "../utils";
 
 const LeaderBoard = () => {
-  const { users } = useFetchAllUsers();
+  const { data: users = [] } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+    staleTime: 60 * 60 * 1000,
+  });
   useScrollToElement({ dependencies: [users] });
 
   return (

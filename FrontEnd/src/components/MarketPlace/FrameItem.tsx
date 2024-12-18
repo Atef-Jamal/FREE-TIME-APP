@@ -1,23 +1,44 @@
-import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
-import { makeRequest } from "../../utils";
+import { purshaseFrame } from "../../utils";
 import { handleApiError } from "../../utils/common";
-
 import { TypeFrame } from "../../types/frameTypes";
+import { useMutation } from "@tanstack/react-query";
 
 const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
-  const { currentUser, currentAccountRequestFullfiled } = useAppSelector(
-    (state) => state.stateManeger
+  const currentAccountRequestFullfiled = useAppSelector(
+    (state) => state.stateManeger.currentAccountRequestFullfiled
   );
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const purshasedByCurrentUser = !!currentUser?.myFrames.find(
     (item) => item._id === singleFrame._id
   );
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  const buyNow = async (frameId: string) => {
+  const mutation = useMutation({
+    mutationFn: purshaseFrame,
+    onError: (error) => {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    },
+    onSuccess: (data) => {
+      if (!currentUser) return;
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          points: data.points,
+          myFrames: [...currentUser.myFrames, data.savedFrame],
+        })
+      );
+    },
+  });
+
+  const handlePurshaseFrame = () => {
     if (!currentUser) {
       dispatch(
         showPopup({
@@ -27,28 +48,7 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
       );
       return;
     }
-    setIsLoading(true);
-    try {
-      const response = await makeRequest.get(`api/frames/${frameId}`);
-      if (response.status === 200) {
-        dispatch(
-          setCurrentUser({
-            ...currentUser,
-            points: response.data.points,
-            myFrames: [...currentUser.myFrames, response.data.savedFrame],
-          })
-        );
-      }
-    } catch (error) {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    mutation.mutate({ frameId: singleFrame._id });
   };
 
   return (
@@ -95,20 +95,21 @@ const FrameItem = ({ singleFrame }: { singleFrame: TypeFrame }) => {
               })
             )
           }
-          className="text-sm border border-gray-500 bg-[#6b788f52] rounded-md py-[6px] mt-3 text-[#ffffff] font-bold"
+          className="text-sm border border-gray-500 bg-[#1a202c] rounded-md py-[6px] mt-3 text-[#ffffff] font-bold"
         >
           Purshased
         </button>
       )}
       {currentAccountRequestFullfiled && !purshasedByCurrentUser && (
         <button
-          onClick={() => buyNow(singleFrame._id)}
-          className="text-sm  border border-gray-500 bg-[#65e661] rounded-md py-[6px] mt-3 font-bold"
+          onClick={handlePurshaseFrame}
+          disabled={mutation.isPending}
+          className="text-sm  border border-gray-500 bg-[#4ab646] rounded-md py-[6px] mt-3 font-bold "
         >
-          {isLoading ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
+          {mutation.isPending ? (
+            <Spinner className="w-5 h-5 mx-auto border-b-[#252525]  border-l-[#252525]" />
           ) : (
-            " Buy Now"
+            <p className="text-[#252525]">Buy Now</p>
           )}
         </button>
       )}

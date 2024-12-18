@@ -32,6 +32,7 @@ const initialState: TypeInitialState = {
   onlineUsers: [],
   reFetchThisUserId: "",
   allUnReadedMesseges: [],
+  activeConversation: null,
   model: { status: false, children: null },
   publicMsgRedPoint: false,
 };
@@ -144,6 +145,9 @@ const StateManegerSlice = createSlice({
         state.allUnReadedMesseges = [];
       }
     },
+    setActiveConversation(state, action: PayloadAction<string | null>) {
+      state.activeConversation = action.payload;
+    },
   },
 });
 
@@ -161,6 +165,7 @@ export const {
   setOnlineUsers,
   handleRefetchUnReadedMsgCount,
   updateSidebarUnReadedMsgCount,
+  setActiveConversation,
   openModel,
   resetModel,
   toggleThisEntity,

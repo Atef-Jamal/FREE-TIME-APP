@@ -23,7 +23,8 @@ const DailyStreakRewardCard = ({
   dayWhichTimmerIsLocated,
   handleUpdateNextTimerDay,
 }: TypeProps) => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation("rewards");
   const [, setRefresh] = useState(false);
@@ -81,7 +82,6 @@ const DailyStreakRewardCard = ({
 
   const timeDifference = Math.abs(convertToDate.getTime() - today.getTime());
 
-  // Convert time difference from milliseconds to days
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const dayDifference = timeDifference / millisecondsPerDay;
 

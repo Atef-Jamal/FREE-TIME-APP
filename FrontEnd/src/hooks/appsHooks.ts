@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { showPopup } from "../context/StateManeger";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
 
-import { useAppDispatch } from "../context/Hooks";
 import { TypeFilterQuery, TypeTaskApp } from "../types/earnTypes";
 
 export const useFetchAllApps = ({
@@ -57,44 +55,4 @@ export const useFetchAllApps = ({
   }, [filterQuery, page, limitPerPage]);
 
   return { loading, apps, error, loadMore, noMoreApps, errorLoadMore };
-};
-
-export const useFetchTaskApp = ({
-  appId,
-  initialLoading = false,
-}: {
-  appId: string | undefined;
-  initialLoading?: boolean;
-}) => {
-  const [taskApp, setTaskApp] = useState<TypeTaskApp | null>(null);
-  const [loading, setLoading] = useState<boolean>(initialLoading);
-  const [error, setError] = useState<string | null>(null);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const getApp = async () => {
-      if (!appId) return;
-      setError(null);
-      setLoading(true);
-      try {
-        const response = await makeRequest.get(`api/tasks/${appId}`);
-        const data = response.data;
-        setTaskApp(data);
-      } catch (error) {
-        const err = handleApiError(error);
-        setError(err);
-        dispatch(
-          showPopup({
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    getApp();
-  }, [appId, dispatch]);
-
-  return { taskApp, loading, error };
 };

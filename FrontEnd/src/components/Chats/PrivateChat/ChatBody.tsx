@@ -1,93 +1,61 @@
-import { SetStateAction, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import UserImage from "../../Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
-import SendMessagePrivateChat from "./SendMessagePrivateChat";
-import {
-  TypeConversation,
-  TypePrivateMessage,
-} from "../../../types/privateChatTypes";
-import { useFetchPrivateChatMessages } from "../../../hooks";
-import {
-  useListenToDocumentEvent,
-  useListenToSocketEvents,
-} from "../../../hooks/listenersHooks";
+import SendMessagePrivateChat from "./SendMessagePrivateChat"; // TypeCashedChat,
+import { TypeConversation } from "../../../types/privateChatTypes";
 import { showPopup } from "../../../context/StateManeger";
 import { handleApiError } from "../../../utils/common";
-import { makeRequest } from "../../../utils";
-import { User } from "../../../types/userTypes";
-import { TypeConversationSocketData } from "../../../types/othersTypes";
+import { fetchPrivateChatMessages, makeRequest } from "../../../utils";
 import { ImSpinner3 } from "react-icons/im";
+import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface TypeProps {
-  activeConversation: string;
-  setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
-}
-
-interface TypeFastSendPrivateMessage {
-  detail: { message: TypePrivateMessage; recieverId: string };
-}
-
-const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
-  const { currentUser, socket, onlineUsers } = useAppSelector(
-    (state) => state.stateManeger
+const ChatBody = () => {
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const activeConversation = useAppSelector(
+    (state) => state.stateManeger.activeConversation
   );
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-  const { messages, setMessages, secondUser, setSecondUser, loading, error } =
-    useFetchPrivateChatMessages({
-      secondUserId: activeConversation,
-    });
-
-  const handleNewPrivateMessage = useCallback(
-    (data: TypePrivateMessage) => {
-      if (data.sender._id === activeConversation) {
-        setMessages((prev) => [...prev, data]);
-      }
-    },
-    [activeConversation, setMessages]
-  );
-
-  const handleConversationReaded = useCallback(
-    (data: TypeConversationSocketData) => {
-      if (data.sender === activeConversation) {
-        setMessages((prev) => prev.map((msg) => ({ ...msg, isRead: true })));
-      }
-    },
-    [activeConversation, setMessages]
-  );
-
-  const handleUpdateUser = useCallback(
-    (updatedUser: User) => {
-      if (updatedUser._id === activeConversation) {
-        setSecondUser(updatedUser);
-      }
-    },
-    [activeConversation, setSecondUser]
-  );
+  const {
+    data = { messages: [], secondUser: null },
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["private-messages", activeConversation],
+    queryFn: activeConversation
+      ? () => fetchPrivateChatMessages({ secondUserId: activeConversation })
+      : skipToken,
+    staleTime: 60 * 60 * 1000,
+  });
 
   const markAsReaded = useCallback(async () => {
-    const isThereMessagesUnReaded = messages.some(
+    const isThereMessagesUnReaded = data.messages.some(
       (msg) => !msg.isRead && msg.sender._id === activeConversation
     );
-    if (messages.length === 0 || !isThereMessagesUnReaded) return;
+    if (data.messages.length === 0 || !isThereMessagesUnReaded) return;
+    socket?.emit("conversation-readed", {
+      reciever: activeConversation,
+      sender: currentUser?._id,
+    });
     try {
       await makeRequest.patch(`api/conversations/${activeConversation}`, {
         FOR_CONSISTENCY: "FOR_CONSISTENCY",
       });
-      socket?.emit("conversation-readed", {
-        reciever: activeConversation,
-        sender: currentUser?._id,
-      });
-      setConversations((prev) => {
-        return prev.map((conv) => {
-          if (conv.secondParty._id === activeConversation) {
-            return { ...conv, unreadedCount: 0 };
-          } else {
-            return conv;
-          }
-        });
+      queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
+        if (old) {
+          return old.map((conv) => {
+            if (conv.secondParty._id === activeConversation) {
+              return { ...conv, unreadedCount: 0 };
+            } else {
+              return conv;
+            }
+          });
+        }
       });
     } catch (error) {
       dispatch(
@@ -99,46 +67,25 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
     }
   }, [
     activeConversation,
-    setConversations,
+    data.messages,
+    queryClient,
     dispatch,
     socket,
-    messages,
     currentUser?._id,
   ]);
-
-  const handleAddMessage = useCallback(
-    (data: TypeFastSendPrivateMessage) => {
-      setMessages((prev) => [...prev, data.detail.message]);
-    },
-    [setMessages]
-  );
 
   const scrollToLastMessage = useCallback(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  useListenToSocketEvents({
-    eventsToListen: ["private-message", "conversation-readed", "user-updated"],
-    handlers: [
-      handleNewPrivateMessage,
-      handleConversationReaded,
-      handleUpdateUser,
-    ],
-    dependencies: [activeConversation],
-  });
-
-  useListenToDocumentEvent({
-    eventToListen: "fastSendPrivateMessage",
-    onUpdate: handleAddMessage,
-    dependencies: [activeConversation],
-  });
-
   useEffect(() => {
     scrollToLastMessage();
     markAsReaded();
-  }, [messages, activeConversation, markAsReaded, scrollToLastMessage]);
+  }, [activeConversation, markAsReaded, scrollToLastMessage]);
 
-  if (loading) {
+  if (!activeConversation) return;
+
+  if (status === "pending") {
     return (
       <div className="h-full flex items-center justify-center">
         <ImSpinner3 className="text-6xl sm:text-4xl animate-spin" />
@@ -149,19 +96,21 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
   if (error) {
     return (
       <div className="w-full h-full flex items-center justify-center font-bold text-lg text-[#b95b5b]">
-        {error}
+        {error.response?.data.error}
       </div>
     );
   }
 
   return (
     <div className="w-full flex flex-col items-center h-full gap-1 pb-2 bg-[#332342]">
-      <div className="flex items-center justify-evenly w-full bg-[#1f1f2e9a] border border-gray-700 py-1">
+      <div className="flex items-center justify-center w-full gap-10 bg-[#1f1f2e9a] border border-gray-700 py-1">
         <div className="flex items-center gap-3">
           <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-            <UserImage user={secondUser} />
+            <UserImage user={data.secondUser} />
           </div>
-          <span className="sm:text-sm text-[#3785fa]">{secondUser?.name}</span>
+          <span className="sm:text-sm text-[#3785fa]">
+            {data.secondUser?.name}
+          </span>
         </div>
         {onlineUsers.includes(activeConversation) ? (
           <span className="text-[13px] font-bold text-[#68e44a] tracking-wide">
@@ -175,10 +124,10 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
       </div>
 
       <div className="flex flex-col items-center w-full gap-2 sm:gap-[3px] overflow-auto scrollbar-none grow">
-        {messages.map((msg, index) => (
+        {data.messages.map((msg, index) => (
           <PrivateMessageItem
             key={msg._id}
-            messages={messages}
+            messagesLength={data.messages.length}
             message={msg}
             index={index}
             lastMessageRef={lastMessageRef}
@@ -186,11 +135,7 @@ const ChatBody = ({ activeConversation, setConversations }: TypeProps) => {
         ))}
       </div>
       <div className="w-full">
-        <SendMessagePrivateChat
-          id={activeConversation}
-          setMessages={setMessages}
-          setConversations={setConversations}
-        />
+        <SendMessagePrivateChat id={activeConversation} />
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import ResultText from "./ResultText";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import { MdOutlineWeb } from "react-icons/md";
-// import Image from "../Others/Image";
 
 const ResultElement = ({
   type,

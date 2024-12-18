@@ -6,45 +6,39 @@ import { BiTask } from "react-icons/bi";
 import { BsFillClockFill } from "react-icons/bs";
 import { useAppSelector } from "../context/Hooks";
 import { useEffect } from "react";
-import { makeRequest } from "../utils";
+import { fetchUserById, getUserActivities, userVisited } from "../utils";
 import UserImage from "../components/Others/UserImage";
 import ActivitiesList from "../components/PublicUserProfile/ActivitiesList";
 import { PublicUserProfileSkeleton } from "../components/PublicUserProfile/PublicUserProfileSkeleton";
-
-import {
-  useFetchActivities,
-  useFetchUser,
-  useListenToSocketEvents,
-} from "../hooks";
-import { User } from "../types/userTypes";
 import { verifiedImage } from "../assets";
 import { formateDate } from "../utils/common";
+import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
 
 const PublicUserProfile = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const { id } = useParams();
 
-  const { user, setUser, loading, error } = useFetchUser({
-    userId: id,
+  const {
+    data: user,
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["user", id],
+    queryFn: id ? () => fetchUserById(id) : skipToken,
+    staleTime: 10 * 60 * 1000,
   });
 
-  const { activities } = useFetchActivities({
-    userId: id,
+  const { data: activities = [] } = useQuery({
+    queryKey: ["user-activities", id],
+    queryFn: id ? () => getUserActivities(id) : skipToken,
+    staleTime: 10 * 60 * 1000,
   });
 
-  const handleUpdateUser = (updatedUser: User) => {
-    if (updatedUser._id === id) {
-      setUser(updatedUser);
-    }
-  };
-
-  useListenToSocketEvents({
-    eventsToListen: ["user-updated"],
-    handlers: [handleUpdateUser],
-    dependencies: [id],
+  const { mutate } = useMutation({
+    mutationFn: userVisited,
   });
 
-  const fitleredActivities = activities.filter(
+  const fitleredActivities = activities?.filter(
     (item) =>
       item.type === "BUY-FRAME" ||
       item.type === "MUSIC" ||
@@ -54,30 +48,25 @@ const PublicUserProfile = () => {
       item.type === "REFERRER"
   );
 
-  const numberOfCompletedTasks = activities.filter(
+  const numberOfCompletedTasks = activities?.filter(
     (item) =>
       item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED"
   ).length;
 
-  const numberOfReferredUser = activities.filter(
+  const numberOfReferredUser = activities?.filter(
     (item) => item.type === "REFERRER"
   ).length;
 
   useEffect(() => {
-    const handleVisit = async () => {
-      await makeRequest.patch(`/api/users/${id}/visited`, {
-        NOT_IMPORTANT: "NOT_IMPORTANT",
-      });
-    };
-    if (currentUser && id && !loading) {
-      handleVisit();
+    if (currentUser?._id && id && id != currentUser?._id) {
+      mutate(id);
     }
-  }, [id, currentUser, loading]);
+  }, [id, currentUser?._id, mutate]);
 
   if (error) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        {error}
+        {error.response?.data.error}
       </div>
     );
   }
@@ -86,7 +75,7 @@ const PublicUserProfile = () => {
     return <Navigate to={"/myprofile"} />;
   }
 
-  if (loading) {
+  if (status === "pending") {
     return <PublicUserProfileSkeleton />;
   }
 

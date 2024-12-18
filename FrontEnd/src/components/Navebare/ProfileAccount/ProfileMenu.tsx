@@ -15,13 +15,14 @@ interface ProfilTypeProp {
 }
 
 const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
-  const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
+  const hiddenLiveStats = useAppSelector(
+    (state) => state.stateManeger.hiddenLiveStats
+  );
   const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
   const handleLogOut = async () => {
     localStorage.setItem("token", "");
-    localStorage.setItem("active-converstaion", "");
     await signOut(auth);
     setOpenProfileMenu((previos) => !previos);
     window.location.href = `${window.location.origin}/?redirectedfrom=logout`;

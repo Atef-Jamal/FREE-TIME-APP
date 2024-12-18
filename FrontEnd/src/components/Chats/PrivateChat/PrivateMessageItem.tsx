@@ -11,26 +11,26 @@ import { TypePrivateMessage } from "../../../types/privateChatTypes";
 import { BiCircle } from "react-icons/bi";
 
 interface TypeProps {
-  messages: TypePrivateMessage[];
+  messagesLength: number;
   message: TypePrivateMessage;
   lastMessageRef: RefObject<HTMLDivElement | null>;
   index: number;
 }
 
 const PrivateMessageItem = ({
-  messages,
+  messagesLength,
   message,
   lastMessageRef,
   index,
 }: TypeProps) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const date = formateDate(message.createdAt);
   return (
     <div
       style={{
         direction: message.sender._id === currentUser?._id ? "rtl" : "ltr",
       }}
-      ref={messages.length - 1 === index ? lastMessageRef : null}
+      ref={messagesLength - 1 === index ? lastMessageRef : null}
       className="w-full relative p-2 lg:p-1 flex items-start justify-start gap-2 sm:gap-1 "
     >
       <div className="w-10 h-10 sm:w-6 sm:h-6 rounded-full">

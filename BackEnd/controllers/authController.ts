@@ -183,7 +183,7 @@ export const sendEmailVerificationCode = async (
     const user = await User.findById(currentUserId);
 
     if (!user) {
-      return res.status(404).json({ error: "server -user not found" });
+      return res.status(404).json({ error: "server - user not found" });
     }
 
     const isVerifiedBefore = user.emailVerified;

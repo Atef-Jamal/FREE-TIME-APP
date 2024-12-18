@@ -61,7 +61,9 @@ export const buySong = async (req: Request, res: Response) => {
     );
     io.emit("public-message", populatedMessage);
 
-    return res.status(200).json({ points: updatedUser.points, songId });
+    return res
+      .status(200)
+      .json({ points: updatedUser.points, musicId: songId });
   } catch (error) {
     return res.status(404).json({ error: "can't buy this Musics, try again" });
   }

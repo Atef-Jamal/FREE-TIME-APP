@@ -3,9 +3,10 @@ import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import ChatHeader from "../Common/ChatHeader";
 import PublicChat from "../Common/PublicChat";
 import { BsChatLeftText } from "react-icons/bs";
+import { memo } from "react";
 
-const DisktopChat = () => {
-  const { isChatOpen } = useAppSelector((state) => state.stateManeger);
+const DisktopChat = memo(() => {
+  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
   const dispatch = useAppDispatch();
 
   return (
@@ -23,6 +24,6 @@ const DisktopChat = () => {
       <PublicChat />
     </div>
   );
-};
+});
 
 export default DisktopChat;

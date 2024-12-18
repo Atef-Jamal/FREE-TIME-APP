@@ -13,7 +13,7 @@ interface TypeProps {
 }
 
 const QuizApp = ({ taskApp }: TypeProps) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [activeQuesition, setActiveQeustion] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [answers, setAnswers] = useState<string[]>([]);

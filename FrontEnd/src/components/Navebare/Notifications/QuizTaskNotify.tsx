@@ -15,7 +15,8 @@ import { TypeQuizAppNotify } from "../../../types/notificationTypes";
 type PropsType = Omit<TypeQuizAppNotify, "isRead" | "type">;
 
 const QuizTaskNotify = ({ _id, createdAt, prize, isCollected }: PropsType) => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();

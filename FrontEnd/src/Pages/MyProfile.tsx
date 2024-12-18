@@ -7,101 +7,36 @@ import {
 import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { RiFileCopyLine } from "react-icons/ri";
-
 import { FcOk } from "react-icons/fc";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
-import { openModel, setCurrentUser, showPopup } from "../context/StateManeger";
+import { openModel, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import ProfileSettings from "../components/myProfile/ProfileSettings";
-
-import MusicCard from "../components/Music/MusicCard";
 import UserImage from "../components/Others/UserImage";
-import { makeRequest } from "../utils";
-import { handleApiError } from "../utils/common";
 import Statistics from "../components/myProfile/Statistics";
 import WhoVisitProfile from "../components/myProfile/WhoVisitProfile";
-import { TypeFrame } from "../types/frameTypes";
-import { useFetchMusics } from "../hooks";
-import { useScrollToElement } from "../hooks/commonHooks";
-import Empty from "../components/Others/Empty";
 import { MdOutlineEventNote } from "react-icons/md";
 import { useSearchParams } from "react-router-dom";
 import { useCallback, useEffect } from "react";
+import MyFrames from "../components/myProfile/MyFrames";
+import MyMusics from "../components/myProfile/MyMusics";
 
 const MyProfile = () => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
-  const { musics } = useFetchMusics();
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [searchParams] = useSearchParams();
-  const queryParam = searchParams.get("to");
   const dispatch = useAppDispatch();
+  const queryParam = searchParams.get("to");
 
   const mathLevel: number = currentUser?.points
     ? currentUser.points / 100
     : 0 / 100;
-
   const level = Math.floor(mathLevel);
   let progress: number = 0;
-
   if (Number.isInteger(mathLevel)) {
     progress = mathLevel * 0;
   } else {
     progress = Number(mathLevel?.toString().slice(-1).concat("0"));
   }
-
-  useScrollToElement({ dependencies: [musics] });
-
-  const changeFrame = async (frameObject: TypeFrame) => {
-    if (!currentUser) {
-      return;
-    }
-    try {
-      const response = await makeRequest.get(
-        `api/users/select-myphoto-frame/${frameObject._id}`
-      );
-      dispatch(setCurrentUser({ ...currentUser, activeFrame: response.data }));
-      dispatch(
-        showPopup({
-          message: "Changed Successfully",
-          type: "SUCESS",
-        })
-      );
-      socket?.emit("user-updated", {
-        ...currentUser,
-        activeFrame: response.data,
-      });
-    } catch (error) {
-      dispatch(
-        showPopup({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        })
-      );
-    }
-  };
-
-  const unselectPhotoFrame = async () => {
-    if (!currentUser) {
-      return;
-    }
-    try {
-      await makeRequest.get("api/users/unselect-myphoto-frame");
-      dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));
-      dispatch(
-        showPopup({
-          message: "Removed Successfully",
-          type: "SUCESS",
-        })
-      );
-      socket?.emit("user-updated", { ...currentUser, activeFrame: null });
-    } catch (error) {
-      dispatch(
-        showPopup({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        })
-      );
-    }
-  };
 
   const copyReferralLink = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -238,73 +173,8 @@ const MyProfile = () => {
             points as a Reward
           </p>
         </div>
-        <div
-          id="my-frames"
-          className=" mt-5 flex flex-col gap-2 p-2 items-center justify-center bg-[#222339] rounded-md"
-        >
-          <span className="text-[#7dec73] font-bold">My Frames</span>
-          <div
-            className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2`}
-          >
-            {currentUser?.myFrames?.map((item: TypeFrame) => {
-              return (
-                <div
-                  key={item._id}
-                  id={item._id}
-                  className="flex flex-col items-center w-full justify-center gap-3 px-2 py-3 bg-[#5b667a42] rounded-md"
-                >
-                  <div className="relative w-full flex items-center justify-center">
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="w-[70%] lg:w-full h-[120px] sm:h-[90px] lg:h-[110px] rounded-md mb-3"
-                    />
-                    <span className="absolute bg-[#222339] top-[16%] lg:top-[18%] left-[29%] lg:left-[22%] w-[43%] lg:w-[55%] sm:w-[55%] lg:h-[52%] h-[59%]"></span>
-                  </div>
-                  {currentUser?.activeFrame?._id === item._id ? (
-                    <button
-                      onClick={unselectPhotoFrame}
-                      className="rounded-md font-bold bg-[#2d704ad8] w-[80%] xs:w-[95%] py-1 text-center mx-auto"
-                    >
-                      unselect
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => changeFrame(item)}
-                      className=" rounded-md font-bold bg-[#467cce71] w-[80%] xs:w-[95%]  py-1 text-center mx-auto"
-                    >
-                      select
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          {currentUser.myFrames.length === 0 && (
-            <Empty emptyText="No Frames Buyed" />
-          )}
-        </div>
-        <div
-          id="my-musics"
-          className=" w-full flex flex-col items-center gap-2 mt-5 bg-[#222339] p-2 rounded-md"
-        >
-          <h1 className="text-[#a0e965ee] font-bold text-center ">My Musics</h1>
-          <div className="w-full grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2">
-            {musics
-              ?.filter((item) => {
-                if (currentUser?.mySongs?.includes(item.id.toString())) {
-                  return item;
-                }
-              })
-              .map((element) => (
-                <MusicCard key={element.id} songDetails={element} />
-              ))}
-          </div>
-          {currentUser?.mySongs?.length === 0 && (
-            <Empty emptyText="No Musics Buyed" />
-          )}
-        </div>
-
+        <MyFrames />
+        <MyMusics />
         <div className="flex items-center gap-5 mt-7 sm:gap-2 sm:max-w-[95%] sm:mx-auto sm:overflow-scroll sm:scrollbar-none ">
           <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">
             Tiers

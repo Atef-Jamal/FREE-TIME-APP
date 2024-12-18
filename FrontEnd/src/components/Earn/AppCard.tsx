@@ -13,9 +13,11 @@ interface TypeAppCard {
 }
 
 const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
-  const { currentUser, currentUserIsLoading } = useAppSelector(
-    (state) => state.stateManeger
+  const currentUserIsLoading = useAppSelector(
+    (state) => state.stateManeger.currentUserIsLoading
   );
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+
   const { t } = useTranslation("earn");
   const { _id, description, image, prize, title, isAvailable, devices } =
     taskDetail;

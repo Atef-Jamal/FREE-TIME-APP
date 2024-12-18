@@ -11,29 +11,24 @@ import { MdSend } from "react-icons/md";
 import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
-import { makeRequest } from "../../../../utils";
+import { sendPublicChatMessage } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
 import { TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { User } from "../../../../types/userTypes";
 import { v4 as uuId } from "uuid";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface typeProps {
   stopScrolling: boolean;
   setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessages: React.Dispatch<React.SetStateAction<TypePublicChatItem[]>>;
 }
 
-const SendMessage = ({
-  stopScrolling,
-  setStopScrolling,
-  setMessages,
-}: typeProps) => {
-  const { currentUser, socket, onlineUsers } = useAppSelector(
-    (state) => state.stateManeger
-  );
-  const [loading, setLoading] = useState<boolean>(false);
+const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
@@ -41,31 +36,14 @@ const SendMessage = ({
   const timeOutRef = useRef<NodeJS.Timeout>(undefined);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-  const handleSendMessage = async (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!currentUser) return;
-    if (message.trim() === "") {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: "Enter a Message",
-        })
-      );
-      return;
-    }
-    if (somoneTyping) {
-      setSomeOneTyping(false);
-      socket?.emit("stop-typing-public-message");
-    }
-    setLoading(true);
-    if (stopScrolling) {
-      setStopScrolling(false);
-    }
-    const uniqeIdForRollback = uuId();
-
-    const customEvent = new CustomEvent("fastSendPublicMessage", {
-      detail: {
+  const mutation = useMutation({
+    mutationFn: sendPublicChatMessage,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["public-chat-messages"] });
+      const uniqeIdForRollback = uuId();
+      const optimisticMsg = {
         _id: uniqeIdForRollback,
         sender: currentUser,
         type: "MESSAGE",
@@ -78,52 +56,82 @@ const SendMessage = ({
         createdAt: new Date().toLocaleString("en-US"),
         updatedAt: new Date().toLocaleString("en-US"),
         isSended: "PENDING",
-      },
-    });
-    document.dispatchEvent(customEvent);
-    setMessage("");
-    inputRef.current?.focus();
-    inputRef.current!.style.height = "auto";
-    try {
-      const response = await makeRequest.post("api/publicchat", {
-        type: "MESSAGE",
-        messageText: message,
-        mentioned: user?._id,
-      });
+      };
 
-      setMessages((prev) => {
-        return prev.map((item) => {
-          if (item._id === uniqeIdForRollback) {
-            return { ...response.data, isSended: "SUCCESS" };
+      queryClient.setQueryData(
+        ["public-chat-messages"],
+        (previous: TypePublicChatItem[]) => {
+          return [...previous, optimisticMsg];
+        }
+      );
+      setMessage("");
+      inputRef.current?.focus();
+      inputRef.current!.style.height = "auto";
+      return { uniqeIdForRollback };
+    },
+    onSuccess: (data, _, context) => {
+      queryClient.setQueryData(
+        ["public-chat-messages"],
+        (old: TypePublicChatItem[]) => {
+          if (old) {
+            return old.map((msg) => {
+              if (msg._id === context.uniqeIdForRollback) {
+                return { ...data, isSended: "SUCCESS" };
+              } else {
+                return msg;
+              }
+            });
           }
-          return item;
-        });
-      });
+        }
+      );
 
-      socket?.emit("public-message", response.data);
+      socket?.emit("public-message", data);
       if (user) {
         setUser(null);
       }
-    } catch (error) {
-      setMessages((prev) => {
-        return prev.map((item) => {
-          if (item.type === "MESSAGE" && item._id === uniqeIdForRollback) {
-            item.isSended = "FAILED";
-            return item;
-          } else {
-            return item;
+    },
+    onError: (error, _, context) => {
+      if (context) {
+        queryClient.setQueryData(
+          ["public-chat-messages"],
+          (old: TypePublicChatItem[]) => {
+            if (old) {
+              return old.map((msg) => {
+                if (msg._id === context.uniqeIdForRollback) {
+                  return { ...msg, isSended: "FAILED" };
+                } else {
+                  return msg;
+                }
+              });
+            }
           }
-        });
-      });
+        );
+      }
+
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
       );
-    } finally {
-      setLoading(false);
+    },
+  });
+
+  const sendMessageHandler = (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!currentUser) return;
+    if (message.trim() === "") {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: "Enter a Message",
+        })
+      );
+      return;
     }
+    if (stopScrolling) setStopScrolling(false);
+
+    mutation.mutate({ message, mentionedUserId: user?._id });
   };
 
   const handleInputChange = useCallback(
@@ -252,8 +260,8 @@ const SendMessage = ({
         <button
           type="submit"
           className="bg-[#217ebbf3] rounded-md w-12 h-10 flex items-center justify-center"
-          onClick={handleSendMessage}
-          disabled={!currentUser || loading}
+          onClick={sendMessageHandler}
+          disabled={!currentUser || mutation.isPending}
         >
           <MdSend />
         </button>

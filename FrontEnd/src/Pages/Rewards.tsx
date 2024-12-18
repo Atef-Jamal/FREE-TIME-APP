@@ -5,7 +5,6 @@ import { showPopup } from "../context/StateManeger";
 import { BiCopy } from "react-icons/bi";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
-
 import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
@@ -15,8 +14,7 @@ import { useScrollToElement } from "../hooks/commonHooks";
 import { useTranslation } from "react-i18next";
 
 const Rewards = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
-
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
   const { t } = useTranslation("rewards");

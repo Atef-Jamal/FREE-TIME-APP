@@ -1,36 +1,32 @@
 import { IoMdSend } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import {
-  useState,
-  useRef,
-  SetStateAction,
-  ChangeEvent,
-  FormEvent,
-} from "react";
+import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { showPopup } from "../../../context/StateManeger";
-import { makeRequest } from "../../../utils";
+import { sendPrivateChatMessage } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
+import { v4 as uuId } from "uuid";
 
 import {
   TypeConversation,
   TypePrivateMessage,
 } from "../../../types/privateChatTypes";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { User } from "../../../types/userTypes";
 
 interface TypeProps {
   id: string;
-  setConversations: React.Dispatch<SetStateAction<TypeConversation[]>>;
-  setMessages: React.Dispatch<SetStateAction<TypePrivateMessage[]>>;
 }
-
-const SendMessagePrivateChat = ({
-  id,
-  setMessages,
-  setConversations,
-}: TypeProps) => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
+export interface TypeCashedChat {
+  secondUser: User;
+  messages: TypePrivateMessage[];
+}
+const SendMessagePrivateChat = ({ id }: TypeProps) => {
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [message, setMessage] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const contentText = event.target;
@@ -41,9 +37,96 @@ const SendMessagePrivateChat = ({
     setMessage(contentText.value);
   };
 
-  const sendMessage = async (event: FormEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const mutation = useMutation({
+    mutationFn: sendPrivateChatMessage,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["private-messages", id] });
+      const uniqeIdForRollback = uuId();
+      const optimisticMsg = {
+        _id: uniqeIdForRollback,
+        sender: currentUser,
+        message,
+        createdAt: new Date().toLocaleString("en-US"),
+        updatedAt: new Date().toLocaleString("en-US"),
+        isRead: false,
+        isSended: "PENDING",
+      };
 
+      queryClient.setQueryData(
+        ["private-messages", id],
+        (previous: TypeCashedChat) => {
+          return {
+            ...previous,
+            messages: [...previous.messages, optimisticMsg],
+          };
+        }
+      );
+      setMessage("");
+      inputRef.current?.focus();
+      inputRef.current!.style.height = "auto";
+      return { uniqeIdForRollback };
+    },
+    onSuccess: (data, _, context) => {
+      queryClient.setQueryData(
+        ["private-messages", id],
+        (old: TypeCashedChat) => {
+          if (old) {
+            return {
+              ...old,
+              messages: old.messages.map((msg) => {
+                if (msg._id === context.uniqeIdForRollback) {
+                  return { ...data, isSended: "SUCCESS" };
+                } else {
+                  return msg;
+                }
+              }),
+            };
+          }
+        }
+      );
+      queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
+        if (old) {
+          return old.map((conv) => {
+            if (conv.secondParty._id === id) {
+              return { ...conv, lastMessage: data };
+            } else {
+              return conv;
+            }
+          });
+        }
+      });
+      socket?.emit("private-message", { to: id, data: data });
+    },
+    onError: (error, _, context) => {
+      if (context)
+        queryClient.setQueryData(
+          ["private-messages", id],
+          (old: TypeCashedChat) => {
+            if (old) {
+              return {
+                ...old,
+                messages: old.messages.map((msg) => {
+                  if (msg._id === context.uniqeIdForRollback) {
+                    return { ...msg, isSended: "FAILED" };
+                  } else {
+                    return msg;
+                  }
+                }),
+              };
+            }
+          }
+        );
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    },
+  });
+
+  const sendPrivateMessageHandler = (event: FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     if (message.trim() === "") {
       dispatch(
         showPopup({
@@ -53,70 +136,7 @@ const SendMessagePrivateChat = ({
       );
       return;
     }
-
-    const uniqeIdForRollback = (
-      Math.random() * 1000000 +
-      Date.now() +
-      Date.now()
-    ).toString();
-    const msg = {
-      _id: uniqeIdForRollback,
-      sender: currentUser,
-      message,
-      createdAt: new Date().toLocaleString("en-US"),
-      updatedAt: new Date().toLocaleString("en-US"),
-      isRead: false,
-      isSended: "PENDING",
-    };
-    const customEvent = new CustomEvent("fastSendPrivateMessage", {
-      detail: { message: msg, recieverId: id },
-    });
-    document.dispatchEvent(customEvent);
-    setMessage("");
-    inputRef.current?.focus();
-    inputRef.current!.style.height = "auto";
-    try {
-      const response = await makeRequest.post(`api/conversations/${id}`, {
-        messageText: message,
-      });
-      setMessages((prev) => {
-        return prev
-          .filter((item) => item._id !== uniqeIdForRollback)
-          .concat([{ ...response.data, isSended: "SUCCESS" }]);
-      });
-      setConversations((prev) => {
-        return prev
-          .map((conv) => {
-            if (conv.secondParty._id === id) {
-              return { ...conv, lastMessage: response.data };
-            } else {
-              return conv;
-            }
-          })
-          .sort((a) => {
-            if (a.secondParty._id === id) return -1;
-            return 1;
-          });
-      });
-
-      socket?.emit("private-message", { to: id, data: response.data });
-    } catch (error) {
-      setMessages((prev) => {
-        return prev.map((item) => {
-          if (item._id === uniqeIdForRollback) {
-            item.isSended = "FAILED";
-            return item;
-          }
-          return item;
-        });
-      });
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    }
+    mutation.mutate({ secondUserId: id, message });
   };
 
   return (
@@ -132,7 +152,7 @@ const SendMessagePrivateChat = ({
       />
       <button
         className="bg-[#3c3b72] rounded-md flex items-center justify-center py-2 sm:px-3 px-5"
-        onClick={sendMessage}
+        onClick={sendPrivateMessageHandler}
       >
         <IoMdSend className="text-2xl sm:text-[22px]" />
       </button>

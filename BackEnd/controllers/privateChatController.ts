@@ -10,15 +10,22 @@ export const getConversationMessages = async (req: Request, res: Response) => {
       participants: { $all: [currentUserId, seconduserid] },
     });
 
+    const getSecondUser = await User.findById(seconduserid).select("-password");
+
+    if (!getSecondUser) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
     if (!getConversation) {
-      return res.status(200).json([]);
+      return res.status(200).json({ messages: [], secondUser: getSecondUser });
     }
 
     const conversation = await getConversation.populate(
       "messages.sender",
       "-password"
     );
-    return res.status(200).json(conversation.messages);
+    return res
+      .status(200)
+      .json({ messages: conversation.messages, secondUser: getSecondUser });
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }
@@ -62,7 +69,7 @@ export const getRecentMessage = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const { seconduserid } = req.params;
   try {
-    let conversation = await Conversation.findOne({
+    const conversation = await Conversation.findOne({
       participants: { $all: [currentUserId, seconduserid] },
     }).select("lastMessage");
 
@@ -80,7 +87,7 @@ export const getUnReadedMsgsCount = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const { seconduserid } = req.params;
   try {
-    let conversation = await Conversation.findOne({
+    const conversation = await Conversation.findOne({
       participants: { $all: [currentUserId, seconduserid] },
     }).select("messages");
 
@@ -133,7 +140,7 @@ export const markAsReaded = async (req: Request, res: Response) => {
   const currentUserId = req.user._id;
   const { seconduserid } = req.params;
   try {
-    let conversation = await Conversation.findOne({
+    const conversation = await Conversation.findOne({
       participants: { $all: [currentUserId, seconduserid] },
     });
 

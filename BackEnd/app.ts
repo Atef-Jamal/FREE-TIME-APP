@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
@@ -34,6 +34,12 @@ socketOperations(io);
 
 app.use(routes);
 app.use("/uploads", express.static(path.join("uploads")));
+
+app.use((_: Request, res: Response) => {
+  res.status(500).json({
+    error: "Internal server error",
+  });
+});
 
 server.listen(process.env.PORT, () => {
   console.log(`success server Running on port: ${process.env.PORT}`);

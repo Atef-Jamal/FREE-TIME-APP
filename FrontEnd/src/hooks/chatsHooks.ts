@@ -45,7 +45,7 @@ export const useFetchPrivateChatMessages = ({
 }: {
   secondUserId: string | undefined;
 }) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [messages, setMessages] = useState<TypePrivateMessage[]>([]);
   const [secondUser, setSecondUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

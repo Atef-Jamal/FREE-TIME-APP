@@ -39,6 +39,7 @@ export interface TypeInitialState {
   onlineUsers: string[];
   reFetchThisUserId: string;
   allUnReadedMesseges: string[];
+  activeConversation: string | null;
   model: { status: boolean; children: React.ReactNode };
   publicMsgRedPoint: boolean;
 }

@@ -20,8 +20,9 @@ import { useListenToSocketEvents } from "../../../hooks";
 import { FaPlus } from "react-icons/fa6";
 
 const ProfileActions = () => {
-  const { currentUser, openNotification } = useAppSelector(
-    (state) => state.stateManeger
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const openNotification = useAppSelector(
+    (state) => state.stateManeger.openNotification
   );
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [notifications, setNotifications] = useState<TypeNotifications[]>([]);

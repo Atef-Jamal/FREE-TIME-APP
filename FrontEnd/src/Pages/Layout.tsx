@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { showPopup, toggleThisEntity } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
@@ -11,20 +11,30 @@ import LiveStats from "../components/LiveStats/LiveStats";
 import NavebareBottom from "../components/Navebare/NavebareBottom";
 import ToastNotify from "../components/Others/ToastNotify";
 import MusicPlayer from "../components/Music/MusicPlayer";
+import { useQueryClient } from "@tanstack/react-query";
+import { useListenToSocketEvents } from "../hooks";
+import { User } from "../types/userTypes";
 
 const Layout = () => {
-  const {
-    currentUser,
-    currentAccountRequestFullfiled,
-    model,
-    openMusicModal,
-    hiddenLiveStats,
-    isChatOpen,
-    resizeSidebare,
-  } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentAccountRequestFullfiled = useAppSelector(
+    (state) => state.stateManeger.currentAccountRequestFullfiled
+  );
+  const model = useAppSelector((state) => state.stateManeger.model);
+  const openMusicModal = useAppSelector(
+    (state) => state.stateManeger.openMusicModal
+  );
+  const hiddenLiveStats = useAppSelector(
+    (state) => state.stateManeger.hiddenLiveStats
+  );
+  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
+  const resizeSidebare = useAppSelector(
+    (state) => state.stateManeger.resizeSidebare
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
+  const queryClient = useQueryClient();
 
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -91,6 +101,19 @@ const Layout = () => {
     }
   }, [openSidbareMobile]);
 
+  const handleRevalidateUser = (updatedUser: User) => {
+    queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
+  };
+
+  const handleCloseMobileSidebare = useCallback((open: boolean) => {
+    setOpenSidbareMobile(open);
+  }, []);
+
+  useListenToSocketEvents({
+    eventsToListen: ["user-updated"],
+    handlers: [handleRevalidateUser],
+  });
+
   return (
     <div className="w-full">
       {model.status && <Model children={model.children} />}
@@ -110,9 +133,7 @@ const Layout = () => {
         className="flex"
       >
         <div
-          onClick={() => {
-            if (openSidbareMobile) setOpenSidbareMobile(false);
-          }}
+          onClick={() => handleCloseMobileSidebare(false)}
           className={`transition-all ${
             resizeSidebare ? "min-w-[80px] " : "min-w-[250px]"
           } ${
@@ -123,7 +144,7 @@ const Layout = () => {
             onClick={(e) => e.stopPropagation()}
             className="sm:w-[250px] bg-[#29293a] h-full p-2 border-r border-[#f8cdcd36]"
           >
-            <Sidebar setOpenSidbareMobile={setOpenSidbareMobile} />
+            <Sidebar handleCloseMobileSidebare={handleCloseMobileSidebare} />
           </div>
         </div>
         <div
@@ -131,13 +152,13 @@ const Layout = () => {
             resizeSidebare ? "w-[90%]" : "w-[70%]"
           } sm:w-full flex flex-col flex-1 relative bg-[#202338]`}
         >
-          <div
-            className={`${
-              hiddenLiveStats && "hidden"
-            } border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[4] `}
-          >
-            <LiveStats />
-          </div>
+          {!hiddenLiveStats && (
+            <div
+              className={`border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[4] `}
+            >
+              <LiveStats />
+            </div>
+          )}
           <div className="min-h-[70dvh]">
             <Outlet />
           </div>

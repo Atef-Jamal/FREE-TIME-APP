@@ -40,6 +40,13 @@ export interface TypeQuizApp {
 
 export type TypeTaskApp = TypeQuizApp | TypeGameApp;
 
+export interface TypeReview {
+  _id: string;
+  appId: string;
+  user: User;
+  comment: string;
+}
+
 export type TypeFilterQuery =
   | "DESKTOP"
   | "ANDROID"

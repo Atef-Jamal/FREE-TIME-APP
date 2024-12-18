@@ -10,9 +10,8 @@ import ProtectedPage from "./components/Others/ProtectedPage";
 import PageNotFound from "./components/Errors/PageNotFound";
 import AppError from "./components/Errors/AppError";
 import { useAppDispatch, useAppSelector } from "./context/Hooks";
-import { useTranslation } from "react-i18next";
+import LayoutWrapper from "./Pages/LayoutWrapper";
 
-const Layout = lazy(() => import("./Pages/Layout"));
 const Home = lazy(() => import("./Pages/Home"));
 const Earn = lazy(() => import("./Pages/Earn"));
 const Affiliates = lazy(() => import("./Pages/Affiliates"));
@@ -30,7 +29,7 @@ const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <Layout />,
+      element: <LayoutWrapper />,
       errorElement: <AppError />,
       children: [
         {
@@ -170,14 +169,8 @@ const router = createBrowserRouter(
 );
 
 const App = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const dispatch = useAppDispatch();
-  const { i18n } = useTranslation();
-
-  const example = false;
-  if (example) {
-    console.log(i18n);
-  }
 
   const handleUpdateOnlineUsers = (data: string[]) => {
     const filtered = data.filter((userId) => userId !== "undefined");

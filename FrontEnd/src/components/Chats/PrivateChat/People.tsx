@@ -1,21 +1,18 @@
 import UserImage from "../../Others/UserImage";
 import { formateDate } from "../../../utils/common";
-import { useAppSelector } from "../../../context/Hooks";
-import { SetStateAction } from "react";
+import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeConversation } from "../../../types/privateChatTypes";
+import { setActiveConversation } from "../../../context/StateManeger";
 
 interface TypeProps {
   convInfo: TypeConversation;
-  activeConversation: string | null;
-  setActiveConversation: React.Dispatch<SetStateAction<string | null>>;
 }
-const People = ({
-  convInfo,
-  activeConversation,
-  setActiveConversation,
-}: TypeProps) => {
-  const { onlineUsers } = useAppSelector((state) => state.stateManeger);
-
+const People = ({ convInfo }: TypeProps) => {
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const activeConversation = useAppSelector(
+    (state) => state.stateManeger.activeConversation
+  );
+  const dispatch = useAppDispatch();
   let date = "";
   if (convInfo.lastMessage) {
     date = formateDate(convInfo.lastMessage.createdAt);
@@ -24,7 +21,7 @@ const People = ({
   return (
     <div
       onClick={() => {
-        setActiveConversation(convInfo.secondParty._id);
+        dispatch(setActiveConversation(convInfo.secondParty._id));
         localStorage.setItem("active-converstaion", convInfo.secondParty._id);
       }}
       className={`relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1 ${

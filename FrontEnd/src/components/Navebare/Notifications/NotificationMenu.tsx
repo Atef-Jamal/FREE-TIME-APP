@@ -27,7 +27,7 @@ const NotificationMenu = ({
   loadingNotifications: boolean;
   setNotifications: React.Dispatch<React.SetStateAction<TypeNotifications[]>>;
 }) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const dispatch = useAppDispatch();
 
   const markNotificationasRead = useCallback(async () => {

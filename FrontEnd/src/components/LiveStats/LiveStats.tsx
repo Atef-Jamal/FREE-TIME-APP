@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, verifiedImage } from "../../assets";
@@ -8,19 +8,30 @@ import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
-import { useFetchAllUsers, useListenToSocketEvents } from "../../hooks";
+import { useListenToSocketEvents } from "../../hooks";
 import LangMenu from "./LangMenu";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUsers } from "../../utils";
 
-const LiveStats = () => {
-  const { currentUser, onlineUsers } = useAppSelector(
-    (state) => state.stateManeger
-  );
-  const { users, setUsers, loading, error } = useFetchAllUsers();
+const LiveStats = memo(() => {
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [sortedUsers, setSortedUsers] = useState<User[]>([]);
   const [userHieghestPoints, setUserHieghestPoints] = useState<string | null>(
     null
   );
   const [openLangMenu, setOpenLangMenu] = useState(false);
+  const queryClient = useQueryClient();
+
+  const {
+    data: users = [],
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+    staleTime: 60 * 60 * 1000,
+  });
 
   const sorted = useCallback(() => {
     return [...users].sort((a, b) => {
@@ -43,22 +54,30 @@ const LiveStats = () => {
     });
   }, [onlineUsers, users]);
 
-  const handleAddUser = (newUser: User) => {
-    setUsers((prev) => [...prev, newUser]);
-  };
-
-  const handlUpdateUser = (updatedUser: User) => {
-    setUsers((prevUsers) => {
-      const newArr = prevUsers.map((userItem) => {
-        if (userItem._id === updatedUser._id) {
-          return updatedUser;
-        } else {
-          return userItem;
-        }
+  const handleAddUser = useCallback(
+    (newUser: User) => {
+      queryClient.setQueryData(["users"], (previous: User[]) => {
+        return [...previous, newUser];
       });
-      return newArr;
-    });
-  };
+    },
+    [queryClient]
+  );
+
+  const handlUpdateUser = useCallback(
+    (updatedUser: User) => {
+      queryClient.setQueryData(["users"], (previousUsers: User[]) => {
+        if (!previousUsers) return;
+        return previousUsers.map((userItem) => {
+          if (userItem._id === updatedUser._id) {
+            return updatedUser;
+          } else {
+            return userItem;
+          }
+        });
+      });
+    },
+    [queryClient]
+  );
 
   useListenToSocketEvents({
     eventsToListen: ["new-user-joined", "user-updated"],
@@ -77,15 +96,16 @@ const LiveStats = () => {
 
   useEffect(() => {
     if (!currentUser) return;
-    setUsers((prev) =>
-      prev.map((user) => {
+    queryClient.setQueryData(["users"], (previousUsers: User[]) => {
+      if (!previousUsers) return;
+      return previousUsers.map((user) => {
         if (user._id === currentUser._id) {
           return currentUser;
         }
         return user;
-      })
-    );
-  }, [currentUser, setUsers]);
+      });
+    });
+  }, [currentUser, queryClient]);
 
   return (
     <div className={`flex w-full`}>
@@ -98,16 +118,18 @@ const LiveStats = () => {
         {openLangMenu && <LangMenu setOpenLangMenu={setOpenLangMenu} />}
       </div>
       <div className=" flex items-center gap-2 xs:gap-[6px] overflow-scroll scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
-        {loading && <LiveStatsSkeleton />}
+        {status === "pending" && <LiveStatsSkeleton />}
 
         {error && (
           <div className="xs:text-xs tracking-wide font-bold text-red-400 w-full flex items-center justify-center gap-3 py-1">
             <FaExclamationCircle className="text-lg" />
-            somthing went wrong
+            {error.message === "Network Error"
+              ? "Network Error"
+              : error.response?.data.error}
           </div>
         )}
 
-        {!error &&
+        {status === "success" &&
           sortedUsers.map((user) => {
             const { _id, name, points, emailVerified } = user;
             const isOnline = onlineUsers.includes(_id);
@@ -159,6 +181,6 @@ const LiveStats = () => {
       </div>
     </div>
   );
-};
+});
 
 export default LiveStats;

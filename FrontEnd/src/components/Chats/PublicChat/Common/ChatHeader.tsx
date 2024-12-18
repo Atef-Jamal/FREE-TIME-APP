@@ -5,7 +5,7 @@ import { MdHeadphones } from "react-icons/md";
 import { useAppSelector } from "../../../../context/Hooks";
 
 const ChatHeader = () => {
-  const { onlineUsers } = useAppSelector((state) => state.stateManeger);
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [select, setSelect] = useState<boolean>(false);
   return (
     <div className="flex items-center justify-evenly w-full h-[60px] bg-[#1b1d29] ">

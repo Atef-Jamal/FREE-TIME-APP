@@ -8,6 +8,8 @@ import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { useListenToSocketEvents } from "../../hooks";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
+import { useQueryClient } from "@tanstack/react-query";
+import { TypePublicChatItem } from "../../types/publicChatTypes";
 
 const NavebareBottom = ({
   setOpenSidbareMobile,
@@ -20,7 +22,11 @@ const NavebareBottom = ({
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
   openSidbareMobile: boolean;
 }) => {
-  const { publicMsgRedPoint } = useAppSelector((state) => state.stateManeger);
+  const publicMsgRedPoint = useAppSelector(
+    (state) => state.stateManeger.publicMsgRedPoint
+  );
+  const queryClient = useQueryClient();
+
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
   const dispatch = useAppDispatch();
 
@@ -35,10 +41,16 @@ const NavebareBottom = ({
     handlers: [handleAddNewPrivateMessage],
   });
 
-  const handleNotify = () => {
+  const handleNotify = (newMessage: TypePublicChatItem) => {
     if (location.pathname !== "/chat") {
       dispatch(setPublicMsgRedPoint(true));
     }
+    queryClient.setQueryData(
+      ["public-chat-messages"],
+      (previous: TypePublicChatItem[]) => {
+        return [...previous, newMessage];
+      }
+    );
   };
 
   useListenToSocketEvents({

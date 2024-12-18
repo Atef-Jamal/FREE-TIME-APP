@@ -2,22 +2,29 @@ import { Link } from "react-router-dom";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
 import DailyStreakRewardCard from "./DailyStreakRewardCard";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { makeRequest } from "../../utils";
+import { showPopup } from "../../context/StateManeger";
 
 const DailyReward = () => {
-  const { currentUser, currentAccountRequestFullfiled, resizeSidebare } =
-    useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentAccountRequestFullfiled = useAppSelector(
+    (state) => state.stateManeger.currentAccountRequestFullfiled
+  );
+  const resizeSidebare = useAppSelector(
+    (state) => state.stateManeger.resizeSidebare
+  );
 
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<
     string | null
   >(null);
   const [today, setToday] = useState("");
+  const dispatch = useAppDispatch();
   const { t } = useTranslation("rewards");
 
   useEffect(() => {
@@ -52,12 +59,13 @@ const DailyReward = () => {
         const response = await makeRequest.get("api/date");
         setToday(response.data);
       } catch (error) {
-        console.log(error);
-        console.log("fail to get date");
+        dispatch(
+          showPopup({ message: "an error occured!", type: "ERROR_GENERAL" })
+        );
       }
     };
     getDate();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col gap-4 w-full">

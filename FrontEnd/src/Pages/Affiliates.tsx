@@ -7,7 +7,7 @@ import {
 import { useAppSelector } from "../context/Hooks";
 
 const Affiliates = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   return (
     <div className="flex flex-col bg-[#141523]">
       <div className="affiliate__background__left flex flex-col gap-5 w-[80%] lg:w-[90%] sm:w-[90%] mx-auto items-center justify-center py-8">

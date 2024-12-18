@@ -1,3 +1,13 @@
+import "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { User } from "./userTypes";
+
+declare module "@tanstack/react-query" {
+  interface Register {
+    defaultError: AxiosError<{ error: string }>;
+  }
+}
+
 export interface TypeFormData {
   name: string;
   email: string;
@@ -25,6 +35,14 @@ export interface TypeSearchResults {
 export interface TypeConversationSocketData {
   reciever: string;
   sender: string;
+}
+
+export interface TypeTestimonial {
+  _id: string;
+  user: User;
+  content: string;
+  stars: number;
+  createdAt: Date;
 }
 
 export interface TypeMusicDetail {

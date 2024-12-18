@@ -4,7 +4,9 @@ import PublicChat from "../Common/PublicChat";
 import { setPublicMsgRedPoint } from "../../../../context/StateManeger";
 
 const MobileChat = () => {
-  const { hiddenLiveStats } = useAppSelector((state) => state.stateManeger);
+  const hiddenLiveStats = useAppSelector(
+    (state) => state.stateManeger.hiddenLiveStats
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {

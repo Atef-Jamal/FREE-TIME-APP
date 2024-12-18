@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import {
   setCurrentUser,
   setCurrentAccountRequestFullfiled,
@@ -19,13 +19,17 @@ import SearchBar from "../Search/SearchBar";
 import { BiSearch } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 
-const Navbare = () => {
-  const {
-    currentUser,
-    currentUserIsLoading,
-    currentAccountRequestFullfiled,
-    openRegisterForm,
-  } = useAppSelector((state) => state.stateManeger);
+const Navbare = memo(() => {
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserIsLoading = useAppSelector(
+    (state) => state.stateManeger.currentUserIsLoading
+  );
+  const currentAccountRequestFullfiled = useAppSelector(
+    (state) => state.stateManeger.currentAccountRequestFullfiled
+  );
+  const openRegisterForm = useAppSelector(
+    (state) => state.stateManeger.openRegisterForm
+  );
   const { t } = useTranslation("navbar");
 
   const dispatch = useAppDispatch();
@@ -97,6 +101,6 @@ const Navbare = () => {
       {currentUser && <ProfileActions />}
     </div>
   );
-};
+});
 
 export default Navbare;

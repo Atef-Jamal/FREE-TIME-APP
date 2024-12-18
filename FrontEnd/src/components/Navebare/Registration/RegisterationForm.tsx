@@ -22,8 +22,10 @@ const initialValue = {
 };
 
 const RegisterationForm = () => {
-  const { currentUser, isSignInMode, socket } = useAppSelector(
-    (state) => state.stateManeger
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const isSignInMode = useAppSelector(
+    (state) => state.stateManeger.isSignInMode
   );
   const [formData, setFormData] = useState<TypeFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);

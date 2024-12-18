@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { resetPopup } from "../../context/StateManeger";
 import { BiErrorAlt } from "react-icons/bi";
@@ -6,8 +6,8 @@ import { IoLockClosed } from "react-icons/io5";
 import Spinner from "./Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 
-const ToastNotify = () => {
-  const { ToastNotify } = useAppSelector((state) => state.stateManeger);
+const ToastNotify = memo(() => {
+  const ToastNotify = useAppSelector((state) => state.stateManeger.ToastNotify);
   const { type, message } = ToastNotify;
   const dispatch = useAppDispatch();
 
@@ -42,6 +42,6 @@ const ToastNotify = () => {
       </p>
     </div>
   );
-};
+});
 
 export default ToastNotify;

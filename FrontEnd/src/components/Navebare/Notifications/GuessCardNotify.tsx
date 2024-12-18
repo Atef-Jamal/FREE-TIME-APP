@@ -13,7 +13,8 @@ import { TypeGuessCardNotify } from "../../../types/notificationTypes";
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
 
 const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
-  const { currentUser, socket } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();

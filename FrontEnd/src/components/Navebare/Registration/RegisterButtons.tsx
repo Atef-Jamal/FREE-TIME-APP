@@ -5,7 +5,9 @@ import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useTranslation } from "react-i18next";
 
 const RegisterButtons = () => {
-  const { isSignInMode } = useAppSelector((state) => state.stateManeger);
+  const isSignInMode = useAppSelector(
+    (state) => state.stateManeger.isSignInMode
+  );
   const dispatch = useAppDispatch();
   const { t } = useTranslation("navbar");
   return (

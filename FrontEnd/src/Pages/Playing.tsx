@@ -5,27 +5,31 @@ import GuessCardApp from "../components/Tasks/GuessCardApp";
 import QuizApp from "../components/Tasks/QuizApp";
 import Spinner from "../components/Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
-import { useFetchTaskApp, useFetchUser } from "../hooks";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import { fetchAppDetails, fetchUserById } from "../utils";
 
 const Playing = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const { id } = useParams();
 
   const {
-    user,
-    loading: loadingUser,
+    data: user,
+    status: userStatus,
     error: errorUser,
-  } = useFetchUser({
-    userId: currentUser?._id,
+  } = useQuery({
+    queryKey: ["user", currentUser?._id],
+    queryFn: currentUser?._id
+      ? () => fetchUserById(currentUser._id)
+      : skipToken,
   });
 
   const {
-    taskApp,
-    loading: loadingTaskApp,
+    data: taskApp,
+    status: statusTaskApp,
     error: errorTaskApp,
-  } = useFetchTaskApp({
-    appId: id,
-    initialLoading: true,
+  } = useQuery({
+    queryKey: ["task", id],
+    queryFn: id ? () => fetchAppDetails(id) : skipToken,
   });
 
   let isCompletedBefore: boolean = false;
@@ -36,7 +40,7 @@ const Playing = () => {
     }
   }
 
-  if (loadingUser || loadingTaskApp) {
+  if (userStatus === "pending" || statusTaskApp === "pending") {
     return (
       <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
         <Spinner className="w-20 h-20" />
@@ -69,7 +73,7 @@ const Playing = () => {
     return (
       <div className="flex items-center justify-center gap-3 h-full min-h-[800px] sm:min-h-[490px] opacity-70 font-bold px-8 text-center">
         <BiErrorAlt className="text-2xl" />
-        {errorUser || errorTaskApp}
+        {errorUser?.response?.data.error || errorTaskApp?.response?.data.error}
       </div>
     );
   }

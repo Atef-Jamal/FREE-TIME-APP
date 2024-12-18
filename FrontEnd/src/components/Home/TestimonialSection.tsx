@@ -1,37 +1,58 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { showPopup } from "../../context/StateManeger";
-import { makeRequest } from "../../utils";
+import { fetchTestimonials, handleSendTestimonial } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { formateDate, handleApiError } from "../../utils/common";
 import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
 import { moneyHome } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
-import { User } from "../../types/userTypes";
+import { useTranslation } from "react-i18next";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TypeTestimonial } from "../../types/othersTypes";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { useTranslation } from "react-i18next";
-
-interface TypeTestimonial {
-  _id: string;
-  user: User;
-  content: string;
-  stars: number;
-  createdAt: Date;
-}
 
 const TestimonialSection = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [comment, setComment] = useState<string>("");
   const [stars, setStars] = useState<number>(1);
-  const [testimonials, setTestimonials] = useState<TypeTestimonial[]>([]);
   const { t } = useTranslation("home");
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-  const handleSendTestimonial = async (e: FormEvent) => {
-    e.preventDefault();
+  const {
+    data: testimonials,
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["testimonials"],
+    queryFn: fetchTestimonials,
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const mutation = useMutation({
+    mutationFn: handleSendTestimonial,
+    onError: (error) => {
+      dispatch(
+        showPopup({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        })
+      );
+    },
+    onSuccess: (newTestimonial) => {
+      setComment("");
+      queryClient.setQueryData(["testimonials"], (old: TypeTestimonial[]) => {
+        return [newTestimonial, ...old];
+      });
+    },
+  });
+
+  const addTestimonialHandler = (event: FormEvent) => {
+    event.preventDefault();
     if (!currentUser) {
       dispatch(
         showPopup({
@@ -48,112 +69,83 @@ const TestimonialSection = () => {
           message: "Enter Your Opinion",
         })
       );
+      return;
     }
-    try {
-      const response = await makeRequest.post("api/testimonials", {
-        content: comment,
-        stars,
-      });
-      setComment("");
-      setTestimonials((prev) => [response.data, ...prev]);
-      dispatch(
-        showPopup({
-          type: "SUCESS",
-          message: "successfull published",
-        })
-      );
-    } catch (error) {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    }
+    mutation.mutate({ comment, stars });
   };
 
-  const dependOnScreen = () => {
+  const numberOfCards = () => {
     if (window.innerWidth <= 500) return 1.3;
     return 2.2;
   };
-
-  useEffect(() => {
-    const getAllTestimonials = async () => {
-      try {
-        const response = await makeRequest.get("api/testimonials");
-        setTestimonials(response.data.reverse());
-      } catch (error) {
-        dispatch(
-          showPopup({
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          })
-        );
-      }
-    };
-    getAllTestimonials();
-  }, [dispatch]);
 
   return (
     <div className="w-full py-4 bg-[#1f3346]">
       <h1 className="text-2xl sm:text-xl tracking-wider font-bold text-center text-[#b0d870]">
         {t("What do our users say")}
       </h1>
-      <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mb-10 mx-auto ">
-        <Swiper
-          className="w-full h-[350px] "
-          modules={[Navigation, Pagination, Scrollbar, A11y]}
-          spaceBetween={10}
-          slidesPerView={dependOnScreen()}
-          navigation
-          pagination={{ clickable: true }}
-        >
-          {testimonials?.map((item) => {
-            const numOtherStar = 5 - item.stars;
-            return (
-              <SwiperSlide
-                key={item._id}
-                className="bg-[#272336ee] rounded-lg max-h-[315px]"
-              >
-                <div className="flex flex-col justify-between h-full  px-3 pb-3">
-                  <span className=" text-5xl font-[900]">،،</span>
-                  <div className="text-[#b5cea4] h-[50%] overflow-scroll scrollbar-none">
-                    {item.content}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm text-[#5fec52ee]">
-                        {item.user.name}
-                      </span>
-                      {item.createdAt && (
-                        <span className="text-xs text-[#9ba89aee]">
-                          {formateDate(item.createdAt)}
+      <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mx-auto my-5">
+        {error && (
+          <p className="text-center text-[#f73737]">
+            {error.response?.data.error}
+          </p>
+        )}
+        {status !== "pending" && !error && (
+          <Swiper
+            className="w-full h-[350px] "
+            modules={[Navigation, Pagination, Scrollbar, A11y]}
+            spaceBetween={10}
+            slidesPerView={numberOfCards()}
+            navigation
+            pagination={{ clickable: true }}
+          >
+            {testimonials?.map((item) => {
+              const numOtherStar = 5 - item.stars;
+              return (
+                <SwiperSlide
+                  key={item._id}
+                  className="bg-[#272336ee] rounded-lg max-h-[315px]"
+                >
+                  <div className="flex flex-col justify-between h-full  px-3 pb-3">
+                    <span className=" text-5xl font-[900]">،،</span>
+                    <div className="text-[#b5cea4] h-[50%] overflow-scroll scrollbar-none">
+                      {item.content}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm text-[#5fec52ee]">
+                          {item.user.name}
                         </span>
-                      )}
-                      <div className="flex items-center gap-1">
-                        {[...Array(item.stars).keys()].map((el) => (
-                          <MdOutlineStarPurple500 key={el} />
-                        ))}
-                        {[...Array(numOtherStar).keys()].map((el) => (
-                          <MdOutlineStarOutline key={el} />
-                        ))}
+                        {item.createdAt && (
+                          <span className="text-xs text-[#9ba89aee]">
+                            {formateDate(item.createdAt)}
+                          </span>
+                        )}
+                        <div className="flex items-center gap-1">
+                          {[...Array(item.stars).keys()].map((el) => (
+                            <MdOutlineStarPurple500 key={el} />
+                          ))}
+                          {[...Array(numOtherStar).keys()].map((el) => (
+                            <MdOutlineStarOutline key={el} />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="w-16 h-16 xs:w-9 xs:h-9 rounded-full border border-yellow-500">
+                        <img
+                          src={item.user.profilePicture}
+                          alt=""
+                          className="w-full h-full rounded-full"
+                        />
                       </div>
                     </div>
-                    <div className="w-16 h-16 xs:w-9 xs:h-9 rounded-full border border-yellow-500">
-                      <img
-                        src={item.user.profilePicture}
-                        alt=""
-                        className="w-full h-full rounded-full"
-                      />
-                    </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        )}
       </div>
-      <form onSubmit={handleSendTestimonial} className="w-full">
+      <form onSubmit={addTestimonialHandler} className="w-full">
         <div className="w-[500px] sm:w-[60%] xs:w-[94%] flex flex-col gap-3 items-center justify-center mx-auto ">
           <div className="flex flex-col w-full">
             <textarea

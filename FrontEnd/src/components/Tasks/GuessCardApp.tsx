@@ -9,7 +9,7 @@ import { ImSpinner3 } from "react-icons/im";
 import { TypeGameApp } from "../../types/earnTypes";
 
 const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
   const [score, setScore] = useState(0);

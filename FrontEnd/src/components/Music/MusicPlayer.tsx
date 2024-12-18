@@ -3,7 +3,7 @@ import { IoMdPause } from "react-icons/io";
 import { IoMdPlay } from "react-icons/io";
 import { IoPlaySkipBackSharp } from "react-icons/io5";
 import { IoPlaySkipForward } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import {
   handleCloseMusic,
@@ -13,14 +13,15 @@ import {
 } from "../../context/StateManeger";
 import { MdClose } from "react-icons/md";
 
-const MusicPlayer = () => {
+const MusicPlayer = memo(() => {
   const [expand, setExpand] = useState(false);
   const [trackValue, setTrackValue] = useState(0);
-  const { activeMusic, musicIsPlaying } = useAppSelector(
-    (state) => state.stateManeger
+  const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
+  const musicIsPlaying = useAppSelector(
+    (state) => state.stateManeger.musicIsPlaying
   );
   const dispatch = useAppDispatch();
-  console.log("i am here");
+
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
@@ -132,6 +133,6 @@ const MusicPlayer = () => {
       </span>
     </div>
   );
-};
+});
 
 export default MusicPlayer;

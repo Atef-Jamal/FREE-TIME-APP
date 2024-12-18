@@ -1,12 +1,17 @@
 import { FcMusic } from "react-icons/fc";
 import MusicCard from "../components/Music/MusicCard";
 import Skeleton from "../components/Others/Skeleton";
-import { useFetchMusics } from "../hooks";
 import { useScrollToElement } from "../hooks/commonHooks";
-import { TypeMusicDetail } from "../types/othersTypes";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMusics } from "../utils";
 
 const Musics = () => {
-  const { musics, loading, error } = useFetchMusics();
+  const { data: musics = [], status } = useQuery({
+    queryKey: ["musics"],
+    queryFn: fetchMusics,
+    staleTime: 60 * 60 * 1000,
+  });
+
   useScrollToElement({ dependencies: [musics] });
 
   return (
@@ -18,7 +23,7 @@ const Musics = () => {
         Musics
       </div>
       <div className="grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-2 gap-4">
-        {loading &&
+        {status === "pending" &&
           [...Array(21).keys()].map((i) => (
             <div
               key={i}
@@ -31,11 +36,13 @@ const Musics = () => {
             </div>
           ))}
 
-        {musics.map((song: TypeMusicDetail) => (
+        {musics.map((song) => (
           <MusicCard key={song.id} songDetails={song} />
         ))}
       </div>
-      {error && <div className="text-center mx-auto my-8">{error}</div>}
+      {status === "error" && (
+        <div className="text-center mx-auto my-8">an error occurred !</div>
+      )}
     </div>
   );
 };

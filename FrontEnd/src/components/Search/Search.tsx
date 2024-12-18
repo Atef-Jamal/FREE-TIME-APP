@@ -9,7 +9,7 @@ import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
 
 const Search = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [searchQ, setSearchQ] = useState("");
   const [results, setResults] = useState<TypeSearchResults | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

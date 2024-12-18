@@ -1,43 +1,33 @@
-import { useEffect, useState } from "react";
 import { MdStorefront } from "react-icons/md";
-import { showPopup } from "../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../context/Hooks";
+import { useAppSelector } from "../context/Hooks";
 import FrameItem from "../components/MarketPlace/FrameItem";
-import { makeRequest } from "../utils";
-import { handleApiError } from "../utils/common";
-
-import { TypeFrame } from "../types/frameTypes";
+import { fetchAllFrames } from "../utils";
 import { useScrollToElement } from "../hooks/commonHooks";
+import { useQuery } from "@tanstack/react-query";
 
 const MarketPlace = () => {
-  const { resizeSidebare } = useAppSelector((state) => state.stateManeger);
-  const [frames, setFrames] = useState<TypeFrame[]>([]);
-  const dispatch = useAppDispatch();
+  const resizeSidebare = useAppSelector(
+    (state) => state.stateManeger.resizeSidebare
+  );
+  const {
+    data: frames = [],
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["frames"],
+    queryFn: fetchAllFrames,
+    staleTime: 60 * 60 * 1000,
+  });
 
   useScrollToElement({ dependencies: [frames] });
-
-  useEffect(() => {
-    const getFrames = async () => {
-      try {
-        const response = await makeRequest.get("api/frames");
-        setFrames(response.data);
-      } catch (error) {
-        dispatch(
-          showPopup({
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      }
-    };
-    getFrames();
-  }, [dispatch]);
 
   return (
     <div className="min-h-screen p-5 sm:p-3 w-full">
       <h1 className="border-b text-3xl text-[#7cec50] w-[40%] lg:w-[70%] py-2 mb-6 lg:text-xl font-bold flex items-center gap-5 lg:gap-3">
         <MdStorefront /> MARKET STORE
       </h1>
+      {status === "error" && <p>{error.response?.data.error}</p>}
+      {status === "pending" && <div className="text-center my-10">Loading</div>}
       <div
         className={`${
           resizeSidebare
@@ -45,7 +35,7 @@ const MarketPlace = () => {
             : "grid-cols-7 xl:grid-cols-5 lg:grid-cols-3 xs:grid-cols-2"
         } w-full grid gap-4 sm:gap-2 `}
       >
-        {frames?.map((item) => {
+        {frames.map((item) => {
           return <FrameItem key={item._id} singleFrame={item} />;
         })}
       </div>

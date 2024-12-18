@@ -16,7 +16,7 @@ export const useListenToSocketEvents = ({
   handlers,
   dependencies = [],
 }: TypeUseListentoSocketEvents) => {
-  const { socket } = useAppSelector((state) => state.stateManeger);
+  const socket = useAppSelector((state) => state.stateManeger.socket);
 
   useEffect(() => {
     if (!socket) return;

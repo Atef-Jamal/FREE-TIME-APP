@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-import { makeRequest } from "../../utils";
+import { verifyMyEmail } from "../../utils";
 import { handleApiError } from "../../utils/common";
+import { useMutation } from "@tanstack/react-query";
 
 const EnterVerificationCode = () => {
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
@@ -17,19 +18,24 @@ const EnterVerificationCode = () => {
   const fourtInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
 
-  const handleVerify = async () => {
-    const code = first + second + third + fourt;
-    try {
-      await makeRequest.post("api/auth/verifiyemail", { enteredCode: code });
+  const mutation = useMutation({
+    mutationFn: verifyMyEmail,
+    onSuccess: () => {
       setSuccessfullyVerified(true);
-    } catch (error) {
+    },
+    onError: (error) => {
       dispatch(
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         })
       );
-    }
+    },
+  });
+
+  const handleVerify = async () => {
+    const enteredCode = first + second + third + fourt;
+    mutation.mutate({ enteredCode });
   };
 
   useEffect(() => {

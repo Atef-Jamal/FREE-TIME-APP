@@ -18,7 +18,7 @@ interface TypeVisiter {
 }
 
 const WhoVisitProfile = () => {
-  const { currentUser } = useAppSelector((state) => state.stateManeger);
+  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<
     TypeVisiter[]

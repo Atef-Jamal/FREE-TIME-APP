@@ -1,36 +1,30 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  useListenToDocumentEvent,
-  useListenToSocketEvents,
-} from "../../../../hooks/listenersHooks";
-import {
-  TypePublicChatItem,
-  TypePublicChatMessage,
-} from "../../../../types/publicChatTypes";
-import { useScrollToElement } from "../../../../hooks/commonHooks";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useListenToSocketEvents } from "../../../../hooks/listenersHooks";
 import { useSearchParams } from "react-router-dom";
-import { useFetchPublicMessages } from "../../../../hooks";
 import SendMessage from "./SendMessage";
 import Message from "./Message";
 import FreeTime from "./FreeTime";
 import { FaArrowDownLong } from "react-icons/fa6";
 import MessageSkeleton from "./MessageSkeleton";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { makeRequest } from "../../../../utils";
+import {
+  fetchPublicChatMessages,
+  handleDeleteMessage,
+} from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { handleApiError } from "../../../../utils/common";
 import Spinner from "../../../Others/Spinner";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useScrollToElement } from "../../../../hooks/commonHooks";
 
 interface TypeMsgModelDeletion {
   messageId: string;
   messageUrlScreenshot: string;
 }
 
-const PublicChat = () => {
-  const { socket } = useAppSelector((state) => state.stateManeger);
-  const { messages, setMessages, loading, error } = useFetchPublicMessages();
+const PublicChat = memo(() => {
+  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -40,10 +34,22 @@ const PublicChat = () => {
     useState<TypeMsgModelDeletion | null>(null);
   const dispatch = useAppDispatch();
 
-  const { setElement } = useScrollToElement({
-    dependencies: [messages],
+  const {
+    data: messages = [],
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["public-chat-messages"],
+    queryFn: fetchPublicChatMessages,
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const isThereMessages = messages.length > 0;
+
+  useScrollToElement({
     key: "messageId",
     scrollPosition: "start",
+    dependencies: [isThereMessages],
   });
 
   const scrollToLastMessage = useCallback(() => {
@@ -53,7 +59,7 @@ const PublicChat = () => {
     setStagingMessages(0);
   }, []);
 
-  const handleAddNewMessage = (data: TypePublicChatItem) => {
+  const handleRecievedMessage = () => {
     const element = messageContainerRef.current!;
     const addToStaging =
       element.scrollHeight - element.scrollTop > element.clientHeight + 70;
@@ -61,47 +67,34 @@ const PublicChat = () => {
     if (addToStaging) {
       setStagingMessages((prev) => prev + 1);
     }
-    setMessages((prev) => [...prev, data]);
   };
-  const handleAddMessage = (data: { detail: TypePublicChatMessage }) => {
-    setMessages((prev) => [...prev, data.detail]);
-  };
-  const deleteMessage = async (messageId: string) => {
-    setIsDeleting(true);
-    if (stopScrolling === false) {
-      setStopScrolling(true);
-    }
 
-    try {
-      const response = await makeRequest.patch(`api/publicchatw/${messageId}`, {
-        isDeleted: true,
-      });
-      socket?.emit("interact-with-public-message", response.data);
-      const customEvent = new CustomEvent("fastDeletePublicMessage", {
-        detail: response.data,
-      });
-      document.dispatchEvent(customEvent);
-    } catch (error) {
+  const mutation = useMutation({
+    mutationFn: handleDeleteMessage,
+    onMutate: () => {
+      if (stopScrolling === false) {
+        setStopScrolling(true);
+      }
+    },
+    onError: (error) => {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         })
       );
-    } finally {
-      setIsDeleting(false);
+    },
+    onSuccess: (deletedMessage) => {
+      socket?.emit("interact-with-public-message", deletedMessage);
+    },
+    onSettled: async () => {
       setOpenChatModelDeletion(null);
-    }
-  };
+    },
+  });
 
   useListenToSocketEvents({
     eventsToListen: ["public-message"],
-    handlers: [handleAddNewMessage],
-  });
-
-  useListenToDocumentEvent({
-    eventToListen: "fastSendPublicMessage",
-    onUpdate: handleAddMessage,
+    handlers: [handleRecievedMessage],
   });
 
   useEffect(() => {
@@ -125,7 +118,6 @@ const PublicChat = () => {
                 prev.delete("messageId");
                 return prev;
               });
-              setElement(null);
             }, 500);
           }
           setStagingMessages(0);
@@ -140,7 +132,14 @@ const PublicChat = () => {
       clearTimeout(timeout);
       clearTimeout(cleanSearchParamTimeout);
     };
-  }, [queryParam, setElement, setSearchParams]);
+  }, [queryParam, setSearchParams]);
+
+  const handleOpenChatModelDeletion = useCallback(
+    (msgInfo: TypeMsgModelDeletion | null) => {
+      setOpenChatModelDeletion(msgInfo);
+    },
+    []
+  );
 
   const messagesList = useMemo(() => {
     return messages.map((msg, index) => {
@@ -152,7 +151,7 @@ const PublicChat = () => {
             lastMessageRef={
               index === messages.length - 1 ? lastMessageRef : null
             }
-            setOpenChatModelDeletion={setOpenChatModelDeletion}
+            handleOpenChatModelDeletion={handleOpenChatModelDeletion}
           />
         );
       }
@@ -168,7 +167,7 @@ const PublicChat = () => {
         );
       }
     });
-  }, [messages, setOpenChatModelDeletion]);
+  }, [messages, handleOpenChatModelDeletion]);
 
   useEffect(() => {
     if (!stopScrolling && !queryParam) {
@@ -209,17 +208,21 @@ const PublicChat = () => {
               />
               <div className="flex items-center justify-center gap-x-4">
                 <button
-                  disabled={isDeleting}
+                  disabled={mutation.status === "pending"}
                   onClick={() => {
-                    deleteMessage(openChatModelDeletion.messageId);
+                    mutation.mutate(openChatModelDeletion.messageId);
                   }}
                   className="bg-[#2d773f] rounded-lg py-1 px-8"
                 >
-                  {isDeleting ? <Spinner className="w-5 h-5" /> : "Yes"}
+                  {mutation.status === "pending" ? (
+                    <Spinner className="w-5 h-5" />
+                  ) : (
+                    "Yes"
+                  )}
                 </button>
                 <button
                   onClick={() => setOpenChatModelDeletion(null)}
-                  disabled={isDeleting}
+                  disabled={mutation.status === "pending"}
                   className="bg-[#0f0e29] rounded-lg py-1 px-9"
                 >
                   No
@@ -229,14 +232,14 @@ const PublicChat = () => {
           </div>
         )}
 
-        {loading &&
+        {status === "pending" &&
           [...Array(numofSkeleton).keys()].map((skeleton) => (
             <MessageSkeleton key={skeleton} />
           ))}
 
-        {!error && (
+        {error && (
           <div className="m-auto w-full text-center text-lg font-bold text-[#d15e5e]">
-            {error}
+            {error.response?.data.error}
           </div>
         )}
         {messagesList}
@@ -254,11 +257,10 @@ const PublicChat = () => {
         <SendMessage
           stopScrolling={stopScrolling}
           setStopScrolling={setStopScrolling}
-          setMessages={setMessages}
         />
       </div>
     </>
   );
-};
+});
 
 export default PublicChat;
