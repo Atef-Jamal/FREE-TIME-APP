@@ -16,7 +16,7 @@ export const getAllFrames = async (_: Request, res: Response) => {
 };
 
 export const buyFrame = async (req: Request, res: Response) => {
-  const { points, myFrames, _id } = req.user;
+  const { points, myFrames, _id } = req.currentUser;
   const { frameId } = req.params;
   try {
     const getFrame = await Frame.findById(frameId);

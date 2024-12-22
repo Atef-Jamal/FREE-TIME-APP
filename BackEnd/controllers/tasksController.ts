@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import Task from "../models/task";
 import User from "../models/user";
@@ -7,84 +8,64 @@ import { io } from "../app";
 import AppsReview from "../models/appsReview";
 import { onLineUsers } from "../socketIo/socketIo";
 
-export const getAllApps = async (req: Request, res: Response) => {
-  const filter = req.query.filter || "ALL";
-  const page = parseInt(req.query.page as string) || 1;
+type TypeFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
+type TypeFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
+
+export const getAllTasks = async (req: Request, res: Response) => {
+  const filterByPopularity =
+    (req.query.filterByPopularity as TypeFilterByPopularity) || "ALL";
+  const filterByDevice =
+    (req.query.filterByDevice as TypeFilterByDevice) || "ALL";
+
+  const pageParam = parseInt(req.query.pageParam as string) || 1;
   const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 20;
-  const skip = (page - 1) * limitedPerPage;
+  const skip = (pageParam - 1) * limitedPerPage;
 
   try {
-    let allApps;
-    if (filter === "POPULAR") {
-      allApps = await Task.find({ completedBy: { $not: { $size: 0 } } })
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -rating -createdAt");
-      allApps.sort((a, b) => {
-        if (a.completedBy.length > b.completedBy.length) return -1;
-        if (a.completedBy.length < b.completedBy.length) return 1;
-        return 0;
-      });
-    } else if (filter === "REWARD") {
-      allApps = await Task.find({ prize: { $gt: 150 } })
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
-      allApps.sort((a, b) => {
-        return b.prize - a.prize;
-      });
-    } else if (filter === "RAITING") {
-      allApps = await Task.find({ rating: { $gt: 4 } })
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -createdAt -completedBy");
-      allApps.sort((a, b) => {
-        return b.rating - a.rating;
-      });
-    } else if (filter === "DESKTOP") {
-      allApps = await Task.find({ devices: "DESKTOP" })
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
-    } else if (filter === "ANDROID") {
-      allApps = await Task.find({ devices: "ANDROID" })
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
-    } else if (filter === "MAC") {
-      allApps = await Task.find({ devices: "MAC" })
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
-    } else {
-      allApps = await Task.find()
-        .skip(skip)
-        .limit(limitedPerPage)
-        .select("-updatedAt -quizes -reviews -rating -createdAt -completedBy");
+    const query: {
+      completedBy?: any;
+      prize?: any;
+      rating?: any;
+      devices: TypeFilterByDevice;
+    } = {
+      devices: filterByDevice,
+    };
+
+    if (filterByPopularity === "POPULAR") {
+      query.completedBy = { $not: { $size: 0 } };
+    }
+    if (filterByPopularity === "REWARD") {
+      query.prize = { $gt: 150 };
+    }
+    if (filterByPopularity === "RAITING") {
+      query.rating = { $gt: 4 };
     }
 
-    return res.status(200).json(allApps);
+    const tasks = await Task.find(query).skip(skip).limit(limitedPerPage);
+    const numAllDocuments = await Task.countDocuments(query);
+
+    const hasMore = pageParam * limitedPerPage < numAllDocuments;
+    return res.status(200).json({ tasks, hasMore });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "can't Load apps and offers" });
   }
 };
 
-export const getAppDetails = async (req: Request, res: Response) => {
+export const getTaskDetails = async (req: Request, res: Response) => {
   try {
-    const appId = req.params.id;
-    const app = await Task.findById(appId);
+    const taskId = req.params.id;
+    const task = await Task.findById(taskId);
 
-    if (!app) {
+    if (!task) {
       return res.status(404).json({ error: "offer not found" });
     }
 
-    if (app.isAvailable === "UNAVAILABLE") {
+    if (task.isAvailable === "UNAVAILABLE") {
       return res
         .status(404)
         .json({ error: "This app is Not Available, try another app" });
     }
-    return res.status(200).json(app);
+    return res.status(200).json(task);
   } catch (error) {
     return res
       .status(404)
@@ -92,22 +73,22 @@ export const getAppDetails = async (req: Request, res: Response) => {
   }
 };
 
-export const publicAppDetails = async (req: Request, res: Response) => {
+export const publicTaskDetails = async (req: Request, res: Response) => {
   try {
-    const appId = req.params.id;
+    const taskId = req.params.id;
 
-    const app = await Task.findById(appId)
+    const task = await Task.findById(taskId)
       .populate("completedBy", "name _id profilePicture")
       .populate({
         path: "reviews",
         populate: { path: "user", select: "profilePicture name _id" },
       });
 
-    if (!app) {
+    if (!task) {
       return res.status(404).json({ error: "offer not found" });
     }
 
-    return res.status(200).json(app);
+    return res.status(200).json(task);
   } catch (error) {
     return res
       .status(404)
@@ -116,25 +97,25 @@ export const publicAppDetails = async (req: Request, res: Response) => {
 };
 
 export const completingQuizApp = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
-  const completedTasks = req.user.completedTasks;
+  const currentUserId = req.currentUser._id;
+  const completedTasks = req.currentUser.completedTasks;
   const { quizappId } = req.params;
   const { answers } = req.body;
   try {
-    const app = await Task.findById(quizappId);
+    const task = await Task.findById(quizappId);
 
-    if (!app) {
+    if (!task) {
       return res.status(404).json({ error: "App Not Found" });
     }
 
-    if (app.isAvailable === "UNAVAILABLE") {
+    if (task.isAvailable === "UNAVAILABLE") {
       return res
         .status(404)
         .json({ error: "sorry, this app is not available" });
     }
 
     const isCompletedBefore =
-      app.completedBy.includes(currentUserId) ||
+      task.completedBy.includes(currentUserId) ||
       completedTasks.includes(quizappId);
 
     if (isCompletedBefore) {
@@ -146,8 +127,8 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     let corrects = 0;
     let wrongs = 0;
 
-    for (let index = 0; index < app.quizes.length; index++) {
-      if (answers[index] === app.quizes[index].correctAnswer) {
+    for (let index = 0; index < task.quizes.length; index++) {
+      if (answers[index] === task.quizes[index].correctAnswer) {
         corrects++;
       } else {
         wrongs++;
@@ -162,8 +143,8 @@ export const completingQuizApp = async (req: Request, res: Response) => {
       });
     }
 
-    app.completedBy.push(currentUserId);
-    const savedTask = await app.save();
+    task.completedBy.push(currentUserId);
+    const savedTask = await task.save();
     await User.findByIdAndUpdate(
       currentUserId,
       { $push: { completedTasks: quizappId } },
@@ -202,14 +183,14 @@ export const completingQuizApp = async (req: Request, res: Response) => {
 
 export const completingGuessCard = async (req: Request, res: Response) => {
   const { guessCardAppId } = req.params;
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   try {
-    const app = await Task.findById(guessCardAppId);
+    const task = await Task.findById(guessCardAppId);
 
-    if (!app) {
+    if (!task) {
       return res.status(404).json({ error: "Game Not Found" });
     }
-    if (app.isAvailable === "UNAVAILABLE") {
+    if (task.isAvailable === "UNAVAILABLE") {
       return res
         .status(404)
         .json({ error: "sorry, this app is not available" });
@@ -222,8 +203,8 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     }
 
     const isCompleted =
-      user.completedTasks.includes(app._id) ||
-      app.completedBy.includes(user._id);
+      user.completedTasks.includes(task._id) ||
+      task.completedBy.includes(user._id);
 
     if (isCompleted) {
       return res
@@ -231,8 +212,8 @@ export const completingGuessCard = async (req: Request, res: Response) => {
         .json({ error: "Game is already completed, try another" });
     }
 
-    app.completedBy.push(user._id);
-    user.completedTasks.push(app._id);
+    task.completedBy.push(user._id);
+    user.completedTasks.push(task._id);
 
     const createNotification = new Notification({
       belongsTo: user._id,
@@ -258,7 +239,7 @@ export const completingGuessCard = async (req: Request, res: Response) => {
 
     io.emit("public-message", populatedPublicMessage);
     await user.save();
-    await app.save();
+    await task.save();
     return res.status(200).json({ message: "passed sucessfully" });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
@@ -267,19 +248,19 @@ export const completingGuessCard = async (req: Request, res: Response) => {
 
 export const handleAddReview = async (req: Request, res: Response) => {
   const { appId } = req.params;
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { comment } = req.body;
 
   try {
-    const app = await Task.findById(appId);
-    if (!app) {
+    const task = await Task.findById(appId);
+    if (!task) {
       return res.status(404).json({ error: "app Not Found" });
     }
     const newReview = new AppsReview({ appId, user: currentUserId, comment });
     const savedReview = await newReview.save();
     const populated = await savedReview.populate("user");
-    app.reviews.push(savedReview._id);
-    await app.save();
+    task.reviews.push(savedReview._id);
+    await task.save();
     return res.status(200).json(populated);
   } catch (error) {
     return res.status(404).json({ error: "can not add review" });

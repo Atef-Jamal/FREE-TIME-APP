@@ -1,3 +1,4 @@
+import { RefObject } from "react";
 import { makeRequest } from "../utils";
 
 export const validation = (
@@ -101,4 +102,15 @@ export const collectReward = async (notificationId: string) => {
     }
   );
   return response.data;
+};
+
+export const debounce = (
+  func: () => void,
+  wait: number,
+  timoutRef: RefObject<NodeJS.Timeout | null>
+) => {
+  return () => {
+    if (timoutRef.current) clearTimeout(timoutRef.current);
+    timoutRef.current = setTimeout(func, wait);
+  };
 };

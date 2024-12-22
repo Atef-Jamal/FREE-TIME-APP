@@ -5,6 +5,8 @@ import React, {
   useRef,
   useState,
   useEffect,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
@@ -15,17 +17,26 @@ import { sendPublicChatMessage } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
-import { TypePublicChatItem } from "../../../../types/publicChatTypes";
+import {
+  TypeCashedPublicChat,
+  TypePublicChatItem,
+} from "../../../../types/publicChatTypes";
 import { User } from "../../../../types/userTypes";
 import { v4 as uuId } from "uuid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SetURLSearchParams } from "react-router-dom";
 
 interface typeProps {
   stopScrolling: boolean;
-  setStopScrolling: React.Dispatch<React.SetStateAction<boolean>>;
+  setStopScrolling: Dispatch<SetStateAction<boolean>>;
+  setSearchParams: SetURLSearchParams;
 }
 
-const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
+const SendMessage = ({
+  stopScrolling,
+  setStopScrolling,
+  setSearchParams,
+}: typeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
@@ -41,9 +52,10 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
   const mutation = useMutation({
     mutationFn: sendPublicChatMessage,
     onMutate: async () => {
+      if (!currentUser) return;
       await queryClient.cancelQueries({ queryKey: ["public-chat-messages"] });
       const uniqeIdForRollback = uuId();
-      const optimisticMsg = {
+      const optimisticMsg: TypePublicChatItem = {
         _id: uniqeIdForRollback,
         sender: currentUser,
         type: "MESSAGE",
@@ -53,57 +65,104 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
         dislikes: [],
         isDeleted: false,
         mentioned: user || null,
-        createdAt: new Date().toLocaleString("en-US"),
-        updatedAt: new Date().toLocaleString("en-US"),
+        createdAt: new Date(new Date().toLocaleString("en-US")),
+        updatedAt: new Date(new Date().toLocaleString("en-US")),
         isSended: "PENDING",
       };
 
       queryClient.setQueryData(
         ["public-chat-messages"],
-        (previous: TypePublicChatItem[]) => {
-          return [...previous, optimisticMsg];
+        (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+          if (!previous) return;
+
+          return {
+            ...previous,
+            pages: previous.pages.map((page, index) => {
+              if (index === previous.pages.length - 1) {
+                return { ...page, messages: [...page.messages, optimisticMsg] };
+              }
+              return page;
+            }),
+          };
         }
       );
+
       setMessage("");
       inputRef.current?.focus();
       inputRef.current!.style.height = "auto";
-      return { uniqeIdForRollback };
+      return { uniqeIdForRollback, optimisticMsg };
     },
     onSuccess: (data, _, context) => {
       queryClient.setQueryData(
         ["public-chat-messages"],
-        (old: TypePublicChatItem[]) => {
-          if (old) {
-            return old.map((msg) => {
-              if (msg._id === context.uniqeIdForRollback) {
-                return { ...data, isSended: "SUCCESS" };
-              } else {
-                return msg;
+        (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+          if (!previous) return;
+          return {
+            ...previous,
+            pages: previous.pages.map((page, index) => {
+              if (index === previous.pages.length - 1) {
+                return {
+                  ...page,
+                  messages: page.messages.map((msg) => {
+                    if (
+                      msg.type === "MESSAGE" &&
+                      msg._id === context.uniqeIdForRollback
+                    ) {
+                      return { ...data, isSended: "SUCCESS" };
+                    }
+                    return msg;
+                  }),
+                };
               }
-            });
-          }
+              return page;
+            }),
+          };
         }
       );
-
       socket?.emit("public-message", data);
       if (user) {
         setUser(null);
       }
     },
     onError: (error, _, context) => {
-      if (context) {
+      if (context && currentUser) {
+        const failedMessage: TypePublicChatItem = {
+          _id: uuId(),
+          sender: currentUser,
+          type: "MESSAGE",
+          message,
+          loves: [],
+          likes: [],
+          dislikes: [],
+          isDeleted: false,
+          mentioned: user || null,
+          createdAt: new Date(new Date().toLocaleString("en-US")),
+          updatedAt: new Date(new Date().toLocaleString("en-US")),
+          isSended: "FAILED",
+        };
         queryClient.setQueryData(
           ["public-chat-messages"],
-          (old: TypePublicChatItem[]) => {
-            if (old) {
-              return old.map((msg) => {
-                if (msg._id === context.uniqeIdForRollback) {
-                  return { ...msg, isSended: "FAILED" };
-                } else {
-                  return msg;
+          (
+            previous: TypeCashedPublicChat
+          ): TypeCashedPublicChat | undefined => {
+            if (!previous) return;
+            return {
+              ...previous,
+              pages: previous.pages.map((page, index) => {
+                if (index === previous.pages.length - 1) {
+                  return {
+                    ...page,
+                    messages: page.messages.map((msg) => {
+                      if (msg._id === context.uniqeIdForRollback) {
+                        return failedMessage;
+                      }
+                      return msg;
+                    }),
+                  };
                 }
-              });
-            }
+                return page;
+              }),
+            };
           }
         );
       }
@@ -129,6 +188,10 @@ const SendMessage = ({ stopScrolling, setStopScrolling }: typeProps) => {
       );
       return;
     }
+    setSearchParams((prev) => {
+      prev.delete("messageId");
+      return prev;
+    });
     if (stopScrolling) setStopScrolling(false);
 
     mutation.mutate({ message, mentionedUserId: user?._id });

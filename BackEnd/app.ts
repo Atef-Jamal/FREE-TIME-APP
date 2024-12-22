@@ -36,7 +36,7 @@ app.use(routes);
 app.use("/uploads", express.static(path.join("uploads")));
 
 app.use((_: Request, res: Response) => {
-  res.status(500).json({
+  return res.status(500).json({
     error: "Internal server error",
   });
 });

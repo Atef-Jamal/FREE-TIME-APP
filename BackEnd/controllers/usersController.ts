@@ -45,13 +45,12 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const userVisited = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const userVisitedId = req.params.userId;
   try {
-    const currentUser = await User.findById(currentUserId);
     const userVisited = await User.findById(userVisitedId);
 
-    if (!currentUser || !userVisited) {
+    if (!userVisited) {
       return res.status(404).json({ error: "user not found" });
     }
     const newVisit = new ProfileVisits({
@@ -68,7 +67,7 @@ export const userVisited = async (req: Request, res: Response) => {
 
 export const changeUserPhotoFrame = async (req: Request, res: Response) => {
   const { frameId } = req.params;
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   try {
     const frame = await Frame.findById(frameId);
 
@@ -93,7 +92,7 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
 };
 
 export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   try {
     await User.findByIdAndUpdate(currentUserId, {
       activeFrame: null,
@@ -105,7 +104,7 @@ export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
 };
 
 export const getWhoVisitMe = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   try {
     const user = await User.findById(currentUserId);
 

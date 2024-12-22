@@ -5,8 +5,8 @@ import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { onLineUsers } from "../socketIo/socketIo";
 
-export const buySong = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+export const buyMusic = async (req: Request, res: Response) => {
+  const currentUserId = req.currentUser._id;
   const songId = req.params.id;
   const { musicTitle } = req.body;
   try {

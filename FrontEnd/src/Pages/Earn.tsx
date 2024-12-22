@@ -8,21 +8,22 @@ import { IoIosArrowBack, IoMdArrowDropdown } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
-import { TypeFilterQuery } from "../types/earnTypes";
+import { TypeFilterByPopularity, TypeFilterByDevice } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
-import { useFetchAllApps } from "../hooks";
-import AppDetail from "../components/Earn/AppDetail";
-import AppSkeleton from "../components/Earn/AppSkeleton";
+import TaskDetail from "../components/Earn/TaskDetail";
+import AppSkeleton from "../components/Earn/TaskSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
-import AppCard from "../components/Earn/AppCard";
+import TaskCard from "../components/Earn/TaskCard";
 import { useScrollToElement } from "../hooks/commonHooks";
 import Empty from "../components/Others/Empty";
 import SearchBar from "../components/Search/SearchBar";
 import { FaCaretDown } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 import FilterByDeviceMenu from "../components/Earn/FilterByDeviceMenu";
-import FilteringMenu from "../components/Earn/FilteringMenu";
+import FilterByPopularityMenu from "../components/Earn/FilterByPopularityMenu";
 import { useTranslation } from "react-i18next";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { fetchAllTasks } from "../utils";
 
 const Earn = () => {
   const resizeSidebare = useAppSelector(
@@ -30,11 +31,14 @@ const Earn = () => {
   );
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
-  const [openFilterMenu, setOpenFilterMenu] = useState(false);
-  const [page, setPage] = useState<number>(1);
-  const limitPerPage = 20;
-  const [appId, setAppId] = useState<string | null>(null);
-  const [filterQuery, setFilterQuery] = useState<TypeFilterQuery>("ALL");
+  const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] =
+    useState(false);
+  const limitPerPage = 15;
+  const [taskId, setTaskId] = useState<string | null>(null);
+  const [filterByPopularity, setFilterByPopularity] =
+    useState<TypeFilterByPopularity>("ALL");
+  const [filterByDevice, setFilterByDevice] =
+    useState<TypeFilterByDevice>("ALL");
   const [searchParams] = useSearchParams();
   const { t } = useTranslation("earn");
 
@@ -48,17 +52,38 @@ const Earn = () => {
   const heighestRewardRef = useRef<HTMLSpanElement | null>(null);
   const heighestRatingRef = useRef<HTMLSpanElement | null>(null);
 
-  const { loading, apps, error, loadMore, noMoreApps, errorLoadMore } =
-    useFetchAllApps({
-      filterQuery,
-      limitPerPage,
-      page,
-    });
+  const {
+    status,
+    data,
+    error,
+    isFetchingNextPage,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useInfiniteQuery({
+    queryKey: ["tasks", filterByDevice, filterByPopularity, limitPerPage],
+    queryFn: async ({ pageParam }) => {
+      const allTasks = await fetchAllTasks({
+        filterByDevice,
+        filterByPopularity,
+        limitPerPage,
+        pageParam,
+      });
+      return allTasks;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.hasMore ? pages.length + 1 : undefined;
+    },
+  });
 
-  useScrollToElement({ dependencies: [apps] });
+  const allTasks = data?.pages.map((page) => page.tasks).flat();
+
+  useScrollToElement({ dependencies: [allTasks?.length] });
 
   useEffect(() => {
-    if (!appId) return;
+    if (!taskId) return;
     setTranslate("-translate-x-[50%]");
     const timout = setTimeout(() => {
       window.scrollTo({
@@ -66,49 +91,53 @@ const Earn = () => {
       });
     }, 500);
     return () => clearTimeout(timout);
-  }, [appId]);
+  }, [taskId]);
 
   useEffect(() => {
     const appIdFromUrlSearchParam = searchParams.get("to");
-
-    if (appIdFromUrlSearchParam && apps.length > 0) {
-      const isExistInAppList = apps.find(
-        (app) => app._id === appIdFromUrlSearchParam
+    if (appIdFromUrlSearchParam && allTasks && allTasks.length > 0) {
+      const isExistInAppList = allTasks.find(
+        (task) => task._id === appIdFromUrlSearchParam
       );
       const isAppDetailOpen = translate === "-translate-x-[50%]";
       if (isExistInAppList && !isAppDetailOpen) return;
-      setAppId(appIdFromUrlSearchParam);
+      setTaskId(appIdFromUrlSearchParam);
     }
-  }, [searchParams, apps, translate]);
+  }, [searchParams, allTasks, translate]);
 
   const selectApp = () => {
     setTranslate("-translate-x-[0%]");
   };
 
-  const activeFilteringItem = (
+  const activeFilterByPopularity = (
     e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type: TypeFilterQuery
+    type: TypeFilterByPopularity
   ) => {
-    [
-      allDevicesRef,
-      allRef,
-      heighestRewardRef,
-      popularRef,
-      heighestRatingRef,
-      desktopRef,
-      androidRef,
-      macRef,
-    ].forEach((item) => item.current?.classList.remove("bg-[#3d34647e]"));
+    [allRef, popularRef, heighestRewardRef, heighestRatingRef].forEach((item) =>
+      item.current?.classList.remove("bg-[#3d34647e]")
+    );
     e.currentTarget.classList.add("bg-[#3d34647e]");
-    setFilterQuery(type);
-    setPage(1);
+    setFilterByPopularity(type);
+    refetch();
+  };
+
+  const activeFilterByDevice = (
+    e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
+    type: TypeFilterByDevice
+  ) => {
+    [allDevicesRef, desktopRef, androidRef, macRef].forEach((item) =>
+      item.current?.classList.remove("bg-[#3d34647e]")
+    );
+    e.currentTarget.classList.add("bg-[#3d34647e]");
+    setFilterByDevice(type);
+    refetch();
   };
 
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
     setTimeout(() => {
-      setAppId(null);
+      setTaskId(null);
     }, 1000);
   };
 
@@ -129,9 +158,20 @@ const Earn = () => {
               onClick={() => setSelectDevice((prev) => !prev)}
               className="flex items-center justify-center gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4 cursor-pointer"
             >
-              <IoDesktop className="text-lg" />
-              <DiAndroid className="text-lg" />
-              <SiApple className="text-lg" />
+              {filterByDevice === "ALL" && (
+                <>
+                  <IoDesktop className="text-lg" />
+                  <DiAndroid className="text-lg" />
+                  <SiApple className="text-lg" />
+                </>
+              )}
+              {filterByDevice === "DESKTOP" && (
+                <IoDesktop className="text-lg" />
+              )}
+              {filterByDevice === "ANDROID" && (
+                <DiAndroid className="text-lg" />
+              )}
+              {filterByDevice === "MAC" && <SiApple className="text-lg" />}
               <FaCaretDown className="text-lg ml-auto" />
             </div>
           </div>
@@ -141,9 +181,9 @@ const Earn = () => {
               androidRef={androidRef}
               desktopRef={desktopRef}
               macRef={macRef}
-              filterQuery={filterQuery}
+              filterByDevice={filterByDevice}
               setSelectDevice={setSelectDevice}
-              activeFilteringItem={activeFilteringItem}
+              activeFilterByDevice={activeFilterByDevice}
             />
           )}
         </div>
@@ -156,23 +196,21 @@ const Earn = () => {
               />
             </div>
             <div
-              onClick={() => setOpenFilterMenu((prev) => !prev)}
+              onClick={() => setOpenFilterByPopularityMenu((prev) => !prev)}
               className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2 sm:gap-1 cursor-pointer"
             >
               <IoFilter />
               <span className="text-gray-400 font-bold">
-                {["ALL", "POPULAR", "RAITING", "REWARD"].includes(filterQuery)
-                  ? t(filterQuery)
-                  : t("ALL")}
+                {t(filterByPopularity)}
               </span>
               <IoMdArrowDropdown className="text-2xl" />
             </div>
           </div>
-          {openFilterMenu && (
-            <FilteringMenu
+          {openFilterByPopularityMenu && (
+            <FilterByPopularityMenu
               allRef={allRef}
-              activeFilteringItem={activeFilteringItem}
-              setOpenFilterMenu={setOpenFilterMenu}
+              activeFilterByPopularity={activeFilterByPopularity}
+              setOpenFilterByPopularityMenu={setOpenFilterByPopularityMenu}
               heighestRatingRef={heighestRatingRef}
               popularRef={popularRef}
               heighestRewardRef={heighestRewardRef}
@@ -214,43 +252,46 @@ const Earn = () => {
                   : "grid grid-cols-7 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 xs:grid-cols-2"
               } gap-3 xs:gap-2 bg-[#1c1e31] h-fit`}
             >
-              {loading &&
+              {status === "pending" &&
                 [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
 
-              {!error &&
-                !loading &&
-                apps.map((taskDetail, i) => {
-                  return (
-                    <AppCard
-                      taskDetail={taskDetail}
-                      setAppId={setAppId}
-                      key={taskDetail._id}
-                      index={i}
-                    />
-                  );
-                })}
+              {data?.pages.map((page) =>
+                page.tasks.map((taskDetail, inedx) => (
+                  <TaskCard
+                    taskDetail={taskDetail}
+                    setTaskId={setTaskId}
+                    key={taskDetail._id}
+                    index={inedx}
+                  />
+                ))
+              )}
             </div>
-            {error && (
-              <div className="w-full h-full flex items-center justify-center text-[#2d9435]">
-                {error}
-              </div>
+
+            {status === "error" && !isFetchNextPageError && (
+              <p className="py-10 font-bold text-center text-[#e45e3c]">
+                {error.response?.data.error}
+              </p>
             )}
-            {loadMore && (
+
+            {isFetchingNextPage && (
               <div className="mt-4">
                 <Spinner className="w-8 h-8 border-[3px] border-b-yellow-400 border-l-yellow-400 mx-auto" />
               </div>
             )}
-            {!loading && apps.length === 0 && !error && (
+
+            {status === "success" && allTasks && allTasks.length === 0 && (
               <Empty emptyText={t("No Apps Matches your Filter Query")} />
             )}
-            {errorLoadMore && (
-              <span className="text-sm text-[#4b9734] mx-auto">
-                {errorLoadMore}
-              </span>
+
+            {!isFetchingNextPage && isFetchNextPageError && (
+              <p className="font-bold text-[#e45e3c] text-center">
+                An Error Occurred During Loading More !
+              </p>
             )}
-            {!noMoreApps && !error && (
+
+            {hasNextPage && (
               <button
-                onClick={() => setPage((prev) => prev + 1)}
+                onClick={() => fetchNextPage()}
                 className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"
               >
                 {t("Load More")}
@@ -259,8 +300,8 @@ const Earn = () => {
           </div>
           <div className={`bg-[#1c1e31] w-[50%] `}>
             <div className=" w-[50%] sm:w-full max-w-[500px] mx-auto">
-              {appId && <AppDetail appId={appId} />}
-              {!appId && (
+              {taskId && <TaskDetail taskId={taskId} />}
+              {!taskId && (
                 <button
                   onClick={selectApp}
                   className="w-[90%] max-w-[500px] p-5 mt-5 text-gray-500 underline text-xl font-bold"

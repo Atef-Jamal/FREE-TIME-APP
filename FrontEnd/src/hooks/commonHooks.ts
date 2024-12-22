@@ -3,7 +3,6 @@ import { showPopup } from "../context/StateManeger";
 import { useAppDispatch } from "../context/Hooks";
 import { makeRequest } from "../utils";
 import { handleApiError } from "../utils/common";
-import { TypeNotifications } from "../types/notificationTypes";
 import { User } from "../types/userTypes";
 import { useSearchParams } from "react-router-dom";
 import { TypeUseScrollToElementHook } from "../types/othersTypes";
@@ -47,51 +46,15 @@ export const useFetchAllUsers = (page?: number) => {
   return { users, setUsers, loading, error };
 };
 
-export const useFetchActivities = ({
-  userId,
-}: {
-  userId: string | undefined;
-}) => {
-  const [activities, setActivities] = useState<TypeNotifications[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const getUserActivities = async () => {
-      if (!userId) return;
-      setError(null);
-      setLoading(true);
-      try {
-        const response = await makeRequest.get(`/api/notifications/${userId}`);
-        const data = response.data;
-        setActivities(data);
-      } catch (error) {
-        const err = handleApiError(error);
-        setError(err);
-        dispatch(
-          showPopup({
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          })
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    getUserActivities();
-  }, [userId, dispatch]);
-
-  return { activities, loading, error };
-};
-
 export const useScrollToElement = ({
   key = "to",
   scrollPosition = "center",
   dependencies = [],
+  callback,
 }: TypeUseScrollToElementHook) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get(key);
+
   useEffect(() => {
     if (queryParam) {
       const targetElement = document.getElementById(queryParam);
@@ -115,6 +78,8 @@ export const useScrollToElement = ({
           targetElement.classList.remove("activeElement");
           targetElement.removeEventListener("click", handleRemoveAnimation);
         };
+      } else {
+        if (callback) callback();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -9,7 +9,10 @@ import { useListenToSocketEvents } from "../../hooks";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
 import { useQueryClient } from "@tanstack/react-query";
-import { TypePublicChatItem } from "../../types/publicChatTypes";
+import {
+  TypeCashedPublicChat,
+  TypePublicChatItem,
+} from "../../types/publicChatTypes";
 
 const NavebareBottom = ({
   setOpenSidbareMobile,
@@ -47,8 +50,19 @@ const NavebareBottom = ({
     }
     queryClient.setQueryData(
       ["public-chat-messages"],
-      (previous: TypePublicChatItem[]) => {
-        return [...previous, newMessage];
+      (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page, index) => {
+            if (index === previous.pages.length - 1) {
+              return {
+                ...page,
+                messages: [...page.messages, newMessage],
+              };
+            }
+            return page;
+          }),
+        };
       }
     );
   };

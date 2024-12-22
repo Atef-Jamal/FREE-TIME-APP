@@ -10,7 +10,7 @@ import { fetchAppDetails, fetchUserById } from "../utils";
 
 const Playing = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const { id } = useParams();
+  const { taskId } = useParams();
 
   const {
     data: user,
@@ -28,14 +28,14 @@ const Playing = () => {
     status: statusTaskApp,
     error: errorTaskApp,
   } = useQuery({
-    queryKey: ["task", id],
-    queryFn: id ? () => fetchAppDetails(id) : skipToken,
+    queryKey: ["task", taskId],
+    queryFn: taskId ? () => fetchAppDetails({ taskId }) : skipToken,
   });
 
   let isCompletedBefore: boolean = false;
 
-  if (id) {
-    if (user?.completedTasks.includes(id)) {
+  if (taskId) {
+    if (user?.completedTasks.includes(taskId)) {
       isCompletedBefore = true;
     }
   }
@@ -48,7 +48,7 @@ const Playing = () => {
     );
   }
 
-  if (!id) {
+  if (!taskId) {
     return (
       <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
         an error occurred

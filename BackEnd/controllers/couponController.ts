@@ -15,7 +15,7 @@ export const getCoupon = async (_: Request, res: Response) => {
 };
 
 export const applyCoupon = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { code } = req.body;
   try {
     const user = await User.findById(currentUserId);

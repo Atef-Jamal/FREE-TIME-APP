@@ -1,18 +1,18 @@
 import express from "express";
 import {
-  getAllApps,
-  getAppDetails,
+  getAllTasks,
+  getTaskDetails,
   completingQuizApp,
   completingGuessCard,
   handleAddReview,
-  publicAppDetails,
-} from "../controllers/appsController";
+  publicTaskDetails,
+} from "../controllers/tasksController";
 import protectedRoute from "../middleware";
 const router = express.Router();
 
-router.get("/", getAllApps);
-router.get("/public/:id", publicAppDetails);
-router.get("/:id", getAppDetails);
+router.get("/", getAllTasks);
+router.get("/public/:id", publicTaskDetails);
+router.get("/:id", getTaskDetails);
 router.post(
   "/complete-guesscard-app/:guessCardAppId",
   protectedRoute,

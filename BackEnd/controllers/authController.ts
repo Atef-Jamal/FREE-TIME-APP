@@ -145,28 +145,19 @@ export const signInWithGoogle = async (req: Request, res: Response) => {
       return res.status(200).json({ ...savedUser, token });
     }
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "failed to sign in with google" });
   }
 };
 
 export const getCurrentUser = async (req: Request, res: Response) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1];
-
-  if (!authHeader || !token) {
-    return res.json({ error: "unauthorized Request, Try to Log in " });
-  }
-
   try {
-    const user: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "");
+    const user = await User.findById(req.currentUser._id).select("-password");
 
-    const getUser = await User.findById(user.userId).select("-password");
-
-    if (!getUser) {
+    if (!user) {
       return res.status(404).json({ error: "User Not found" });
     }
-    const populateedUser = await getUser.populate("myFrames");
+
+    const populateedUser = await user.populate("myFrames");
 
     return res.status(200).json(populateedUser);
   } catch (error) {
@@ -178,7 +169,7 @@ export const sendEmailVerificationCode = async (
   req: Request,
   res: Response
 ) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   try {
     const user = await User.findById(currentUserId);
 
@@ -227,7 +218,7 @@ export const sendEmailVerificationCode = async (
 };
 
 export const verifyEmailCode = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const enteredCode = req.body.enteredCode;
   try {
     const user = await User.findById(currentUserId);
@@ -282,7 +273,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
 };
 
 export const changePassword = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { enterdOldPass, newPass } = req.body;
   try {
     const user = await User.findById(currentUserId);
@@ -313,7 +304,7 @@ export const changePassword = async (req: Request, res: Response) => {
 };
 
 export const changeName = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { newName } = req.body;
   try {
     const user = await User.findById(currentUserId);

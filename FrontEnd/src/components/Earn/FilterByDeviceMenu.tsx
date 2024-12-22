@@ -3,7 +3,7 @@ import { DiAndroid } from "react-icons/di";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoDesktop } from "react-icons/io5";
 import { SiApple } from "react-icons/si";
-import { TypeFilterQuery } from "../../types/earnTypes";
+import { TypeFilterByDevice } from "../../types/earnTypes";
 import { useCloseMenuOnClickOutSide } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
@@ -12,11 +12,11 @@ interface TypeProps {
   androidRef: RefObject<HTMLDivElement | null>;
   desktopRef: RefObject<HTMLDivElement | null>;
   macRef: RefObject<HTMLDivElement | null>;
-  filterQuery: string;
+  filterByDevice: TypeFilterByDevice;
   setSelectDevice: Dispatch<SetStateAction<boolean>>;
-  activeFilteringItem: (
+  activeFilterByDevice: (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    item: TypeFilterQuery
+    item: TypeFilterByDevice
   ) => void;
 }
 
@@ -25,9 +25,9 @@ const FilterByDeviceMenu = ({
   androidRef,
   desktopRef,
   macRef,
-  filterQuery,
+  filterByDevice,
   setSelectDevice,
-  activeFilteringItem,
+  activeFilterByDevice,
 }: TypeProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation("earn");
@@ -44,7 +44,7 @@ const FilterByDeviceMenu = ({
     >
       <div
         ref={allDevicesRef}
-        onClick={(e) => activeFilteringItem(e, "ALL")}
+        onClick={(e) => activeFilterByDevice(e, "ALL")}
         className={` w-full flex items-center justify-between p-2 sm:p-1  rounded-sm`}
       >
         <div className="flex items-center gap-3">
@@ -57,14 +57,14 @@ const FilterByDeviceMenu = ({
         >
           <span
             className={`${
-              filterQuery === "ALL" && "bg-[#43da63]"
+              filterByDevice === "ALL" && "bg-[#43da63]"
             } w-full h-full rounded-full`}
           ></span>
         </span>
       </div>
       <div
         ref={desktopRef}
-        onClick={(e) => activeFilteringItem(e, "DESKTOP")}
+        onClick={(e) => activeFilterByDevice(e, "DESKTOP")}
         className={` w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
       >
         <div className="flex items-center gap-3">
@@ -76,14 +76,14 @@ const FilterByDeviceMenu = ({
         >
           <span
             className={`${
-              filterQuery === "DESKTOP" && "bg-[#43da63]"
+              filterByDevice === "DESKTOP" && "bg-[#43da63]"
             } w-full h-full rounded-full`}
           ></span>
         </span>
       </div>
       <div
         ref={androidRef}
-        onClick={(e) => activeFilteringItem(e, "ANDROID")}
+        onClick={(e) => activeFilterByDevice(e, "ANDROID")}
         className={`w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
       >
         <div className="flex items-center gap-3">
@@ -95,14 +95,14 @@ const FilterByDeviceMenu = ({
         >
           <span
             className={`${
-              filterQuery === "ANDROID" && "bg-[#43da63]"
+              filterByDevice === "ANDROID" && "bg-[#43da63]"
             } w-full h-full rounded-full`}
           ></span>
         </span>
       </div>
       <div
         ref={macRef}
-        onClick={(e) => activeFilteringItem(e, "MAC")}
+        onClick={(e) => activeFilterByDevice(e, "MAC")}
         className={` w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
       >
         <div className="flex items-center gap-3">
@@ -114,7 +114,7 @@ const FilterByDeviceMenu = ({
         >
           <span
             className={`${
-              filterQuery === "MAC" && "bg-[#43da63]"
+              filterByDevice === "MAC" && "bg-[#43da63]"
             } w-full h-full rounded-full`}
           ></span>
         </span>

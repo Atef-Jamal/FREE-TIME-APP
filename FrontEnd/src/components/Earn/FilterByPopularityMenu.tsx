@@ -2,7 +2,7 @@ import { CgClose } from "react-icons/cg";
 import { FaHeart, FaStar } from "react-icons/fa6";
 import { SiFirewalla } from "react-icons/si";
 import { VscExpandAll } from "react-icons/vsc";
-import { TypeFilterQuery } from "../../types/earnTypes";
+import { TypeFilterByPopularity } from "../../types/earnTypes";
 import { Dispatch, RefObject, SetStateAction, useRef } from "react";
 import { useCloseMenuOnClickOutSide } from "../../hooks";
 import { useTranslation } from "react-i18next";
@@ -12,26 +12,26 @@ interface TypeProps {
   heighestRewardRef: RefObject<HTMLSpanElement | null>;
   popularRef: RefObject<HTMLSpanElement | null>;
   heighestRatingRef: RefObject<HTMLSpanElement | null>;
-  setOpenFilterMenu: Dispatch<SetStateAction<boolean>>;
-  activeFilteringItem: (
+  setOpenFilterByPopularityMenu: Dispatch<SetStateAction<boolean>>;
+  activeFilterByPopularity: (
     event: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-    item: TypeFilterQuery
+    item: TypeFilterByPopularity
   ) => void;
 }
 
-const FilteringMenu = ({
+const FilterByPopularityMenu = ({
   allRef,
   heighestRewardRef,
   popularRef,
   heighestRatingRef,
-  setOpenFilterMenu,
-  activeFilteringItem,
+  setOpenFilterByPopularityMenu,
+  activeFilterByPopularity,
 }: TypeProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation("earn");
 
   const handleClose = () => {
-    setOpenFilterMenu(false);
+    setOpenFilterByPopularityMenu(false);
   };
 
   useCloseMenuOnClickOutSide({
@@ -45,13 +45,13 @@ const FilteringMenu = ({
       className="sm:relative absolute top-9 sm:top-0 right-0 z-[2] w-[300px] xs:w-full h- ml-auto mt-2 p-1 border border-gray-700 bg-[#2f2f38] flex flex-col rounded-md cursor-pointer"
     >
       <span
-        onClick={() => setOpenFilterMenu(false)}
+        onClick={() => setOpenFilterByPopularityMenu(false)}
         className="absolute top-0 right-0  rounded-sm ml-auto p-2"
       >
         <CgClose className="text-xl" />
       </span>
       <span
-        onClick={(e) => activeFilteringItem(e, "ALL")}
+        onClick={(e) => activeFilterByPopularity(e, "ALL")}
         ref={allRef}
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
@@ -59,7 +59,7 @@ const FilteringMenu = ({
         {t("ALL")}
       </span>
       <span
-        onClick={(e) => activeFilteringItem(e, "REWARD")}
+        onClick={(e) => activeFilterByPopularity(e, "REWARD")}
         ref={heighestRewardRef}
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
@@ -67,7 +67,7 @@ const FilteringMenu = ({
         {t("REWARD")}
       </span>
       <span
-        onClick={(e) => activeFilteringItem(e, "POPULAR")}
+        onClick={(e) => activeFilterByPopularity(e, "POPULAR")}
         ref={popularRef}
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
@@ -75,7 +75,7 @@ const FilteringMenu = ({
         {t("POPULAR")}
       </span>
       <span
-        onClick={(e) => activeFilteringItem(e, "RAITING")}
+        onClick={(e) => activeFilterByPopularity(e, "RAITING")}
         ref={heighestRatingRef}
         className="text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold"
       >
@@ -85,4 +85,4 @@ const FilteringMenu = ({
   );
 };
 
-export default FilteringMenu;
+export default FilterByPopularityMenu;

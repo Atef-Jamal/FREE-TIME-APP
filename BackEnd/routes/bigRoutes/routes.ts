@@ -4,8 +4,8 @@ import usersRouter from "../usersRoutes";
 import conversationsRoute from "../privateChatRoutes";
 import notificationRoute from "../notificationRoutes";
 import publicChatRoute from "../publicChatRoutes";
-import songRoute from "../songRoutes";
-import taskRoute from "../appsRoutes";
+import musicsRoutes from "../musicsRoutes";
+import taskRoute from "../tasksRoutes";
 import frameRoute from "../frameRoutes";
 import testimonialRoute from "../testimonialRoutes";
 import couponRoute from "../couponRoutes";
@@ -27,7 +27,7 @@ router.use("/notifications", notificationRoute);
 
 router.use("/tasks", taskRoute);
 
-router.use("/songs", songRoute);
+router.use("/songs", musicsRoutes);
 
 router.use("/frames", frameRoute);
 

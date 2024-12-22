@@ -34,6 +34,7 @@ const RegisterationForm = () => {
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("register");
+
   const queryParam = searchParams.get("referrerUser");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +101,6 @@ const RegisterationForm = () => {
         window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
       }
     } catch (error) {
-      console.log(error);
       dispatch(
         showPopup({
           message: handleApiError(error),

@@ -58,4 +58,5 @@ export interface TypeUseScrollToElementHook {
   dependencies?: any[];
   scrollPosition?: "center" | "start" | "end" | "nearest";
   key?: string;
+  callback?: () => void;
 }

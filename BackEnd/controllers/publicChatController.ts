@@ -4,21 +4,34 @@ import Notification from "../models/notification";
 import { io } from "../app";
 import { onLineUsers } from "../socketIo/socketIo";
 
-export const getAllPublicMessages = async (_: Request, res: Response) => {
+export const getAllPublicMessages = async (req: Request, res: Response) => {
+  const pageParam = Number(req.query.pageParam) || 1;
+  const limit = Number(req.query.limit) || 15;
+  const skip = (pageParam - 1) * limit;
+
   try {
-    const messages = await PublicMessage.find({}).populate([
-      { path: "sender", select: "-password" },
-      { path: "mentioned", select: "-password" },
-      { path: "newUserReferred", select: "-password" },
-    ]);
-    return res.status(200).json(messages);
+    const messages = await PublicMessage.find({})
+      .sort({ createdAt: "descending" })
+      .skip(skip)
+      .limit(limit)
+      .populate([
+        { path: "sender", select: "-password" },
+        { path: "mentioned", select: "-password" },
+        { path: "newUserReferred", select: "-password" },
+      ]);
+
+    const count = await PublicMessage.countDocuments();
+    const hasOlder = pageParam * limit < count;
+
+    const reversed = messages.reverse();
+    return res.status(200).json({ messages: reversed, hasOlder });
   } catch (error) {
     return res.status(404).json({ error: "can't Load public chat" });
   }
 };
 
 export const createPublicMessage = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { messageText, type, mentioned } = req.body;
   try {
     const message = new PublicMessage({
@@ -59,7 +72,7 @@ export const createPublicMessage = async (req: Request, res: Response) => {
 
 export const deletePublicMessage = async (req: Request, res: Response) => {
   const { messageId } = req.params;
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   try {
     const deletedMessage = await PublicMessage.findOneAndUpdate(
       { _id: messageId, sender: currentUserId },
@@ -74,9 +87,25 @@ export const deletePublicMessage = async (req: Request, res: Response) => {
   }
 };
 
+export const getSingleMessage = async (req: Request, res: Response) => {
+  const { messageId } = req.params;
+  try {
+    const message = await PublicMessage.findById(messageId).populate([
+      { path: "sender", select: "-password" },
+      { path: "mentioned", select: "-password" },
+    ]);
+    if (!message) {
+      return res.status(404).json({ error: "Message Not Found" });
+    }
+    return res.status(200).json(message);
+  } catch (error) {
+    return res.status(404).json({ error: "an Error occurred, Try again" });
+  }
+};
+
 export const reactToPublicMessage = async (req: Request, res: Response) => {
   type TypeFieldName = "loves" | "dislikes" | "likes";
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { fieldName, messageId } = req.params as {
     fieldName: TypeFieldName;
     messageId: string;

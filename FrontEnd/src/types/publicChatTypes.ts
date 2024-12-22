@@ -27,3 +27,8 @@ export interface TypePublicChatFreeTime {
 }
 
 export type TypePublicChatItem = TypePublicChatMessage | TypePublicChatFreeTime;
+
+export interface TypeCashedPublicChat {
+  pageParams: number[];
+  pages: { messages: TypePublicChatItem[]; hasOlder: boolean }[];
+}

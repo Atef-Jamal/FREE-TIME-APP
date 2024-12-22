@@ -14,7 +14,7 @@ export const getAllTestimonials = async (_: Request, res: Response) => {
 };
 
 export const createTestimonial = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
   const { content, stars }: { content: string; stars: number } = req.body;
   try {
     if (content.trim() === "") {

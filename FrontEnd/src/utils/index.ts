@@ -5,7 +5,12 @@ import {
   TypePublicChatItem,
   TypePublicChatMessage,
 } from "../types/publicChatTypes";
-import { TypeReview, TypeTaskApp } from "../types/earnTypes";
+import {
+  TypeFilterByDevice,
+  TypeFilterByPopularity,
+  TypeReview,
+  TypeTaskApp,
+} from "../types/earnTypes";
 import { TypeMusicDetail, TypeTestimonial } from "../types/othersTypes";
 import { TypeFrame } from "../types/frameTypes";
 import {
@@ -124,28 +129,26 @@ export const handleMessageReaction = async ({
   return updatedMessage;
 };
 
-export const getAllPublicMessages = async (): Promise<TypePublicChatItem[]> => {
-  const response = await makeRequest.get("api/publicchat");
-  const messages = response.data;
-  return messages;
-};
-
 export const handleAddReview = async ({
-  appId,
+  taskId,
   comment,
 }: {
-  appId: string;
+  taskId: string;
   comment: string;
 }): Promise<TypeReview> => {
-  const response = await makeRequest.post(`/api/tasks/${appId}/review`, {
+  const response = await makeRequest.post(`/api/tasks/${taskId}/review`, {
     comment,
   });
   const review = response.data;
   return review;
 };
 
-export const fetchAppDetails = async (appId: string): Promise<TypeTaskApp> => {
-  const response = await makeRequest.get(`api/tasks/public/${appId}`);
+export const fetchAppDetails = async ({
+  taskId,
+}: {
+  taskId: string;
+}): Promise<TypeTaskApp> => {
+  const response = await makeRequest.get(`api/tasks/public/${taskId}`);
   const task = response.data;
   return task;
 };
@@ -229,14 +232,21 @@ export const changeMyPictureFrame = async ({
   const data = response.data;
   return data;
 };
+
 export const unselectMyPictureFrame = async (): Promise<void> => {
   await makeRequest.get("api/users/unselect-myphoto-frame");
 };
 
-export const fetchPublicChatMessages = async (): Promise<
-  TypePublicChatItem[]
-> => {
-  const response = await makeRequest.get("api/publicchat");
+export const fetchPublicChatMessages = async ({
+  pageParam,
+  limit,
+}: {
+  pageParam: number;
+  limit: number;
+}): Promise<{ messages: TypePublicChatItem[]; hasOlder: boolean }> => {
+  const response = await makeRequest.get(
+    `api/publicchat?pageParam=${pageParam}&limit=${limit}`
+  );
   const data = response.data;
   return data;
 };
@@ -321,4 +331,22 @@ export const fetchPrivateChatMessages = async ({
   const messages = response.data.messages;
   const secondUser = response.data.secondUser;
   return { messages, secondUser };
+};
+
+export const fetchAllTasks = async ({
+  filterByPopularity,
+  filterByDevice,
+  pageParam,
+  limitPerPage,
+}: {
+  filterByPopularity: TypeFilterByPopularity;
+  filterByDevice: TypeFilterByDevice;
+  limitPerPage: number;
+  pageParam: number;
+}): Promise<{ tasks: TypeTaskApp[]; hasMore: boolean }> => {
+  const response = await makeRequest.get(
+    `api/tasks?filterByPopularity=${filterByPopularity}&&filterByDevice=${filterByDevice}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`
+  );
+  const data = response.data;
+  return data;
 };

@@ -8,13 +8,13 @@ import { BsArrowDownCircle } from "react-icons/bs";
 import { fetchAppDetails, handleAddReview } from "../../utils";
 import Empty from "../Others/Empty";
 
-import AppDetailsSkeleton from "./AppDetailsSkeleton";
+import AppDetailsSkeleton from "./TaskDetailsSkeleton";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 
-const AppDetail = ({ appId }: { appId: string }) => {
+const TaskDetail = ({ taskId }: { taskId: string }) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
@@ -28,18 +28,18 @@ const AppDetail = ({ appId }: { appId: string }) => {
   let notActiveStars;
 
   const {
-    data: appDetail,
+    data: taskDetails,
     status,
     error,
   } = useQuery({
-    queryKey: ["earn", appId],
-    queryFn: () => fetchAppDetails(appId),
+    queryKey: ["earn", taskId],
+    queryFn: () => fetchAppDetails({ taskId }),
     staleTime: 60 * 60 * 1000,
   });
 
-  if (appDetail) {
-    isCompleted = currentUser?.completedTasks.includes(appDetail?._id);
-    notActiveStars = 5 - appDetail.rating;
+  if (taskDetails) {
+    isCompleted = currentUser?.completedTasks.includes(taskDetails?._id);
+    notActiveStars = 5 - taskDetails.rating;
   }
 
   const mutation = useMutation({
@@ -50,7 +50,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["earn", appId] });
+      queryClient.invalidateQueries({ queryKey: ["earn", taskId] });
       setComment("");
     },
   });
@@ -63,7 +63,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
       );
       return;
     }
-    mutation.mutate({ appId, comment });
+    mutation.mutate({ taskId, comment });
   };
 
   useEffect(() => {
@@ -89,7 +89,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
       </h1>
       <img
         alt=""
-        src={appDetail.image.replace(
+        src={taskDetails.image.replace(
           "http://localhost:3000",
           import.meta.env.VITE_SERVER_BASE_URL
         )}
@@ -99,19 +99,19 @@ const AppDetail = ({ appId }: { appId: string }) => {
       <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
         <span className="w-full text-[#537692] text-sm">
           <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span>{" "}
-          {appDetail?.title}
+          {taskDetails?.title}
         </span>
         <span className="w-full text-[#537692] text-sm">
           <span className="mr-2 text-[#aebeb5] text-base">
             {t("Description")} :
           </span>
-          {appDetail?.description}
+          {taskDetails?.description}
         </span>
         <span className="w-full text-[#537692] text-sm">
           <span className="mr-2 text-[#aebeb5] text-base">
             {t("available on")} :
           </span>
-          {appDetail?.devices === "ALL" ? "ALL DEVICES" : appDetail.devices}
+          {taskDetails?.devices === "ALL" ? "ALL DEVICES" : taskDetails.devices}
         </span>
         <div
           onClick={() => setExpandUsers((prev) => !prev)}
@@ -127,14 +127,14 @@ const AppDetail = ({ appId }: { appId: string }) => {
             expandUsers ? "p-1" : "overflow-hidden h-0 p-0"
           }`}
         >
-          {appDetail.completedBy.length === 0 && (
+          {taskDetails.completedBy.length === 0 && (
             <span className="text-gray-400 text-sm w-full flex items-center justify-center gap-2">
               <img src={empty} alt="" className="w-5 h-5 object-cover" />
               {t("No one complete this app before")}
             </span>
           )}
-          {appDetail.completedBy.length > 0 &&
-            appDetail.completedBy.map((item) => (
+          {taskDetails.completedBy.length > 0 &&
+            taskDetails.completedBy.map((item) => (
               <Link
                 key={item._id}
                 to={`/user/${item._id}`}
@@ -147,7 +147,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
         <span className="flex items-center gap-3 w-full text-[#aebeb5]">
           {t("Rating")} :
           <span className="flex items-center justify-center gap-1">
-            {[...Array(appDetail.rating).keys()].map((item) => (
+            {[...Array(taskDetails.rating).keys()].map((item) => (
               <IoMdStar key={item} />
             ))}
             {[...Array(notActiveStars).keys()].map((item) => (
@@ -168,7 +168,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
           } flex flex-col items-center"
           `}
         >
-          {appDetail.reviews.map((review) => {
+          {taskDetails.reviews.map((review) => {
             return (
               <div
                 key={review._id}
@@ -190,7 +190,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
               </div>
             );
           })}
-          {appDetail.reviews.length === 0 && (
+          {taskDetails.reviews.length === 0 && (
             <Empty
               emptyText={t("There is not Reviews on this offer")}
               imgWidthHeight="w-8 h-8"
@@ -211,7 +211,7 @@ const AppDetail = ({ appId }: { appId: string }) => {
         <span className="text-[#aebeb5] flex items-center gap-3 w-full mb-2">
           {t("Reward")} :
           <span className="text-[#6676ff] text-sm">
-            {appDetail.prize} {t("Points")}
+            {taskDetails.prize} {t("Points")}
           </span>
         </span>
         {isCompleted && (
@@ -221,15 +221,15 @@ const AppDetail = ({ appId }: { appId: string }) => {
             Completed
           </button>
         )}
-        {!isCompleted && appDetail.isAvailable === "AVAILABLE" && (
+        {!isCompleted && taskDetails.isAvailable === "AVAILABLE" && (
           <Link
-            to={`/playing/${appDetail._id}`}
+            to={`/playing/${taskDetails._id}`}
             className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
           >
             {t("START NOW")}
           </Link>
         )}
-        {appDetail.isAvailable === "UNAVAILABLE" && (
+        {taskDetails.isAvailable === "UNAVAILABLE" && (
           <button
             className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
           >
@@ -241,4 +241,4 @@ const AppDetail = ({ appId }: { appId: string }) => {
   );
 };
 
-export default AppDetail;
+export default TaskDetail;

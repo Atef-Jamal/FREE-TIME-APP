@@ -25,15 +25,15 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #454547;
+  background: #0a071670;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1cc74f;
+  background: #5ba06e;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1e424;
+  background: #a6d451;
 }
 
 .outlete {

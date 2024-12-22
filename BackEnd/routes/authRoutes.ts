@@ -16,7 +16,7 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/login-with-google", signInWithGoogle);
-router.get("/currentuser", getCurrentUser);
+router.get("/currentuser", protectedRoute, getCurrentUser);
 router.get(
   "/send-verification-email-code",
   protectedRoute,

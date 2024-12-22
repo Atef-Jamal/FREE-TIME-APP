@@ -45,7 +45,6 @@ const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
     },
     onSuccess: (data) => {
       if (!currentUser) return;
-      console.log(data);
       dispatch(
         setCurrentUser({
           ...currentUser,

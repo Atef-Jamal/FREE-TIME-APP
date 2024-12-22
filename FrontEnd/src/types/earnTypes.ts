@@ -47,11 +47,6 @@ export interface TypeReview {
   comment: string;
 }
 
-export type TypeFilterQuery =
-  | "DESKTOP"
-  | "ANDROID"
-  | "MAC"
-  | "ALL"
-  | "REWARD"
-  | "POPULAR"
-  | "RAITING";
+export type TypeFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
+
+export type TypeFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";

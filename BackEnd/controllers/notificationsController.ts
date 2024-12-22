@@ -17,7 +17,7 @@ export const getUserActivities = async (req: Request, res: Response) => {
 };
 
 export const getNotification = async (req: Request, res: Response) => {
-  const userid = req.user._id;
+  const userid = req.currentUser._id;
   try {
     const notifications = await Notification.find({
       belongsTo: userid,
@@ -45,11 +45,11 @@ export const createNotification = async (req: Request, res: Response) => {
 };
 
 export const markAsReaded = async (req: Request, res: Response) => {
-  const userid = req.user._id;
+  const userid = req.currentUser._id;
 
   try {
     const notifications = await Notification.updateMany(
-      { belongsTo: userid },
+      { belongsTo: userid, isRead: false },
       { isRead: true }
     );
 
@@ -80,7 +80,7 @@ export const updateNotify = async (req: Request, res: Response) => {
 
 export const collectReward = async (req: Request, res: Response) => {
   const notificationId = req.params.id;
-  const currentUserId = req.user._id;
+  const currentUserId = req.currentUser._id;
 
   try {
     const notify = await Notification.findById(notificationId);

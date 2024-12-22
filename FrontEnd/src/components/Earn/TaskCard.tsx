@@ -9,10 +9,10 @@ import { useTranslation } from "react-i18next";
 interface TypeAppCard {
   taskDetail: TypeTaskApp;
   index: number;
-  setAppId: React.Dispatch<React.SetStateAction<string | null>>;
+  setTaskId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
+const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
   const currentUserIsLoading = useAppSelector(
     (state) => state.stateManeger.currentUserIsLoading
   );
@@ -27,7 +27,7 @@ const AppCard = ({ taskDetail, index, setAppId }: TypeAppCard) => {
   return (
     <div
       id={taskDetail._id}
-      onClick={() => setAppId(taskDetail._id)}
+      onClick={() => setTaskId(taskDetail._id)}
       className={` ${
         index === 0 ? "col-span-2" : ""
       } relative flex flex-col  bg-[#55539b3a] rounded-md p-2 justify-between overflow-hidden border border-gray-700 h-[230px]`}
