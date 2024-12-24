@@ -151,15 +151,13 @@ export const signInWithGoogle = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.currentUser._id).select("-password");
-
-    if (!user) {
+    const currentUser = await User.findById(req.currentUser._id)
+      .select("-password")
+      .populate("myFrames");
+    if (!currentUser) {
       return res.status(404).json({ error: "User Not found" });
     }
-
-    const populateedUser = await user.populate("myFrames");
-
-    return res.status(200).json(populateedUser);
+    return res.status(200).json(currentUser);
   } catch (error) {
     return res.status(404).json({ error: "An unexpected behaviour occurred" });
   }
@@ -314,10 +312,10 @@ export const changeName = async (req: Request, res: Response) => {
         .status(404)
         .json({ error: "Can't change name because user not found" });
     }
-    if (newName === "") {
+    if (newName === "" || typeof newName !== "string") {
       return res.status(404).json({ error: "please Enter Name" });
     }
-    user.name = newName.toString();
+    user.name = newName;
     const savedUser = await user.save();
     return res.status(200).json({ name: savedUser.name });
   } catch (error) {

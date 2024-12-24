@@ -78,7 +78,7 @@ const Search = () => {
     };
     const timout = setTimeout(() => {
       getResults();
-    }, 500);
+    }, 250);
 
     return () => clearTimeout(timout);
   }, [searchQ, refetch]);
@@ -141,56 +141,76 @@ const Search = () => {
               Results Found
             </p>
 
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
-              Feartures
-            </h1>
-            <ResultElement
-              type="FEATURES"
-              results={results.features}
-              searchTerm={searchQ}
-              emptyText={"No Features Found"}
-            />
+            {results.features.length > 0 && (
+              <>
+                <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
+                  Feartures
+                </h1>
+                <ResultElement
+                  type="FEATURES"
+                  results={results.features}
+                  searchTerm={searchQ}
+                  emptyText={"No Features Found"}
+                />
+              </>
+            )}
 
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
-              People
-            </h1>
-            <ResultElement
-              type="USERS"
-              results={results.users.filter(
-                (usr) => usr._id !== currentUser?._id
-              )}
-              searchTerm={searchQ}
-              emptyText={"No People Found"}
-            />
+            {results.users.length > 0 && (
+              <>
+                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                  People
+                </h1>
+                <ResultElement
+                  type="USERS"
+                  results={results.users.filter(
+                    (usr) => usr._id !== currentUser?._id
+                  )}
+                  searchTerm={searchQ}
+                  emptyText={"No People Found"}
+                />
+              </>
+            )}
 
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
-              Apps
-            </h1>
-            <ResultElement
-              type="APPS"
-              results={results.apps}
-              searchTerm={searchQ}
-              emptyText={"No offers, apps Found"}
-            />
+            {results.apps.length > 0 && (
+              <>
+                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                  Apps
+                </h1>
+                <ResultElement
+                  type="APPS"
+                  results={results.apps}
+                  searchTerm={searchQ}
+                  emptyText={"No offers, apps Found"}
+                />
+              </>
+            )}
 
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
-              Frames
-            </h1>
-            <ResultElement
-              type="FRAMES"
-              results={results.frames}
-              searchTerm={searchQ}
-              emptyText={"No Frames Found"}
-            />
-            <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
-              Musics
-            </h1>
-            <ResultElement
-              type="MUSICS"
-              results={results.musics}
-              searchTerm={searchQ}
-              emptyText={"No Musics Found"}
-            />
+            {results.frames.length > 0 && (
+              <>
+                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                  Frames
+                </h1>
+                <ResultElement
+                  type="FRAMES"
+                  results={results.frames}
+                  searchTerm={searchQ}
+                  emptyText={"No Frames Found"}
+                />
+              </>
+            )}
+            {results.musics.length > 0 && (
+              <>
+                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                  Musics
+                </h1>
+                <ResultElement
+                  type="MUSICS"
+                  results={results.musics}
+                  searchTerm={searchQ}
+                  emptyText={"No Musics Found"}
+                />
+              </>
+            )}
           </div>
         )}
       </div>

@@ -18,14 +18,10 @@ export const useFetchAllUsers = (page?: number) => {
       setError(null);
       setLoading(true);
       try {
-        let response;
-        if (page) {
-          response = await makeRequest.get(`/api/users?page=${page}`);
-        } else {
-          response = await makeRequest.get(`/api/users`);
-        }
+        const response = await makeRequest.get(
+          `/api/users${page ? `?page=${page}` : ""}`
+        );
         const data = response.data;
-
         setUsers(data);
       } catch (error) {
         const err = handleApiError(error);

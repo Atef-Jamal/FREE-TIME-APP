@@ -59,6 +59,7 @@ const ApplyCoupon = () => {
       );
       return;
     }
+    mutation.mutate({ code });
   };
 
   return (

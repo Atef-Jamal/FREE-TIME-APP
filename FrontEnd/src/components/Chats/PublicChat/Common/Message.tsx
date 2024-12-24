@@ -207,9 +207,6 @@ const Message = memo(
       <div
         ref={lastMessageRef}
         id={messageItem._id}
-        // style={{
-        //   boxSizing: "content-box",
-        // }}
         className={`special-for-deleting-${messageItem._id} bg-[#2f2f4e88] w-full flex flex-col gap-1  rounded-md p-[6px]`}
       >
         <div className="w-full flex relative ">

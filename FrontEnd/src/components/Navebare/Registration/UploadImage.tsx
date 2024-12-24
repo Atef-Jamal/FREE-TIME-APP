@@ -65,10 +65,10 @@ const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
   useEffect(() => {
     if (!image) return;
     const fileReader = new FileReader();
+    fileReader.readAsDataURL(image);
     fileReader.onload = () => {
       setImagePreview(fileReader.result as string);
     };
-    fileReader.readAsDataURL(image);
   }, [image]);
 
   return (
