@@ -44,7 +44,7 @@ const SendMessage = ({
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
-  const timeOutRef = useRef<NodeJS.Timeout>(undefined);
+  const timeOutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -225,7 +225,7 @@ const SendMessage = ({
             setSomeOneTyping(false);
           }
         }, timmerLenth);
-        if (timeOutRef) clearTimeout(timeOutRef.current);
+        if (timeOutRef.current) clearTimeout(timeOutRef.current);
         timeOutRef.current = timmer;
       }
     },
