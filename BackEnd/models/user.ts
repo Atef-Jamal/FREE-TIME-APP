@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default: "",
+      default: `${process.env.SERVER_BASE_URL}/uploads/avatar.jpeg`,
     },
     points: {
       type: Number,

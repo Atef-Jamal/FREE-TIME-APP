@@ -31,9 +31,11 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture:
-        profilePicture || `${process.env.SERVER_BASE_URL}/uploads/avatar.jpeg`,
     });
+
+    if (profilePicture) {
+      newUser.profilePicture = profilePicture;
+    }
 
     const savedUser = await newUser.save();
 

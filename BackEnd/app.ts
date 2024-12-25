@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import { connecteToMongodb } from "./db/connectToMongodb";
 import routes from "./routes/bigRoutes/routes";
 import http from "http";
@@ -13,7 +12,6 @@ dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
 
 const server = http.createServer(app);
 
