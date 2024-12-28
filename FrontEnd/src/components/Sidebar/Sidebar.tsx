@@ -20,8 +20,6 @@ import { RiCloseFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { TypeCashedChat } from "../Chats/PrivateChat/SendMessagePrivateChat";
-import { TypeConversationSocketData } from "../../types/othersTypes";
-import { User } from "../../types/userTypes";
 
 const Sidebar = memo(
   ({
@@ -49,12 +47,14 @@ const Sidebar = memo(
     const location = useLocation();
     const { t } = useTranslation("sidebar");
 
+    const isPrivateChatPageOpen = location.pathname === "/privatechat";
+
     const handleCollaps = () =>
       dispatch(toggleThisEntity({ entity: "resizeSidebare" }));
 
     const handleNewPrivateMessage = useCallback(
       (data: TypePrivateMessage) => {
-        if (location.pathname !== "/privatechat") {
+        if (!isPrivateChatPageOpen) {
           dispatch(
             updateSidebarUnReadedMsgCount({
               type: "ADD-ONE",
@@ -125,94 +125,24 @@ const Sidebar = memo(
         activeConversation,
         onlineUsers,
         dispatch,
-        location.pathname,
+        isPrivateChatPageOpen,
       ]
     );
 
-    const handleConversationReaded = useCallback(
-      (data: TypeConversationSocketData) => {
-        queryClient.setQueryData(
-          ["private-messages", data.sender],
-          (old: TypeCashedChat) => {
-            if (old) {
-              return {
-                ...old,
-                messages: old.messages.map((msg) => ({
-                  ...msg,
-                  isRead: true,
-                })),
-              };
-            }
-          }
-        );
-      },
-      [queryClient]
-    );
-
-    const handleUpdateUser = useCallback(
-      (updatedUser: User) => {
-        queryClient.setQueryData(
-          ["private-messages", updatedUser._id],
-          (old: TypeCashedChat) => {
-            if (old) {
-              return {
-                ...old,
-                secondUser: updatedUser,
-              };
-            }
-          }
-        );
-        queryClient.setQueryData(
-          ["conversations"],
-          (old: TypeConversation[]) => {
-            if (old) {
-              return old.map((conv) => {
-                if (conv.secondParty._id === updatedUser._id)
-                  return { ...conv, secondParty: updatedUser };
-              });
-            }
-          }
-        );
-      },
-      [queryClient]
-    );
-
-    const handleAddNewUser = (newUser: User) => {
-      queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
-        return [
-          ...old,
-          { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
-        ];
-      });
-    };
-
     useListenToSocketEvents({
-      eventsToListen: [
-        "private-message",
-        "conversation-readed",
-        "user-updated",
-        "new-user-joined",
-      ],
-      handlers: [
-        handleNewPrivateMessage,
-        handleConversationReaded,
-        handleUpdateUser,
-        handleAddNewUser,
-      ],
+      eventsToListen: ["private-message"],
+      handlers: [handleNewPrivateMessage],
     });
 
     useEffect(() => {
-      if (
-        location.pathname === "/privatechat" &&
-        allUnReadedMesseges.length > 0
-      ) {
+      if (isPrivateChatPageOpen && allUnReadedMesseges.length > 0) {
         dispatch(
           updateSidebarUnReadedMsgCount({
             type: "REMOVE-ALL",
           })
         );
       }
-    }, [allUnReadedMesseges, dispatch, location.pathname]);
+    }, [allUnReadedMesseges, dispatch, isPrivateChatPageOpen]);
 
     useEffect(() => {
       const getAllUnReadedMsgs = async () => {

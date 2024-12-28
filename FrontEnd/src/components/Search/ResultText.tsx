@@ -17,8 +17,8 @@ const ResultText = ({
       <span
         key={i}
         className={`${
-          isMatched ? "bg-[#80f064e7] text-[#495064]" : "text-[#afaaaa]"
-        } sm:text-sm tracking-wide`}
+          isMatched ? "bg-[#3d9eee71] text-[#58e634]" : "text-[#afaaaa]"
+        } sm:text-sm font-bold tracking-wider`}
       >
         {slice}
       </span>

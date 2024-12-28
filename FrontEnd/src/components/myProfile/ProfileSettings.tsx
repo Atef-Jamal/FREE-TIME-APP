@@ -101,7 +101,7 @@ const ProfileSettings = () => {
 
   return (
     <div
-      className={`transition-all p-6 sm:p-4 xs:px-2 bg-[#414368] flex  flex-col  gap-4 sm:gap-2 rounded-lg relative`}
+      className={`transition-all p-6 sm:p-4 xs:px-2 bg-[#213743] flex  flex-col  gap-4 sm:gap-2 rounded-lg relative`}
     >
       <h1 className="text-yellow-500 mx-auto text-2xl font-bold">
         Settings
@@ -124,7 +124,7 @@ const ProfileSettings = () => {
             name="name"
             id="name"
             autoComplete="off"
-            className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
+            className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
           />
           <button
             onClick={changeNameHandler}
@@ -150,7 +150,7 @@ const ProfileSettings = () => {
             name="email"
             id="email"
             autoComplete="off"
-            className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
+            className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
           />
           {currentUser?.emailVerified ? (
             <button className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm">
@@ -182,7 +182,7 @@ const ProfileSettings = () => {
             name="oldpass"
             id="oldpass"
             autoComplete="off"
-            className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
+            className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
           />
         </div>
         <div className="flex flex-col gap-2 sm:gap-1">
@@ -201,7 +201,7 @@ const ProfileSettings = () => {
               name="newpass"
               id="newpass"
               autoComplete="off"
-              className="outline-none bg-[#2f2f33] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
+              className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
             />
             <button
               onClick={changePasswordHandler}

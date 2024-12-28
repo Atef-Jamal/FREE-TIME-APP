@@ -38,7 +38,22 @@ const ProfileActions = () => {
   ).length;
 
   const handleAddNewNotification = (data: TypeNotifications) => {
-    setNotifications((prev) => [...prev, data]);
+    setNotifications((prev) => {
+      const exists = prev.find((notify) => notify._id === data._id);
+      if (exists) {
+        return prev
+          .map((notify) => {
+            if (notify._id === data._id) return data;
+            return notify;
+          })
+          .sort((a, b) => {
+            if (a._id === data._id) return -1;
+            if (b._id === data._id) return 1;
+            return 0;
+          });
+      }
+      return [data, ...prev];
+    });
     notifySound.play();
   };
 
@@ -46,7 +61,9 @@ const ProfileActions = () => {
     if (!currentUser?._id) return;
     const fetchNotifications = async () => {
       try {
-        const response = await makeRequest.get("api/notifications");
+        const response = await makeRequest.get(
+          "api/notifications/my-notifications"
+        );
         setNotifications(response.data);
       } catch (error) {
         dispatch(

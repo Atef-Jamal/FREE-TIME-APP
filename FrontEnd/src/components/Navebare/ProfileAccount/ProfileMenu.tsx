@@ -22,7 +22,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const dispatch = useAppDispatch();
 
   const handleLogOut = async () => {
-    localStorage.setItem("token", "");
+    localStorage.clear();
     await signOut(auth);
     setOpenProfileMenu((previos) => !previos);
     window.location.href = `${window.location.origin}/?redirectedfrom=logout`;

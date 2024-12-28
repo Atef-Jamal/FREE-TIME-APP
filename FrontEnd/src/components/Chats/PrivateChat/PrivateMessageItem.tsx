@@ -33,7 +33,7 @@ const PrivateMessageItem = ({
       ref={messagesLength - 1 === index ? lastMessageRef : null}
       className="w-full relative p-2 lg:p-1 flex items-start justify-start gap-2 sm:gap-1 "
     >
-      <div className="w-10 h-10 sm:w-6 sm:h-6 rounded-full">
+      <div className="w-10 h-10 sm:w-7 sm:h-7 rounded-full">
         <img
           alt=""
           src={message.sender.profilePicture}
@@ -53,13 +53,13 @@ const PrivateMessageItem = ({
           }}
           className="w-full flex items-center gap-2 border-b pb-[2px] border-gray-600"
         >
-          <span className="text-[#64cf4f] sm:text-xs truncate">
+          <span className="text-[#3785fa] text-sm font-bold truncate">
             {message.sender.name}
           </span>
           <div className="flex items-center gap-2">
             <span
               dir="ltr"
-              className="text-[#8d7676] sm:text-xs text-sm w-[110px] flex items-center justify-center"
+              className="text-[#746767] text-sm sm:text-xs font-bold w-[110px] flex items-center justify-center"
             >
               {date}
             </span>

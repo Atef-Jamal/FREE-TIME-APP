@@ -4,8 +4,13 @@ import { LuInstagram } from "react-icons/lu";
 import { FaFacebook } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { MdDeck } from "react-icons/md";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const location = useLocation();
+  const isPrivateChatPage = location.pathname === "/privatechat";
+  const isPublicChatPage = location.pathname === "/chat";
+  if (isPrivateChatPage || isPublicChatPage) return;
   return (
     <div className="bg-[#181929] sm:pb-14 overflow-hidden ">
       <div className="flex justify-center items-center">

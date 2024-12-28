@@ -11,7 +11,9 @@ export const getAllConversations = async (req: Request, res: Response) => {
       allUsers.map(async (user) => {
         const conversation = await Conversation.findOne({
           participants: { $all: [currentUserId, user._id] },
-        }).select("lastMessage messages");
+        })
+          .select("lastMessage messages")
+          .populate("lastMessage.sender", "_id name");
 
         let lastMessage = null;
         let unreadedCount = 0;

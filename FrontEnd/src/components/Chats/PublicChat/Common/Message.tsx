@@ -22,24 +22,19 @@ import { verifiedImage } from "../../../../assets";
 import { BiCircle } from "react-icons/bi";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
-import html2canvas from "html2canvas";
-import { useListenToDocumentEvent } from "../../../../hooks/listenersHooks";
 import { useMutation } from "@tanstack/react-query";
 
 interface TypeMessageProp {
   singleMessage: TypePublicChatMessage;
   lastMessageRef?: RefObject<HTMLDivElement | null> | null;
-  handleOpenChatModelDeletion: (msgInfo: {
-    messageId: string;
-    messageUrlScreenshot: string;
-  }) => void;
+  handleSetMessageIdToDelete: (messageId: string) => void;
 }
 
 const Message = memo(
   ({
     singleMessage,
     lastMessageRef,
-    handleOpenChatModelDeletion,
+    handleSetMessageIdToDelete,
   }: TypeMessageProp) => {
     const currentUser = useAppSelector(
       (state) => state.stateManeger.currentUser
@@ -92,22 +87,8 @@ const Message = memo(
       },
     });
 
-    const handleDelete = async () => {
-      const messageElement = document.querySelector(
-        `.special-for-deleting-${messageItem._id}`
-      ) as HTMLElement;
-      let messageUrl = "";
-      if (messageElement) {
-        messageElement.classList.add("bg-[#16162c]");
-        const canvas = await html2canvas(messageElement);
-        messageElement?.classList.remove("bg-[#16162c]");
-        messageUrl = canvas.toDataURL("image/png");
-      }
-
-      handleOpenChatModelDeletion({
-        messageId: messageItem._id,
-        messageUrlScreenshot: messageUrl,
-      });
+    const handleDelete = () => {
+      handleSetMessageIdToDelete(messageItem._id);
     };
 
     const handleUpdateMessage = (updatedMessage: TypePublicChatMessage) => {
@@ -136,18 +117,6 @@ const Message = memo(
       }, 1000 * 60);
       return () => clearInterval(interval);
     }, [messageItem.createdAt]);
-
-    const onUpdate = ({ detail }: { detail: TypePublicChatMessage }) => {
-      if (detail._id === messageItem._id) {
-        setMessageItem(detail);
-      }
-      return;
-    };
-
-    useListenToDocumentEvent({
-      eventToListen: "fastDeletePublicMessage",
-      onUpdate,
-    });
 
     const handleLove = () => {
       if (!currentUser) {
@@ -219,24 +188,23 @@ const Message = memo(
                 ? "/myprofile"
                 : `/user/${messageItem.sender._id}`
             }
-            className={`ml-2 sm:ml-[6px] max-w-[60%] h-full overflow-hidden `}
+            className={`ml-2 sm:ml-[6px] max-w-[60%]  overflow-hidden -mt-1`}
           >
-            <span className="block text-[#76ee52] text-[12px] sm:text-[10px] font-bold capitalize -mb-[10px]">
+            <span className="flex items-center  text-[#6dca51] text-sm font-bold capitalize -mb-[6px]">
               {messageItem.sender?.name}
+              {messageItem.sender.emailVerified && (
+                <img
+                  src={verifiedImage}
+                  alt=""
+                  className="w-4 h-4 sm:w-[14px] sm:h-[14px] object-cover mx-2 "
+                />
+              )}
             </span>
             {messageItem.createdAt && (
-              <span className="text-[12px] sm:text-[10px] text-[#857272] font-bold">
-                {date}
-              </span>
+              <span className="text-xs text-[#857272] font-bold">{date}</span>
             )}
           </Link>
-          {messageItem.sender.emailVerified && (
-            <img
-              src={verifiedImage}
-              alt=""
-              className="w-4 h-4 object-cover mx-2 "
-            />
-          )}
+
           {currentUser?._id === messageItem.sender._id &&
             !messageItem.isDeleted && (
               <button
@@ -250,7 +218,7 @@ const Message = memo(
 
         {!messageItem.isDeleted ? (
           <div className="w-full pl-[3px]">
-            <p className="break-words text-xs sm:text-[10.5px] text-[#3cdfd6] w-full p-[2px]">
+            <p className="break-words text-sm text-[#97b5f7] w-full p-[2px]">
               {messageItem.mentioned && (
                 <Link
                   to={`/user/${messageItem.mentioned._id}`}

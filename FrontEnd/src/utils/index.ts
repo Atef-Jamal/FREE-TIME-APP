@@ -201,7 +201,7 @@ export const purshaseMusic = async ({
 };
 
 export const fetchStatistics = async (): Promise<TypeNotifications[]> => {
-  const response = await makeRequest.get("api/notifications");
+  const response = await makeRequest.get("api/notifications/my-notifications");
   const statistics = response.data;
   return statistics;
 };
@@ -325,7 +325,7 @@ export const fetchPrivateChatMessages = async ({
   secondUserId: string;
 }): Promise<{
   messages: TypePrivateMessage[];
-  secondUser: User;
+  secondUser: User | null;
 }> => {
   const response = await makeRequest.get(`api/conversations/${secondUserId}`);
   const messages = response.data.messages;

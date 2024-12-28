@@ -51,19 +51,19 @@ const ChatSidbare = memo(({ toggleSidbare }: TypeProps) => {
           </>
         )}
         {status === "pending" &&
-          [...Array(isMobile ? 4 : 7).keys()].map((skeleton) => (
+          [...Array(isMobile ? 6 : 7).keys()].map((skeleton) => (
             <PeopleSkeleton key={skeleton} />
           ))}
         {status === "success" &&
-          conversations.map((conv) => {
-            if (conv.secondParty._id === currentUser?._id) return;
+          conversations.map((conversation) => {
+            if (conversation.secondParty._id === currentUser?._id) return;
             return (
               <div
                 onClick={toggleSidbare}
-                key={conv.secondParty._id}
+                key={conversation.secondParty._id}
                 className="w-full"
               >
-                <People convInfo={conv} />
+                <People conversation={conversation} />
               </div>
             );
           })}

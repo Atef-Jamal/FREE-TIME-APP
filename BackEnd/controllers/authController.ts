@@ -31,6 +31,7 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
+      profilePicture: `${process.env.SERVER_BASE_URL}/uploads/avatar.jpeg`,
     });
 
     if (profilePicture) {
@@ -195,13 +196,13 @@ export const sendEmailVerificationCode = async (
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "atefgmal778@gmail.com",
-        pass: "vdeb nlom zols lrvp",
+        user: process.env.NODEMAILER_USER_EMAIL,
+        pass: process.env.NODEMAILER_USER_PASSWORD,
       },
     });
 
     const options: Mail.Options = {
-      from: "atefgmal778@gmail.com",
+      from: process.env.NODEMAILER_USER_EMAIL,
       to: user.email,
       subject: "Verify Your Email Adress",
       text: `Verification code : ${generateCode}`,
@@ -236,10 +237,10 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     const storedCode = user.emailVerificationCode?.code.toString();
 
     if (enteredCode.toString() !== storedCode) {
-      return res.status(404).json({ message: "Incorrect verification code" });
+      return res.status(404).json({ error: "Incorrect verification code" });
     }
     user.emailVerified = true;
-    await user.save();
+    const savedUser = await user.save();
 
     const createNotification = new Notification({
       belongsTo: currentUserId,
@@ -262,7 +263,9 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
       "new-notification",
       savedNotification
     );
+
     io.emit("public-message", populatedMessage);
+    io.emit("user-updated", savedUser);
 
     return res.status(200).json({ message: "successfully verified" });
   } catch (error) {

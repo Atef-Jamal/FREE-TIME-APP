@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/Hooks";
 import { showPopup } from "../../context/StateManeger";
-import { verifyMyEmail } from "../../utils";
+import { sendVerificationCode, verifyMyEmail } from "../../utils";
 import { handleApiError } from "../../utils/common";
 import { useMutation } from "@tanstack/react-query";
 
 const EnterVerificationCode = () => {
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
+  const [reSending, setResending] = useState(false);
   const [first, setFirst] = useState("");
   const [second, setSecod] = useState("");
   const [third, setThird] = useState("");
@@ -17,6 +18,50 @@ const EnterVerificationCode = () => {
   const thirdInput = useRef<HTMLInputElement>(null);
   const fourtInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+
+  const handleChangeFirstInput = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 1) {
+      return;
+    } else {
+      setFirst(e.target.value);
+      if (e.target.value.length === 1) secondInput.current?.focus();
+    }
+  };
+
+  const handleChangeSecondInput = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 1) {
+      return;
+    } else {
+      setSecod(e.target.value);
+      if (e.target.value.length === 1) {
+        thirdInput.current?.focus();
+      } else if (e.target.value.length === 0) {
+        firstInput.current?.focus();
+      }
+    }
+  };
+  const handleChangeThirdInput = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 1) {
+      return;
+    } else {
+      setThird(e.target.value);
+      if (e.target.value.length === 1) {
+        fourtInput.current?.focus();
+      } else if (e.target.value.length === 0) {
+        secondInput.current?.focus();
+      }
+    }
+  };
+  const handleChangeFourtInput = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 1) {
+      return;
+    } else {
+      setFourt(e.target.value);
+      if (e.target.value.length === 0) {
+        thirdInput.current?.focus();
+      }
+    }
+  };
 
   const mutation = useMutation({
     mutationFn: verifyMyEmail,
@@ -38,6 +83,28 @@ const EnterVerificationCode = () => {
     mutation.mutate({ enteredCode });
   };
 
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await sendVerificationCode();
+      dispatch(
+        showPopup({
+          message: "Resended successfully, check your email box",
+          type: "SUCESS",
+        })
+      );
+    } catch (error) {
+      dispatch(
+        showPopup({
+          message: handleApiError(error),
+          type: "ERROR_GENERAL",
+        })
+      );
+    } finally {
+      setResending(false);
+    }
+  };
+
   useEffect(() => {
     firstInput.current?.focus();
   }, []);
@@ -51,7 +118,7 @@ const EnterVerificationCode = () => {
   }
 
   return (
-    <div className="w-[500px] xs:w-[350px] p-4 bg-[#414368] rounded-md">
+    <div className="w-[500px] xs:w-[350px] p-4 bg-[#213743] rounded-md">
       <p className=" text-[#64e0a2] mx-2 font-bold">
         Your Verification code has been sent successfully, check your Email
       </p>
@@ -60,71 +127,33 @@ const EnterVerificationCode = () => {
           type="text"
           value={first}
           ref={firstInput}
-          onChange={(e) => {
-            if (e.target.value.length !== 1 && e.target.value.length !== 0) {
-              return;
-            } else {
-              setFirst(e.target.value);
-              if (e.target.value.length === 1) secondInput.current?.focus();
-            }
-          }}
-          className="w-[35px] h-[40px] outline-none bg-[#442d2d] text-white p-[3px] rounded-sm text-center"
+          onChange={handleChangeFirstInput}
+          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
         />
         <input
           type="text"
           value={second}
           ref={secondInput}
-          onChange={(e) => {
-            if (e.target.value.length !== 1 && e.target.value.length !== 0) {
-              return;
-            } else {
-              setSecod(e.target.value);
-              if (e.target.value.length === 1) {
-                thirdInput.current?.focus();
-              } else if (e.target.value.length === 0) {
-                firstInput.current?.focus();
-              }
-            }
-          }}
-          className="w-[35px] h-[40px] outline-none bg-[#442d2d] text-white p-[3px] rounded-sm text-center"
+          onChange={handleChangeSecondInput}
+          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
         />
         <input
           type="text"
           value={third}
           ref={thirdInput}
-          onChange={(e) => {
-            if (e.target.value.length !== 1 && e.target.value.length !== 0) {
-              return;
-            } else {
-              setThird(e.target.value);
-              if (e.target.value.length === 1) {
-                fourtInput.current?.focus();
-              } else if (e.target.value.length === 0) {
-                secondInput.current?.focus();
-              }
-            }
-          }}
-          className="w-[35px] h-[40px] outline-none bg-[#442d2d] text-white p-[3px] rounded-sm text-center"
+          onChange={handleChangeThirdInput}
+          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
         />
         <input
           type="text"
           value={fourt}
           ref={fourtInput}
-          onChange={(e) => {
-            if (e.target.value.length !== 1 && e.target.value.length !== 0) {
-              return;
-            } else {
-              setFourt(e.target.value);
-              if (e.target.value.length === 0) {
-                thirdInput.current?.focus();
-              }
-            }
-          }}
-          className="w-[35px] h-[40px] outline-none bg-[#442d2d] text-white p-[3px] rounded-sm text-center"
+          onChange={handleChangeFourtInput}
+          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
         />
         <button
           onClick={handleVerify}
-          className="bg-[#59e97dee] text-blue-900 py-2 px-4 font-bold"
+          className="bg-[#59e97dee] text-[#25223f] py-2 px-4 font-bold"
         >
           Verify
         </button>
@@ -132,10 +161,10 @@ const EnterVerificationCode = () => {
       <p className="text-sm font-bold text-[#cec1c1ee] flex items-center gap-4 mt-4">
         Don't have Code
         <button
-          onClick={() => {}}
+          onClick={handleResend}
           className="underline font-bold text-[#7bc44b]"
         >
-          Resend
+          {reSending ? "Resending..." : "Resend"}
         </button>
       </p>
     </div>

@@ -10,7 +10,7 @@ const UserImage = ({ user }: TypeProps) => {
     <div className={`relative w-full h-full rounded-sm `}>
       {user.activeFrame ? (
         <img
-          className=" absolute top-0 w-full h-full rounded-sm"
+          className="absolute top-0 w-full h-full rounded-sm"
           src={user.activeFrame.image}
           alt=""
         />

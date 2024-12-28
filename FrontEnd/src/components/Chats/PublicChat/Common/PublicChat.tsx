@@ -6,27 +6,21 @@ import Message from "./Message";
 import FreeTime from "./FreeTime";
 import { FaArrowDownLong } from "react-icons/fa6";
 import MessageSkeleton from "./MessageSkeleton";
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import {
-  fetchPublicChatMessages,
-  handleDeleteMessage,
-  makeRequest,
-} from "../../../../utils";
+import { useAppDispatch } from "../../../../context/Hooks";
+import { fetchPublicChatMessages, makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { debounce, handleApiError } from "../../../../utils/common";
-import Spinner from "../../../Others/Spinner";
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useScrollToElement } from "../../../../hooks/commonHooks";
 import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
 import { CgClose } from "react-icons/cg";
+import { ChatModelDeletion } from "./ChatModelDeletion";
 
-interface TypeMsgModelDeletion {
+export interface TypeMsgModelDeletion {
   messageId: string;
-  messageUrlScreenshot: string;
 }
 
 const PublicChat = memo(() => {
-  const socket = useAppSelector((state) => state.stateManeger.socket);
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,11 +28,10 @@ const PublicChat = memo(() => {
     null
   );
   const [isLoadingOldMsg, setIsLoadingOldMsg] = useState(false);
-  const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const queryParam = searchParams.get("messageId");
-  const [openChatModelDeletion, setOpenChatModelDeletion] =
-    useState<TypeMsgModelDeletion | null>(null);
+  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const scrollTimout = useRef<NodeJS.Timeout | null>(null);
   const searchParamsTimout = useRef<NodeJS.Timeout | null>(null);
@@ -113,12 +106,9 @@ const PublicChat = memo(() => {
     fetchPreviousPage();
   };
 
-  const handleOpenChatModelDeletion = useCallback(
-    (msgInfo: TypeMsgModelDeletion | null) => {
-      setOpenChatModelDeletion(msgInfo);
-    },
-    []
-  );
+  const handleSetMessageIdToDelete = useCallback((messageId: string | null) => {
+    setMessageToDelete(messageId);
+  }, []);
 
   const handleCloseOldMsg = () => {
     setSearchParams((prev) => {
@@ -134,29 +124,6 @@ const PublicChat = memo(() => {
     });
     setStagingMessages(0);
   }, []);
-
-  const mutation = useMutation({
-    mutationFn: handleDeleteMessage,
-    onMutate: () => {
-      if (stopScrolling === false) {
-        setStopScrolling(true);
-      }
-    },
-    onSuccess: (deletedMessage) => {
-      socket?.emit("interact-with-public-message", deletedMessage);
-    },
-    onError: (error) => {
-      dispatch(
-        showPopup({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        })
-      );
-    },
-    onSettled: async () => {
-      setOpenChatModelDeletion(null);
-    },
-  });
 
   useListenToSocketEvents({
     eventsToListen: ["public-message"],
@@ -214,7 +181,7 @@ const PublicChat = memo(() => {
             key={msg._id}
             singleMessage={msg}
             lastMessageRef={isLastMessage ? lastMessageRef : null}
-            handleOpenChatModelDeletion={handleOpenChatModelDeletion}
+            handleSetMessageIdToDelete={handleSetMessageIdToDelete}
           />
         );
       }
@@ -228,7 +195,7 @@ const PublicChat = memo(() => {
         );
       }
     });
-  }, [messages, handleOpenChatModelDeletion]);
+  }, [messages, handleSetMessageIdToDelete]);
 
   useEffect(() => {
     if (!stopScrolling && !queryParam) {
@@ -243,50 +210,12 @@ const PublicChat = memo(() => {
         ref={messageContainerRef}
         className="w-full h-full px-2 sm:px-1 pb-2 sm:pb-1 flex flex-col items-center gap-[5px] overflow-y-scroll sm:scrollbar-none relative"
       >
-        {openChatModelDeletion && (
-          <div
-            onClick={() => setOpenChatModelDeletion(null)}
-            style={{
-              height: messageContainerRef.current?.scrollHeight,
-            }}
-            className="absolute w-full top-0 z-[1] bg-[#03020ab6]"
-          >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="sticky top-[35%] border border-[#645252] bg-[#242222] rounded-lg mx-2 p-2"
-            >
-              <p className="text-sm text-[#87abc9] font-bold text-center mb-1">
-                Are your sure to delete your message ?
-              </p>
-              <img
-                src={openChatModelDeletion.messageUrlScreenshot}
-                alt="Message-preview"
-                className="w-full object-contain h-[75px] mb-[6px] overflow-hidden rounded-xl"
-              />
-              <div className="flex items-center justify-center gap-x-4">
-                <button
-                  disabled={mutation.status === "pending"}
-                  onClick={() => {
-                    mutation.mutate(openChatModelDeletion.messageId);
-                  }}
-                  className="bg-[#2d773f] rounded-lg py-1 px-8"
-                >
-                  {mutation.status === "pending" ? (
-                    <Spinner className="w-5 h-5" />
-                  ) : (
-                    "Yes"
-                  )}
-                </button>
-                <button
-                  onClick={() => setOpenChatModelDeletion(null)}
-                  disabled={mutation.status === "pending"}
-                  className="bg-[#0f0e29] rounded-lg py-1 px-9"
-                >
-                  No
-                </button>
-              </div>
-            </div>
-          </div>
+        {messageToDelete && (
+          <ChatModelDeletion
+            height={messageContainerRef.current?.scrollHeight}
+            messageToDelete={messageToDelete}
+            setMessageToDelete={setMessageToDelete}
+          />
         )}
 
         {status === "pending" &&
@@ -303,7 +232,7 @@ const PublicChat = memo(() => {
         {hasPreviousPage && !isFetchingPreviousPage && (
           <button
             onClick={handleLoadMoreMessages}
-            className="w-full text-center bg-[#56627a]"
+            className="mt-1 sm:text-sm w-full text-center bg-[#414752] rounded-md"
           >
             Load More
           </button>
@@ -319,7 +248,7 @@ const PublicChat = memo(() => {
           <div className="sticky z-[1] top-0 left-0 w-full rounded-md border border-[#a59e9eee] bg-black">
             <Message
               singleMessage={oldMessage}
-              handleOpenChatModelDeletion={handleOpenChatModelDeletion}
+              handleSetMessageIdToDelete={handleSetMessageIdToDelete}
             />
             <button
               onClick={handleCloseOldMsg}

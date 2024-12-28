@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { TypeMusicDetail, TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
+import { empty } from "../../assets";
 
 const Search = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
@@ -96,7 +97,7 @@ const Search = () => {
             onChange={handleChange}
             autoFocus
             placeholder="Search For EveryThing"
-            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-30 sm:placeholder:text-xs text-[#7893ec] sm:text-sm text-lg py-2 px-4 sm:px-2 w-full"
+            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-40 sm:placeholder:text-base text-[#7893ec] sm:text-base text-lg py-2 px-4 sm:px-2 w-full"
           />
         </div>
         <button
@@ -134,16 +135,28 @@ const Search = () => {
 
         {!loading && results && (
           <div className="p-2">
-            <p className="text-sm xs:text-[10px] text-gray-400 mb-1">
-              <span className="text-sm xs:text-[10px] text-[#8be64e] mx-1 ">
+            <p className="sm:text-sm text-gray-400 mb-1">
+              <span className="sm:text-sm  text-[#8be64e] mx-1 ">
                 {resultsCounts}
               </span>
               Results Found
             </p>
 
+            {resultsCounts === 0 && (
+              <div className="my-10 flex flex-col items-center justify-center gap-4">
+                <img
+                  src={empty}
+                  className="w-16 h-16 sm:w-12 sm:h-12 object-cover"
+                />
+                <p className="text-center text-[#bbb9b9]">
+                  No Results Match your search text
+                </p>
+              </div>
+            )}
+
             {results.features.length > 0 && (
               <>
-                <h1 className="text-gray-500 font-bold text-center border border-gray-700 mb-1">
+                <h1 className="bg-[#504040] text-[#74b7d1] font-bold text-center border border-gray-700 mb-1">
                   Feartures
                 </h1>
                 <ResultElement
@@ -157,7 +170,7 @@ const Search = () => {
 
             {results.users.length > 0 && (
               <>
-                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
                   People
                 </h1>
                 <ResultElement
@@ -173,7 +186,7 @@ const Search = () => {
 
             {results.apps.length > 0 && (
               <>
-                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
                   Apps
                 </h1>
                 <ResultElement
@@ -187,7 +200,7 @@ const Search = () => {
 
             {results.frames.length > 0 && (
               <>
-                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
                   Frames
                 </h1>
                 <ResultElement
@@ -200,7 +213,7 @@ const Search = () => {
             )}
             {results.musics.length > 0 && (
               <>
-                <h1 className="text-gray-500 font-bold text-center border border-gray-700 my-1">
+                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
                   Musics
                 </h1>
                 <ResultElement

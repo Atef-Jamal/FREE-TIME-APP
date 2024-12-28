@@ -32,7 +32,7 @@ const initialState: TypeInitialState = {
   onlineUsers: [],
   reFetchThisUserId: "",
   allUnReadedMesseges: [],
-  activeConversation: null,
+  activeConversation: localStorage.getItem("active-converstaion") || null,
   model: { status: false, children: null },
   publicMsgRedPoint: false,
 };

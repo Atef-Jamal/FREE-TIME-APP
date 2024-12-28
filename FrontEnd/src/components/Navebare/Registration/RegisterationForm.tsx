@@ -136,7 +136,7 @@ const RegisterationForm = () => {
             toggleThisEntity({ entity: "openRegisterForm", value: false })
           );
         }}
-        className="fixed top-0 left-0 w-full h-full bg-[#00000075] sm:hidden "
+        className="fixed top-0 left-0 w-full h-full bg-[#000000b0] sm:hidden "
       ></div>
       <div className="absolute top-16 xl:top-9 sm:top-0 w-[60%] max-w-[1300px] min-w-[650px]  h-[75%] sm:min-w-full sm:max-w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-auto ">
         <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-0 ">

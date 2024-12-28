@@ -8,7 +8,6 @@ import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
 import { User } from "../../types/userTypes";
-import { useListenToSocketEvents } from "../../hooks";
 import LangMenu from "./LangMenu";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUsers } from "../../utils";
@@ -53,36 +52,6 @@ const LiveStats = memo(() => {
       }
     });
   }, [onlineUsers, users]);
-
-  const handleAddUser = useCallback(
-    (newUser: User) => {
-      queryClient.setQueryData(["users"], (previous: User[]) => {
-        return [...previous, newUser];
-      });
-    },
-    [queryClient]
-  );
-
-  const handlUpdateUser = useCallback(
-    (updatedUser: User) => {
-      queryClient.setQueryData(["users"], (previousUsers: User[]) => {
-        if (!previousUsers) return;
-        return previousUsers.map((userItem) => {
-          if (userItem._id === updatedUser._id) {
-            return updatedUser;
-          } else {
-            return userItem;
-          }
-        });
-      });
-    },
-    [queryClient]
-  );
-
-  useListenToSocketEvents({
-    eventsToListen: ["new-user-joined", "user-updated"],
-    handlers: [handleAddUser, handlUpdateUser],
-  });
 
   useEffect(() => {
     if (users.length > 0) {

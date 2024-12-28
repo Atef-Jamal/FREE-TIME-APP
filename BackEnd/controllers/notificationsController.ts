@@ -2,6 +2,21 @@ import { Request, Response } from "express";
 import Notification from "../models/notification";
 import User from "../models/user";
 
+export const getNotifications = async (req: Request, res: Response) => {
+  const userId = req.currentUser._id;
+  try {
+    const notifications = await Notification.find({
+      belongsTo: userId,
+    })
+      .sort({ updatedAt: "descending" })
+      .populate(["mentionedUser", "referredUser", "frame", "interactedUser"]);
+
+    return res.status(200).json(notifications);
+  } catch (error) {
+    return res.status(404).json({ error: "can't Load your Notifications" });
+  }
+};
+
 export const getUserActivities = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
@@ -13,19 +28,6 @@ export const getUserActivities = async (req: Request, res: Response) => {
     return res.status(200).json(allNotifications);
   } catch (error) {
     return res.status(404).json({ error: "can't get user Activities" });
-  }
-};
-
-export const getNotification = async (req: Request, res: Response) => {
-  const userid = req.currentUser._id;
-  try {
-    const notifications = await Notification.find({
-      belongsTo: userid,
-    }).populate(["mentionedUser", "referredUser", "frame", "interactedUser"]);
-
-    return res.status(200).json(notifications);
-  } catch (error) {
-    return res.status(404).json({ error: "can't Load your Notifications" });
   }
 };
 
@@ -60,21 +62,6 @@ export const markAsReaded = async (req: Request, res: Response) => {
     return res.status(200).json(notifications);
   } catch (error) {
     return res.status(404).json({ error: "an unexpected Error happened" });
-  }
-};
-
-export const updateNotify = async (req: Request, res: Response) => {
-  try {
-    const bodyContent = req.body;
-    const notifyId = req.params.id;
-    const updated = await Notification.findByIdAndUpdate(
-      notifyId,
-      bodyContent,
-      { new: true }
-    );
-    return res.status(200).json(updated);
-  } catch (error) {
-    return res.status(404).json({ error: "an Error occurred" });
   }
 };
 

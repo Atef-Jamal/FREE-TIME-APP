@@ -25,7 +25,7 @@ const ToastNotify = memo(() => {
 
   return (
     <div
-      className={`absolute top-3 sm:top-1 z-[20] ${
+      className={`absolute top-3 sm:top-1 z-[50] ${
         message
           ? " translate-y-0 p-2 border  border-[#e0d975]"
           : "-translate-y-[150%] p-0"

@@ -47,7 +47,7 @@ const VerifyEmailBox = () => {
   }
 
   return (
-    <div className="w-full h-[110px] p-4 flex flex-col  gap-3 bg-[#414368] rounded-md ">
+    <div className="w-full h-[110px] p-4 flex flex-col  gap-3 bg-[#213743] rounded-md ">
       <div className="flex items-center justify-between">
         <h1 className="text-[#7bbe67] font-bold ">Send Verification Code To</h1>
         <button

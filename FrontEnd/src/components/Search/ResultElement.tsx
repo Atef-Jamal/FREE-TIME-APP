@@ -36,22 +36,9 @@ const ResultElement = ({
                 src={item.image}
                 className="w-full h-full object-contain"
               />
-              {/* <Image
-                alt={""}
-                src={item.image}
-                className="w-full h-full object-contain"
-              /> */}
             </div>
           )}
           {type === "APPS" && (
-            // <Image
-            //   alt={""}
-            //   src={item.image.replace(
-            //     "http://localhost:3000",
-            //     import.meta.env.VITE_SERVER_BASE_URL
-            //   )}
-            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
-            // />
             <img
               alt={""}
               src={item.image.replace(
@@ -67,18 +54,8 @@ const ResultElement = ({
               src={item.image}
               className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
             />
-            // <Image
-            //   alt={""}
-            //   src={item.image}
-            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
-            // />
           )}
           {type === "USERS" && (
-            // <Image
-            //   alt={""}
-            //   src={item.image}
-            //   className="w-10 h-10 sm:w-7 sm:h-7 object-fill rounded-full"
-            // />
             <img
               alt={""}
               src={item.image}

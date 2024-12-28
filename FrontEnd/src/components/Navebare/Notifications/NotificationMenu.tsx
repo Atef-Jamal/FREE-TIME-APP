@@ -68,7 +68,7 @@ const NotificationMenu = ({
             toggleThisEntity({ entity: "openNotification", value: false })
           )
         }
-        className="fixed top-[75px] sm:top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#01010779] "
+        className="fixed top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#010107a1] "
       ></div>
 
       <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-2">
@@ -93,106 +93,104 @@ const NotificationMenu = ({
           )}
           {!loadingNotifications &&
             notifications.length > 0 &&
-            notifications
-              .map((item) => {
-                if (item.type === "QUIZ-APP") {
-                  return (
-                    <QuizTaskNotify
-                      key={item._id}
-                      _id={item._id}
-                      isCollected={item.isCollected}
-                      createdAt={item.createdAt}
-                      prize={item.prize}
-                    />
-                  );
-                }
-                if (item.type === "EMAIL-VERIFIED") {
-                  return (
-                    <EmailVerifiedNotify
-                      key={item._id}
-                      _id={item._id}
-                      createdAt={item.createdAt}
-                      prize={item.prize}
-                      isCollected={item.isCollected}
-                    />
-                  );
-                }
-                if (item.type === "BUY-FRAME") {
-                  return (
-                    <BuyFrameNotify
-                      key={item._id}
-                      frame={item.frame}
-                      createdAt={item.createdAt}
-                      updatedAt={item.updatedAt}
-                    />
-                  );
-                }
-                if (item.type === "MUSIC") {
-                  return (
-                    <NotificationBuyMusic
-                      key={item._id}
-                      musicTitle={item.musicTitle}
-                      createdAt={item.createdAt}
-                      price={item.price}
-                      musicId={item.musicId}
-                    />
-                  );
-                }
-                if (item.type === "ANNOUNCEMENT") {
-                  return (
-                    <AnnouncementNotify
-                      key={item._id}
-                      announceContent={item.announceContent}
-                      createdAt={item.createdAt}
-                    />
-                  );
-                }
-                if (item.type === "REFERRER") {
-                  return (
-                    <ReferrerNotify
-                      key={item._id}
-                      referredUser={item.referredUser}
-                      createdAt={item.createdAt}
-                      _id={item._id}
-                      isCollected={item.isCollected}
-                      prize={item.prize}
-                    />
-                  );
-                }
-                if (item.type === "GUESS-CARD") {
-                  return (
-                    <GuessCardNotify
-                      key={item._id}
-                      createdAt={item.createdAt}
-                      _id={item._id}
-                      isCollected={item.isCollected}
-                      prize={item.prize}
-                    />
-                  );
-                }
-                if (item.type === "MENTION") {
-                  return (
-                    <MentionNotify
-                      key={item._id}
-                      messageLocation={item.messageLocation}
-                      createdAt={item.createdAt}
-                      mentionedUser={item.mentionedUser}
-                    />
-                  );
-                }
-                if (item.type === "INTERACT-WITH-MESSAGE") {
-                  return (
-                    <MessageReactionNotify
-                      key={item._id}
-                      messageLocation={item.messageLocation}
-                      createdAt={item.createdAt}
-                      interactedUser={item.interactedUser}
-                      typeOfInteraction={item.typeOfInteraction}
-                    />
-                  );
-                }
-              })
-              .reverse()}
+            notifications.map((item) => {
+              if (item.type === "QUIZ-APP") {
+                return (
+                  <QuizTaskNotify
+                    key={item._id}
+                    _id={item._id}
+                    isCollected={item.isCollected}
+                    createdAt={item.createdAt}
+                    prize={item.prize}
+                  />
+                );
+              }
+              if (item.type === "EMAIL-VERIFIED") {
+                return (
+                  <EmailVerifiedNotify
+                    key={item._id}
+                    _id={item._id}
+                    createdAt={item.createdAt}
+                    prize={item.prize}
+                    isCollected={item.isCollected}
+                  />
+                );
+              }
+              if (item.type === "BUY-FRAME") {
+                return (
+                  <BuyFrameNotify
+                    key={item._id}
+                    frame={item.frame}
+                    createdAt={item.createdAt}
+                    updatedAt={item.updatedAt}
+                  />
+                );
+              }
+              if (item.type === "MUSIC") {
+                return (
+                  <NotificationBuyMusic
+                    key={item._id}
+                    musicTitle={item.musicTitle}
+                    createdAt={item.createdAt}
+                    price={item.price}
+                    musicId={item.musicId}
+                  />
+                );
+              }
+              if (item.type === "ANNOUNCEMENT") {
+                return (
+                  <AnnouncementNotify
+                    key={item._id}
+                    announceContent={item.announceContent}
+                    createdAt={item.createdAt}
+                  />
+                );
+              }
+              if (item.type === "REFERRER") {
+                return (
+                  <ReferrerNotify
+                    key={item._id}
+                    referredUser={item.referredUser}
+                    createdAt={item.createdAt}
+                    _id={item._id}
+                    isCollected={item.isCollected}
+                    prize={item.prize}
+                  />
+                );
+              }
+              if (item.type === "GUESS-CARD") {
+                return (
+                  <GuessCardNotify
+                    key={item._id}
+                    createdAt={item.createdAt}
+                    _id={item._id}
+                    isCollected={item.isCollected}
+                    prize={item.prize}
+                  />
+                );
+              }
+              if (item.type === "MENTION") {
+                return (
+                  <MentionNotify
+                    key={item._id}
+                    messageLocation={item.messageLocation}
+                    createdAt={item.createdAt}
+                    mentionedUser={item.mentionedUser}
+                  />
+                );
+              }
+              if (item.type === "INTERACT-WITH-MESSAGE") {
+                return (
+                  <MessageReactionNotify
+                    key={item._id}
+                    messageLocation={item.messageLocation}
+                    createdAt={item.createdAt}
+                    interactedUser={item.interactedUser}
+                    typeOfInteraction={item.typeOfInteraction}
+                  />
+                );
+              }
+            })}
         </div>
         {notifications.length === 0 && (
           <Empty emptyText="Empty Notifications" />

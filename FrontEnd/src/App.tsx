@@ -2,8 +2,7 @@ import { Suspense, lazy, useEffect } from "react";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import io from "socket.io-client";
-import { setOnlineUsers, setSocet } from "./context/StateManeger";
-import { useListenToSocketEvents } from "./hooks";
+import { setSocet } from "./context/StateManeger";
 import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
 import LoadingWebsite from "./components/Others/LoadingWebsite";
 import ProtectedPage from "./components/Others/ProtectedPage";
@@ -172,26 +171,11 @@ const App = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const dispatch = useAppDispatch();
 
-  const handleUpdateOnlineUsers = (data: string[]) => {
-    const filtered = data.filter((userId) => userId !== "undefined");
-    dispatch(setOnlineUsers(filtered));
-  };
-
-  useListenToSocketEvents({
-    eventsToListen: ["online-users"],
-    handlers: [handleUpdateOnlineUsers],
-  });
-
   useEffect(() => {
-    const establishSocetConnection = () => {
-      const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-        query: { userId: currentUser?._id },
-      });
-      dispatch(setSocet(socket));
-      return socket;
-    };
-
-    const socket = establishSocetConnection();
+    const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
+      query: { userId: currentUser?._id },
+    });
+    dispatch(setSocet(socket));
     return () => {
       if (socket) {
         socket.close();

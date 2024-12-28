@@ -45,11 +45,6 @@ const PrivateChat = () => {
         prev.delete("chat-with");
         return prev;
       });
-    } else {
-      const savedSecondPartyId = localStorage.getItem("active-converstaion");
-      if (savedSecondPartyId && savedSecondPartyId !== currentUser?._id) {
-        dispatch(setActiveConversation(savedSecondPartyId));
-      }
     }
   }, [dispatch, secondPartyId, currentUser?._id, setSearchParams]);
 
@@ -60,6 +55,7 @@ const PrivateChat = () => {
       </div>
     );
   }
+
   if (!currentUser) {
     return (
       <div className="w-full h-full flex items-center justify-center">

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
@@ -8,69 +8,44 @@ import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { useListenToSocketEvents } from "../../hooks";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  TypeCashedPublicChat,
-  TypePublicChatItem,
-} from "../../types/publicChatTypes";
 
 const NavebareBottom = ({
   setOpenSidbareMobile,
   openSidbareMobile,
-  privateMsgRedPoint,
-  setPrivateMsgRedPoint,
 }: {
-  privateMsgRedPoint: boolean;
-  setPrivateMsgRedPoint: Dispatch<SetStateAction<boolean>>;
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
   openSidbareMobile: boolean;
 }) => {
   const publicMsgRedPoint = useAppSelector(
     (state) => state.stateManeger.publicMsgRedPoint
   );
-  const queryClient = useQueryClient();
+  const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
   const dispatch = useAppDispatch();
 
-  const handleAddNewPrivateMessage = () => {
+  const handleNotifyNewPublicMessage = () => {
+    if (location.pathname !== "/chat") {
+      dispatch(setPublicMsgRedPoint(true));
+    }
+  };
+
+  const handleNotifyNewPrivateMessage = () => {
     if (location.pathname !== "/privatechat" && !openSidbareMobile) {
       setPrivateMsgRedPoint(true);
     }
   };
 
   useListenToSocketEvents({
-    eventsToListen: ["private-message"],
-    handlers: [handleAddNewPrivateMessage],
+    eventsToListen: ["public-message", "private-message"],
+    handlers: [handleNotifyNewPublicMessage, handleNotifyNewPrivateMessage],
   });
 
-  const handleNotify = (newMessage: TypePublicChatItem) => {
-    if (location.pathname !== "/chat") {
-      dispatch(setPublicMsgRedPoint(true));
+  useEffect(() => {
+    if (openSidbareMobile) {
+      setPrivateMsgRedPoint(false);
     }
-    queryClient.setQueryData(
-      ["public-chat-messages"],
-      (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page, index) => {
-            if (index === previous.pages.length - 1) {
-              return {
-                ...page,
-                messages: [...page.messages, newMessage],
-              };
-            }
-            return page;
-          }),
-        };
-      }
-    );
-  };
-
-  useListenToSocketEvents({
-    eventsToListen: ["public-message"],
-    handlers: [handleNotify],
-  });
+  }, [openSidbareMobile, setPrivateMsgRedPoint]);
 
   return (
     <ul className="w-full flex items-center justify-between gap-1">

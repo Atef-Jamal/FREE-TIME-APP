@@ -108,7 +108,7 @@ const ChatBody = () => {
           <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
             <UserImage user={data.secondUser} />
           </div>
-          <span className="sm:text-sm text-[#3785fa]">
+          <span className="sm:text-sm font-bold text-[#3785fa]">
             {data.secondUser?.name}
           </span>
         </div>
