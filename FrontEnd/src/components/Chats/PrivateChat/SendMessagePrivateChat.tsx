@@ -7,7 +7,7 @@ import { handleApiError } from "../../../utils/common";
 import { v4 as uuId } from "uuid";
 
 import {
-  TypeConversation,
+  TypeCashedConversations,
   TypePrivateMessage,
 } from "../../../types/privateChatTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -84,17 +84,25 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
           }
         }
       );
-      queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
-        if (old) {
-          return old.map((conv) => {
-            if (conv.secondParty._id === id) {
-              return { ...conv, lastMessage: data };
-            } else {
-              return conv;
-            }
-          });
+      queryClient.setQueryData(
+        ["conversations"],
+        (previous: TypeCashedConversations): TypeCashedConversations => {
+          return {
+            ...previous,
+            pages: previous.pages.map((page) => {
+              return {
+                ...page,
+                conversations: page.conversations.map((conv) => {
+                  if (conv.secondParty._id === id) {
+                    return { ...conv, lastMessage: data };
+                  }
+                  return conv;
+                }),
+              };
+            }),
+          };
         }
-      });
+      );
       socket?.emit("private-message", { to: id, data: data });
     },
     onError: (error, _, context) => {

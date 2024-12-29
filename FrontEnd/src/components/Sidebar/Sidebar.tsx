@@ -6,7 +6,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { memo, useCallback, useEffect } from "react";
 import { useListenToSocketEvents } from "../../hooks";
 import {
-  TypeConversation,
+  TypeCashedConversations,
   TypePrivateMessage,
 } from "../../types/privateChatTypes";
 import {
@@ -29,9 +29,6 @@ const Sidebar = memo(
   }) => {
     const currentUser = useAppSelector(
       (state) => state.stateManeger.currentUser
-    );
-    const onlineUsers = useAppSelector(
-      (state) => state.stateManeger.onlineUsers
     );
     const allUnReadedMesseges = useAppSelector(
       (state) => state.stateManeger.allUnReadedMesseges
@@ -67,49 +64,29 @@ const Sidebar = memo(
         }
         queryClient.setQueryData(
           ["conversations"],
-          (old: TypeConversation[]) => {
-            if (!old) return;
-            const newArry = old.map((conv) => {
-              if (data.sender._id === conv.secondParty._id) {
-                const isChatRoomWithUserOpen =
-                  data.sender._id === activeConversation;
+          (previous: TypeCashedConversations): TypeCashedConversations => {
+            return {
+              ...previous,
+              pages: previous.pages.map((page) => {
                 return {
-                  ...conv,
-                  lastMessage: data,
-                  unreadedCount: isChatRoomWithUserOpen
-                    ? conv.unreadedCount
-                    : conv.unreadedCount + 1,
+                  ...page,
+                  conversations: page.conversations.map((conv) => {
+                    const isConversationWithUserOpen =
+                      data.sender._id === activeConversation;
+                    if (conv.secondParty._id === data.sender._id) {
+                      return {
+                        ...conv,
+                        lastMessage: data,
+                        unreadedCount: isConversationWithUserOpen
+                          ? conv.unreadedCount
+                          : conv.unreadedCount + 1,
+                      };
+                    }
+                    return conv;
+                  }),
                 };
-              } else {
-                return conv;
-              }
-            });
-            newArry.sort((a, b) => {
-              if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
-                if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
-                  return -1;
-                }
-                if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
-                  return 1;
-                } else {
-                  return 0;
-                }
-              }
-              if (
-                onlineUsers.includes(a.secondParty._id) &&
-                !onlineUsers.includes(b.secondParty._id)
-              ) {
-                return -1;
-              }
-              if (
-                !onlineUsers.includes(a.secondParty._id) &&
-                onlineUsers.includes(b.secondParty._id)
-              ) {
-                return 1;
-              }
-              return 0;
-            });
-            return newArry;
+              }),
+            };
           }
         );
         queryClient.setQueryData(
@@ -120,13 +97,7 @@ const Sidebar = memo(
           }
         );
       },
-      [
-        queryClient,
-        activeConversation,
-        onlineUsers,
-        dispatch,
-        isPrivateChatPageOpen,
-      ]
+      [queryClient, activeConversation, dispatch, isPrivateChatPageOpen]
     );
 
     useListenToSocketEvents({

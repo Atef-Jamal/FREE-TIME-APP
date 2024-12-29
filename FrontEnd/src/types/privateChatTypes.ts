@@ -15,3 +15,8 @@ export interface TypePrivateMessage {
   updatedAt: Date;
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }
+
+export interface TypeCashedConversations {
+  pageParams: number[];
+  pages: { conversations: TypeConversation[]; hasMore: boolean }[];
+}

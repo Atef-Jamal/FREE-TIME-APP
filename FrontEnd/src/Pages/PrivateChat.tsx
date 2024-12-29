@@ -83,7 +83,10 @@ const PrivateChat = () => {
             openSidbare ? "lg:translate-x-[0%]" : "lg:-translate-x-[100%]"
           }`}
         >
-          <ChatSidbare toggleSidbare={toggleSidbare} />
+          <ChatSidbare
+            openSidbare={openSidbare}
+            toggleSidbare={toggleSidbare}
+          />
         </div>
         <div className="h-full flex-1 max-w-[800px] mx-auto">
           {activeConversation ? (

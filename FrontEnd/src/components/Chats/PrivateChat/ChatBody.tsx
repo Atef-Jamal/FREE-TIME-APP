@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import UserImage from "../../Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat"; // TypeCashedChat,
-import { TypeConversation } from "../../../types/privateChatTypes";
+import { TypeCashedConversations } from "../../../types/privateChatTypes";
 import { showPopup } from "../../../context/StateManeger";
 import { handleApiError } from "../../../utils/common";
 import { fetchPrivateChatMessages, makeRequest } from "../../../utils";
@@ -46,17 +46,25 @@ const ChatBody = () => {
       await makeRequest.patch(`api/conversations/${activeConversation}`, {
         FOR_CONSISTENCY: "FOR_CONSISTENCY",
       });
-      queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
-        if (old) {
-          return old.map((conv) => {
-            if (conv.secondParty._id === activeConversation) {
-              return { ...conv, unreadedCount: 0 };
-            } else {
-              return conv;
-            }
-          });
+      queryClient.setQueryData(
+        ["conversations"],
+        (previous: TypeCashedConversations): TypeCashedConversations => {
+          return {
+            ...previous,
+            pages: previous.pages.map((page) => {
+              return {
+                ...page,
+                conversations: page.conversations.map((conv) => {
+                  if (conv.secondParty._id === activeConversation) {
+                    return { ...conv, unreadedCount: 0 };
+                  }
+                  return conv;
+                }),
+              };
+            }),
+          };
         }
-      });
+      );
     } catch (error) {
       dispatch(
         showPopup({

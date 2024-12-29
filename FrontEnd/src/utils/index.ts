@@ -267,42 +267,54 @@ export const sendPublicChatMessage = async ({
   return messageData;
 };
 
+// export const fetchAllConversations = async ({
+//   onlineUsers,
+// }: {
+//   onlineUsers: string[];
+// }): Promise<TypeConversation[]> => {
+//   const response = await makeRequest.get(
+//     "api/conversations/all-conversations/allusers"
+//   );
+//   const sorted = response.data.sort(
+//     (a: TypeConversation, b: TypeConversation) => {
+//       if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
+//         if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
+//           return -1;
+//         }
+//         if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
+//           return 1;
+//         } else {
+//           return 0;
+//         }
+//       }
+//       if (
+//         onlineUsers.includes(a.secondParty._id) &&
+//         !onlineUsers.includes(b.secondParty._id)
+//       ) {
+//         return -1;
+//       }
+//       if (
+//         !onlineUsers.includes(a.secondParty._id) &&
+//         onlineUsers.includes(b.secondParty._id)
+//       ) {
+//         return 1;
+//       }
+//       return 0;
+//     }
+//   );
+//   return sorted;
+// };
+
 export const fetchAllConversations = async ({
-  onlineUsers,
+  pageParam,
 }: {
-  onlineUsers: string[];
-}): Promise<TypeConversation[]> => {
+  pageParam: number;
+}): Promise<{ conversations: TypeConversation[]; hasMore: boolean }> => {
   const response = await makeRequest.get(
-    "api/conversations/all-conversations/allusers"
+    `api/conversations/all-conversations/allusers?pageParam=${pageParam}`
   );
-  const sorted = response.data.sort(
-    (a: TypeConversation, b: TypeConversation) => {
-      if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
-        if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
-          return -1;
-        }
-        if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
-          return 1;
-        } else {
-          return 0;
-        }
-      }
-      if (
-        onlineUsers.includes(a.secondParty._id) &&
-        !onlineUsers.includes(b.secondParty._id)
-      ) {
-        return -1;
-      }
-      if (
-        !onlineUsers.includes(a.secondParty._id) &&
-        onlineUsers.includes(b.secondParty._id)
-      ) {
-        return 1;
-      }
-      return 0;
-    }
-  );
-  return sorted;
+  const data = response.data;
+  return data;
 };
 
 export const sendPrivateChatMessage = async ({

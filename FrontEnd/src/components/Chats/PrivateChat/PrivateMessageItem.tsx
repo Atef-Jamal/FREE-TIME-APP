@@ -53,7 +53,7 @@ const PrivateMessageItem = ({
           }}
           className="w-full flex items-center gap-2 border-b pb-[2px] border-gray-600"
         >
-          <span className="text-[#3785fa] text-sm font-bold truncate">
+          <span className="text-[#3785fa] text-sm xs:text-xs font-bold truncate">
             {message.sender.name}
           </span>
           <div className="flex items-center gap-2">

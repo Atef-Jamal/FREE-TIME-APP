@@ -201,24 +201,3 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "an Error occurred, Try again" });
   }
 };
-
-// export const loveToMessage = async (req: Request, res: Response) => {
-//   const currentUserId = req.currentUser._id;
-//   const messageId = req.params.messageId;
-//   try {
-//     const message = await PublicMessage.findById(messageId);
-
-//     if (!message) {
-//       return res.status(404).json({ error: "message not found" });
-//     }
-//     if (message.loves.includes(currentUserId)) {
-//       message.loves = message.loves.filter(id => id !== currentUserId )
-//     }else{
-//       message.loves.push(currentUserId)
-//     }
-
-//     // if(message.li)
-//   } catch (error) {
-//     return res.status(404).json({ error: "can't make love to the message" });
-//   }
-// };

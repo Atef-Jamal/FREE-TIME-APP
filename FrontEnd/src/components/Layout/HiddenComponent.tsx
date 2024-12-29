@@ -18,7 +18,7 @@ import {
   TypeCashedPublicChat,
   TypePublicChatItem,
 } from "../../types/publicChatTypes";
-import { TypeConversation } from "../../types/privateChatTypes";
+import { TypeCashedConversations } from "../../types/privateChatTypes";
 import { TypeConversationSocketData } from "../../types/othersTypes";
 import { TypeCashedChat } from "../../components/Chats/PrivateChat/SendMessagePrivateChat";
 import {
@@ -29,7 +29,6 @@ import {
 const HiddenComponent = () => {
   // implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering unnecessarily
   const [searchParams, setSearchParams] = useSearchParams();
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const activeConversation = useAppSelector(
     (state) => state.stateManeger.activeConversation
   );
@@ -43,10 +42,12 @@ const HiddenComponent = () => {
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
 
-  useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+  useInfiniteQuery({
     queryKey: ["conversations"],
-    queryFn: () => fetchAllConversations({ onlineUsers }),
+    queryFn: ({ pageParam }) => fetchAllConversations({ pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, pageParam) =>
+      lastPage.hasMore ? pageParam + 1 : undefined,
     staleTime: 60 * 60 * 1000,
   });
 
@@ -112,16 +113,21 @@ const HiddenComponent = () => {
     });
     queryClient.setQueryData(
       ["conversations"],
-      (previous: TypeConversation[]): TypeConversation[] | undefined => {
-        if (previous) {
-          return previous.map((conv) => {
-            if (conv.secondParty._id === updatedUser._id) {
-              return { ...conv, secondParty: updatedUser };
-            } else {
-              return conv;
-            }
-          });
-        }
+      (previous: TypeCashedConversations): TypeCashedConversations => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations.map((conv) => {
+                if (conv.secondParty._id === updatedUser._id) {
+                  return { ...conv, secondParty: updatedUser };
+                }
+                return conv;
+              }),
+            };
+          }),
+        };
       }
     );
     queryClient.setQueryData(
@@ -133,17 +139,17 @@ const HiddenComponent = () => {
     );
   };
 
-  const handleAddNewUser = (newUser: User) => {
-    queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
-      return [
-        ...old,
-        { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
-      ];
-    });
-    queryClient.setQueryData(["users"], (previous: User[]) => {
-      return [...previous, newUser];
-    });
-  };
+  // const handleAddNewUser = (newUser: User) => {
+  //   queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
+  //     return [
+  //       ...old,
+  //       { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
+  //     ];
+  //   });
+  //   queryClient.setQueryData(["users"], (previous: User[]) => {
+  //     return [...previous, newUser];
+  //   });
+  // };
 
   const handleConversationReaded = useCallback(
     (data: TypeConversationSocketData) => {
@@ -174,14 +180,14 @@ const HiddenComponent = () => {
       "online-users",
       "public-message",
       "user-updated",
-      "new-user-joined",
+      // "new-user-joined",
       "conversation-readed",
     ],
     handlers: [
       handleUpdateOnlineUsers,
       handleRecieveNewPublicChatMessage,
       handleUserUpdated,
-      handleAddNewUser,
+      // handleAddNewUser,
       handleConversationReaded,
     ],
   });
