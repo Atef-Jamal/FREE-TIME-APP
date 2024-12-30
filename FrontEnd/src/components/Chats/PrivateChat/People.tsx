@@ -7,11 +7,13 @@ import { memo } from "react";
 
 interface TypeProps {
   conversation: TypeConversation;
+  isOnLine: boolean;
 }
-const People = memo(({ conversation }: TypeProps) => {
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+const People = memo(({ conversation, isOnLine }: TypeProps) => {
+  // const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const dispatch = useAppDispatch();
+
   let date = "";
   if (conversation.lastMessage) {
     date = formateDate(conversation.lastMessage.createdAt);
@@ -40,14 +42,14 @@ const People = memo(({ conversation }: TypeProps) => {
             <span className=" w-[65%] sm:text-sm xs:text-xs font-bold text-[#3c72c4] truncate">
               {conversation.secondParty.name}
             </span>
-            {onlineUsers.includes(conversation.secondParty._id) && (
+            {isOnLine && (
               <span className="sm:text-sm xs:text-xs text-[#68e44a] tracking-wider font-[400]">
                 onLine
               </span>
             )}
-            {!onlineUsers.includes(conversation.secondParty._id) && (
+            {!isOnLine && (
               <span className="sm:text-sm xs:text-xs text-[#676867] tracking-wider font-[400]">
-                offline
+                offLine
               </span>
             )}
           </span>

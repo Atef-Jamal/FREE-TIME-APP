@@ -100,17 +100,9 @@ const HiddenComponent = () => {
   };
 
   const handleUserUpdated = (updatedUser: User) => {
+    console.log("i am updated");
     queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
-    queryClient.setQueryData(["users"], (previousUsers: User[]) => {
-      if (!previousUsers) return;
-      return previousUsers.map((userItem) => {
-        if (userItem._id === updatedUser._id) {
-          return updatedUser;
-        } else {
-          return userItem;
-        }
-      });
-    });
+    queryClient.invalidateQueries({ queryKey: ["users"] });
     queryClient.setQueryData(
       ["conversations"],
       (previous: TypeCashedConversations): TypeCashedConversations => {

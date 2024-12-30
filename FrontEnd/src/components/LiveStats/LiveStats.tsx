@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { crown, verifiedImage } from "../../assets";
@@ -7,74 +7,71 @@ import { Link } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
 import UserImage from "../Others/UserImage";
 import LiveStatsSkeleton from "./LiveStatsSkeleton";
-import { User } from "../../types/userTypes";
+import { TypeCashedUsers } from "../../types/userTypes";
 import LangMenu from "./LangMenu";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getUsers } from "../../utils";
+import Spinner from "../Others/Spinner";
 
 const LiveStats = memo(() => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
-  const [sortedUsers, setSortedUsers] = useState<User[]>([]);
-  const [userHieghestPoints, setUserHieghestPoints] = useState<string | null>(
-    null
-  );
   const [openLangMenu, setOpenLangMenu] = useState(false);
   const queryClient = useQueryClient();
 
   const {
-    data: users = [],
+    data,
     status,
     error,
-  } = useQuery({
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetchNextPageError,
+  } = useInfiniteQuery({
     queryKey: ["users"],
-    queryFn: getUsers,
+    queryFn: ({ pageParam }) => getUsers({ pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastpage, _, pageParam) => {
+      return lastpage.hasMore ? pageParam + 1 : undefined;
+    },
     staleTime: 60 * 60 * 1000,
   });
 
-  const sorted = useCallback(() => {
-    return [...users].sort((a, b) => {
-      const aIsOnline = onlineUsers.includes(a._id);
-      const bIsOnline = onlineUsers.includes(b._id);
-
-      if (aIsOnline && !bIsOnline) {
-        return -1;
-      }
-      if (!aIsOnline && bIsOnline) {
-        return 1;
-      } else {
-        if (a.points === b.points) {
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        }
-        return b.points - a.points;
-      }
-    });
-  }, [onlineUsers, users]);
-
-  useEffect(() => {
-    if (users.length > 0) {
-      setSortedUsers(sorted);
-      const hieghestPoints = [...users].sort((a, b) => {
-        return b.points - a.points;
-      })[0];
-      setUserHieghestPoints(hieghestPoints._id);
-    }
-  }, [users, onlineUsers, sorted]);
+  const users = data?.pages.map((page) => page.users).flat();
+  const userHieghestPoints = data?.pages[0].userHighestPoints;
 
   useEffect(() => {
     if (!currentUser) return;
-    queryClient.setQueryData(["users"], (previousUsers: User[]) => {
-      if (!previousUsers) return;
-      return previousUsers.map((user) => {
-        if (user._id === currentUser._id) {
-          return currentUser;
-        }
-        return user;
-      });
-    });
+    queryClient.setQueryData(
+      ["users"],
+      (previous: TypeCashedUsers): TypeCashedUsers | undefined => {
+        if (!previous) return;
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              users: page.users.map((user) => {
+                if (user._id === currentUser._id) {
+                  return currentUser;
+                }
+                return user;
+              }),
+            };
+          }),
+        };
+      }
+    );
   }, [currentUser, queryClient]);
+
+  useEffect(() => {
+    if (onlineUsers.length === 0) return;
+    const func = async () => {
+      await queryClient.cancelQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    };
+    func();
+  }, [onlineUsers, queryClient]);
 
   return (
     <div className={`flex w-full`}>
@@ -86,7 +83,7 @@ const LiveStats = memo(() => {
         <IoIosArrowDown />
         {openLangMenu && <LangMenu setOpenLangMenu={setOpenLangMenu} />}
       </div>
-      <div className=" flex items-center gap-2 xs:gap-[6px] overflow-scroll scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
+      <div className="flex items-center gap-2 xs:gap-[6px] overflow-auto scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
         {status === "pending" && <LiveStatsSkeleton />}
 
         {error && (
@@ -99,7 +96,7 @@ const LiveStats = memo(() => {
         )}
 
         {status === "success" &&
-          sortedUsers.map((user) => {
+          users?.map((user) => {
             const { _id, name, points, emailVerified } = user;
             const isOnline = onlineUsers.includes(_id);
 
@@ -147,6 +144,23 @@ const LiveStats = memo(() => {
               </Link>
             );
           })}
+        {isFetchNextPageError && (
+          <button className="text-red-400 sm:text-sm text-nowrap px-4 sm:h-[30px] h-[45px] rounded-sm ">
+            an error occurred
+          </button>
+        )}
+        {hasNextPage && (
+          <button
+            className="sm:text-sm text-nowrap px-4 sm:h-[30px] h-[45px] rounded-sm bg-[#393957]"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {!isFetchingNextPage && "Load more"}
+            {isFetchingNextPage && (
+              <Spinner className="w-4 h-4 border-4 sm:border-2 mx-4" />
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

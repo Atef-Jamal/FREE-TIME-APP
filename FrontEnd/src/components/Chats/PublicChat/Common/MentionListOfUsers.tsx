@@ -3,7 +3,7 @@ import { User } from "../../../../types/userTypes";
 import { useCloseMenuOnClickOutSide } from "../../../../hooks";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../../../utils";
+import { getOnlineUsers } from "../../../../utils";
 
 interface TypeProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -19,10 +19,10 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
     status,
     error,
   } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
-    staleTime: 60 * 60 * 1000,
+    queryKey: ["onlines-users"],
+    queryFn: getOnlineUsers,
   });
+
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleClose = () => {

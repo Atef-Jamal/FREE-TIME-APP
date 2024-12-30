@@ -4,14 +4,19 @@ import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import PeopleList from "../components/Leaderboard/PeopleList";
 import { useScrollToElement } from "../hooks/commonHooks";
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../utils";
+import { getLeaderboardUsers } from "../utils";
 
 const LeaderBoard = () => {
-  const { data: users = [] } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+  const {
+    data: users = [],
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["users-leaderboard"],
+    queryFn: getLeaderboardUsers,
     staleTime: 60 * 60 * 1000,
   });
+
   useScrollToElement({ dependencies: [users] });
 
   return (
@@ -44,15 +49,12 @@ const LeaderBoard = () => {
           for you this month!
         </div>
         <div className="flex items-center justify-evenly sm:gap-32 gap-24 flex-wrap py-32">
-          {users
-            .sort((a, b) => b.points - a.points)
-            .slice(0, 3)
-            .map((usr, index) => {
-              return <UsersWinnerCard key={index} user={usr} index={index} />;
-            })}
+          {users.slice(0, 3).map((usr, index) => {
+            return <UsersWinnerCard key={index} user={usr} index={index} />;
+          })}
         </div>
         <div className="flex flex-col sm:w-[98%] w-[90%] max-w-[1400px] mx-auto mb-10">
-          <PeopleList />
+          <PeopleList users={users} status={status} error={error} />
         </div>
       </div>
     </div>

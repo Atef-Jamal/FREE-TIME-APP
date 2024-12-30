@@ -82,8 +82,27 @@ export const changeUserPassword = async ({
   });
 };
 
-export const getUsers = async (): Promise<User[]> => {
-  const response = await makeRequest.get(`/api/users`);
+export const getUsers = async ({
+  pageParam,
+}: {
+  pageParam: number;
+}): Promise<{
+  users: User[];
+  userHighestPoints: string | undefined;
+  hasMore: boolean;
+}> => {
+  const response = await makeRequest.get(`/api/users?pageParam=${pageParam}`);
+  const data = response.data;
+  return data;
+};
+
+export const getOnlineUsers = async (): Promise<User[]> => {
+  const response = await makeRequest.get(`/api/users/onlines`);
+  const data = response.data;
+  return data;
+};
+export const getLeaderboardUsers = async (): Promise<User[]> => {
+  const response = await makeRequest.get(`/api/users/leaderboard`);
   const data = response.data;
   return data;
 };

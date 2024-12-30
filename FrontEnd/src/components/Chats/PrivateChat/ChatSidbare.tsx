@@ -23,6 +23,8 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
   const activeConversation = useAppSelector(
     (state) => state.stateManeger.activeConversation
   );
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+
   const [redPoint, setRedPoint] = useState(false);
   const conversationsListRef = useRef<HTMLDivElement>(null);
   const timeOutRef = useRef(null);
@@ -114,6 +116,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
           ))}
         {status === "success" &&
           conversations?.map((conversation) => {
+            const isOnLine = onlineUsers.includes(conversation.secondParty._id);
             return (
               <div
                 onClick={toggleSidbare}
@@ -123,7 +126,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
                   "bg-[#24233b]"
                 }`}
               >
-                <People conversation={conversation} />
+                <People conversation={conversation} isOnLine={isOnLine} />
               </div>
             );
           })}

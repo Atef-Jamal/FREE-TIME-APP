@@ -6,11 +6,15 @@ import {
   unselectUserPhotoFrame,
   getWhoVisitMe,
   userVisited,
+  getOnlineUsers,
+  getLeaderboardUsers,
 } from "../controllers/usersController";
 import protectedRoute from "../middleware";
 const router = express.Router();
 
 router.get("/", allUsers);
+router.get("/onlines", protectedRoute, getOnlineUsers);
+router.get("/leaderboard", getLeaderboardUsers);
 router.get(
   "/select-myphoto-frame/:frameId",
   protectedRoute,

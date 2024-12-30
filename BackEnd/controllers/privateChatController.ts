@@ -3,53 +3,6 @@ import Conversation from "../models/conversation";
 import User from "../models/user";
 import { Types } from "mongoose";
 
-// export const getAllConversations = async (req: Request, res: Response) => {
-//   const currentUserId = req.currentUser._id;
-//   try {
-//     const allUsers = await User.find({ _id: { $ne: currentUserId } });
-
-//     const newArray = await Promise.all(
-//       allUsers.map(async (user) => {
-//         const conversation = await Conversation.findOne({
-//           participants: { $all: [currentUserId, user._id] },
-//         })
-//           .select("lastMessage messages")
-//           .populate("lastMessage.sender", "_id name");
-
-//         let lastMessage = null;
-//         let unreadedCount = 0;
-
-//         if (conversation) {
-//           lastMessage = conversation.lastMessage;
-//           conversation.messages.map((msg) => {
-//             if (
-//               msg.sender._id.toString() === user._id.toString() &&
-//               msg.isRead === false
-//             ) {
-//               unreadedCount += 1;
-//             }
-//           });
-//         }
-
-//         return {
-//           secondParty: {
-//             _id: user.toObject()._id,
-//             name: user.toObject().name,
-//             profilePicture: user.toObject().profilePicture,
-//             activeFrame: user.toObject().activeFrame,
-//           },
-//           lastMessage: lastMessage,
-//           unreadedCount: unreadedCount,
-//         };
-//       })
-//     );
-
-//     return res.status(200).json(newArray);
-//   } catch (error) {
-//     return res.status(404).json({ error: "can not load all conversations" });
-//   }
-// };
-
 export const getAllConversations = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
   const pageParam = Number(req.query.pageParam) || 1;
@@ -64,7 +17,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
       .limit(limit)
       .select("participants lastMessage messages")
       .populate("lastMessage.sender", "_id name")
-      .populate("participants", "-password");
+      .populate("participants", "_id name profilePicture activeFrame");
 
     const numOfConversations = conversations.length;
     const excludeThoseUsers: Types.ObjectId[] = [currentUserId];

@@ -28,3 +28,8 @@ export interface User {
     name: string;
   }[];
 }
+
+export interface TypeCashedUsers {
+  pageParams: number[];
+  pages: { users: User[]; userHighestPoints: string; hasMore: boolean }[];
+}
