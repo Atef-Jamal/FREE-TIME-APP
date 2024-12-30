@@ -65,12 +65,11 @@ const LiveStats = memo(() => {
   }, [currentUser, queryClient]);
 
   useEffect(() => {
-    if (onlineUsers.length === 0) return;
-    const func = async () => {
-      await queryClient.cancelQueries({ queryKey: ["users"] });
+    const timeOut = setTimeout(() => {
+      console.log("run");
       queryClient.invalidateQueries({ queryKey: ["users"] });
-    };
-    func();
+    }, 1000);
+    return () => clearTimeout(timeOut);
   }, [onlineUsers, queryClient]);
 
   return (

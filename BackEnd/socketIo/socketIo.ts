@@ -8,10 +8,10 @@ const socketOperations = function (
 ) {
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId as string;
-    if (userId) {
+    if (userId && userId !== "undefined") {
       onLineUsers[userId] = socket.id;
-      io.emit("online-users", Object.keys(onLineUsers));
     }
+    io.emit("online-users", Object.keys(onLineUsers));
 
     const handleUserUpdated = (updatedUser: any) => {
       socket.broadcast.emit("user-updated", updatedUser);
