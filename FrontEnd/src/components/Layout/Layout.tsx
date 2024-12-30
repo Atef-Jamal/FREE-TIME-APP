@@ -124,7 +124,7 @@ const Layout = () => {
               transitionTimingFunction: `cubic-bezier(1, 0.5, 0.5, 0.5)`,
               transitionDuration: "300ms",
             }}
-            className={`sm:hidden w-[30%] lg:w-[38%] bg-[#202138]  border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
+            className={`w-[30%] lg:w-[38%] bg-[#202138]  border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
               isChatOpen ? " translate-x-0" : " translate-x-[100%]"
             }`}
           >

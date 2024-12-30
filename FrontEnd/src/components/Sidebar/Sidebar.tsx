@@ -3,7 +3,7 @@ import { toggleThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useListenToSocketEvents } from "../../hooks";
 import {
   TypeCashedConversations,
@@ -13,7 +13,7 @@ import {
   showPopup,
   updateSidebarUnReadedMsgCount,
 } from "../../context/StateManeger";
-import { handleApiError } from "../../utils/common";
+import { debounce, handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import { RiCloseFill } from "react-icons/ri";
@@ -39,6 +39,8 @@ const Sidebar = memo(
     const resizeSidebare = useAppSelector(
       (state) => state.stateManeger.resizeSidebare
     );
+    const timeOutRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 867);
     const dispatch = useAppDispatch();
     const queryClient = useQueryClient();
     const location = useLocation();
@@ -142,6 +144,20 @@ const Sidebar = memo(
       }
     }, [currentUser?._id, dispatch]);
 
+    useEffect(() => {
+      const handleResize = () => {
+        console.log("Run");
+        if (window.innerWidth <= 867) {
+          setIsMobile(true);
+        } else {
+          setIsMobile(false);
+        }
+      };
+      const debounced = debounce(handleResize, 100, timeOutRef);
+      window.addEventListener("resize", debounced);
+      return () => window.removeEventListener("resize", debounced);
+    }, []);
+
     return (
       <div className="sticky top-[85px] sm:top-[55px] overflow-hidden">
         <div
@@ -165,7 +181,6 @@ const Sidebar = memo(
         </div>
         <ul className="flex flex-col px-1 gap-1 w-full overflow-scroll scrollbar-none mt-2">
           {sidebareItems.map((item, index) => {
-            const isMobile = window.innerWidth <= 867;
             if (isMobile) {
               if (
                 item.path === "leaderboard" ||

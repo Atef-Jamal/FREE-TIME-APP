@@ -66,7 +66,6 @@ const LiveStats = memo(() => {
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      console.log("run");
       queryClient.invalidateQueries({ queryKey: ["users"] });
     }, 1000);
     return () => clearTimeout(timeOut);
