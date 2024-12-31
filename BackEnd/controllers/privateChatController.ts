@@ -41,14 +41,14 @@ export const getAllConversations = async (req: Request, res: Response) => {
       };
     });
 
-    let users: any = [];
+    let users: any[] = [];
 
     if (numOfConversations < limit) {
       const difference = limit - numOfConversations;
       const skipOther = (pageParam - 1) * (limit - numOfConversations);
 
       const allUsers = await User.find({ _id: { $nin: excludeThoseUsers } })
-        .sort({ createdAt: 1 })
+        .sort({ points: -1, createdAt: -1 })
         .skip(skipOther)
         .limit(difference);
       users = allUsers.map((user) => {

@@ -60,7 +60,6 @@ const HiddenComponent = () => {
   });
 
   useInfiniteQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["public-chat-messages"],
     queryFn: ({ pageParam }) =>
       fetchPublicChatMessages({ pageParam, limit: 15 }),

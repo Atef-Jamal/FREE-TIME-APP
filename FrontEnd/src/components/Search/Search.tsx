@@ -1,22 +1,30 @@
-import { useEffect, useState } from "react";
-import { handleApiError } from "../../utils/common";
-import { makeRequest } from "../../utils";
+import { useRef, useState } from "react";
+import { getSearchResults } from "../../utils";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypeMusicDetail, TypeSearchResults } from "../../types/othersTypes";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
 import { empty } from "../../assets";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import { debounce } from "../../utils/common";
 
 const Search = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [searchQ, setSearchQ] = useState("");
-  const [results, setResults] = useState<TypeSearchResults | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [refetch, setRefetch] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();
+
+  const {
+    data: results,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery({
+    queryKey: ["search", searchQ],
+    queryFn: searchQ ? () => getSearchResults({ searchQ }) : skipToken,
+    staleTime: 60 * 60 * 1000,
+  });
 
   let resultsCounts = 0;
 
@@ -29,63 +37,18 @@ const Search = () => {
       results.musics.length;
   }
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = event.target.value;
-    if (searchTerm.trim() === "") {
-      if (results !== null) setResults(null);
-      return;
-    }
-    setSearchQ(searchTerm.toLocaleLowerCase());
+  const handleSetSearchQuery = (value: string) => {
+    setSearchQ(value);
   };
 
-  useEffect(() => {
-    if (!searchQ) return;
-    const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
-    const musicOptions = {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": import.meta.env.VITE_X_RAPIDAPI_KEY,
-        "X-RapidAPI-Host": import.meta.env.VITE_X_RAPIDAPI_HOST,
-      },
-    };
-    const getResults = async () => {
-      setError(null);
-      setLoading(true);
+  const debounced = debounce(handleSetSearchQuery, 500, timeOutRef);
 
-      const musicResponse = await fetch(deezerUrl, musicOptions);
-      const musics = await musicResponse.json();
-      const res = musics?.data?.filter((item: TypeMusicDetail) =>
-        item.title.toLocaleLowerCase().includes(searchQ)
-      );
-      const mappedMusics = res?.map((item: TypeMusicDetail) => ({
-        _id: item.id.toString(),
-        description: item.title,
-        image: item.album.cover,
-        title: item.title,
-        link: `/musics?to=${item.id.toString()}`,
-      }));
-
-      try {
-        const response = await makeRequest.get(`api/search?q=${searchQ}`);
-        setResults({
-          ...response.data,
-          musics: mappedMusics || [],
-        });
-      } catch (error) {
-        setError(handleApiError(error));
-      } finally {
-        setLoading(false);
-      }
-    };
-    const timout = setTimeout(() => {
-      getResults();
-    }, 250);
-
-    return () => clearTimeout(timout);
-  }, [searchQ, refetch]);
-
-  const handleRefetch = () => {
-    setRefetch(!refetch);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLocaleLowerCase();
+    debounced(searchTerm);
   };
 
   return (
@@ -111,11 +74,11 @@ const Search = () => {
         {error && (
           <>
             <p className="text-lg sm:text-base text-[#bd672e] text-center py-4">
-              {error}
+              {error.response?.data.error}
             </p>
             <div className="flex mb-4">
               <button
-                onClick={handleRefetch}
+                onClick={() => refetch()}
                 className="text-sm font-bold bg-[#51a549] text-[#1c1f2c] text-center py-1 px-4 rounded-md mx-auto"
               >
                 Try Again
@@ -123,9 +86,9 @@ const Search = () => {
             </div>
           </>
         )}
-        {loading && <SearchSkeleton />}
+        {isFetching && <SearchSkeleton />}
 
-        {!results && !loading && !error && (
+        {!results && !isFetching && !error && (
           <div className="flex flex-col items-center justify-center gap-3 py-10">
             <div className="text-center text-gray-500 font-bold">
               Start Searching
@@ -133,7 +96,7 @@ const Search = () => {
           </div>
         )}
 
-        {!loading && results && (
+        {results && (
           <div className="p-2">
             <p className="sm:text-sm text-gray-400 mb-1">
               <span className="sm:text-sm  text-[#8be64e] mx-1 ">
@@ -148,7 +111,7 @@ const Search = () => {
                   src={empty}
                   className="w-16 h-16 sm:w-12 sm:h-12 object-cover"
                 />
-                <p className="text-center text-[#bbb9b9]">
+                <p className="font-bold sm:font-medium text-center text-[#bbb9b9]">
                   No Results Match your search text
                 </p>
               </div>

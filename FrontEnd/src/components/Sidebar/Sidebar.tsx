@@ -146,7 +146,6 @@ const Sidebar = memo(
 
     useEffect(() => {
       const handleResize = () => {
-        console.log("Run");
         if (window.innerWidth <= 867) {
           setIsMobile(true);
         } else {

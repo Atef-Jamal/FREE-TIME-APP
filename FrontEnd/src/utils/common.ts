@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RefObject } from "react";
 import { makeRequest } from "../utils";
 
@@ -105,12 +106,14 @@ export const collectReward = async (notificationId: string) => {
 };
 
 export const debounce = (
-  func: () => void,
+  func: (params: any) => void,
   wait: number,
   timoutRef: RefObject<NodeJS.Timeout | null>
 ) => {
-  return () => {
+  return (...arg: any) => {
     if (timoutRef.current) clearTimeout(timoutRef.current);
-    timoutRef.current = setTimeout(func, wait);
+    timoutRef.current = setTimeout(() => {
+      func.apply(this, arg);
+    }, wait);
   };
 };

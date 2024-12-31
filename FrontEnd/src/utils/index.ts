@@ -11,7 +11,11 @@ import {
   TypeReview,
   TypeTaskApp,
 } from "../types/earnTypes";
-import { TypeMusicDetail, TypeTestimonial } from "../types/othersTypes";
+import {
+  TypeMusicDetail,
+  TypeSearchResults,
+  TypeTestimonial,
+} from "../types/othersTypes";
 import { TypeFrame } from "../types/frameTypes";
 import {
   TypeConversation,
@@ -94,6 +98,39 @@ export const getUsers = async ({
   const response = await makeRequest.get(`/api/users?pageParam=${pageParam}`);
   const data = response.data;
   return data;
+};
+
+export const getSearchResults = async ({
+  searchQ,
+}: {
+  searchQ: string;
+}): Promise<TypeSearchResults> => {
+  const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
+  const musicOptions = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": import.meta.env.VITE_X_RAPIDAPI_KEY,
+      "X-RapidAPI-Host": import.meta.env.VITE_X_RAPIDAPI_HOST,
+    },
+  };
+  const musicResponse = await fetch(deezerUrl, musicOptions);
+  const musics = await musicResponse.json();
+  const res = musics?.data?.filter((item: TypeMusicDetail) =>
+    item.title.toLocaleLowerCase().includes(searchQ)
+  );
+  const mappedMusics = res?.map((item: TypeMusicDetail) => ({
+    _id: item.id.toString(),
+    description: item.title,
+    image: item.album.cover,
+    title: item.title,
+    link: `/musics?to=${item.id.toString()}`,
+  }));
+  const response = await makeRequest.get(`api/search?q=${searchQ}`);
+  const results = {
+    ...response.data,
+    musics: mappedMusics || [],
+  };
+  return results;
 };
 
 export const getOnlineUsers = async (): Promise<User[]> => {

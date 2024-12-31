@@ -134,11 +134,13 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
         {isFetchNextPageError && (
           <p className="text-sm text-[#dd2a2a]">an Error occurred!</p>
         )}
-        {isFetchingNextPage && (
-          <div className="w-full bg-[#131129] absolute bottom-0 flex items-center justify-center py-2">
-            <Spinner className="w-7 h-7 sm:w-5 sm:h-5 border-4 sm:border-[3px]" />
-          </div>
-        )}
+        <div
+          className={`${
+            isFetchingNextPage ? "visible" : "invisible"
+          } w-full bg-[#131129] flex items-center justify-center`}
+        >
+          <Spinner className="w-7 h-7 sm:w-5 sm:h-5 border-4 sm:border-[3px]" />
+        </div>
       </div>
     </div>
   );

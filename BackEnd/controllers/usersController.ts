@@ -11,17 +11,17 @@ export const allUsers = async (req: Request, res: Response) => {
   const onlines = Object.keys(onLineUsers);
   try {
     const fetchOnlineUsers = await User.find({ _id: { $in: onlines } })
-      .sort({ points: -1, emailVerified: -1, createdAt: 1 })
+      .sort({ points: -1, emailVerified: -1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select("_id name points profilePicture activeFrame emailVerified");
     const users = await User.find({ _id: { $nin: onlines } })
-      .sort({ points: -1, emailVerified: -1, createdAt: 1 })
+      .sort({ points: -1, emailVerified: -1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select("_id name points profilePicture activeFrame emailVerified");
     const findUserHighestPoints = await User.findOne()
-      .sort({ points: -1 })
+      .sort({ points: -1, emailVerified: -1, createdAt: -1 })
       .limit(1)
       .select("_id");
     const userHighestPoints = findUserHighestPoints?._id;

@@ -36,8 +36,6 @@ const PublicChat = memo(() => {
   const scrollTimout = useRef<NodeJS.Timeout | null>(null);
   const searchParamsTimout = useRef<NodeJS.Timeout | null>(null);
 
-  const limit = 15;
-
   let numofSkeleton = 5;
   if (messageContainerRef.current) {
     numofSkeleton = Math.floor(messageContainerRef.current.clientHeight / 80);
@@ -52,9 +50,9 @@ const PublicChat = memo(() => {
     isFetchPreviousPageError,
     fetchPreviousPage,
   } = useInfiniteQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["public-chat-messages"],
-    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit }),
+    queryFn: ({ pageParam }) =>
+      fetchPublicChatMessages({ pageParam, limit: 15 }),
     initialPageParam: 1,
     getPreviousPageParam: (firstPage, _, pageParam) => {
       return firstPage.hasOlder ? pageParam + 1 : undefined;

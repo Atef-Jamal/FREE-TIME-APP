@@ -89,10 +89,7 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
       </h1>
       <img
         alt=""
-        src={taskDetails.image.replace(
-          "http://localhost:3000",
-          import.meta.env.VITE_SERVER_BASE_URL
-        )}
+        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${taskDetails.image}`}
         className="w-full h-[300px] object-cover mb-3"
       />
 

@@ -10,17 +10,22 @@ export const searchController = async (req: Request, res: Response) => {
     if (!searchTerm) {
       return res.status(404).json({ error: "Enter search term" });
     }
-
     const regex = new RegExp(searchTerm, "gi");
 
-    const getFeatures = features.filter((item) =>
-      item.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-    );
+    const getFeatures = features
+      .filter((item) =>
+        item.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+      )
+      .slice(0, 12);
+
     const getUsers = await User.find({
       name: regex,
-    }).select("-password");
-    const getApps = await Task.find({ title: regex });
-    const getFrames = await Frame.find({ title: regex });
+    })
+      .sort({ points: -1, createdAt: -1 })
+      .limit(12)
+      .select("_id name profilePicture");
+    const getApps = await Task.find({ title: regex }).limit(12);
+    const getFrames = await Frame.find({ title: regex }).limit(12);
 
     const usersResult = getUsers.map((user) => ({
       _id: user._id,

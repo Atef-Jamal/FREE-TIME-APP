@@ -31,7 +31,8 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture: `${process.env.SERVER_BASE_URL}/uploads/avatar.jpeg`,
+      profilePicture:
+        "https://firebasestorage.googleapis.com/v0/b/free-money-7aec1.appspot.com/o/images%2Favatar.jpeg?alt=media&token=a8ab8c57-2ccd-4139-9a12-b029a572ca3b",
     });
 
     if (profilePicture) {
