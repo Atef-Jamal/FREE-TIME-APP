@@ -24,9 +24,7 @@ const initialValue = {
 const RegisterationForm = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
-  const isSignInMode = useAppSelector(
-    (state) => state.stateManeger.isSignInMode
-  );
+  const isSignInMode = useAppSelector((state) => state.stateManeger.isSignInMode);
   const [formData, setFormData] = useState<TypeFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
@@ -58,11 +56,7 @@ const RegisterationForm = () => {
     if (isSignInMode) {
       errorMessage = validation([email, password], true);
     } else {
-      errorMessage = validation(
-        [name, email, password, confirmPassword],
-        false,
-        agreePrivacy
-      );
+      errorMessage = validation([name, email, password, confirmPassword], false, agreePrivacy);
     }
     if (errorMessage) {
       dispatch(
@@ -112,9 +106,7 @@ const RegisterationForm = () => {
     }
   };
 
-  const handleSignInWithGoogle = async (
-    e: React.FormEvent<HTMLButtonElement>
-  ) => {
+  const handleSignInWithGoogle = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await signInWithGoogle({ dispatch });
@@ -132,28 +124,18 @@ const RegisterationForm = () => {
     <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-[5] ">
       <div
         onClick={() => {
-          dispatch(
-            toggleThisEntity({ entity: "openRegisterForm", value: false })
-          );
+          dispatch(toggleThisEntity({ entity: "openRegisterForm", value: false }));
         }}
         className="fixed top-0 left-0 w-full h-full bg-[#000000b0] sm:hidden "
       ></div>
       <div className="absolute top-16 xl:top-9 sm:top-0 w-[60%] max-w-[1300px] min-w-[650px]  h-[75%] sm:min-w-full sm:max-w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-auto ">
         <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-0 ">
-          <span className="text-white text-2xl font-bold sm:hidden">
-            {t("Welcome")}
-          </span>
+          <span className="text-white text-2xl font-bold sm:hidden">{t("Welcome")}</span>
           <div className="flex gap-5">
             <button
-              onClick={() =>
-                dispatch(
-                  toggleThisEntity({ entity: "isSignInMode", value: true })
-                )
-              }
+              onClick={() => dispatch(toggleThisEntity({ entity: "isSignInMode", value: true }))}
               className={`${
-                isSignInMode
-                  ? " border-b-[#fff]  text-[#f8dcdc] "
-                  : " text-gray-600"
+                isSignInMode ? " border-b-[#fff]  text-[#f8dcdc] " : " text-gray-600"
               } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
             >
               {t("Sign In")}
@@ -161,14 +143,10 @@ const RegisterationForm = () => {
 
             <button
               onClick={() => {
-                dispatch(
-                  toggleThisEntity({ entity: "isSignInMode", value: false })
-                );
+                dispatch(toggleThisEntity({ entity: "isSignInMode", value: false }));
               }}
               className={`${
-                !isSignInMode
-                  ? "pacity-25 border-b-[#fff] text-[#f8dcdc] "
-                  : "text-gray-600"
+                !isSignInMode ? "pacity-25 border-b-[#fff] text-[#f8dcdc] " : "text-gray-600"
               }  sm:text-md  font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
             >
               {t("Sign Up")}
@@ -176,9 +154,7 @@ const RegisterationForm = () => {
           </div>
           <button
             onClick={() => {
-              dispatch(
-                toggleThisEntity({ entity: "openRegisterForm", value: false })
-              );
+              dispatch(toggleThisEntity({ entity: "openRegisterForm", value: false }));
             }}
             className="w-8 h-6 flex items-center justify-center font-bold bg-[#43a153] rounded-md"
           >
@@ -196,16 +172,10 @@ const RegisterationForm = () => {
           <div className="w-[60%] sm:w-full sm:px-4 mt-1">
             {!isSignInMode && (
               <div className="hidden sm:flex items-center justify-center">
-                <UploadImage
-                  setImageIsUploading={setImageIsUploading}
-                  setFormData={setFormData}
-                />
+                <UploadImage setImageIsUploading={setImageIsUploading} setFormData={setFormData} />
               </div>
             )}
-            <form
-              className="flex flex-col gap-4 sm:gap-3 sm:mt-2"
-              autoComplete="off"
-            >
+            <form className="flex flex-col gap-4 sm:gap-3 sm:mt-2" autoComplete="off">
               {!isSignInMode && (
                 <Input
                   type="text"
@@ -260,9 +230,7 @@ const RegisterationForm = () => {
                     ></button>
                   </div>
                   <p className="text-sm font-[600] sm:text-[10px] text-[#97b4a2] max-w-[85%] ml-4">
-                    {t(
-                      "By Signing Up You Are Agreeing of our privacy Policy and Terms of Service"
-                    )}
+                    {t("By Signing Up You Are Agreeing of our privacy Policy and Terms of Service")}
                   </p>
                 </div>
               )}
@@ -295,8 +263,7 @@ const RegisterationForm = () => {
                 <button className="text-xs flex justify-between items-center bg-[#7474bb52] rounded-md w-[49%] py-3 sm:py-[6px] px-3">
                   <GrGithub className="text-2xl" />
                   <span className="text-sm font-[500] ">
-                    <span className="sm:hidden"> {t("Sign In With")} </span>{" "}
-                    {t("GitHub")}
+                    <span className="sm:hidden"> {t("Sign In With")} </span> {t("GitHub")}
                   </span>
                 </button>
               </div>

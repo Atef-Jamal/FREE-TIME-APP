@@ -11,15 +11,7 @@ interface TypeInput {
   placeholder: string;
 }
 
-const Input = ({
-  label,
-  id,
-  name,
-  type,
-  value,
-  placeholder,
-  onChange,
-}: TypeInput) => {
+const Input = ({ label, id, name, type, value, placeholder, onChange }: TypeInput) => {
   const [inputType, setInputType] = useState(type);
 
   const handleShowPassword = () => {
@@ -42,11 +34,7 @@ const Input = ({
           className={`w-full outline-none py-2 px-4 text-[#7295f7] bg-[#0d0d22b9] placeholder:opacity-50 sm:text-sm rounded-md`}
         />
         {name === "password" && (
-          <button
-            type="button"
-            onClick={handleShowPassword}
-            className="absolute right-2 top-[6px]"
-          >
+          <button type="button" onClick={handleShowPassword} className="absolute right-2 top-[6px]">
             <IoMdEye className="text-xl" />
           </button>
         )}

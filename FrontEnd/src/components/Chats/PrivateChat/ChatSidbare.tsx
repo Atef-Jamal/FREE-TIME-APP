@@ -1,8 +1,5 @@
 import People from "./People";
-import {
-  MdKeyboardDoubleArrowLeft,
-  MdKeyboardDoubleArrowRight,
-} from "react-icons/md";
+import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useAppSelector } from "../../../context/Hooks";
 import SearchBar from "../../Search/SearchBar";
 import PeopleSkeleton from "./PeopleSkeleton";
@@ -20,31 +17,21 @@ interface TypeProps {
 }
 
 const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
-  const activeConversation = useAppSelector(
-    (state) => state.stateManeger.activeConversation
-  );
+  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
 
   const [redPoint, setRedPoint] = useState(false);
   const conversationsListRef = useRef<HTMLDivElement>(null);
   const timeOutRef = useRef(null);
 
-  const {
-    data,
-    error,
-    status,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    isFetchNextPageError,
-  } = useInfiniteQuery({
-    queryKey: ["conversations"],
-    queryFn: ({ pageParam }) => fetchAllConversations({ pageParam }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _, pageParam) =>
-      lastPage.hasMore ? pageParam + 1 : undefined,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data, error, status, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
+    useInfiniteQuery({
+      queryKey: ["conversations"],
+      queryFn: ({ pageParam }) => fetchAllConversations({ pageParam }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
+      staleTime: 60 * 60 * 1000,
+    });
 
   const conversations = useMemo(() => {
     return data?.pages.map((page) => page.conversations).flat();
@@ -68,8 +55,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
     const container = conversationsListRef.current;
     if (!container) return;
     const onScroll = () => {
-      const reachToTheEnd =
-        container.scrollTop + container.clientHeight >= container.scrollHeight;
+      const reachToTheEnd = container.scrollTop + container.clientHeight >= container.scrollHeight;
 
       if (reachToTheEnd && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
@@ -86,9 +72,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
         onClick={toggleSidbare}
         className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 sm:h-8 bg-[#000000] rounded-sm"
       >
-        {redPoint && (
-          <span className="absolute top-[2px] right-[2px] w-3 h-3 bg-red-600 rounded-full"></span>
-        )}
+        {redPoint && <span className="absolute top-[2px] right-[2px] w-3 h-3 bg-red-600 rounded-full"></span>}
         {!openSidbare && <MdKeyboardDoubleArrowRight className="text-2xl" />}
         {openSidbare && <MdKeyboardDoubleArrowLeft className="text-2xl" />}
       </span>
@@ -102,18 +86,13 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
       >
         {error && (
           <>
-            <div className="mt-2 text-gray-400 font-bold">
-              {error.response?.data.error}
-            </div>
+            <div className="mt-2 text-gray-400 font-bold">{error.response?.data.error}</div>
             <button className="text-sm rounded-md text-[#8fa4bd] px-4 py-1 bg-[#645a5a] font-bold">
               Try Again
             </button>
           </>
         )}
-        {status === "pending" &&
-          [...Array(15).keys()].map((skeleton) => (
-            <PeopleSkeleton key={skeleton} />
-          ))}
+        {status === "pending" && [...Array(15).keys()].map((skeleton) => <PeopleSkeleton key={skeleton} />)}
         {status === "success" &&
           conversations?.map((conversation) => {
             const isOnLine = onlineUsers.includes(conversation.secondParty._id);
@@ -121,19 +100,14 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
               <div
                 onClick={toggleSidbare}
                 key={conversation.secondParty._id}
-                className={`w-full ${
-                  activeConversation === conversation.secondParty._id &&
-                  "bg-[#24233b]"
-                }`}
+                className={`w-full ${activeConversation === conversation.secondParty._id && "bg-[#24233b]"}`}
               >
                 <People conversation={conversation} isOnLine={isOnLine} />
               </div>
             );
           })}
 
-        {isFetchNextPageError && (
-          <p className="text-sm text-[#dd2a2a]">an Error occurred!</p>
-        )}
+        {isFetchNextPageError && <p className="text-sm text-[#dd2a2a]">an Error occurred!</p>}
         <div
           className={`${
             isFetchingNextPage ? "visible" : "invisible"

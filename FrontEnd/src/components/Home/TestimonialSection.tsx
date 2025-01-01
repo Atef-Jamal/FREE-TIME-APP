@@ -85,11 +85,7 @@ const TestimonialSection = () => {
         {t("What do our users say")}
       </h1>
       <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mx-auto my-5">
-        {error && (
-          <p className="text-center text-[#f73737]">
-            {error.response?.data.error}
-          </p>
-        )}
+        {error && <p className="text-center text-[#f73737]">{error.response?.data.error}</p>}
         {status !== "pending" && !error && (
           <Swiper
             className="w-full h-[350px] "
@@ -102,10 +98,7 @@ const TestimonialSection = () => {
             {testimonials?.map((item) => {
               const numOtherStar = 5 - item.stars;
               return (
-                <SwiperSlide
-                  key={item._id}
-                  className="bg-[#272336ee] rounded-lg max-h-[315px]"
-                >
+                <SwiperSlide key={item._id} className="bg-[#272336ee] rounded-lg max-h-[315px]">
                   <div className="flex flex-col justify-between h-full  px-3 pb-3">
                     <span className=" text-5xl font-[900]">،،</span>
                     <div className="text-[#b5cea4] h-[50%] overflow-scroll scrollbar-none">
@@ -113,13 +106,9 @@ const TestimonialSection = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col gap-1">
-                        <span className="text-sm text-[#5fec52ee]">
-                          {item.user.name}
-                        </span>
+                        <span className="text-sm text-[#5fec52ee]">{item.user.name}</span>
                         {item.createdAt && (
-                          <span className="text-xs text-[#9ba89aee]">
-                            {formateDate(item.createdAt)}
-                          </span>
+                          <span className="text-xs text-[#9ba89aee]">{formateDate(item.createdAt)}</span>
                         )}
                         <div className="flex items-center gap-1">
                           {[...Array(item.stars).keys()].map((el) => (
@@ -131,11 +120,7 @@ const TestimonialSection = () => {
                         </div>
                       </div>
                       <div className="w-16 h-16 xs:w-9 xs:h-9 rounded-full border border-yellow-500">
-                        <img
-                          src={item.user.profilePicture}
-                          alt=""
-                          className="w-full h-full rounded-full"
-                        />
+                        <img src={item.user.profilePicture} alt="" className="w-full h-full rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -204,10 +189,7 @@ const TestimonialSection = () => {
                 </button>
               )}
             </div>
-            <button
-              className="bg-[#9dec6f] px-6 py-1 rounded-md text-black font-bold"
-              type="submit"
-            >
+            <button className="bg-[#9dec6f] px-6 py-1 rounded-md text-black font-bold" type="submit">
               {t("Submit")}
             </button>
           </div>
@@ -215,12 +197,8 @@ const TestimonialSection = () => {
       </form>
       <div className="flex items-center justify-center gap-6 xs:gap-3 my-16">
         <div className="w-[45%] max-w-[300px] h-[250px] border-yellow-200 bg-gradient-to-br from-slate-900 to-zinc-800 rounded-lg flex flex-col items-center pt-20 relative">
-          <p className="text-xl font-bold mb-2 text-center">
-            {t("Yesterday Users Cashed Out")}
-          </p>
-          <span className="font-extrabold text-yellow-400 text-4xl xs:text-2xl">
-            $37,392
-          </span>
+          <p className="text-xl font-bold mb-2 text-center">{t("Yesterday Users Cashed Out")}</p>
+          <span className="font-extrabold text-yellow-400 text-4xl xs:text-2xl">$37,392</span>
           <img
             alt={""}
             src={moneyHome}

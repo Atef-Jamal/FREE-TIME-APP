@@ -4,11 +4,9 @@ import LoadingWebsite from "./LoadingWebsite";
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentAccountRequestFullfiled = useAppSelector(
-    (state) => state.stateManeger.currentAccountRequestFullfiled
-  );
+  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
 
-  if (!currentAccountRequestFullfiled) return <LoadingWebsite />;
+  if (!isCurrentUserReqFinished) return <LoadingWebsite />;
   if (!currentUser) return <LockedPage />;
   return children;
 };

@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import {
-  resetModel,
-  setCurrentUser,
-  showPopup,
-} from "../../context/StateManeger";
+import { resetModel, setCurrentUser, showPopup } from "../../context/StateManeger";
 import { CgPushDown } from "react-icons/cg";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import bonusImage from "../../assets/images/Bonus-Code.png";
@@ -13,7 +9,6 @@ import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { applyCode } from "../../utils";
 import { handleApiError } from "../../utils/common";
-
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import { useMutation } from "@tanstack/react-query";
@@ -75,9 +70,7 @@ const ApplyCoupon = () => {
       </span>
       <div
         className={`${
-          openHelp
-            ? "-translate-y-[0px]"
-            : "-translate-y-[260px] xs:-translate-y-[200px]"
+          openHelp ? "-translate-y-[0px]" : "-translate-y-[260px] xs:-translate-y-[200px]"
         } transition-all duration-500 ease-in flex flex-col gap-2 bg-[#1a0a0aee]`}
       >
         <div className=" bg-[#2e3052] p-4 xs:p-2 h-[250px] xs:h-[190px]">
@@ -126,9 +119,7 @@ const ApplyCoupon = () => {
           </button>
           <span
             className={`transition-all flex items-center justify-center ${
-              mutation.isError || mutation.isPending
-                ? "h-5"
-                : "h-0 overflow-hidden"
+              mutation.isError || mutation.isPending ? "h-5" : "h-0 overflow-hidden"
             } w-full`}
           >
             {mutation.isPending && (
@@ -136,8 +127,7 @@ const ApplyCoupon = () => {
             )}
             {mutation.error && (
               <span className="w-full flex items-center gap-2 text-red-400 text-sm pl-1">
-                <FaExclamationCircle className="opacity-60 text-sm" />{" "}
-                {mutation.error.response?.data.error}
+                <FaExclamationCircle className="opacity-60 text-sm" /> {mutation.error.response?.data.error}
               </span>
             )}
           </span>
@@ -167,11 +157,7 @@ const ApplyCoupon = () => {
             </div>
           </div>
           <div className="w-full h-[100px] overflow-hidden rounded-lg">
-            <img
-              alt=""
-              src={bonusImage}
-              className="w-full h-full object-cover"
-            />
+            <img alt="" src={bonusImage} className="w-full h-full object-cover" />
           </div>
         </div>
       </div>

@@ -1,31 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { showPopup } from "../../context/StateManeger";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import Model from "../../components/Others/Model";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import Navbare from "../../components/Navebare/Navbare";
-import Footer from "../../components/Footer/Footer";
-import DisktopChat from "../../components/Chats/PublicChat/DisktopChat/DisktopChat";
-import LiveStats from "../../components/LiveStats/LiveStats";
-import NavebareBottom from "../../components/Navebare/NavebareBottom";
-import ToastNotify from "../../components/Others/ToastNotify";
-import MusicPlayer from "../../components/Music/MusicPlayer";
-import { debounce } from "../../utils/common";
-import HiddenComponent from "../../components/Layout/HiddenComponent";
+import { showPopup } from "../context/StateManeger";
+import { useAppDispatch, useAppSelector } from "../context/Hooks";
+import Model from "../components/Others/Model";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Navbare from "../components/Navebare/Navbare";
+import Footer from "../components/Footer/Footer";
+import DisktopChat from "../components/Chats/PublicChat/DisktopChat/DisktopChat";
+import LiveStats from "../components/LiveStats/LiveStats";
+import NavebareBottom from "../components/Navebare/NavebareBottom";
+import ToastNotify from "../components/Others/ToastNotify";
+import MusicPlayer from "../components/Music/MusicPlayer";
+import { debounce } from "../utils/common";
+import HiddenComponent from "../components/Layout/HiddenComponent";
 
 const Layout = () => {
   const model = useAppSelector((state) => state.stateManeger.model);
-  const openMusicModal = useAppSelector(
-    (state) => state.stateManeger.openMusicModal
-  );
-  const hiddenLiveStats = useAppSelector(
-    (state) => state.stateManeger.hiddenLiveStats
-  );
+  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
+  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
-  const resizeSidebare = useAppSelector(
-    (state) => state.stateManeger.resizeSidebare
-  );
+  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 867);
   const timeOutRef = useRef(null);
@@ -37,9 +31,7 @@ const Layout = () => {
       dispatch(showPopup({ message: "Back online", type: "SUCESS" }));
     };
     const handleNetworkOffline = () => {
-      dispatch(
-        showPopup({ message: "No internet connection", type: "ERROR_GENERAL" })
-      );
+      dispatch(showPopup({ message: "No internet connection", type: "ERROR_GENERAL" }));
     };
 
     window.addEventListener("online", handleNetworkOnline);
@@ -134,10 +126,7 @@ const Layout = () => {
       </div>
       {isMobile && (
         <div className="w-full bg-[#2b2b55] fixed bottom-0 z-[3]">
-          <NavebareBottom
-            setOpenSidbareMobile={setOpenSidbareMobile}
-            openSidbareMobile={openSidbareMobile}
-          />
+          <NavebareBottom setOpenSidbareMobile={setOpenSidbareMobile} openSidbareMobile={openSidbareMobile} />
         </div>
       )}
       <HiddenComponent />

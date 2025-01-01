@@ -2,22 +2,13 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import Spinner from "../../Others/Spinner";
-import {
-  handleApiError,
-  formateDate,
-  collectReward,
-} from "../../../utils/common";
+import { handleApiError, formateDate, collectReward } from "../../../utils/common";
 import { TypeEmailVerifiedNotify } from "../../../types/notificationTypes";
 import { verifiedImage } from "../../../assets";
 
 type PropType = Omit<TypeEmailVerifiedNotify, "isRead" | "type">;
 
-const EmailVerifiedNotify = ({
-  createdAt,
-  prize,
-  isCollected,
-  _id,
-}: PropType) => {
+const EmailVerifiedNotify = ({ createdAt, prize, isCollected, _id }: PropType) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
@@ -67,9 +58,7 @@ const EmailVerifiedNotify = ({
       </div>
       <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         successfully verified your Email and get
-        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">
-          {prize}
-        </span>
+        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">{prize}</span>
         as Reward
       </p>
 

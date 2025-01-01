@@ -18,9 +18,7 @@ const Playing = () => {
     error: errorUser,
   } = useQuery({
     queryKey: ["user", currentUser?._id],
-    queryFn: currentUser?._id
-      ? () => fetchUserById(currentUser._id)
-      : skipToken,
+    queryFn: currentUser?._id ? () => fetchUserById(currentUser._id) : skipToken,
   });
 
   const {
@@ -61,9 +59,7 @@ const Playing = () => {
       <div className="flex items-center justify-center gap-2 h-full min-h-[800px] sm:min-h-[490px] opacity-70 text-lg">
         <div className="px-4 flex flex-col items-center justify-center gap-3">
           <FaCircleCheck className="text-xl" />
-          <span className="text-center">
-            sorry, you Completed this app Before, Try another app
-          </span>
+          <span className="text-center">sorry, you Completed this app Before, Try another app</span>
         </div>
       </div>
     );

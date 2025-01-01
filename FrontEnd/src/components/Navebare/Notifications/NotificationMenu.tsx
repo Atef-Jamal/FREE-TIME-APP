@@ -12,21 +12,18 @@ import NotificationBuyMusic from "./BuyMusicNotify";
 import EmailVerifiedNotify from "./EmailVerifiedNotify";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
-
 import Spinner from "../../Others/Spinner";
 import { TypeNotifications } from "../../../types/notificationTypes";
 import Empty from "../../Others/Empty";
 import MessageReactionNotify from "./InteractwithMessageNotify";
 
-const NotificationMenu = ({
-  notifications,
-  setNotifications,
-  loadingNotifications,
-}: {
+interface TypeProps {
   notifications: TypeNotifications[];
   loadingNotifications: boolean;
   setNotifications: React.Dispatch<React.SetStateAction<TypeNotifications[]>>;
-}) => {
+}
+
+const NotificationMenu = ({ notifications, setNotifications, loadingNotifications }: TypeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const dispatch = useAppDispatch();
 
@@ -52,9 +49,7 @@ const NotificationMenu = ({
   }, [dispatch, setNotifications]);
 
   useEffect(() => {
-    const isThereNotificationUnReaded = notifications.some(
-      (item) => item.isRead === false
-    );
+    const isThereNotificationUnReaded = notifications.some((item) => item.isRead === false);
     if (isThereNotificationUnReaded) {
       markNotificationasRead();
     }
@@ -63,11 +58,7 @@ const NotificationMenu = ({
   return (
     <>
       <div
-        onClick={() =>
-          dispatch(
-            toggleThisEntity({ entity: "openNotification", value: false })
-          )
-        }
+        onClick={() => dispatch(toggleThisEntity({ entity: "openNotification", value: false }))}
         className="fixed top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#010107a1] "
       ></div>
 
@@ -77,11 +68,7 @@ const NotificationMenu = ({
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
           </h1>
           <MdOutlineClose
-            onClick={() =>
-              dispatch(
-                toggleThisEntity({ entity: "openNotification", value: false })
-              )
-            }
+            onClick={() => dispatch(toggleThisEntity({ entity: "openNotification", value: false }))}
             className="text-2xl"
           />
         </div>
@@ -192,9 +179,7 @@ const NotificationMenu = ({
               }
             })}
         </div>
-        {notifications.length === 0 && (
-          <Empty emptyText="Empty Notifications" />
-        )}
+        {notifications.length === 0 && <Empty emptyText="Empty Notifications" />}
       </div>
     </>
   );

@@ -15,9 +15,7 @@ interface ProfilTypeProp {
 }
 
 const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
-  const hiddenLiveStats = useAppSelector(
-    (state) => state.stateManeger.hiddenLiveStats
-  );
+  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -81,9 +79,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
           } w-12 h-5 p-[1px] rounded-full flex items-center `}
         >
           <span
-            className={`${
-              hiddenLiveStats ? " ml-auto bg-[#53eb53]" : " bg-[#a0b1a0]"
-            } w-6 h-6 rounded-full`}
+            className={`${hiddenLiveStats ? " ml-auto bg-[#53eb53]" : " bg-[#a0b1a0]"} w-6 h-6 rounded-full`}
           ></span>
         </button>
       </span>

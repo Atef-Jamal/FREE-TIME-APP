@@ -52,11 +52,3 @@ export interface TypeMusicDetail {
   album: { cover: string };
   preview: string;
 }
-
-export interface TypeUseScrollToElementHook {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dependencies?: any[];
-  scrollPosition?: "center" | "start" | "end" | "nearest";
-  key?: string;
-  callback?: () => void;
-}

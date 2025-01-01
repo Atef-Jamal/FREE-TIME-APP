@@ -20,7 +20,7 @@ export interface TypeMusicInfo {
 export interface TypeInitialState {
   currentUser: User | null;
   currentUserIsLoading: boolean;
-  currentAccountRequestFullfiled: boolean;
+  isCurrentUserReqFinished: boolean;
   openRegisterForm: boolean;
   openNotification: boolean;
   isChatOpen: boolean;

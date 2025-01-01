@@ -13,14 +13,11 @@ interface TypeAppCard {
 }
 
 const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
-  const currentUserIsLoading = useAppSelector(
-    (state) => state.stateManeger.currentUserIsLoading
-  );
+  const currentUserIsLoading = useAppSelector((state) => state.stateManeger.currentUserIsLoading);
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
 
   const { t } = useTranslation("earn");
-  const { _id, description, image, prize, title, isAvailable, devices } =
-    taskDetail;
+  const { _id, description, image, prize, title, isAvailable, devices } = taskDetail;
   const isCompleted = currentUser?.completedTasks.includes(_id);
   if (currentUserIsLoading) return;
 
@@ -35,9 +32,7 @@ const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
       {currentUser?.completedTasks.includes(_id) ? (
         <div className="absolute z-[1] top-7 -left-7 py-1 px-6 -rotate-45 flex items-center justify-center gap-2 bg-[#9cf155]">
           <BsCheckCircleFill />
-          <span className="font-bold text-xs text-[#5e5656]">
-            {t("Completed")}
-          </span>
+          <span className="font-bold text-xs text-[#5e5656]">{t("Completed")}</span>
         </div>
       ) : undefined}
 
@@ -69,12 +64,8 @@ const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
         <p className="font-bold text-sm text-[#8ad657]  truncate">{title}</p>
         <p className="text-xs text-[#cea5a5] h-4 truncate">{description}</p>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-300 font-bold py-1">
-            {t("Reward")}
-          </span>
-          <span className="text-sm sm:text-xs text-[#5dd140] text-center font-bold pr-1 ">
-            {prize}
-          </span>
+          <span className="text-xs text-gray-300 font-bold py-1">{t("Reward")}</span>
+          <span className="text-sm sm:text-xs text-[#5dd140] text-center font-bold pr-1 ">{prize}</span>
         </div>
       </div>
       {isCompleted && (
@@ -85,16 +76,12 @@ const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
         </button>
       )}
       {!isCompleted && isAvailable === "AVAILABLE" && (
-        <button
-          className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
-        >
+        <button className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}>
           {t("START NOW")}
         </button>
       )}
       {isAvailable === "UNAVAILABLE" && (
-        <button
-          className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
-        >
+        <button className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}>
           {t("Not Available")}
         </button>
       )}

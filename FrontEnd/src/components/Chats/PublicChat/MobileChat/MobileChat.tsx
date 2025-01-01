@@ -4,9 +4,7 @@ import PublicChat from "../Common/PublicChat";
 import { setPublicMsgRedPoint } from "../../../../context/StateManeger";
 
 const MobileChat = () => {
-  const hiddenLiveStats = useAppSelector(
-    (state) => state.stateManeger.hiddenLiveStats
-  );
+  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -16,9 +14,7 @@ const MobileChat = () => {
   return (
     <div
       style={{
-        height: hiddenLiveStats
-          ? `calc(100dvh - 120px)`
-          : `calc(100dvh - 163px)`,
+        height: hiddenLiveStats ? `calc(100dvh - 120px)` : `calc(100dvh - 163px)`,
       }}
       className={`hidden sm:flex flex-col items-center fixed ${
         hiddenLiveStats ? "top-[55px]" : "top-[98px]"

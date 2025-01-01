@@ -7,14 +7,7 @@ interface TypeProps {
   price?: number;
   icon: React.ReactNode;
 }
-const ActivityItem = ({
-  message,
-  prize,
-  price,
-  index,
-  time,
-  icon,
-}: TypeProps) => {
+const ActivityItem = ({ message, prize, price, index, time, icon }: TypeProps) => {
   const date = formateDate(time);
   return (
     <div
@@ -22,9 +15,7 @@ const ActivityItem = ({
         index % 2 === 0 ? "bg-[#2d4c705d]" : ""
       } flex items-center gap-1 rounded-md  h-[70px] sm:h-[60px] overflow-hidden`}
     >
-      <div className="flex items-center justify-center bg-[#0d0f2bc9]  rounded-sm px-3 h-full">
-        {icon}
-      </div>
+      <div className="flex items-center justify-center bg-[#0d0f2bc9]  rounded-sm px-3 h-full">{icon}</div>
 
       <p className="flex-1 text-sm h-full flex items-center whitespace-nowrap overflow-scroll scrollbar-none  text-[#9fadddee] px-2 xs:px-0">
         {message}

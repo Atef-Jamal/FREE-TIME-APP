@@ -20,9 +20,7 @@ interface TypeVisiter {
 const WhoVisitProfile = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<
-    TypeVisiter[]
-  >([]);
+  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<TypeVisiter[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
@@ -62,13 +60,8 @@ const WhoVisitProfile = () => {
   return (
     <div className="w-[70%] sm:w-full mx-auto mt-3 flex flex-col items-center justify-center gap-2 pb-3">
       <div className="flex items-center gap-y-3 justify-around flex-wrap w-full py-2">
-        <span className="font-bold tracking-wider text-[#8da4f0ee]">
-          Who visit my profile ?
-        </span>
-        <button
-          onClick={handleShowWhoVisit}
-          className="px-5 py-1 rounded-md bg-[#5aa55e]"
-        >
+        <span className="font-bold tracking-wider text-[#8da4f0ee]">Who visit my profile ?</span>
+        <button onClick={handleShowWhoVisit} className="px-5 py-1 rounded-md bg-[#5aa55e]">
           Show for 5 points
         </button>
       </div>
@@ -93,22 +86,13 @@ const WhoVisitProfile = () => {
               >
                 <div className="flex items-center justify-center gap-3">
                   <div className="w-8 h-8 rounded-full">
-                    <img
-                      src={item.visiter.profilePicture}
-                      alt=""
-                      className="object-contain rounded-full"
-                    />
+                    <img src={item.visiter.profilePicture} alt="" className="object-contain rounded-full" />
                   </div>
-                  <Link
-                    to={`/user/${item._id}`}
-                    className="text-sm text-[#8a84eb] underline"
-                  >
+                  <Link to={`/user/${item._id}`} className="text-sm text-[#8a84eb] underline">
                     {item.visiter.name}
                   </Link>
                 </div>
-                <span className="text-[#b38b8b] sm:text-sm">
-                  {formateDate(item.createdAt)}
-                </span>
+                <span className="text-[#b38b8b] sm:text-sm">{formateDate(item.createdAt)}</span>
               </div>
             ))
             .reverse()}

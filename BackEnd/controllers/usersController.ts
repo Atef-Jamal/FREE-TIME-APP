@@ -51,13 +51,20 @@ export const getOnlineUsers = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "Can't Load all peoples" });
   }
 };
-export const getLeaderboardUsers = async (_: Request, res: Response) => {
+
+export const getLeaderboardUsers = async (req: Request, res: Response) => {
+  const pageParam = Number(req.query.pageParam) || 1;
+  const limit = 100;
+  const skip = (pageParam - 1) * limit;
   try {
     const users = await User.find({})
-      .sort({ points: -1, createdAt: 1 })
+      .sort({ points: -1, emailVerified: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .select("_id name points profilePicture");
 
-    return res.status(200).json(users);
+    const allDataLength = await User.countDocuments();
+    return res.status(200).json({ users, allDataLength });
   } catch (error) {
     return res.status(404).json({ error: "Can't Load all peoples" });
   }

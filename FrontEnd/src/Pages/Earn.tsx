@@ -14,7 +14,7 @@ import TaskDetail from "../components/Earn/TaskDetail";
 import AppSkeleton from "../components/Earn/TaskSkeleton";
 import ParnterCard from "../components/Earn/ParnterCard";
 import TaskCard from "../components/Earn/TaskCard";
-import { useScrollToElement } from "../hooks/commonHooks";
+import { useScrollToElement } from "../hooks";
 import Empty from "../components/Others/Empty";
 import SearchBar from "../components/Search/SearchBar";
 import { FaCaretDown } from "react-icons/fa6";
@@ -26,19 +26,14 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchAllTasks } from "../utils";
 
 const Earn = () => {
-  const resizeSidebare = useAppSelector(
-    (state) => state.stateManeger.resizeSidebare
-  );
+  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
-  const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] =
-    useState(false);
+  const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] = useState(false);
   const limitPerPage = 15;
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [filterByPopularity, setFilterByPopularity] =
-    useState<TypeFilterByPopularity>("ALL");
-  const [filterByDevice, setFilterByDevice] =
-    useState<TypeFilterByDevice>("ALL");
+  const [filterByPopularity, setFilterByPopularity] = useState<TypeFilterByPopularity>("ALL");
+  const [filterByDevice, setFilterByDevice] = useState<TypeFilterByDevice>("ALL");
   const [searchParams] = useSearchParams();
   const { t } = useTranslation("earn");
 
@@ -63,15 +58,13 @@ const Earn = () => {
     isFetchNextPageError,
   } = useInfiniteQuery({
     queryKey: ["tasks", filterByDevice, filterByPopularity, limitPerPage],
-    queryFn: async ({ pageParam }) => {
-      const allTasks = await fetchAllTasks({
+    queryFn: ({ pageParam }) =>
+      fetchAllTasks({
         filterByDevice,
         filterByPopularity,
         limitPerPage,
         pageParam,
-      });
-      return allTasks;
-    },
+      }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       return lastPage.hasMore ? pages.length + 1 : undefined;
@@ -96,9 +89,7 @@ const Earn = () => {
   useEffect(() => {
     const appIdFromUrlSearchParam = searchParams.get("to");
     if (appIdFromUrlSearchParam && allTasks && allTasks.length > 0) {
-      const isExistInAppList = allTasks.find(
-        (task) => task._id === appIdFromUrlSearchParam
-      );
+      const isExistInAppList = allTasks.find((task) => task._id === appIdFromUrlSearchParam);
       const isAppDetailOpen = translate === "-translate-x-[50%]";
       if (isExistInAppList && !isAppDetailOpen) return;
       setTaskId(appIdFromUrlSearchParam);
@@ -111,10 +102,10 @@ const Earn = () => {
 
   const activeFilterByPopularity = (
     e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type: TypeFilterByPopularity
+    type: TypeFilterByPopularity,
   ) => {
     [allRef, popularRef, heighestRewardRef, heighestRatingRef].forEach((item) =>
-      item.current?.classList.remove("bg-[#3d34647e]")
+      item.current?.classList.remove("bg-[#3d34647e]"),
     );
     e.currentTarget.classList.add("bg-[#3d34647e]");
     setFilterByPopularity(type);
@@ -123,10 +114,10 @@ const Earn = () => {
 
   const activeFilterByDevice = (
     e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type: TypeFilterByDevice
+    type: TypeFilterByDevice,
   ) => {
     [allDevicesRef, desktopRef, androidRef, macRef].forEach((item) =>
-      item.current?.classList.remove("bg-[#3d34647e]")
+      item.current?.classList.remove("bg-[#3d34647e]"),
     );
     e.currentTarget.classList.add("bg-[#3d34647e]");
     setFilterByDevice(type);
@@ -165,12 +156,8 @@ const Earn = () => {
                   <SiApple className="text-lg" />
                 </>
               )}
-              {filterByDevice === "DESKTOP" && (
-                <IoDesktop className="text-lg" />
-              )}
-              {filterByDevice === "ANDROID" && (
-                <DiAndroid className="text-lg" />
-              )}
+              {filterByDevice === "DESKTOP" && <IoDesktop className="text-lg" />}
+              {filterByDevice === "ANDROID" && <DiAndroid className="text-lg" />}
               {filterByDevice === "MAC" && <SiApple className="text-lg" />}
               <FaCaretDown className="text-lg ml-auto" />
             </div>
@@ -190,19 +177,14 @@ const Earn = () => {
         <div className="relative w-[60%] gap-2 sm:w-full ">
           <div className="flex xs:flex-col items-center gap-2 justify-between">
             <div className="w-full h-10  rounded-md overflow-hidden">
-              <SearchBar
-                placeholder={t("search apps and offers...")}
-                onChange={() => {}}
-              />
+              <SearchBar placeholder={t("search apps and offers...")} onChange={() => {}} />
             </div>
             <div
               onClick={() => setOpenFilterByPopularityMenu((prev) => !prev)}
               className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2 sm:gap-1 cursor-pointer"
             >
               <IoFilter />
-              <span className="text-gray-400 font-bold">
-                {t(filterByPopularity)}
-              </span>
+              <span className="text-gray-400 font-bold">{t(filterByPopularity)}</span>
               <IoMdArrowDropdown className="text-2xl" />
             </div>
           </div>
@@ -222,21 +204,13 @@ const Earn = () => {
         <div className="flex xs:flex-col justify-between ">
           <div className="flex items-center gap-3">
             <ImFire className="text-xl" />
-            <h1 className="text-[#8a9fff] text-xl font-bold sm:text-lg">
-              {t("FEATURED OFFERS")}
-            </h1>
+            <h1 className="text-[#8a9fff] text-xl font-bold sm:text-lg">{t("FEATURED OFFERS")}</h1>
           </div>
           <div className="flex items-center gap-3 justify-end">
-            <button
-              onClick={next}
-              className="px-4 py-2 sm:py-1 bg-[#85ac3e] rounded-md "
-            >
+            <button onClick={next} className="px-4 py-2 sm:py-1 bg-[#85ac3e] rounded-md ">
               <IoIosArrowBack className="text-xl" />
             </button>
-            <button
-              onClick={prev}
-              className="px-4 py-2 sm:py-1 bg-[#85ac3e] rounded-md"
-            >
+            <button onClick={prev} className="px-4 py-2 sm:py-1 bg-[#85ac3e] rounded-md">
               <IoIosArrowForward className="text-xl" />
             </button>
           </div>
@@ -252,8 +226,7 @@ const Earn = () => {
                   : "grid grid-cols-7 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 xs:grid-cols-2"
               } gap-3 xs:gap-2 bg-[#1c1e31] h-fit`}
             >
-              {status === "pending" &&
-                [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
+              {status === "pending" && [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
 
               {data?.pages.map((page) =>
                 page.tasks.map((taskDetail, inedx) => (
@@ -263,14 +236,12 @@ const Earn = () => {
                     key={taskDetail._id}
                     index={inedx}
                   />
-                ))
+                )),
               )}
             </div>
 
             {status === "error" && !isFetchNextPageError && (
-              <p className="py-10 font-bold text-center text-[#e45e3c]">
-                {error.response?.data.error}
-              </p>
+              <p className="py-10 font-bold text-center text-[#e45e3c]">{error.response?.data.error}</p>
             )}
 
             {isFetchingNextPage && (
@@ -284,9 +255,7 @@ const Earn = () => {
             )}
 
             {!isFetchingNextPage && isFetchNextPageError && (
-              <p className="font-bold text-[#e45e3c] text-center">
-                An Error Occurred During Loading More !
-              </p>
+              <p className="font-bold text-[#e45e3c] text-center">An Error Occurred During Loading More !</p>
             )}
 
             {hasNextPage && (
@@ -316,9 +285,7 @@ const Earn = () => {
       <div>
         <div className="flex items-center gap-3">
           <ImFire className="text-2xl" />
-          <h1 className="text-xl font-bold text-[#8a9fff]">
-            {t("OFFER PARTNERS")}
-          </h1>
+          <h1 className="text-xl font-bold text-[#8a9fff]">{t("OFFER PARTNERS")}</h1>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 xs:gap-2 mt-4">
           {arrayoffers.map(({ image }, index) => (
@@ -329,9 +296,7 @@ const Earn = () => {
       <div className="mt-5">
         <div className="flex items-center gap-3">
           <ImFire className="text-2xl" />
-          <h1 className="text-xl font-bold text-[#8a9fff]">
-            {t("SURVEY PARTNERS")}
-          </h1>
+          <h1 className="text-xl font-bold text-[#8a9fff]">{t("SURVEY PARTNERS")}</h1>
         </div>
         <div className="flex justify-center gap-3  xs:gap-2  flex-wrap mt-4">
           {[notikLogo, AdscendMediaGlow, tapresearch].map((item) => (

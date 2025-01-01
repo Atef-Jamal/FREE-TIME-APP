@@ -31,10 +31,7 @@ const MessageReactionNotify = ({
         <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
       </div>
       <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
-        <Link
-          to={`/user/${interactedUser._id}`}
-          className="text-sm text-[#696cf3] mr-1 underline sm:text-xs"
-        >
+        <Link to={`/user/${interactedUser._id}`} className="text-sm text-[#696cf3] mr-1 underline sm:text-xs">
           {interactedUser.name}
         </Link>
         {typeOfInteraction === "loves" && "make Love to your message"}
@@ -45,15 +42,11 @@ const MessageReactionNotify = ({
       <Link
         to={
           window.innerWidth > 867
-            ? `${
-                location.pathname === "/chat" ? "/" : location.pathname
-              }?messageId=${messageLocation}`
+            ? `${location.pathname === "/chat" ? "/" : location.pathname}?messageId=${messageLocation}`
             : `/chat?messageId=${messageLocation}`
         }
         onClick={() => {
-          dispatch(
-            toggleThisEntity({ entity: "openNotification", value: false })
-          );
+          dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
           if (!isChatOpen && window.innerWidth > 867) {
             dispatch(toggleThisEntity({ entity: "isChatOpen" }));
           }

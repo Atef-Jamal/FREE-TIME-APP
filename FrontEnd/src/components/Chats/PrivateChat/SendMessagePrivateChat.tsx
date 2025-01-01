@@ -4,14 +4,10 @@ import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { showPopup } from "../../../context/StateManeger";
 import { sendPrivateChatMessage } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
-import { v4 as uuId } from "uuid";
-
-import {
-  TypeCashedConversations,
-  TypePrivateMessage,
-} from "../../../types/privateChatTypes";
+import { TypeCashedConversations, TypePrivateMessage } from "../../../types/privateChatTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { User } from "../../../types/userTypes";
+import { v4 as uuId } from "uuid";
 
 interface TypeProps {
   id: string;
@@ -52,38 +48,32 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
         isSended: "PENDING",
       };
 
-      queryClient.setQueryData(
-        ["private-messages", id],
-        (previous: TypeCashedChat) => {
-          return {
-            ...previous,
-            messages: [...previous.messages, optimisticMsg],
-          };
-        }
-      );
+      queryClient.setQueryData(["private-messages", id], (previous: TypeCashedChat) => {
+        return {
+          ...previous,
+          messages: [...previous.messages, optimisticMsg],
+        };
+      });
       setMessage("");
       inputRef.current?.focus();
       inputRef.current!.style.height = "auto";
       return { uniqeIdForRollback };
     },
     onSuccess: (data, _, context) => {
-      queryClient.setQueryData(
-        ["private-messages", id],
-        (old: TypeCashedChat) => {
-          if (old) {
-            return {
-              ...old,
-              messages: old.messages.map((msg) => {
-                if (msg._id === context.uniqeIdForRollback) {
-                  return { ...data, isSended: "SUCCESS" };
-                } else {
-                  return msg;
-                }
-              }),
-            };
-          }
+      queryClient.setQueryData(["private-messages", id], (old: TypeCashedChat) => {
+        if (old) {
+          return {
+            ...old,
+            messages: old.messages.map((msg) => {
+              if (msg._id === context.uniqeIdForRollback) {
+                return { ...data, isSended: "SUCCESS" };
+              } else {
+                return msg;
+              }
+            }),
+          };
         }
-      );
+      });
       queryClient.setQueryData(
         ["conversations"],
         (previous: TypeCashedConversations): TypeCashedConversations => {
@@ -107,23 +97,20 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
     },
     onError: (error, _, context) => {
       if (context)
-        queryClient.setQueryData(
-          ["private-messages", id],
-          (old: TypeCashedChat) => {
-            if (old) {
-              return {
-                ...old,
-                messages: old.messages.map((msg) => {
-                  if (msg._id === context.uniqeIdForRollback) {
-                    return { ...msg, isSended: "FAILED" };
-                  } else {
-                    return msg;
-                  }
-                }),
-              };
-            }
+        queryClient.setQueryData(["private-messages", id], (old: TypeCashedChat) => {
+          if (old) {
+            return {
+              ...old,
+              messages: old.messages.map((msg) => {
+                if (msg._id === context.uniqeIdForRollback) {
+                  return { ...msg, isSended: "FAILED" };
+                } else {
+                  return msg;
+                }
+              }),
+            };
           }
-        );
+        });
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",

@@ -22,12 +22,8 @@ const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
           <span className="p-1 flex items-center justify-center bg-[#854f22c7] rounded-md text-[9px] font-extrabold tracking-wider text-[#5dce67] mr-1">
             BOT
           </span>
-          <span className=" text-sm tracking-wider text-[#01D676] font-bold">
-            FREE
-          </span>
-          <span className="text-sm text-gray-300 tracking-wider font-bold">
-            TIME
-          </span>
+          <span className=" text-sm tracking-wider text-[#01D676] font-bold">FREE</span>
+          <span className="text-sm text-gray-300 tracking-wider font-bold">TIME</span>
         </div>
         <span className="text-xs text-gray-500 font-bold">{date}</span>
       </div>
@@ -48,14 +44,8 @@ const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
       )}
       {singleMessage.typeOfTask === "EMAIL-VERIFIED" && (
         <p className="text-sm text-[#d9dfdb] mr-auto flex items-center">
-          <span className="text-xs text-[#6385e2ee] font-bold underline">
-            {singleMessage.sender.name}
-          </span>
-          <img
-            src={verifiedImage}
-            alt=""
-            className="w-4 h-4 object-cover mx-2 "
-          />
+          <span className="text-xs text-[#6385e2ee] font-bold underline">{singleMessage.sender.name}</span>
+          <img src={verifiedImage} alt="" className="w-4 h-4 object-cover mx-2 " />
           verified his Email Now
         </p>
       )}
@@ -72,10 +62,7 @@ const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
             {singleMessage.sender.name}
           </Link>
           Referred His Friend
-          <Link
-            to={`/user/${singleMessage._id}`}
-            className=" text-[#6385e2ee] font-bold mx-[3px] underline"
-          >
+          <Link to={`/user/${singleMessage._id}`} className=" text-[#6385e2ee] font-bold mx-[3px] underline">
             {singleMessage.newUserReferred.name}
           </Link>
           Now

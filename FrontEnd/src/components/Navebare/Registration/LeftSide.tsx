@@ -8,30 +8,21 @@ interface TypeProps {
   setImageIsUploading: React.Dispatch<SetStateAction<boolean>>;
   isSignInMode: boolean;
 }
-const LeftSide = ({
-  setFormData,
-  isSignInMode,
-  setImageIsUploading,
-}: TypeProps) => {
+const LeftSide = ({ setFormData, isSignInMode, setImageIsUploading }: TypeProps) => {
   const { t } = useTranslation("register");
 
   return (
     <div className="flex flex-col">
       {!isSignInMode && (
         <div className="w-full p-1 flex items-center justify-center mb-4">
-          <UploadImage
-            setImageIsUploading={setImageIsUploading}
-            setFormData={setFormData}
-          />
+          <UploadImage setImageIsUploading={setImageIsUploading} setFormData={setFormData} />
         </div>
       )}
       <span className="relative sign__up__bonus overflow-hidden tracking-wider bg-[#807f7fc0] text-[#d6d45b] flex items-center justify-center text-xl lg:text-sm h-12 mb-4">
         {t("Sign Up Bonus")}
       </span>
       <div>
-        <p className="text-center mb-2 text-white font-[400]">
-          {t("1 Create an account")}
-        </p>
+        <p className="text-center mb-2 text-white font-[400]">{t("1 Create an account")}</p>
         <p className="text-center text-white font-[400] mr-4">
           {t("2 Open the free time and win up to $250!")}
         </p>

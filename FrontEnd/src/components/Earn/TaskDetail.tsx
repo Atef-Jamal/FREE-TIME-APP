@@ -7,14 +7,17 @@ import { empty } from "../../assets";
 import { BsArrowDownCircle } from "react-icons/bs";
 import { fetchAppDetails, handleAddReview } from "../../utils";
 import Empty from "../Others/Empty";
-
 import AppDetailsSkeleton from "./TaskDetailsSkeleton";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 
-const TaskDetail = ({ taskId }: { taskId: string }) => {
+interface TypeProps {
+  taskId: string;
+}
+
+const TaskDetail = ({ taskId }: TypeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
@@ -45,9 +48,7 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
   const mutation = useMutation({
     mutationFn: handleAddReview,
     onError: (error) => {
-      dispatch(
-        showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" })
-      );
+      dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["earn", taskId] });
@@ -58,9 +59,7 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
   const addReviewHandler = (event: React.FormEvent) => {
     event.preventDefault();
     if (comment.trim() === "") {
-      dispatch(
-        showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" })
-      );
+      dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
       return;
     }
     mutation.mutate({ taskId, comment });
@@ -84,9 +83,7 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-[#78bd4f] mb-3">
-        {t("Offer Details")}
-      </h1>
+      <h1 className="text-2xl font-bold text-[#78bd4f] mb-3">{t("Offer Details")}</h1>
       <img
         alt=""
         src={`${import.meta.env.VITE_SERVER_BASE_URL}/${taskDetails.image}`}
@@ -95,28 +92,21 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
 
       <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
         <span className="w-full text-[#537692] text-sm">
-          <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span>{" "}
-          {taskDetails?.title}
+          <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span> {taskDetails?.title}
         </span>
         <span className="w-full text-[#537692] text-sm">
-          <span className="mr-2 text-[#aebeb5] text-base">
-            {t("Description")} :
-          </span>
+          <span className="mr-2 text-[#aebeb5] text-base">{t("Description")} :</span>
           {taskDetails?.description}
         </span>
         <span className="w-full text-[#537692] text-sm">
-          <span className="mr-2 text-[#aebeb5] text-base">
-            {t("available on")} :
-          </span>
+          <span className="mr-2 text-[#aebeb5] text-base">{t("available on")} :</span>
           {taskDetails?.devices === "ALL" ? "ALL DEVICES" : taskDetails.devices}
         </span>
         <div
           onClick={() => setExpandUsers((prev) => !prev)}
           className="w-full bg-[#333030] rounded-md flex item-center justify-between p-2 my-2"
         >
-          <span className="text-[#73f1a8]">
-            {t("People who completed this app")}
-          </span>
+          <span className="text-[#73f1a8]">{t("People who completed this app")}</span>
           <FaRegArrowAltCircleDown className="opacity-50 text-xl" />
         </div>
         <div
@@ -160,9 +150,7 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
           <BsArrowDownCircle className="text-xl opacity-50" />
         </span>
         <div
-          className={`w-full h-0 overflow-hidden ${
-            openReviews && "h-auto"
-          } flex flex-col items-center"
+          className={`w-full h-0 overflow-hidden ${openReviews && "h-auto"} flex flex-col items-center"
           `}
         >
           {taskDetails.reviews.map((review) => {
@@ -177,21 +165,14 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
                     alt=""
                     className="w-8 h-8 sm:w-6 sm:h-6 rounded-full object-fill"
                   />
-                  <span className="text-sm text-[#d1cfcf]">
-                    {review.user.name}
-                  </span>
+                  <span className="text-sm text-[#d1cfcf]">{review.user.name}</span>
                 </div>
-                <p className="w-full text-sm sm:text-xs text-[#9d79ff]">
-                  {review.comment}
-                </p>
+                <p className="w-full text-sm sm:text-xs text-[#9d79ff]">{review.comment}</p>
               </div>
             );
           })}
           {taskDetails.reviews.length === 0 && (
-            <Empty
-              emptyText={t("There is not Reviews on this offer")}
-              imgWidthHeight="w-8 h-8"
-            />
+            <Empty emptyText={t("There is not Reviews on this offer")} imgWidthHeight="w-8 h-8" />
           )}
           <form onSubmit={addReviewHandler} className="w-full">
             <input
@@ -200,9 +181,7 @@ const TaskDetail = ({ taskId }: { taskId: string }) => {
               onChange={(e) => setComment(e.target.value)}
               className="w-full outline-none placeholder:text-gray-500 border-gray-700 text-sm bg-[#171227fd] p-3 rounded-md"
             />
-            <button className="w-full text-center rounded-md py-2 bg-[#6f9c5a] mt-2">
-              Send
-            </button>
+            <button className="w-full text-center rounded-md py-2 bg-[#6f9c5a] mt-2">Send</button>
           </form>
         </div>
         <span className="text-[#aebeb5] flex items-center gap-3 w-full mb-2">

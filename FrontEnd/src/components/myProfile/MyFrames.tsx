@@ -75,9 +75,7 @@ const MyFrames = () => {
       className=" mt-5 flex flex-col gap-2 p-2 items-center justify-center bg-[#222339] rounded-md"
     >
       <span className="text-[#7dec73] font-bold">My Frames</span>
-      <div
-        className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2`}
-      >
+      <div className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2`}>
         {currentUser?.myFrames?.map((item: TypeFrame) => {
           return (
             <div
@@ -112,9 +110,7 @@ const MyFrames = () => {
           );
         })}
       </div>
-      {currentUser?.myFrames.length === 0 && (
-        <Empty emptyText="No Frames Buyed" />
-      )}
+      {currentUser?.myFrames.length === 0 && <Empty emptyText="No Frames Buyed" />}
     </div>
   );
 };

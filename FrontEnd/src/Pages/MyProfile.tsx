@@ -1,9 +1,4 @@
-import {
-  rank1Desktop,
-  rank2Desktop,
-  rank3Desktop,
-  verifiedImage,
-} from "../assets";
+import { rank1Desktop, rank2Desktop, rank3Desktop, verifiedImage } from "../assets";
 import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { RiFileCopyLine } from "react-icons/ri";
@@ -27,9 +22,7 @@ const MyProfile = () => {
   const dispatch = useAppDispatch();
   const queryParam = searchParams.get("to");
 
-  const mathLevel: number = currentUser?.points
-    ? currentUser.points / 100
-    : 0 / 100;
+  const mathLevel: number = currentUser?.points ? currentUser.points / 100 : 0 / 100;
   const level = Math.floor(mathLevel);
   let progress: number = 0;
   if (Number.isInteger(mathLevel)) {
@@ -69,9 +62,7 @@ const MyProfile = () => {
     <div className="bg-[#141523] py-6 sm:py-4 h-full w-full flex items-center justify-center">
       <div className="w-[95%] lg:w-[95%] mx-auto sm:w-[95%]">
         <div className="flex items-center justify-between px-4 mb-5 sm:mb-2">
-          <span className="text-2xl sm:text-xl font-bold text-[#8df174]">
-            My Profile
-          </span>
+          <span className="text-2xl sm:text-xl font-bold text-[#8df174]">My Profile</span>
           <button
             onClick={handleOpenSetting}
             className="flex items-center gap-2 text-[#131b2b] font-bold text-xl tracking-wider py-1 sm:py-[2px] px-5 sm:px-3 sm:text-sm rounded-md bg-[#ade66de3] "
@@ -87,16 +78,10 @@ const MyProfile = () => {
                 <UserImage user={currentUser} />
               </div>
               <div className=" w-[60%] flex flex-col items-center gap-2 xs:gap-1">
-                <span className="text-lg font-bold sm:text-sm text-[#ab9df8ee]">
-                  {currentUser.name}
-                </span>
+                <span className="text-lg font-bold sm:text-sm text-[#ab9df8ee]">{currentUser.name}</span>
                 {currentUser.emailVerified && (
                   <div className="flex items-center gap-4">
-                    <img
-                      src={verifiedImage}
-                      alt=""
-                      className="w-8 h-8 object-cover"
-                    />
+                    <img src={verifiedImage} alt="" className="w-8 h-8 object-cover" />
                     <span className="text-gray-400">Verified</span>
                   </div>
                 )}
@@ -119,16 +104,10 @@ const MyProfile = () => {
                     }}
                     className={`transition-all flex items-center animate-pulse gap-2 sm:gap-1 w-full z-[1] `}
                   >
-                    <span className="text-xs sm:text-[8px] text-[#72fa50] pl-[3px]">
-                      {level ? level : 0}
-                    </span>
-                    <span className="text-xs sm:text-[8px] text-[#789ed6ee]">
-                      Level
-                    </span>
+                    <span className="text-xs sm:text-[8px] text-[#72fa50] pl-[3px]">{level ? level : 0}</span>
+                    <span className="text-xs sm:text-[8px] text-[#789ed6ee]">Level</span>
                   </div>
-                  <span
-                    className={`text-xs lg:text-[8px] text-[#cfaa44] tracking-wider`}
-                  >{`You Need ${
+                  <span className={`text-xs lg:text-[8px] text-[#cfaa44] tracking-wider`}>{`You Need ${
                     currentUser.points && currentUser.points > 100
                       ? 100 - Number(currentUser.points?.toString().slice(1))
                       : 100 - (currentUser.points ? currentUser.points : 0)
@@ -157,11 +136,7 @@ const MyProfile = () => {
                 value={`${window.location.origin}/?referrerUser=${currentUser._id}`}
               />
               <span
-                onClick={() =>
-                  copyReferralLink(
-                    `${window.location.origin}/?referrerUser=${currentUser._id}`
-                  )
-                }
+                onClick={() => copyReferralLink(`${window.location.origin}/?referrerUser=${currentUser._id}`)}
                 className="relative w-[15%] h-5 flex items-center justify-center"
               >
                 <RiFileCopyLine className="text-xl " />
@@ -169,34 +144,22 @@ const MyProfile = () => {
             </div>
           </div>
           <p className="text-sm text-[#26e6ffee] text-center">
-            Each Person Sign In through your Referral Link Instantly you get 100
-            points as a Reward
+            Each Person Sign In through your Referral Link Instantly you get 100 points as a Reward
           </p>
         </div>
         <MyFrames />
         <MyMusics />
         <div className="flex items-center gap-5 mt-7 sm:gap-2 sm:max-w-[95%] sm:mx-auto sm:overflow-scroll sm:scrollbar-none ">
-          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">
-            Tiers
-          </span>
-          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">
-            Affiliates
-          </span>
-          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">
-            Leaderboard
-          </span>
-          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">
-            Earnings
-          </span>
-          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">
-            Promo
-          </span>
+          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">Tiers</span>
+          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">Affiliates</span>
+          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">Leaderboard</span>
+          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">Earnings</span>
+          <span className="px-4 py-2 text-gray-400 bg-[#20212e] rounded-md sm:text-xs">Promo</span>
         </div>
         <div className="flex gap-6 items-center mt-8 sm:w-[95%] sm:gap-3  mx-auto">
           <MdOutlineEventNote className="w-16 h-16 sm:w-10 sm:h-10 opacity-60 min-w-fit" />
           <p className="text-md text-[#a19bad]">
-            Reach the next Tier to earn a higher commission from your
-            affiliates.
+            Reach the next Tier to earn a higher commission from your affiliates.
           </p>
         </div>
         <div className="mt-7 grid grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-2">
@@ -212,9 +175,7 @@ const MyProfile = () => {
               <span className="text-sm text-gray-400 ">Requirments</span>
               <span className="flex items-center gap-3 mt-3">
                 <FcOk />
-                <span className="text-gray-300 text-sm ">
-                  $0.00 affiliate earnings
-                </span>
+                <span className="text-gray-300 text-sm ">$0.00 affiliate earnings</span>
               </span>
             </div>
           ))}
@@ -226,21 +187,15 @@ const MyProfile = () => {
         <div className="flex gap-10 justify-center mt-20 sm:gap-3">
           <div className="relative">
             <img alt={""} src={rank2Desktop} className="w-52 h-60 sm:h-48" />
-            <span className="absolute bottom-[25%] left-[33%] text-lg font-bold text-gray-200">
-              $53.052
-            </span>
+            <span className="absolute bottom-[25%] left-[33%] text-lg font-bold text-gray-200">$53.052</span>
           </div>
           <div className="relative mt-[-5%]">
             <img alt={""} src={rank1Desktop} className="w-52 h-60 sm:h-48" />
-            <span className="absolute bottom-[35%] left-[33%] text-lg font-bold text-gray-200">
-              $85.642
-            </span>
+            <span className="absolute bottom-[35%] left-[33%] text-lg font-bold text-gray-200">$85.642</span>
           </div>
           <div className="relative">
             <img alt={""} src={rank3Desktop} className="w-52 h-60 sm:h-48" />
-            <span className="absolute bottom-[25%] left-[33%] text-lg font-bold text-gray-200">
-              $20.940
-            </span>
+            <span className="absolute bottom-[25%] left-[33%] text-lg font-bold text-gray-200">$20.940</span>
           </div>
         </div>
       </div>

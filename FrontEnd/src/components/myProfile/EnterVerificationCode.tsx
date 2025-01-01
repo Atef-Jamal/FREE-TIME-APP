@@ -151,19 +151,13 @@ const EnterVerificationCode = () => {
           onChange={handleChangeFourtInput}
           className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
         />
-        <button
-          onClick={handleVerify}
-          className="bg-[#59e97dee] text-[#25223f] py-2 px-4 font-bold"
-        >
+        <button onClick={handleVerify} className="bg-[#59e97dee] text-[#25223f] py-2 px-4 font-bold">
           Verify
         </button>
       </div>
       <p className="text-sm font-bold text-[#cec1c1ee] flex items-center gap-4 mt-4">
         Don't have Code
-        <button
-          onClick={handleResend}
-          className="underline font-bold text-[#7bc44b]"
-        >
+        <button onClick={handleResend} className="underline font-bold text-[#7bc44b]">
           {reSending ? "Resending..." : "Resend"}
         </button>
       </p>

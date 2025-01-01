@@ -17,17 +17,13 @@ const MusicPlayer = memo(() => {
   const [expand, setExpand] = useState(false);
   const [trackValue, setTrackValue] = useState(0);
   const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
-  const musicIsPlaying = useAppSelector(
-    (state) => state.stateManeger.musicIsPlaying
-  );
+  const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
   const dispatch = useAppDispatch();
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
-    const formattedTime = `${String(minutes).padStart(2, "0")}:${String(
-      seconds
-    ).padStart(2, "0")}`;
+    const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     return formattedTime;
   };
 
@@ -64,11 +60,7 @@ const MusicPlayer = memo(() => {
             musicIsPlaying ? "animate-spin " : ""
           } w-10 h-10 rounded-full border-2 border-l-[#ffae45] border-t-[#222770] border-r-[#cef03a] border-b-[#192461]`}
         >
-          <img
-            src={activeMusic.musicInfo?.cover}
-            alt=""
-            className="w-full h-full rounded-full"
-          />
+          <img src={activeMusic.musicInfo?.cover} alt="" className="w-full h-full rounded-full" />
         </span>
         <div className="w-[75%] h-full flex flex-col justify-between py-1">
           <span className=" w-full flex items-center justify-between">
@@ -96,9 +88,7 @@ const MusicPlayer = memo(() => {
               <IoPlaySkipForward />
             </span>
             {!!activeMusic.audio.duration && (
-              <span className="text-xs text-gray-300 ml-auto">
-                {formatTime(activeMusic.audio.duration)}
-              </span>
+              <span className="text-xs text-gray-300 ml-auto">{formatTime(activeMusic.audio.duration)}</span>
             )}
           </div>
           <input
@@ -118,18 +108,13 @@ const MusicPlayer = memo(() => {
         <span
           onClick={() => {
             dispatch(handleCloseMusic());
-            dispatch(
-              toggleThisEntity({ entity: "openMusicModal", value: false })
-            );
+            dispatch(toggleThisEntity({ entity: "openMusicModal", value: false }));
           }}
           className="w-full h-[40%] flex items-center justify-center bg-[#c96d6d] "
         >
           <MdClose className="text-2xl" />
         </span>
-        <FaAngleLeft
-          onClick={() => setExpand((prev) => !prev)}
-          className="text-2xl w-full h-[60%]"
-        />
+        <FaAngleLeft onClick={() => setExpand((prev) => !prev)} className="text-2xl w-full h-[60%]" />
       </span>
     </div>
   );

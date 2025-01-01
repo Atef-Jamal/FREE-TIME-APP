@@ -1,94 +1,79 @@
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
-import Spinner from "../Others/Spinner";
 import { useState } from "react";
-import Empty from "../Others/Empty";
-import { User } from "../../types/userTypes";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getLeaderboardUsers } from "../../utils";
+import Skeleton from "../Others/Skeleton";
+import { empty } from "../../assets";
 
-const PeopleList = ({
-  users,
-  status,
-  error,
-}: {
-  users: User[];
-  status: "error" | "success" | "pending";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: any;
-}) => {
-  const [page, setPage] = useState(1);
+const PeopleList = () => {
+  const [pageParam, setPageParam] = useState(1);
 
-  const handlePagination = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    item: number
-  ) => {
-    if (users.length === 0 && item + 1 > page) return;
-    const element = Array.from(event.currentTarget.parentElement!.children);
-    element.forEach((ele) => ele.classList.remove("bg-[#92f16c]"));
-    event.currentTarget.classList.add("bg-[#92f16c]");
-    setPage(item + 1);
-  };
+  const { data, status, error } = useQuery({
+    queryKey: ["users-leaderboard", pageParam],
+    queryFn: () => getLeaderboardUsers({ pageParam }),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 60 * 1000,
+  });
 
   return (
-    <div className="w-full">
+    <div>
       <div className=" w-full flex items-center justify-between bg-[#3b2f5cc4] rounded-[4px] ">
-        <span className="w-[20%] border-r flex items-center justify-evenly overflow-scroll scrollbar-none sm:text-sm text-[#86b3ee] py-3">
-          <FaRankingStar className="text-lg opacity-50 sm:text-sm" />
+        <span className="w-[20%] border-r flex items-center justify-center gap-2 overflow-scroll scrollbar-none sm:text-sm text-[#86b3ee] py-3 font-bold">
+          <FaRankingStar className="text-lg sm:text-sm" />
           Rank
         </span>
-        <span className="w-[60%]  border-r flex items-center justify-center gap-2 overflow-scroll scrollbar-none text-[#86b3ee] py-3 sm:text-sm">
-          <FaUserLarge className="opacity-50 sm:text-sm " />
+        <span className="w-[60%] border-r flex items-center justify-center gap-2 overflow-scroll scrollbar-none text-[#86b3ee] py-3 sm:text-sm font-bold">
+          <FaUserLarge className="sm:text-sm " />
           Users
         </span>
-        <span className="w-[20%] flex items-center justify-center overflow-scroll scrollbar-none text-[#86b3ee] py-3 sm:text-sm">
+        <span className="w-[20%] flex items-center justify-center overflow-scroll scrollbar-none text-[#86b3ee] py-3 sm:text-sm font-bold">
           points
         </span>
       </div>
-      {error && (
-        <div className="text-center py-8">{error?.response?.data.error}</div>
-      )}
+      {error && <div className="text-center py-8">{error?.response?.data.error}</div>}
       {status === "pending" && (
-        <div className="w-full py-8 flex items-center justify-center">
-          <Spinner className="w-7 h-7" />
-        </div>
+        <>
+          {[...Array(20).keys()].map((item) => (
+            <Skeleton key={item} className="h-[40px] w-full my-2 rounded-md" />
+          ))}
+        </>
       )}
 
-      {users.map((user, index) => (
+      {data?.users.map((user, index) => (
         <div
           key={user._id}
           className=" w-full flex items-center justify-between rounded-[4px] h-[50px] border-b border-gray-400"
         >
           <span className="w-[20%] flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] h-full border-r">
-            <span className="w-9 rounded-md h-9 bg-[#e4b42f31] flex items-center justify-center text-[#c3ccf5] ">
-              {(page - 1) * 20 + index + 1}
+            <span className="rounded-md w-[50px] h-[40px] bg-[#e4b42f31] flex items-center justify-center text-[#c3ccf5] sm:text-sm">
+              {(pageParam - 1) * 100 + index + 1}
             </span>
           </span>
           <span className="w-[60%]  flex items-center justify-evenly overflow-scroll scrollbar-none font-bold text-[#86b3ee] h-full border-r">
-            <span className="xs:w-5 xs:h-5 w-7 h-7 rounded-full min-w-fit min-h-fit">
-              <img
-                src={user.profilePicture}
-                alt=""
-                className="w-full h-full rounded-full object-cover"
-              />
-            </span>
-            <span className="xs:text-xs text-sm whitespace-nowrap w-[70%] text-[#6baaf1ee]">
-              {user.name}
-            </span>
+            <img
+              src={user.profilePicture}
+              alt=""
+              className="w-10 h-10 sm:w-8 sm:h-8 rounded-full object-cover"
+            />
+            <span className="sm:text-sm whitespace-nowrap w-[70%] text-[#6baaf1ee]">{user.name}</span>
           </span>
-          <span className=" w-[20%] flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] h-full text-sm">
+          <span className=" w-[20%] flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] h-full sm:text-sm">
             {user.points}
           </span>
         </div>
       ))}
-      {status === "success" && users.length === 0 && (
-        <Empty emptyText="No More Peoples" />
+      {status === "success" && data.users.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-y-3 my-6">
+          <img src={empty} alt="" className="w-12 h-12" />
+          <p className="text-gray-500 font-bold">No More Peoples</p>
+        </div>
       )}
-      <ul className="flex gap-2 items-center mx-auto mt-8 sm:w-[90%] sm:gap-1 sm:flex-wrap justify-center ">
-        {[...Array(11).keys()].map((item) => (
+      <ul className="w-[70%] sm:w-[95%] grid grid-cols-10 gap-x-2 gap-y-1 mx-auto my-10">
+        {[...Array(20).keys()].map((item) => (
           <li
             key={item}
-            onClick={(event) => handlePagination(event, item)}
-            className={`flex items-center justify-center w-[40px]  h-[40px] sm:text-sm  text-black rounded-md bg-[#393b61] ${
-              item === 0 ? "bg-[#92f16c]" : ""
-            }`}
+            onClick={() => setPageParam(item + 1)}
+            className={`cursor-pointer p-1 text-sm font-bold text-center rounded-md ${pageParam === item + 1 ? "bg-[#92f16c] text-black" : "bg-[#393b61] text-gray-300"}`}
           >
             {item + 1}
           </li>

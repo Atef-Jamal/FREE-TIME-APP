@@ -9,9 +9,7 @@ const CashOut = () => {
     <div className="flex flex-col p-5 sm:p-3 gap-6 bg-[#222339]">
       <div className="flex gap-4 sm:mt-4">
         <img alt={""} src={moneyActive} className="w-10 h-10" />
-        <h1 className="text-white font-bold tracking-wider text-2xl">
-          {t("CashOut")}
-        </h1>
+        <h1 className="text-white font-bold tracking-wider text-2xl">{t("CashOut")}</h1>
       </div>
       <div className="flex gap-4 justify-center bg-[#0703033b] rounded-md w-[60%] sm:w-full py-8 px-4 border border-gray-700">
         <BiSolidReport className="text-4xl min-w-fit" />
@@ -32,9 +30,7 @@ const CashOut = () => {
           </div>
         ))}
       </div>
-      <h1 className=" text-blue-200 font-extrabold">
-        {t("WITHDRAW GIFTCARDS")}
-      </h1>
+      <h1 className=" text-blue-200 font-extrabold">{t("WITHDRAW GIFTCARDS")}</h1>
       <div className=" grid grid-cols-5 gap-3 sm:grid-cols-4 xs:grid-cols-2">
         {withdrawGiftCards.map((item, i) => (
           <div

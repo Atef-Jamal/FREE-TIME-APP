@@ -4,11 +4,11 @@ import { SetStateAction, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useCloseMenuOnClickOutSide } from "../../hooks";
 
-const LangMenu = ({
-  setOpenLangMenu,
-}: {
+interface TypeProps {
   setOpenLangMenu: React.Dispatch<SetStateAction<boolean>>;
-}) => {
+}
+
+const LangMenu = ({ setOpenLangMenu }: TypeProps) => {
   const langRef = useRef<HTMLDivElement>(null);
   const { i18n } = useTranslation();
 
@@ -44,18 +44,10 @@ const LangMenu = ({
           {item.title === "English" ? (
             <MdLanguage className="xs:text-sm text-xl" />
           ) : (
-            <img
-              alt={""}
-              src={egypt}
-              className="xs:w-4 xs:h-4 w-5 h-5 rounded-full"
-            />
+            <img alt={""} src={egypt} className="xs:w-4 xs:h-4 w-5 h-5 rounded-full" />
           )}
-          <span className="xs:text-xs font-[500] text-gray-300">
-            {item.title}
-          </span>
-          <span className="text-xs font-[500] text-gray-300">
-            ( {item.lang.toUpperCase()} )
-          </span>
+          <span className="xs:text-xs font-[500] text-gray-300">{item.title}</span>
+          <span className="text-xs font-[500] text-gray-300">( {item.lang.toUpperCase()} )</span>
         </button>
       ))}
     </div>

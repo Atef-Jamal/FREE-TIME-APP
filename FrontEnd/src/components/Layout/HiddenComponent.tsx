@@ -1,41 +1,25 @@
 import { useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import {
-  setOnlineUsers,
-  showPopup,
-  toggleThisEntity,
-} from "../../context/StateManeger";
-import {
-  skipToken,
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { setOnlineUsers, showPopup, toggleThisEntity } from "../../context/StateManeger";
+import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks";
 import { User } from "../../types/userTypes";
-import {
-  TypeCashedPublicChat,
-  TypePublicChatItem,
-} from "../../types/publicChatTypes";
+import { TypeCashedPublicChat, TypePublicChatItem } from "../../types/publicChatTypes";
 import { TypeCashedConversations } from "../../types/privateChatTypes";
 import { TypeConversationSocketData } from "../../types/othersTypes";
 import { TypeCashedChat } from "../../components/Chats/PrivateChat/SendMessagePrivateChat";
-import {
-  fetchAllConversations,
-  fetchPrivateChatMessages,
-  fetchPublicChatMessages,
-} from "../../utils";
+import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessages } from "../../utils";
+
+// implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering
+// unnecessarily
+
 const HiddenComponent = () => {
-  // implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering unnecessarily
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeConversation = useAppSelector(
-    (state) => state.stateManeger.activeConversation
-  );
+  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentAccountRequestFullfiled = useAppSelector(
-    (state) => state.stateManeger.currentAccountRequestFullfiled
-  );
+  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
+
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -46,8 +30,7 @@ const HiddenComponent = () => {
     queryKey: ["conversations"],
     queryFn: ({ pageParam }) => fetchAllConversations({ pageParam }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, _, pageParam) =>
-      lastPage.hasMore ? pageParam + 1 : undefined,
+    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
     staleTime: 60 * 60 * 1000,
   });
 
@@ -61,8 +44,7 @@ const HiddenComponent = () => {
 
   useInfiniteQuery({
     queryKey: ["public-chat-messages"],
-    queryFn: ({ pageParam }) =>
-      fetchPublicChatMessages({ pageParam, limit: 15 }),
+    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
     initialPageParam: 1,
     getPreviousPageParam: (firstPage, _, pageParam) => {
       return firstPage.hasOlder ? pageParam + 1 : undefined;
@@ -76,9 +58,7 @@ const HiddenComponent = () => {
     dispatch(setOnlineUsers(filtered));
   };
 
-  const handleRecieveNewPublicChatMessage = (
-    newMessage: TypePublicChatItem
-  ) => {
+  const handleRecieveNewPublicChatMessage = (newMessage: TypePublicChatItem) => {
     queryClient.setQueryData(
       ["public-chat-messages"],
       (previous: TypeCashedPublicChat): TypeCashedPublicChat => {
@@ -94,7 +74,7 @@ const HiddenComponent = () => {
             return page;
           }),
         };
-      }
+      },
     );
   };
 
@@ -119,14 +99,14 @@ const HiddenComponent = () => {
             };
           }),
         };
-      }
+      },
     );
     queryClient.setQueryData(
       ["private-messages", updatedUser._id],
       (old: TypeCashedChat): TypeCashedChat | undefined => {
         if (!old) return;
         return { ...old, secondUser: updatedUser };
-      }
+      },
     );
   };
 
@@ -144,22 +124,19 @@ const HiddenComponent = () => {
 
   const handleConversationReaded = useCallback(
     (data: TypeConversationSocketData) => {
-      queryClient.setQueryData(
-        ["private-messages", data.sender],
-        (old: TypeCashedChat) => {
-          if (old) {
-            return {
-              ...old,
-              messages: old.messages.map((msg) => ({
-                ...msg,
-                isRead: true,
-              })),
-            };
-          }
+      queryClient.setQueryData(["private-messages", data.sender], (old: TypeCashedChat) => {
+        if (old) {
+          return {
+            ...old,
+            messages: old.messages.map((msg) => ({
+              ...msg,
+              isRead: true,
+            })),
+          };
         }
-      );
+      });
     },
-    [queryClient]
+    [queryClient],
   );
 
   useListenToSocketEvents({
@@ -200,7 +177,7 @@ const HiddenComponent = () => {
           showPopup({
             message: popupMessage,
             type: "SUCESS",
-          })
+          }),
         );
         setSearchParams(() => {
           searchParams.delete("redirectedfrom", redirectQuery);
@@ -210,10 +187,10 @@ const HiddenComponent = () => {
     }
   }, [redirectQuery, searchParams, setSearchParams, dispatch]);
   useEffect(() => {
-    if (refQuery && !currentUser?._id && currentAccountRequestFullfiled) {
+    if (refQuery && !currentUser?._id && isCurrentUserReqFinished) {
       dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
     }
-  }, [dispatch, refQuery, currentUser?._id, currentAccountRequestFullfiled]);
+  }, [dispatch, refQuery, currentUser?._id, isCurrentUserReqFinished]);
   return <></>;
 };
 

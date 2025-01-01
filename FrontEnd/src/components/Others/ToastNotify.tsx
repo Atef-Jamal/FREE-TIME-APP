@@ -26,9 +26,7 @@ const ToastNotify = memo(() => {
   return (
     <div
       className={`absolute top-3 sm:top-1 z-[50] ${
-        message
-          ? " translate-y-0 p-2 border  border-[#e0d975]"
-          : "-translate-y-[150%] p-0"
+        message ? " translate-y-0 p-2 border  border-[#e0d975]" : "-translate-y-[150%] p-0"
       } transition duration-200 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#776ae7f8] rounded-lg `}
     >
       <span className="text-xl">
@@ -37,9 +35,7 @@ const ToastNotify = memo(() => {
         {type === "LOADING" && <Spinner className="w-6 h-6 border-[4px]" />}
         {type === "SUCESS" && <FaRegCheckCircle />}
       </span>
-      <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">
-        {message}
-      </p>
+      <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">{message}</p>
     </div>
   );
 });

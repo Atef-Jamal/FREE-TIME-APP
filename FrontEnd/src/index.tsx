@@ -18,5 +18,5 @@ root.render(
         <App />
       </Suspense>
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );

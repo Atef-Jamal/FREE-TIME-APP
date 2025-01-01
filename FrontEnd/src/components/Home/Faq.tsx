@@ -19,9 +19,7 @@ const Faq = () => {
         >
           <div className="flex gap-2 items-center cursor-pointer pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
-            <p className="text-white xs:text-[14px]  ">
-              {t("How to make money on Freetime")}
-            </p>
+            <p className="text-white xs:text-[14px]  ">{t("How to make money on Freetime")}</p>
           </div>
           <div className={"h-0 px-4 transition-all bg-[rgb(44,16,51)]"}>
             <p className="pb-4 text-sm tracking-wide">
@@ -37,9 +35,7 @@ const Faq = () => {
         >
           <div className="flex gap-2 items-center cursor-pointer  pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
-            <p className="text-white xs:text-[14px]  ">
-              {t("How is Freetime able to pay users")}
-            </p>
+            <p className="text-white xs:text-[14px]  ">{t("How is Freetime able to pay users")}</p>
           </div>
 
           <div className={"h-0 px-4 transition-all bg-[#2c1033]"}>
@@ -75,9 +71,7 @@ const Faq = () => {
         >
           <div className="flex gap-2 items-center cursor-pointer  pl-5">
             <MdOutlineAssignmentReturned className="text-2xl" />
-            <p className="text-white xs:text-[14px]  ">
-              {t("How long does it take to cash out your money")}
-            </p>
+            <p className="text-white xs:text-[14px]  ">{t("How long does it take to cash out your money")}</p>
           </div>
 
           <div className={"h-0 px-4 transition-all bg-[#2c1033]"}>

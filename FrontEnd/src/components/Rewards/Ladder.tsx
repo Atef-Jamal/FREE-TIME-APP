@@ -8,10 +8,7 @@ const Ladder = () => {
   return (
     <div className="flex flex-col gap-10 py-6 px-4 lg:px-2 bg-[#2C2C44] w-[42%] max-w-[800px] rounded-lg sm:w-full">
       <div className="flex gap-2">
-        <h1 className="text-green-400 font-bold text-xl">
-          {t("Daily Bonus Laddar")}
-        </h1>
-
+        <h1 className="text-green-400 font-bold text-xl">{t("Daily Bonus Laddar")}</h1>
         <IoIosHelpCircleOutline />
       </div>
       <div className="relative flex flex-col bg-[#242438] rounded-md gap-3 overflow-hidden py-6">
@@ -47,11 +44,7 @@ const Ladder = () => {
                     transform: "perspective(280px) rotateX(150deg)",
                   }}
                   className={`${
-                    i === 8
-                      ? "light__animation__one"
-                      : i === 10
-                      ? "light__animation__two"
-                      : null
+                    i === 8 ? "light__animation__one" : i === 10 ? "light__animation__two" : null
                   } ${
                     i === 0
                       ? "bg-[#7af162]"
@@ -64,11 +57,7 @@ const Ladder = () => {
                 >
                   {i === 0 && (
                     <span className="absolute -bottom-[20px] -right-[16px] z-[1]">
-                      <img
-                        alt={""}
-                        src={crown}
-                        className="w-8 -rotate-[210deg]"
-                      />
+                      <img alt={""} src={crown} className="w-8 -rotate-[210deg]" />
                     </span>
                   )}
                 </div>
@@ -93,9 +82,7 @@ const Ladder = () => {
         <div className="relative reach__level w-full h-3 bg-[#242438] rounded-lg"></div>
         <div className="flex justify-between px-5 mt-[-6px]">
           <span className="text-xs text-yellow-200 ml-1">10</span>
-          <span className="text-[10px]">
-            {t("Reach level 1 to Double or Claim your first daily reward")}
-          </span>
+          <span className="text-[10px]">{t("Reach level 1 to Double or Claim your first daily reward")}</span>
           <span className="text-xs">10</span>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import { handleDeleteMessage } from "../../../../utils";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-
 import Spinner from "../../../Others/Spinner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
@@ -9,15 +8,13 @@ import { handleApiError } from "../../../../utils/common";
 import { TypeCashedPublicChat } from "../../../../types/publicChatTypes";
 import { v4 as uuidV4 } from "uuid";
 
-export const ChatModelDeletion = ({
-  messageToDelete,
-  setMessageToDelete,
-  height,
-}: {
+interface TypeProps {
   messageToDelete: string;
   setMessageToDelete: Dispatch<SetStateAction<string | null>>;
   height: number | undefined;
-}) => {
+}
+
+export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height }: TypeProps) => {
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -84,11 +81,7 @@ export const ChatModelDeletion = ({
             }}
             className="bg-[#2d773f] rounded-lg py-1 px-8"
           >
-            {mutation.status === "pending" ? (
-              <Spinner className="w-5 h-5" />
-            ) : (
-              "Yes"
-            )}
+            {mutation.status === "pending" ? <Spinner className="w-5 h-5" /> : "Yes"}
           </button>
           <button
             onClick={() => setMessageToDelete(null)}

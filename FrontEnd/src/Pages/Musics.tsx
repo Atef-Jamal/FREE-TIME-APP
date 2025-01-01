@@ -1,7 +1,7 @@
 import { FcMusic } from "react-icons/fc";
 import MusicCard from "../components/Music/MusicCard";
 import Skeleton from "../components/Others/Skeleton";
-import { useScrollToElement } from "../hooks/commonHooks";
+import { useScrollToElement } from "../hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMusics } from "../utils";
 
@@ -40,9 +40,7 @@ const Musics = () => {
           <MusicCard key={song.id} songDetails={song} />
         ))}
       </div>
-      {status === "error" && (
-        <div className="text-center mx-auto my-8">an error occurred !</div>
-      )}
+      {status === "error" && <div className="text-center mx-auto my-8">an error occurred !</div>}
     </div>
   );
 };

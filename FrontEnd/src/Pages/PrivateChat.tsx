@@ -10,15 +10,9 @@ import { setActiveConversation } from "../context/StateManeger";
 
 const PrivateChat = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const activeConversation = useAppSelector(
-    (state) => state.stateManeger.activeConversation
-  );
-  const hiddenLiveStats = useAppSelector(
-    (state) => state.stateManeger.hiddenLiveStats
-  );
-  const currentAccountRequestFullfiled = useAppSelector(
-    (state) => state.stateManeger.currentAccountRequestFullfiled
-  );
+  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
+  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
+  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const dispatch = useAppDispatch();
@@ -48,7 +42,7 @@ const PrivateChat = () => {
     }
   }, [dispatch, secondPartyId, currentUser?._id, setSearchParams]);
 
-  if (!currentAccountRequestFullfiled) {
+  if (!isCurrentUserReqFinished) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <Spinner className="w-12 h-12 border-3" />
@@ -57,11 +51,7 @@ const PrivateChat = () => {
   }
 
   if (!currentUser) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        Sign In First
-      </div>
-    );
+    return <div className="w-full h-full flex items-center justify-center">Sign In First</div>;
   }
 
   return (
@@ -83,17 +73,10 @@ const PrivateChat = () => {
             openSidbare ? "lg:translate-x-[0%]" : "lg:-translate-x-[100%]"
           }`}
         >
-          <ChatSidbare
-            openSidbare={openSidbare}
-            toggleSidbare={toggleSidbare}
-          />
+          <ChatSidbare openSidbare={openSidbare} toggleSidbare={toggleSidbare} />
         </div>
         <div className="h-full flex-1 max-w-[800px] mx-auto">
-          {activeConversation ? (
-            <ChatBody />
-          ) : (
-            <Welcome handleOpenSidbare={handleOpenSidbare} />
-          )}
+          {activeConversation ? <ChatBody /> : <Welcome handleOpenSidbare={handleOpenSidbare} />}
         </div>
       </div>
     </div>

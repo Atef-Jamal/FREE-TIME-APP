@@ -65,13 +65,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={
-                <img
-                  src={verifiedImage}
-                  alt=""
-                  className="w-6 h-6 sm:w-4 sm:h-4 object-cover"
-                />
-              }
+              icon={<img src={verifiedImage} alt="" className="w-6 h-6 sm:w-4 sm:h-4 object-cover" />}
               time={item.createdAt}
               message="Verified His Email successfully"
               prize={item.prize}

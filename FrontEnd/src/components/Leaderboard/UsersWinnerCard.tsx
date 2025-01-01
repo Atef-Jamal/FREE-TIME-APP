@@ -1,14 +1,10 @@
-import {
-  leaderboard_place1_winnings,
-  leaderboard_place3_winnings,
-  crown,
-} from "../../assets";
+import { leaderboard_place1_winnings, leaderboard_place3_winnings, crown } from "../../assets";
 import { User } from "../../types/userTypes";
 
-type TypeProps = {
-  user: User;
+interface TypeProps {
+  user: User | undefined;
   index: number;
-};
+}
 
 const UsersWinnerCard = ({ user, index }: TypeProps) => {
   return (
@@ -23,30 +19,18 @@ const UsersWinnerCard = ({ user, index }: TypeProps) => {
       <div className="flex flex-col absolute top-[-100px]">
         <img alt={""} src={crown} className="w-20 h-20" />
         <span className="mt-[-20px] w-20 h-20 rounded-full bg-[#1f1f30] border-2">
-          <img
-            src={user.profilePicture}
-            alt=""
-            className="w-full h-full rounded-full"
-          />
+          <img src={user?.profilePicture} alt="" className="w-full h-full rounded-full" />
         </span>
       </div>
-      <span className="text-white font-bold mt-4">{user.name}</span>
-      <span className="font-bold border bg-[#705555] rounded-md px-3 py-1 my-2">
-        {user?.points}
-      </span>
+      <span className="text-white font-bold mt-4">{user?.name}</span>
+      <span className="font-bold border bg-[#705555] rounded-md px-3 py-1 my-2">{user?.points}</span>
       <div
         className={`relative h-[200px] w-[85%] mx-auto border-t-[0.5px] rounded-md bg-gradient-to-b from-[#1F1F30] to-[#1f1f3073] after:absolute after:h-[100%] after:w-[1.3px] after:bg-gradient-to-b after:from-slate-100 after:to-slate-900 after:top-0 after:right-0 before:absolute before:h-[100%] before:w-[1.3px] before:bg-gradient-to-b before:from-slate-100 before:to-slate-900 before:top-0 before:left-0`}
       >
-        <span className="my-3 mx-3 px-2 py-1 text-yellow-400 absolute rounded-md bg-[#494958]">
-          $ 35,000
-        </span>
+        <span className="my-3 mx-3 px-2 py-1 text-yellow-400 absolute rounded-md bg-[#494958]">$ 35,000</span>
         <img
           alt={""}
-          src={
-            index === 0
-              ? leaderboard_place1_winnings
-              : leaderboard_place3_winnings
-          }
+          src={index === 0 ? leaderboard_place1_winnings : leaderboard_place3_winnings}
           className="w-40 h-40 ml-20 absolute bottom-0 right-0 "
         />
       </div>
@@ -61,9 +45,7 @@ const UsersWinnerCard = ({ user, index }: TypeProps) => {
         {index === 1 && "2ST"}
         {index === 2 && "3ND"}
 
-        <span className="text-white text-sm sm:text-xs mt-[-5px] font-[200]">
-          PLACE
-        </span>
+        <span className="text-white text-sm sm:text-xs mt-[-5px] font-[200]">PLACE</span>
         <span className="absolute bottom-4 sm:bottom-3 left-[-7%] w-3 h-3 bg-slate-800 rotate-45"></span>
       </span>
     </div>

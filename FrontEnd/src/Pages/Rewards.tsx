@@ -10,7 +10,7 @@ import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
 import { TypeBounusCode } from "../types/rewardsTypes";
-import { useScrollToElement } from "../hooks/commonHooks";
+import { useScrollToElement } from "../hooks";
 import { useTranslation } from "react-i18next";
 
 const Rewards = () => {
@@ -28,7 +28,7 @@ const Rewards = () => {
         showPopup({
           message: "Log In first",
           type: "ERROR_LOCK",
-        })
+        }),
       );
       return;
     }
@@ -41,7 +41,7 @@ const Rewards = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ const Rewards = () => {
         showPopup({
           message: "Copied!",
           type: "SUCESS",
-        })
+        }),
       );
     }
   };
@@ -63,11 +63,7 @@ const Rewards = () => {
     <div className="flex flex-col bg-[#242438] gap-8 py-6 xs:pt-2 xs:pb-5">
       <div className="flex justify-between items-center bg-[#242438] px-6 sm:flex-col sm:items-start sm:gap-6">
         <div className="flex items-center gap-4">
-          <img
-            alt={""}
-            src={dollarInHand}
-            className="w-10 h-10 p-2 bg-neutral-700 rounded-md"
-          />
+          <img alt={""} src={dollarInHand} className="w-10 h-10 p-2 bg-neutral-700 rounded-md" />
           <h1 className="text-3xl font-bold text-yellow-500 tracking-wider sm:text-2xl">
             {t("FREETIME REWARDS")}
           </h1>

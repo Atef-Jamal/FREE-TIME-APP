@@ -55,8 +55,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
       )}
       {users
         .sort((a, b) => {
-          if (onlineUsers.includes(a._id) && !onlineUsers.includes(b._id))
-            return -1;
+          if (onlineUsers.includes(a._id) && !onlineUsers.includes(b._id)) return -1;
           return 1;
         })
         .map((user: User) => {
@@ -67,9 +66,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
               onClick={() => setUser(user)}
               className="px-3 py-2 w-full bg-[#475aa02c] rounded-sm hover:bg-[#475aa06b] flex items-center justify-between"
             >
-              <p className=" text-blue-700 text-xs font-bold tracking-wide ">
-                @{user.name}
-              </p>
+              <p className=" text-blue-700 text-xs font-bold tracking-wide ">@{user.name}</p>
               {onlineUsers.includes(user._id) && (
                 <span className="rounded-full bg-[#c92626] w-3 h-3 animate-pulse"></span>
               )}

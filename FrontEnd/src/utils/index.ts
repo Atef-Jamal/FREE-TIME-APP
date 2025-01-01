@@ -1,34 +1,20 @@
 import axios from "axios";
 import { User } from "../types/userTypes";
 import { TypeNotifications } from "../types/notificationTypes";
-import {
-  TypePublicChatItem,
-  TypePublicChatMessage,
-} from "../types/publicChatTypes";
-import {
-  TypeFilterByDevice,
-  TypeFilterByPopularity,
-  TypeReview,
-  TypeTaskApp,
-} from "../types/earnTypes";
-import {
-  TypeMusicDetail,
-  TypeSearchResults,
-  TypeTestimonial,
-} from "../types/othersTypes";
+import { TypePublicChatItem, TypePublicChatMessage } from "../types/publicChatTypes";
+import { TypeFilterByDevice, TypeFilterByPopularity, TypeReview, TypeTaskApp } from "../types/earnTypes";
+import { TypeMusicDetail, TypeSearchResults, TypeTestimonial } from "../types/othersTypes";
 import { TypeFrame } from "../types/frameTypes";
-import {
-  TypeConversation,
-  TypePrivateMessage,
-} from "../types/privateChatTypes";
+import { TypeConversation, TypePrivateMessage } from "../types/privateChatTypes";
+
 type TypeFieldName = "loves" | "likes" | "dislikes";
 
-const token = localStorage.getItem("token") || "";
+const token = localStorage.getItem("token");
 
 export const makeRequest = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL,
   headers: {
-    authorization: `Bearer ${token}`,
+    authorization: token ? `Bearer ${token}` : null,
   },
 });
 
@@ -42,11 +28,7 @@ export const sendVerificationCode = async (): Promise<void> => {
   await makeRequest.get(`api/auth/send-verification-email-code`);
 };
 
-export const applyCode = async ({
-  code,
-}: {
-  code: string;
-}): Promise<{ points: number }> => {
+export const applyCode = async ({ code }: { code: string }): Promise<{ points: number }> => {
   const response = await makeRequest.post("api/coupons", {
     code,
   });
@@ -54,19 +36,11 @@ export const applyCode = async ({
   return updatedPoints;
 };
 
-export const verifyMyEmail = async ({
-  enteredCode,
-}: {
-  enteredCode: string;
-}): Promise<void> => {
+export const verifyMyEmail = async ({ enteredCode }: { enteredCode: string }): Promise<void> => {
   await makeRequest.post("api/auth/verifiyemail", { enteredCode });
 };
 
-export const changeUserName = async ({
-  newName,
-}: {
-  newName: string;
-}): Promise<{ name: string }> => {
+export const changeUserName = async ({ newName }: { newName: string }): Promise<{ name: string }> => {
   const response = await makeRequest.post("api/auth/changename", {
     newName,
   });
@@ -100,11 +74,7 @@ export const getUsers = async ({
   return data;
 };
 
-export const getSearchResults = async ({
-  searchQ,
-}: {
-  searchQ: string;
-}): Promise<TypeSearchResults> => {
+export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promise<TypeSearchResults> => {
   const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
   const musicOptions = {
     method: "GET",
@@ -116,7 +86,7 @@ export const getSearchResults = async ({
   const musicResponse = await fetch(deezerUrl, musicOptions);
   const musics = await musicResponse.json();
   const res = musics?.data?.filter((item: TypeMusicDetail) =>
-    item.title.toLocaleLowerCase().includes(searchQ)
+    item.title.toLocaleLowerCase().includes(searchQ),
   );
   const mappedMusics = res?.map((item: TypeMusicDetail) => ({
     _id: item.id.toString(),
@@ -138,15 +108,17 @@ export const getOnlineUsers = async (): Promise<User[]> => {
   const data = response.data;
   return data;
 };
-export const getLeaderboardUsers = async (): Promise<User[]> => {
-  const response = await makeRequest.get(`/api/users/leaderboard`);
+export const getLeaderboardUsers = async ({
+  pageParam,
+}: {
+  pageParam: number;
+}): Promise<{ users: User[]; allDataLength: number }> => {
+  const response = await makeRequest.get(`/api/users/users-leaderboard?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
 
-export const getUserActivities = async (
-  userId: string
-): Promise<TypeNotifications[]> => {
+export const getUserActivities = async (userId: string): Promise<TypeNotifications[]> => {
   const response = await makeRequest.get(`/api/notifications/${userId}`);
   const data = response.data;
   return data;
@@ -157,9 +129,7 @@ export const userVisited = async (visitedUserId: string): Promise<void> => {
     NOT_IMPORTANT: "NOT_IMPORTANT",
   });
 };
-export const handleDeleteMessage = async (
-  messageId: string
-): Promise<TypePublicChatMessage> => {
+export const handleDeleteMessage = async (messageId: string): Promise<TypePublicChatMessage> => {
   const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
     isDeleted: true,
   });
@@ -175,12 +145,9 @@ export const handleMessageReaction = async ({
   otherFieldOne: TypeFieldName;
   otherFieldTow: TypeFieldName;
 }): Promise<TypePublicChatMessage> => {
-  const response = await makeRequest.patch(
-    `api/publicchat/${messageId}/${fieldName}`,
-    {
-      FOR_CONSISTENCY: "FOR_CONSISTENCY",
-    }
-  );
+  const response = await makeRequest.patch(`api/publicchat/${messageId}/${fieldName}`, {
+    FOR_CONSISTENCY: "FOR_CONSISTENCY",
+  });
   const updatedMessage = response.data;
   return updatedMessage;
 };
@@ -199,11 +166,7 @@ export const handleAddReview = async ({
   return review;
 };
 
-export const fetchAppDetails = async ({
-  taskId,
-}: {
-  taskId: string;
-}): Promise<TypeTaskApp> => {
+export const fetchAppDetails = async ({ taskId }: { taskId: string }): Promise<TypeTaskApp> => {
   const response = await makeRequest.get(`api/tasks/public/${taskId}`);
   const task = response.data;
   return task;
@@ -277,14 +240,8 @@ export const fetchMusics = async (): Promise<TypeMusicDetail[]> => {
   return musics;
 };
 
-export const changeMyPictureFrame = async ({
-  frameId,
-}: {
-  frameId: string;
-}): Promise<TypeFrame> => {
-  const response = await makeRequest.get(
-    `api/users/select-myphoto-frame/${frameId}`
-  );
+export const changeMyPictureFrame = async ({ frameId }: { frameId: string }): Promise<TypeFrame> => {
+  const response = await makeRequest.get(`api/users/select-myphoto-frame/${frameId}`);
   const data = response.data;
   return data;
 };
@@ -300,9 +257,7 @@ export const fetchPublicChatMessages = async ({
   pageParam: number;
   limit: number;
 }): Promise<{ messages: TypePublicChatItem[]; hasOlder: boolean }> => {
-  const response = await makeRequest.get(
-    `api/publicchat?pageParam=${pageParam}&limit=${limit}`
-  );
+  const response = await makeRequest.get(`api/publicchat?pageParam=${pageParam}&limit=${limit}`);
   const data = response.data;
   return data;
 };
@@ -367,7 +322,7 @@ export const fetchAllConversations = async ({
   pageParam: number;
 }): Promise<{ conversations: TypeConversation[]; hasMore: boolean }> => {
   const response = await makeRequest.get(
-    `api/conversations/all-conversations/allusers?pageParam=${pageParam}`
+    `api/conversations/all-conversations/allusers?pageParam=${pageParam}`,
   );
   const data = response.data;
   return data;
@@ -413,7 +368,7 @@ export const fetchAllTasks = async ({
   pageParam: number;
 }): Promise<{ tasks: TypeTaskApp[]; hasMore: boolean }> => {
   const response = await makeRequest.get(
-    `api/tasks?filterByPopularity=${filterByPopularity}&&filterByDevice=${filterByDevice}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`
+    `api/tasks?filterByPopularity=${filterByPopularity}&&filterByDevice=${filterByDevice}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`,
   );
   const data = response.data;
   return data;

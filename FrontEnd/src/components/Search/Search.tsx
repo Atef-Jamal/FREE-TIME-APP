@@ -44,10 +44,7 @@ const Search = () => {
   const debounced = debounce(handleSetSearchQuery, 500, timeOutRef);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = event.target.value
-      .replace(/\s+/g, " ")
-      .trim()
-      .toLocaleLowerCase();
+    const searchTerm = event.target.value.replace(/\s+/g, " ").trim().toLocaleLowerCase();
     debounced(searchTerm);
   };
 
@@ -90,27 +87,20 @@ const Search = () => {
 
         {!results && !isFetching && !error && (
           <div className="flex flex-col items-center justify-center gap-3 py-10">
-            <div className="text-center text-gray-500 font-bold">
-              Start Searching
-            </div>
+            <div className="text-center text-gray-500 font-bold">Start Searching</div>
           </div>
         )}
 
         {results && (
           <div className="p-2">
             <p className="sm:text-sm text-gray-400 mb-1">
-              <span className="sm:text-sm  text-[#8be64e] mx-1 ">
-                {resultsCounts}
-              </span>
+              <span className="sm:text-sm  text-[#8be64e] mx-1 ">{resultsCounts}</span>
               Results Found
             </p>
 
             {resultsCounts === 0 && (
               <div className="my-10 flex flex-col items-center justify-center gap-4">
-                <img
-                  src={empty}
-                  className="w-16 h-16 sm:w-12 sm:h-12 object-cover"
-                />
+                <img src={empty} className="w-16 h-16 sm:w-12 sm:h-12 object-cover" />
                 <p className="font-bold sm:font-medium text-center text-[#bbb9b9]">
                   No Results Match your search text
                 </p>
@@ -138,9 +128,7 @@ const Search = () => {
                 </h1>
                 <ResultElement
                   type="USERS"
-                  results={results.users.filter(
-                    (usr) => usr._id !== currentUser?._id
-                  )}
+                  results={results.users.filter((usr) => usr._id !== currentUser?._id)}
                   searchTerm={searchQ}
                   emptyText={"No People Found"}
                 />

@@ -1,18 +1,14 @@
 import { TypeSearchItem } from "../../types/othersTypes";
 
-const ResultText = ({
-  searchElement,
-  searchQuery,
-}: {
+interface TypeProps {
   searchElement: TypeSearchItem;
   searchQuery: string;
-}) => {
-  const slices = searchElement.title.split(
-    new RegExp(`(${searchQuery})`, "gi")
-  );
+}
+
+const ResultText = ({ searchElement, searchQuery }: TypeProps) => {
+  const slices = searchElement.title.split(new RegExp(`(${searchQuery})`, "gi"));
   return slices.map((slice, i) => {
-    const isMatched =
-      slice.toLocaleLowerCase() === searchQuery.toLocaleLowerCase();
+    const isMatched = slice.toLocaleLowerCase() === searchQuery.toLocaleLowerCase();
     return (
       <span
         key={i}

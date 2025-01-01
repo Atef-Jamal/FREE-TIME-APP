@@ -4,7 +4,6 @@ import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-
 import { ImSpinner3 } from "react-icons/im";
 import { TypeQuizApp } from "../../types/earnTypes";
 
@@ -28,10 +27,7 @@ const QuizApp = ({ taskApp }: TypeProps) => {
 
   const dispatch = useAppDispatch();
 
-  const handlSelect = (
-    e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    choice: string
-  ) => {
+  const handlSelect = (e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>, choice: string) => {
     selected = "";
     const event = e.target as HTMLElement;
     const element = document.getElementById("choices");
@@ -63,10 +59,9 @@ const QuizApp = ({ taskApp }: TypeProps) => {
       }
       if (error) setError("");
       if (!loading) setLoading(true);
-      const response = await makeRequest.post(
-        `api/tasks/complete-quiz-app/${taskApp._id}`,
-        { answers: [...answers, selected] }
-      );
+      const response = await makeRequest.post(`api/tasks/complete-quiz-app/${taskApp._id}`, {
+        answers: [...answers, selected],
+      });
       if (response.data.corrects > response.data.wrongs) {
         dispatch(
           setCurrentUser({
@@ -164,28 +159,18 @@ const QuizApp = ({ taskApp }: TypeProps) => {
               <div className="flex justify-center gap-3 xs:gap-1">
                 <BsCheck2Circle className="text-3xl" />
                 <p className="text-gray-400 font-500 text-center">
-                  <span className="font-bold text-[#8ecf58] mr-1">
-                    Congratulation!
-                  </span>
+                  <span className="font-bold text-[#8ecf58] mr-1">Congratulation!</span>
                   Successfully Completed
                 </p>
               </div>
               <div className="flex items-center justify-center gap-5">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg text-yellow-500 font-bold">
-                    corrects :
-                  </span>
-                  <span className="text-lg font-bold text-[#d1cece]">
-                    {results.corrects}
-                  </span>
+                  <span className="text-lg text-yellow-500 font-bold">corrects :</span>
+                  <span className="text-lg font-bold text-[#d1cece]">{results.corrects}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg text-yellow-500 font-bold">
-                    wrongs :
-                  </span>
-                  <span className="text-lg font-bold text-[#eeee]">
-                    {results.wrongs}
-                  </span>
+                  <span className="text-lg text-yellow-500 font-bold">wrongs :</span>
+                  <span className="text-lg font-bold text-[#eeee]">{results.wrongs}</span>
                 </div>
               </div>
               <p className="text-gray-400 font-bold text-sm text-center">
@@ -197,26 +182,16 @@ const QuizApp = ({ taskApp }: TypeProps) => {
             <div className="w-[400px] h-[150px] bg-[#422c75c5] flex flex-col items-center justify-center gap-3 rounded-sm">
               <div className="flex items-center justify-center gap-3">
                 <BsExclamationOctagonFill className="text-2xl opacity-50" />
-                <p className="text-gray-300  font-bold text-lg">
-                  Failed to Pass
-                </p>
+                <p className="text-gray-300  font-bold text-lg">Failed to Pass</p>
               </div>
               <div className="flex items-center justify-center gap-5">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg text-yellow-500 font-bold">
-                    corrects :
-                  </span>
-                  <span className="text-lg font-bold text-[#d1cece]">
-                    {results.corrects}
-                  </span>
+                  <span className="text-lg text-yellow-500 font-bold">corrects :</span>
+                  <span className="text-lg font-bold text-[#d1cece]">{results.corrects}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg text-yellow-500 font-bold">
-                    wrongs :
-                  </span>
-                  <span className="text-lg font-bold text-[#eeee]">
-                    {results.wrongs}
-                  </span>
+                  <span className="text-lg text-yellow-500 font-bold">wrongs :</span>
+                  <span className="text-lg font-bold text-[#eeee]">{results.wrongs}</span>
                 </div>
               </div>
               <button

@@ -18,11 +18,8 @@ interface TypeProps {
   dayWhichTimmerIsLocated: string | null;
   handleUpdateNextTimerDay: () => void;
 }
-const DailyStreakRewardCard = ({
-  dayInfo,
-  dayWhichTimmerIsLocated,
-  handleUpdateNextTimerDay,
-}: TypeProps) => {
+
+const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateNextTimerDay }: TypeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,10 +36,7 @@ const DailyStreakRewardCard = ({
     }
     try {
       setIsLoading(true);
-      const response = await makeRequest.post(
-        `api/rewards/daily-reward/collect`,
-        { day: dayInfo.day }
-      );
+      const response = await makeRequest.post(`api/rewards/daily-reward/collect`, { day: dayInfo.day });
       const updatedUser = {
         ...currentUser,
         points: response.data.points,
@@ -58,19 +52,14 @@ const DailyStreakRewardCard = ({
         })
       );
     } catch (error) {
-      dispatch(
-        showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" })
-      );
+      dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (
-      dayWhichTimmerIsLocated &&
-      dayWhichTimmerIsLocated > dayInfo.availableAt
-    ) {
+    if (dayWhichTimmerIsLocated && dayWhichTimmerIsLocated > dayInfo.availableAt) {
       const timmout = setTimeout(() => {
         setRefresh((prev) => !prev);
       }, 1000);
@@ -85,8 +74,7 @@ const DailyStreakRewardCard = ({
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const dayDifference = timeDifference / millisecondsPerDay;
 
-  const scrollToThisCard =
-    Math.ceil(dayDifference) === 1 ? "daily-reward" : undefined;
+  const scrollToThisCard = Math.ceil(dayDifference) === 1 ? "daily-reward" : undefined;
 
   return (
     <div
@@ -103,16 +91,11 @@ const DailyStreakRewardCard = ({
         {t("Reward")} : <span className="text-[#aec94f]">{dayInfo.reward}</span>
       </div>
       {dayInfo.isCollected ? (
-        <button className="w-full py-1 bg-[#170e27]  font-bold rounded-md">
-          {t("Collected")}
-        </button>
+        <button className="w-full py-1 bg-[#170e27]  font-bold rounded-md">{t("Collected")}</button>
       ) : undefined}
 
       {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
-        <button
-          onClick={collectDailyReward}
-          className="w-full py-1 bg-[#01d641]  font-bold rounded-md"
-        >
+        <button onClick={collectDailyReward} className="w-full py-1 bg-[#01d641]  font-bold rounded-md">
           {isLoading ? (
             <Spinner className="mx-auto w-6 h-6 border-b-blue-950 border-r-blue-950" />
           ) : (
@@ -124,10 +107,7 @@ const DailyStreakRewardCard = ({
       {new Date(dayInfo.availableAt) > today ? (
         <button className="w-full h-[30px] bg-[#205764] font-bold rounded-md">
           {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
-            <Timer
-              date={new Date(dayInfo.availableAt)}
-              handleUpdateNextTimerDay={handleUpdateNextTimerDay}
-            />
+            <Timer date={new Date(dayInfo.availableAt)} handleUpdateNextTimerDay={handleUpdateNextTimerDay} />
           ) : (
             t("Next")
           )}

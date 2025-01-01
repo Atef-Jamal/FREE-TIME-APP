@@ -32,9 +32,7 @@ const HeroSection = () => {
     }
   };
 
-  const handleSignInWithGoogle = async (
-    e: React.FormEvent<HTMLButtonElement>
-  ) => {
+  const handleSignInWithGoogle = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await signInWithGoogle({ dispatch });
@@ -62,9 +60,7 @@ const HeroSection = () => {
         <h1 className="w-full text-center text-6xl sm:text-4xl font-bold text-[#af5a5a] mb-4">
           {t("Get Paid For")}
         </h1>
-        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
-          {t("Opening Bank Account")}
-        </p>
+        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">{t("Opening Bank Account")}</p>
         <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
           {t("Refer Your Friend Through your Referal Link")}
         </p>
@@ -72,9 +68,7 @@ const HeroSection = () => {
           {t("complete Tasks and apps, offers and much more")}
         </p>
         <p className="w-full text-center text-lg sm:text-xs text-[#95afff]">
-          {t(
-            "Earn up to $2.05 per offer 20 Offers available See our 33,225 reviews on Trustpilot"
-          )}
+          {t("Earn up to $2.05 per offer 20 Offers available See our 33,225 reviews on Trustpilot")}
         </p>
 
         <div className="w-full text-center flex items-center justify-center gap-1 rounded-sm mb-6">
@@ -114,12 +108,8 @@ const HeroSection = () => {
       {!isTokenExists && (
         <div className="flex flex-col gap-2 w-[50%] bg-[#33334c] p-8 sm:px-2 sm:py-3 rounded-md sm:w-[92%] lg:w-[87%] lg:mt-10 border border-gray-600 sm:mx-auto ">
           <div className="text-center mb-4 sm:bg-[#18193fb4] sm:py-3 sm:rounded-md ">
-            <h1 className="font-bold text-2xl tracking-wider text-white mb-2">
-              {t("Sign Up For Free")}
-            </h1>
-            <p className="text-sm text-[#a6ada0] ">
-              {t("and win up to $250 in the free time")}
-            </p>
+            <h1 className="font-bold text-2xl tracking-wider text-white mb-2">{t("Sign Up For Free")}</h1>
+            <p className="text-sm text-[#a6ada0] ">{t("and win up to $250 in the free time")}</p>
           </div>
           <div className="bg-blue-900 h-12 mb-4 rounded-md sing-up-free"></div>
           <div className="flex flex-col items-center gap-1">

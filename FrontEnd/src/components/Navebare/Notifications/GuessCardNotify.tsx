@@ -3,11 +3,7 @@ import { setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useState } from "react";
 import Spinner from "../../Others/Spinner";
-import {
-  handleApiError,
-  formateDate,
-  collectReward,
-} from "../../../utils/common";
+import { handleApiError, formateDate, collectReward } from "../../../utils/common";
 import { TypeGuessCardNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeGuessCardNotify, "type" | "isRead">;
@@ -63,9 +59,7 @@ const GuessCardNotify = ({ createdAt, _id, prize, isCollected }: PropType) => {
       </div>
       <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         Guess cards game successfully completed! and get
-        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">
-          {prize}
-        </span>
+        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">{prize}</span>
         points as a Reward
       </p>
 

@@ -14,18 +14,14 @@ const Statistics = () => {
     queryFn: currentUser?._id ? fetchStatistics : skipToken,
   });
 
-  const numReferredUsers = statistics.filter(
-    (item) => item.type === "REFERRER"
-  ).length;
+  const numReferredUsers = statistics.filter((item) => item.type === "REFERRER").length;
   const numCopletedTasks = statistics.filter(
     (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP"
   ).length;
 
   return (
     <div className=" flex flex-col gap-4 w-[49%] sm:w-[98%] h-[180px] sm:h-[170px] rounded-lg bg-[#222339] justify-center  ">
-      <h1 className="text-xl underline sm:text-[16px] font-bold text-[#9ddf53] pl-5 ">
-        Statistics
-      </h1>
+      <h1 className="text-xl underline sm:text-[16px] font-bold text-[#9ddf53] pl-5 ">Statistics</h1>
       {error && <p className="text-center">{error.response?.data.error}</p>}
       {statistics.length > 0 && (
         <div className="flex flex-wrap justify-between mx-6  sm:mx-auto lg:mx-3 w-[90%] ">
@@ -34,12 +30,8 @@ const Statistics = () => {
               <FaUsers className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[17px] sm:h-[17px] " />
             </div>
             <div className="flex flex-col ">
-              <span className="font-bold text-gray-300">
-                {numReferredUsers || 0}
-              </span>
-              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                Users Referred
-              </span>
+              <span className="font-bold text-gray-300">{numReferredUsers || 0}</span>
+              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Users Referred</span>
             </div>
           </div>
           <div className="flex items-center gap-2  w-[49%] sm:w-[49%]  mt-4">
@@ -47,12 +39,8 @@ const Statistics = () => {
               <MdAutoAwesomeMosaic className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[17px] sm:h-[17px] " />
             </div>
             <div className="flex flex-col  ">
-              <span className="font-bold text-gray-300">
-                {currentUser?.points}
-              </span>
-              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                Total Earnings
-              </span>
+              <span className="font-bold text-gray-300">{currentUser?.points}</span>
+              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Total Earnings</span>
             </div>
           </div>
           <div className="flex items-center gap-2 w-[49%] sm:w-[49%]">
@@ -60,12 +48,8 @@ const Statistics = () => {
               <BiTask className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[17px] sm:h-[17px] " />
             </div>
             <div className="flex flex-col ">
-              <span className="font-bold text-gray-300">
-                {numCopletedTasks || 0}
-              </span>
-              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                completed Tasks
-              </span>
+              <span className="font-bold text-gray-300">{numCopletedTasks || 0}</span>
+              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">completed Tasks</span>
             </div>
           </div>
 
@@ -74,12 +58,8 @@ const Statistics = () => {
               <BsFillClockFill className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[17px] sm:h-[17px] " />
             </div>
             <div className="flex flex-col ">
-              <span className="font-bold text-gray-300">
-                {currentUser?.points}
-              </span>
-              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                Earnings last 30 days
-              </span>
+              <span className="font-bold text-gray-300">{currentUser?.points}</span>
+              <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Earnings last 30 days</span>
             </div>
           </div>
         </div>

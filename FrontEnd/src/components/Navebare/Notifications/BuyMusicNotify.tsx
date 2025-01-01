@@ -7,12 +7,7 @@ import { TypeMusicNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeMusicNotify, "_id" | "isRead" | "type">;
 
-const BuyMusicNotify = ({
-  musicTitle,
-  createdAt,
-  price,
-  musicId,
-}: PropType) => {
+const BuyMusicNotify = ({ musicTitle, createdAt, price, musicId }: PropType) => {
   const dispatch = useAppDispatch();
   const date = formateDate(createdAt);
 
@@ -30,26 +25,19 @@ const BuyMusicNotify = ({
         <Link
           to={`/musics?to=${musicId}`}
           onClick={() => {
-            dispatch(
-              toggleThisEntity({ entity: "openNotification", value: false })
-            );
+            dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
           }}
           className="text-sm text-[#696cf3] mx-1 underline sm:text-xs"
         >
           {musicTitle}
         </Link>
         For
-        <span className="text-sm text-[#696cf3] mx-1 sm:text-xs">
-          {price}
-        </span>{" "}
-        points
+        <span className="text-sm text-[#696cf3] mx-1 sm:text-xs">{price}</span> points
       </p>
       <Link
         to={`/myprofile?to=${musicId}`}
         onClick={() => {
-          dispatch(
-            toggleThisEntity({ entity: "openNotification", value: false })
-          );
+          dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
         }}
         className="text-sm bg-[#414a77ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
       >

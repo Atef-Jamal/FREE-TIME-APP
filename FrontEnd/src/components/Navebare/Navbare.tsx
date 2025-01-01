@@ -21,15 +21,9 @@ import { useTranslation } from "react-i18next";
 
 const Navbare = memo(() => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserIsLoading = useAppSelector(
-    (state) => state.stateManeger.currentUserIsLoading
-  );
-  const currentAccountRequestFullfiled = useAppSelector(
-    (state) => state.stateManeger.currentAccountRequestFullfiled
-  );
-  const openRegisterForm = useAppSelector(
-    (state) => state.stateManeger.openRegisterForm
-  );
+  const currentUserIsLoading = useAppSelector((state) => state.stateManeger.currentUserIsLoading);
+  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
+  const openRegisterForm = useAppSelector((state) => state.stateManeger.openRegisterForm);
   const { t } = useTranslation("navbar");
 
   const dispatch = useAppDispatch();
@@ -48,7 +42,7 @@ const Navbare = memo(() => {
           showPopup({
             type: "ERROR_GENERAL",
             message: handleApiError(error),
-          })
+          }),
         );
       } finally {
         dispatch(setCurrentUserIsLoading(false));
@@ -58,30 +52,20 @@ const Navbare = memo(() => {
     getCurrentUser();
   }, [token, dispatch]);
 
-  const handleOpenSearch = () =>
-    dispatch(openModel({ status: true, children: <Search /> }));
+  const handleOpenSearch = () => dispatch(openModel({ status: true, children: <Search /> }));
 
   return (
     <div className="relative w-full h-[80%] flex items-center justify-between">
-      <Link
-        to={""}
-        className="sm:hidden tracking-wider font-bold italic text-white flex items-center"
-      >
-        <span className="text-[1.6rem] text-[#01D676]">FREE</span>
-        <span className="text-[1.6rem] text-gray-300">TIME</span>
+      <Link to={""} className="sm:hidden flex items-center pr-2">
+        <span className="italic tracking-wider text-[2rem] font-extrabold text-[#01D676]">FREE</span>
+        <span className="italic tracking-wider text-[2rem] font-extrabold text-gray-300">TIME</span>
       </Link>
 
       <div
-        onClick={() =>
-          dispatch(openModel({ status: true, children: <Search /> }))
-        }
+        onClick={() => dispatch(openModel({ status: true, children: <Search /> }))}
         className="xs:hidden w-[600px] xl:w-[30%] sm:w-[35%] xs:w-[10%] h-full ml-auto mx-auto rounded-md overflow-hidden cursor-pointer"
       >
-        <SearchBar
-          placeholder={t("search Everything")}
-          onChange={() => {}}
-          readOnly
-        />
+        <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
       <button
         onClick={handleOpenSearch}
@@ -89,9 +73,7 @@ const Navbare = memo(() => {
       >
         <BiSearch className=" text-xl opacity-70" />
       </button>
-      {!currentUserIsLoading &&
-        !currentUser &&
-        currentAccountRequestFullfiled && <RegisterButtons />}
+      {!currentUserIsLoading && !currentUser && isCurrentUserReqFinished && <RegisterButtons />}
       {openRegisterForm && !currentUser && <RegisterationForm />}
       {currentUserIsLoading && (
         <div className="h-full">

@@ -2,13 +2,12 @@ import { MdStorefront } from "react-icons/md";
 import { useAppSelector } from "../context/Hooks";
 import FrameItem from "../components/MarketPlace/FrameItem";
 import { fetchAllFrames } from "../utils";
-import { useScrollToElement } from "../hooks/commonHooks";
+import { useScrollToElement } from "../hooks";
 import { useQuery } from "@tanstack/react-query";
 
 const MarketPlace = () => {
-  const resizeSidebare = useAppSelector(
-    (state) => state.stateManeger.resizeSidebare
-  );
+  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+
   const {
     data: frames = [],
     status,

@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.get("/", allUsers);
 router.get("/onlines", protectedRoute, getOnlineUsers);
-router.get("/leaderboard", getLeaderboardUsers);
+router.get("/users-leaderboard", getLeaderboardUsers);
 router.get(
   "/select-myphoto-frame/:frameId",
   protectedRoute,

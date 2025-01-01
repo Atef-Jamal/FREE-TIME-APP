@@ -1,11 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import {
-  resetModel,
-  setCurrentUser,
-  showPopup,
-} from "../../context/StateManeger";
+import { resetModel, setCurrentUser, showPopup } from "../../context/StateManeger";
 import VerifyEmailBox from "./VerifyEmailBox";
 import { changeUserName, changeUserPassword } from "../../utils";
 import { handleApiError } from "../../utils/common";
@@ -34,8 +30,7 @@ const ProfileSettings = () => {
   const nameMutation = useMutation({
     mutationFn: changeUserName,
     onSuccess: (data) => {
-      if (currentUser)
-        dispatch(setCurrentUser({ ...currentUser, name: data.name }));
+      if (currentUser) dispatch(setCurrentUser({ ...currentUser, name: data.name }));
       dispatch(
         showPopup({
           message: "Name changed successfully",
@@ -130,11 +125,7 @@ const ProfileSettings = () => {
             onClick={changeNameHandler}
             className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
           >
-            {nameMutation.isPending ? (
-              <Spinner className="w-4 h-4 mx-auto" />
-            ) : (
-              "save"
-            )}
+            {nameMutation.isPending ? <Spinner className="w-4 h-4 mx-auto" /> : "save"}
           </button>
         </div>
       </div>
@@ -168,10 +159,7 @@ const ProfileSettings = () => {
       </div>
       <div className="flex flex-col gap-4 sm:gap-1">
         <div className="flex flex-col gap-2 sm:gap-1">
-          <label
-            htmlFor="oldpass"
-            className="font-bold text-gray-300 w-[120px]"
-          >
+          <label htmlFor="oldpass" className="font-bold text-gray-300 w-[120px]">
             old Password
           </label>
           <input
@@ -186,10 +174,7 @@ const ProfileSettings = () => {
           />
         </div>
         <div className="flex flex-col gap-2 sm:gap-1">
-          <label
-            htmlFor="newpass"
-            className="font-bold text-gray-300 w-[120px]"
-          >
+          <label htmlFor="newpass" className="font-bold text-gray-300 w-[120px]">
             New Password
           </label>
           <div className="flex items-center gap-4">
@@ -207,11 +192,7 @@ const ProfileSettings = () => {
               onClick={changePasswordHandler}
               className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
             >
-              {passwordMutation.isPending ? (
-                <Spinner className="w-5 h-5 mx-auto" />
-              ) : (
-                "save"
-              )}
+              {passwordMutation.isPending ? <Spinner className="w-5 h-5 mx-auto" /> : "save"}
             </button>
           </div>
         </div>

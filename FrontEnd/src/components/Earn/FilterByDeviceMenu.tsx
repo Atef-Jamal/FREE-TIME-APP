@@ -55,11 +55,7 @@ const FilterByDeviceMenu = ({
         <span
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
         >
-          <span
-            className={`${
-              filterByDevice === "ALL" && "bg-[#43da63]"
-            } w-full h-full rounded-full`}
-          ></span>
+          <span className={`${filterByDevice === "ALL" && "bg-[#43da63]"} w-full h-full rounded-full`}></span>
         </span>
       </div>
       <div
@@ -75,9 +71,7 @@ const FilterByDeviceMenu = ({
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
         >
           <span
-            className={`${
-              filterByDevice === "DESKTOP" && "bg-[#43da63]"
-            } w-full h-full rounded-full`}
+            className={`${filterByDevice === "DESKTOP" && "bg-[#43da63]"} w-full h-full rounded-full`}
           ></span>
         </span>
       </div>
@@ -94,9 +88,7 @@ const FilterByDeviceMenu = ({
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
         >
           <span
-            className={`${
-              filterByDevice === "ANDROID" && "bg-[#43da63]"
-            } w-full h-full rounded-full`}
+            className={`${filterByDevice === "ANDROID" && "bg-[#43da63]"} w-full h-full rounded-full`}
           ></span>
         </span>
       </div>
@@ -112,11 +104,7 @@ const FilterByDeviceMenu = ({
         <span
           className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
         >
-          <span
-            className={`${
-              filterByDevice === "MAC" && "bg-[#43da63]"
-            } w-full h-full rounded-full`}
-          ></span>
+          <span className={`${filterByDevice === "MAC" && "bg-[#43da63]"} w-full h-full rounded-full`}></span>
         </span>
       </div>
     </div>

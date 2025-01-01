@@ -26,17 +26,13 @@ const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
     if (event.target.files?.length === 1) {
       setImage(event.target.files[0]);
       const storageRef = ref(storage, `images/${event.target.files[0].name}`);
-      const uploadTask = uploadBytesResumable(
-        storageRef,
-        event.target.files[0]
-      );
+      const uploadTask = uploadBytesResumable(storageRef, event.target.files[0]);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           setImageIsUploading(true);
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setPercentage(progress);
         },
         () => {
@@ -72,24 +68,13 @@ const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
   }, [image]);
 
   return (
-    <div
-      onClick={handleClick}
-      className="relative w-[150px] h-[150px] lg:w-[100px] lg:h-[100px]"
-    >
+    <div onClick={handleClick} className="relative w-[150px] h-[150px] lg:w-[100px] lg:h-[100px]">
       {percentage !== 0 && (
         <div className="absolute w-full top-0 left-0 h-2 bg-white ">
-          <div
-            style={{ width: percentage }}
-            className="bg-red-800 h-[95%] border-y border-l"
-          ></div>
+          <div style={{ width: percentage }} className="bg-red-800 h-[95%] border-y border-l"></div>
         </div>
       )}
-      <input
-        ref={inputRef}
-        type="file"
-        className="w-full h-full hidden"
-        onChange={handleChange}
-      />
+      <input ref={inputRef} type="file" className="w-full h-full hidden" onChange={handleChange} />
       <img
         src={imagePreview || UploadIcon}
         alt=""

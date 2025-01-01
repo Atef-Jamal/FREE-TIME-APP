@@ -21,12 +21,8 @@ const ChatHeader = () => {
         <MdOutlineExpandMore className="text-2xl" />
         {select && (
           <div className=" general__select absolute z-[4] top-9 -left-2 w-52 sm:w-44 bg-[#42427e] rounded-lg flex flex-col items-center py-2">
-            <div className="w-[90%] rounded-md p-2 hover:bg-[#3f4566] text-sm text-gray-400">
-              VIP 100 46
-            </div>
-            <div className="w-[90%] hover:bg-[#3f4566] rounded-md p-2 text-sm text-gray-400">
-              VIP 100 46
-            </div>
+            <div className="w-[90%] rounded-md p-2 hover:bg-[#3f4566] text-sm text-gray-400">VIP 100 46</div>
+            <div className="w-[90%] hover:bg-[#3f4566] rounded-md p-2 text-sm text-gray-400">VIP 100 46</div>
           </div>
         )}
       </span>

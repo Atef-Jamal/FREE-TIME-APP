@@ -9,16 +9,13 @@ import { useListenToSocketEvents } from "../../hooks";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
 
-const NavebareBottom = ({
-  setOpenSidbareMobile,
-  openSidbareMobile,
-}: {
+interface TypeProps {
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
   openSidbareMobile: boolean;
-}) => {
-  const publicMsgRedPoint = useAppSelector(
-    (state) => state.stateManeger.publicMsgRedPoint
-  );
+}
+
+const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: TypeProps) => {
+  const publicMsgRedPoint = useAppSelector((state) => state.stateManeger.publicMsgRedPoint);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
@@ -61,9 +58,7 @@ const NavebareBottom = ({
           to={"leaderboard"}
           className={({ isActive }) =>
             `${
-              isActive
-                ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
-                : ""
+              isActive ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]" : ""
             } h-full flex flex-col items-center justify-center text-center  rounded-md gap-1 text-gray-200 text-xs font-[500]`
           }
         >
@@ -76,9 +71,7 @@ const NavebareBottom = ({
           to={"earn"}
           className={({ isActive }) =>
             `${
-              isActive
-                ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
-                : ""
+              isActive ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]" : ""
             }  flex flex-col items-center justify-center gap-2 text-gray-200 text-xs font-[500] bg-[#3a3a6b] h-full rounded-md`
           }
         >
@@ -91,9 +84,7 @@ const NavebareBottom = ({
           to={"rewards"}
           className={({ isActive }) =>
             `${
-              isActive
-                ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
-                : undefined
+              isActive ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]" : undefined
             } flex flex-col items-center justify-center gap-2 text-gray-200 text-xs font-[500] h-full rounded-md`
           }
         >
@@ -106,9 +97,7 @@ const NavebareBottom = ({
           to={"chat"}
           className={({ isActive }) =>
             `${
-              isActive
-                ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]"
-                : undefined
+              isActive ? " bg-gradient-to-t from-[#d9ff0088] to-[#3e5a2836] text-[#bfbee6]" : undefined
             } relative flex flex-col items-center justify-center gap-2 text-gray-200 text-xs  font-[500] h-full rounded-md`
           }
         >

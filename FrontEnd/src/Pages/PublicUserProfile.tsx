@@ -49,13 +49,10 @@ const PublicUserProfile = () => {
   );
 
   const numberOfCompletedTasks = activities?.filter(
-    (item) =>
-      item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED"
+    (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED"
   ).length;
 
-  const numberOfReferredUser = activities?.filter(
-    (item) => item.type === "REFERRER"
-  ).length;
+  const numberOfReferredUser = activities?.filter((item) => item.type === "REFERRER").length;
 
   useEffect(() => {
     if (currentUser?._id && id && id != currentUser?._id) {
@@ -64,11 +61,7 @@ const PublicUserProfile = () => {
   }, [id, currentUser?._id, mutate]);
 
   if (error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        {error.response?.data.error}
-      </div>
-    );
+    return <div className="w-full h-full flex items-center justify-center">{error.response?.data.error}</div>;
   }
 
   if (id === currentUser?._id) {
@@ -80,9 +73,7 @@ const PublicUserProfile = () => {
   }
 
   if (!user) {
-    return (
-      <div className="border w-full h-full text-center">an error occurred</div>
-    );
+    return <div className="border w-full h-full text-center">an error occurred</div>;
   }
 
   return (
@@ -95,25 +86,17 @@ const PublicUserProfile = () => {
               <UserImage user={user} />
             </div>
             <div className="flex flex-col justify-center gap-1 mt-2">
-              <span className="text-xl font-bold text-[#3cc543]">
-                {user.name}
-              </span>
+              <span className="text-xl font-bold text-[#3cc543]">{user.name}</span>
               <div className="flex items-center gap-2 text-[#e7bbbb]">
                 <span className="text-[#50fd39ee]">{user.points}</span> Points
               </div>
               {user?.emailVerified && (
                 <div className="flex items-center gap-4">
-                  <img
-                    src={verifiedImage}
-                    alt=""
-                    className="w-8 h-8 object-cover"
-                  />
+                  <img src={verifiedImage} alt="" className="w-8 h-8 object-cover" />
                   <span className="text-gray-400">Verified</span>
                 </div>
               )}
-              <p className="text-sm text-[#b19e9eee]">
-                Joined About {formateDate(user.createdAt)}
-              </p>
+              <p className="text-sm text-[#b19e9eee]">Joined About {formateDate(user.createdAt)}</p>
             </div>
           </div>
           <div className="w-full bg-[#1d1d2e] rounded-lg h-[200px] sm:h-auto flex flex-col p-5 sm:px-2 sm:py-5 lg:p-3 gap-3">
@@ -124,12 +107,8 @@ const PublicUserProfile = () => {
                   <BiTask className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
                 </div>
                 <div className="flex flex-col ">
-                  <span className="font-bold text-gray-300">
-                    {numberOfCompletedTasks}
-                  </span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                    completed offers
-                  </span>
+                  <span className="font-bold text-gray-300">{numberOfCompletedTasks}</span>
+                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">completed offers</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 w-[49%] sm:w-[49%]">
@@ -149,9 +128,7 @@ const PublicUserProfile = () => {
                 </div>
                 <div className="flex flex-col  ">
                   <span className="font-bold text-gray-300">{user.points}</span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                    Total Earnings
-                  </span>
+                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Total Earnings</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 w-[49%] sm:w-[49%] mt-4 ">
@@ -159,12 +136,8 @@ const PublicUserProfile = () => {
                   <FaUsers className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
                 </div>
                 <div className="flex flex-col ">
-                  <span className="font-bold text-gray-300">
-                    {numberOfReferredUser}
-                  </span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                    Users Referred
-                  </span>
+                  <span className="font-bold text-gray-300">{numberOfReferredUser}</span>
+                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Users Referred</span>
                 </div>
               </div>
             </div>
@@ -186,12 +159,8 @@ const PublicUserProfile = () => {
         <div className="w-full mb-2 ">
           <div className="flex items-center justify-between p-[6px] h-[40px] border-b mb-2">
             <span className=" text-gray-300  font-bold flex-1">Offer</span>
-            <span className=" text-gray-300 text-center font-bold px-8 xs:px-2 xs:text-sm">
-              Time
-            </span>
-            <span className=" text-gray-300 text-center font-bold px-8 xs:px-2 xs:text-sm">
-              Points
-            </span>
+            <span className=" text-gray-300 text-center font-bold px-8 xs:px-2 xs:text-sm">Time</span>
+            <span className=" text-gray-300 text-center font-bold px-8 xs:px-2 xs:text-sm">Points</span>
           </div>
           <ActivitiesList activities={fitleredActivities} user={user} />
         </div>

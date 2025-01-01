@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
-import {
-  showPopup,
-  openModel,
-  toggleThisEntity,
-} from "../../../context/StateManeger";
+import { showPopup, openModel, toggleThisEntity } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
-
 import notificationSoundSrc from "../../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { IoMdNotifications } from "react-icons/io";
@@ -21,9 +16,7 @@ import { FaPlus } from "react-icons/fa6";
 
 const ProfileActions = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const openNotification = useAppSelector(
-    (state) => state.stateManeger.openNotification
-  );
+  const openNotification = useAppSelector((state) => state.stateManeger.openNotification);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [notifications, setNotifications] = useState<TypeNotifications[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
@@ -33,9 +26,7 @@ const ProfileActions = () => {
   const notifySound = new Audio();
   notifySound.src = notificationSoundSrc;
 
-  const numUnReaded = notifications.filter(
-    (element) => element.isRead === false
-  ).length;
+  const numUnReaded = notifications.filter((element) => element.isRead === false).length;
 
   const handleAddNewNotification = (data: TypeNotifications) => {
     setNotifications((prev) => {
@@ -61,9 +52,7 @@ const ProfileActions = () => {
     if (!currentUser?._id) return;
     const fetchNotifications = async () => {
       try {
-        const response = await makeRequest.get(
-          "api/notifications/my-notifications"
-        );
+        const response = await makeRequest.get("api/notifications/my-notifications");
         setNotifications(response.data);
       } catch (error) {
         dispatch(
@@ -91,21 +80,15 @@ const ProfileActions = () => {
           <div className="w-[28%] h-full flex items-center rounded-md bg-[#04050a] overflow-scroll scrollbar-none">
             <button
               onClick={() => {
-                dispatch(
-                  openModel({ status: true, children: <ApplyCoupon /> })
-                );
+                dispatch(openModel({ status: true, children: <ApplyCoupon /> }));
               }}
               className="w-1/3 h-full flex items-center justify-center"
             >
               <FaPlus />
             </button>
             <span className="border-l h-full flex flex-col items-center justify-center flex-1">
-              <span className="text-[#3de21c] -mb-[1px] text-lg sm:text-xs">
-                {currentUser.points}
-              </span>
-              <span className="sm:text-[9px] text-xs text-[#c2bebe] ">
-                points
-              </span>
+              <span className="text-[#3de21c] -mb-[1px] text-lg sm:text-xs">{currentUser.points}</span>
+              <span className="sm:text-[9px] text-xs text-[#c2bebe] ">points</span>
             </span>
           </div>
           <div
@@ -128,13 +111,9 @@ const ProfileActions = () => {
           <div
             onClick={() => {
               if (!openNotification) {
-                dispatch(
-                  toggleThisEntity({ entity: "openNotification", value: true })
-                );
+                dispatch(toggleThisEntity({ entity: "openNotification", value: true }));
               } else {
-                dispatch(
-                  toggleThisEntity({ entity: "openNotification", value: false })
-                );
+                dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
               }
             }}
             className="flex items-center justify-center relative cursor-pointer h-full w-[14%] rounded-md bg-[#3a3e58b7]"

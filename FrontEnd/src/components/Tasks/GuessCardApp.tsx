@@ -4,11 +4,14 @@ import { setCurrentUser } from "../../context/StateManeger";
 import { BsCheck2Circle } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-
 import { ImSpinner3 } from "react-icons/im";
 import { TypeGameApp } from "../../types/earnTypes";
 
-const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
+interface TypeProps {
+  taskApp: TypeGameApp;
+}
+
+const GuessCardApp = ({ taskApp }: TypeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
@@ -64,12 +67,9 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
       setError("");
       setIsLoading(true);
       try {
-        await makeRequest.post(
-          `api/tasks/complete-guesscard-app/${taskApp._id}`,
-          {
-            example: "example",
-          }
-        );
+        await makeRequest.post(`api/tasks/complete-guesscard-app/${taskApp._id}`, {
+          example: "example",
+        });
         setCompleted(true);
         dispatch(
           setCurrentUser({
@@ -121,9 +121,7 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
               Successfully Completed
             </p>
           </div>
-          <p className="text-gray-400 font-bold text-sm">
-            Go to your Notifications and claim Reward
-          </p>
+          <p className="text-gray-400 font-bold text-sm">Go to your Notifications and claim Reward</p>
         </div>
       )}
       {!completed && (
@@ -131,8 +129,7 @@ const GuessCardApp = ({ taskApp }: { taskApp: TypeGameApp }) => {
           <div className="w-[500px] sm:w-[400px] xs:w-[90%] flex items-center justify-between ">
             <span className="ml-1 text-gray-300 text-sm">Easy Level</span>
             <span className="font-bold text-black bg-[#b8ae56] py-1 px-5 rounded-md">
-              SCORE :
-              <span className="font-bold text-[#2341ca] ml-2">{score}</span>
+              SCORE :<span className="font-bold text-[#2341ca] ml-2">{score}</span>
             </span>
           </div>
           <div className="w-[500px] sm:w-[400px] xs:w-[90%] h-[300px] xs:h-[230px] border grid grid-cols-4 gap-2 p-2">

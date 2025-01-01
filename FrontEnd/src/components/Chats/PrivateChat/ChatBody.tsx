@@ -13,9 +13,7 @@ import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 const ChatBody = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
-  const activeConversation = useAppSelector(
-    (state) => state.stateManeger.activeConversation
-  );
+  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -73,14 +71,7 @@ const ChatBody = () => {
         })
       );
     }
-  }, [
-    activeConversation,
-    data.messages,
-    queryClient,
-    dispatch,
-    socket,
-    currentUser?._id,
-  ]);
+  }, [activeConversation, data.messages, queryClient, dispatch, socket, currentUser?._id]);
 
   const scrollToLastMessage = useCallback(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -116,18 +107,12 @@ const ChatBody = () => {
           <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
             <UserImage user={data.secondUser} />
           </div>
-          <span className="sm:text-sm font-bold text-[#3785fa]">
-            {data.secondUser?.name}
-          </span>
+          <span className="sm:text-sm font-bold text-[#3785fa]">{data.secondUser?.name}</span>
         </div>
         {onlineUsers.includes(activeConversation) ? (
-          <span className="text-[13px] font-bold text-[#68e44a] tracking-wide">
-            online
-          </span>
+          <span className="text-[13px] font-bold text-[#68e44a] tracking-wide">online</span>
         ) : (
-          <span className="text-[13px] font-bold text-[#54724c] tracking-wide">
-            offline
-          </span>
+          <span className="text-[13px] font-bold text-[#54724c] tracking-wide">offline</span>
         )}
       </div>
 

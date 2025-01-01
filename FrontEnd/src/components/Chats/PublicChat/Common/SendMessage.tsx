@@ -17,10 +17,7 @@ import { sendPublicChatMessage } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
-import {
-  TypeCashedPublicChat,
-  TypePublicChatItem,
-} from "../../../../types/publicChatTypes";
+import { TypeCashedPublicChat, TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { User } from "../../../../types/userTypes";
 import { v4 as uuId } from "uuid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,11 +29,7 @@ interface typeProps {
   setSearchParams: SetURLSearchParams;
 }
 
-const SendMessage = ({
-  stopScrolling,
-  setStopScrolling,
-  setSearchParams,
-}: typeProps) => {
+const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
@@ -104,10 +97,7 @@ const SendMessage = ({
                 return {
                   ...page,
                   messages: page.messages.map((msg) => {
-                    if (
-                      msg.type === "MESSAGE" &&
-                      msg._id === context.uniqeIdForRollback
-                    ) {
+                    if (msg.type === "MESSAGE" && msg._id === context.uniqeIdForRollback) {
                       return { ...data, isSended: "SUCCESS" };
                     }
                     return msg;
@@ -142,9 +132,7 @@ const SendMessage = ({
         };
         queryClient.setQueryData(
           ["public-chat-messages"],
-          (
-            previous: TypeCashedPublicChat
-          ): TypeCashedPublicChat | undefined => {
+          (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
             if (!previous) return;
             return {
               ...previous,
@@ -275,10 +263,7 @@ const SendMessage = ({
       </div>
       {openMentionList && (
         <div className="absolute -top-[152px] left-2 w-[95%] h-[150px] border border-gray-500">
-          <MentionListOfUsers
-            setUser={setUser}
-            setOpenMentionList={setOpenMentionList}
-          />
+          <MentionListOfUsers setUser={setUser} setOpenMentionList={setOpenMentionList} />
         </div>
       )}
       {!currentUser && (
@@ -289,11 +274,7 @@ const SendMessage = ({
           Sign Up To Unlock
         </div>
       )}
-      <form
-        className={`${
-          !currentUser && "blur-sm"
-        } w-full relative flex items-end justify-between gap-1`}
-      >
+      <form className={`${!currentUser && "blur-sm"} w-full relative flex items-end justify-between gap-1`}>
         <textarea
           ref={inputRef}
           onChange={handleInputChange}
@@ -314,10 +295,7 @@ const SendMessage = ({
             {user.name}
           </span>
         )}
-        <div
-          onClick={handleOpenMentionList}
-          className="relative py-[6px] px-3 rounded-md bg-[#542ba06e] "
-        >
+        <div onClick={handleOpenMentionList} className="relative py-[6px] px-3 rounded-md bg-[#542ba06e] ">
           <p className=" text-gray-400 font-bold text-lg">@</p>
         </div>
         <button

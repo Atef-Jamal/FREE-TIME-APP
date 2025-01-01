@@ -23,14 +23,9 @@ const People = memo(({ conversation, isOnLine }: TypeProps) => {
     <div
       onClick={() => {
         dispatch(setActiveConversation(conversation.secondParty._id));
-        localStorage.setItem(
-          "active-converstaion",
-          conversation.secondParty._id
-        );
+        localStorage.setItem("active-converstaion", conversation.secondParty._id);
       }}
-      className={
-        "relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1"
-      }
+      className={"relative w-full flex flex-col items-start gap-2 sm:gap-1 rounded-md p-2 sm:p-1"}
     >
       <div className="w-full flex gap-2">
         <div className="w-[50px] h-[35px] sm:w-[30px] sm:h-[25px]">
@@ -43,25 +38,15 @@ const People = memo(({ conversation, isOnLine }: TypeProps) => {
               {conversation.secondParty.name}
             </span>
             {isOnLine && (
-              <span className="sm:text-sm xs:text-xs text-[#68e44a] tracking-wider font-[400]">
-                onLine
-              </span>
+              <span className="sm:text-sm xs:text-xs text-[#68e44a] tracking-wider font-[400]">onLine</span>
             )}
             {!isOnLine && (
-              <span className="sm:text-sm xs:text-xs text-[#676867] tracking-wider font-[400]">
-                offLine
-              </span>
+              <span className="sm:text-sm xs:text-xs text-[#676867] tracking-wider font-[400]">offLine</span>
             )}
           </span>
           {(conversation.lastMessage?.createdAt && (
-            <span className="xs:text-xs text-sm font-bold text-[#746767] -mt-[2px]">
-              {date}
-            </span>
-          )) || (
-            <span className="text-xs xs:text-[9px] font-bold text-gray-400 ml-1">
-              -- : --
-            </span>
-          )}
+            <span className="xs:text-xs text-sm font-bold text-[#746767] -mt-[2px]">{date}</span>
+          )) || <span className="text-xs xs:text-[9px] font-bold text-gray-400 ml-1">-- : --</span>}
         </div>
         {conversation.unreadedCount !== 0 ? (
           <span className="transition-all ml-auto w-6 h-5 bg-[#e63636] flex items-center justify-center rounded-full text-xs font-bold ">

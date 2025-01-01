@@ -16,22 +16,17 @@ import {
   toggleThisEntity,
 } from "../../context/StateManeger";
 
-const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
+interface TypeProps {
+  songDetails: TypeMusicDetail;
+}
+
+const MusicCard = ({ songDetails }: TypeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
-  const musicIsPlaying = useAppSelector(
-    (state) => state.stateManeger.musicIsPlaying
-  );
-  const openMusicModal = useAppSelector(
-    (state) => state.stateManeger.openMusicModal
-  );
-  const currentAccountRequestFullfiled = useAppSelector(
-    (state) => state.stateManeger.currentAccountRequestFullfiled
-  );
-
-  const isAlreadyPurshased = !!currentUser?.mySongs.includes(
-    songDetails.id.toString()
-  );
+  const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
+  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
+  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
+  const isAlreadyPurshased = !!currentUser?.mySongs.includes(songDetails.id.toString());
 
   const mutation = useMutation({
     mutationFn: purshaseMusic,
@@ -102,50 +97,35 @@ const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
       )}
       <span
         className={`${
-          musicIsPlaying &&
-          activeMusic.musicInfo?.id === songDetails.id.toString()
-            ? "animate-spin"
-            : ""
+          musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() ? "animate-spin" : ""
         } w-[80px] h-[80px] rounded-full border-2 border-l-[#cef03a] border-t-[#222770] border-r-[#cef03a] border-b-[#222770]`}
       >
-        <img
-          alt={""}
-          src={songDetails.album.cover}
-          className="w-full h-full rounded-full object-contain"
-        />
+        <img alt={""} src={songDetails.album.cover} className="w-full h-full rounded-full object-contain" />
       </span>
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-400 truncate ">
-            Title :
-          </span>
+          <span className="text-xs font-bold text-gray-400 truncate ">Title :</span>
           <span className="text-xs font-bold text-gray-300 truncate max-w-[85px]  text-center">
             {songDetails.title}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-400 truncate ">
-            Singer :
-          </span>
+          <span className="text-xs font-bold text-gray-400 truncate ">Singer :</span>
           <span className="text-xs font-bold text-gray-300 truncate max-w-[85px]  text-center">
             {songDetails.artist.name}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-400 truncate ">
-            Price :
-          </span>
-          <span className="text-xs font-bold text-gray-300 truncate ">
-            10 Points
-          </span>
+          <span className="text-xs font-bold text-gray-400 truncate ">Price :</span>
+          <span className="text-xs font-bold text-gray-300 truncate ">10 Points</span>
         </div>
       </div>
-      {!currentAccountRequestFullfiled && (
+      {!isCurrentUserReqFinished && (
         <button className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center">
           <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
         </button>
       )}
-      {!isAlreadyPurshased && currentAccountRequestFullfiled && (
+      {!isAlreadyPurshased && isCurrentUserReqFinished && (
         <button
           onClick={handlePurshase}
           className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center"
@@ -157,28 +137,26 @@ const MusicCard = ({ songDetails }: { songDetails: TypeMusicDetail }) => {
           )}
         </button>
       )}
-      {isAlreadyPurshased && currentAccountRequestFullfiled && (
+      {isAlreadyPurshased && isCurrentUserReqFinished && (
         <>
-          {musicIsPlaying &&
-            activeMusic.musicInfo?.id === songDetails.id.toString() && (
-              <button
-                onClick={() => dispatch(handlePauseMusic())}
-                className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
-              >
-                <IoIosPause />
-                Pause
-              </button>
-            )}
-          {!musicIsPlaying &&
-            activeMusic.musicInfo?.id === songDetails.id.toString() && (
-              <button
-                onClick={() => dispatch(handlePlayMusic())}
-                className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
-              >
-                <FaPlay />
-                Play
-              </button>
-            )}
+          {musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
+            <button
+              onClick={() => dispatch(handlePauseMusic())}
+              className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+            >
+              <IoIosPause />
+              Pause
+            </button>
+          )}
+          {!musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
+            <button
+              onClick={() => dispatch(handlePlayMusic())}
+              className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+            >
+              <FaPlay />
+              Play
+            </button>
+          )}
           {activeMusic.musicInfo?.id !== songDetails.id.toString() && (
             <button
               onClick={handleAdd}

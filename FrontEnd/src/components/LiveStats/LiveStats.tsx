@@ -19,49 +19,39 @@ const LiveStats = memo(() => {
   const [openLangMenu, setOpenLangMenu] = useState(false);
   const queryClient = useQueryClient();
 
-  const {
-    data,
-    status,
-    error,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    isFetchNextPageError,
-  } = useInfiniteQuery({
-    queryKey: ["users"],
-    queryFn: ({ pageParam }) => getUsers({ pageParam }),
-    initialPageParam: 1,
-    getNextPageParam: (lastpage, _, pageParam) => {
-      return lastpage.hasMore ? pageParam + 1 : undefined;
-    },
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data, status, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
+    useInfiniteQuery({
+      queryKey: ["users"],
+      queryFn: ({ pageParam }) => getUsers({ pageParam }),
+      initialPageParam: 1,
+      getNextPageParam: (lastpage, _, pageParam) => {
+        return lastpage.hasMore ? pageParam + 1 : undefined;
+      },
+      staleTime: 60 * 60 * 1000,
+    });
 
   const users = data?.pages.map((page) => page.users).flat();
   const userHieghestPoints = data?.pages[0].userHighestPoints;
 
   useEffect(() => {
     if (!currentUser) return;
-    queryClient.setQueryData(
-      ["users"],
-      (previous: TypeCashedUsers): TypeCashedUsers | undefined => {
-        if (!previous) return;
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              users: page.users.map((user) => {
-                if (user._id === currentUser._id) {
-                  return currentUser;
-                }
-                return user;
-              }),
-            };
-          }),
-        };
-      }
-    );
+    queryClient.setQueryData(["users"], (previous: TypeCashedUsers): TypeCashedUsers | undefined => {
+      if (!previous) return;
+      return {
+        ...previous,
+        pages: previous.pages.map((page) => {
+          return {
+            ...page,
+            users: page.users.map((user) => {
+              if (user._id === currentUser._id) {
+                return currentUser;
+              }
+              return user;
+            }),
+          };
+        }),
+      };
+    });
   }, [currentUser, queryClient]);
 
   useEffect(() => {
@@ -87,9 +77,7 @@ const LiveStats = memo(() => {
         {error && (
           <div className="xs:text-xs tracking-wide font-bold text-red-400 w-full flex items-center justify-center gap-3 py-1">
             <FaExclamationCircle className="text-lg" />
-            {error.message === "Network Error"
-              ? "Network Error"
-              : error.response?.data.error}
+            {error.message === "Network Error" ? "Network Error" : error.response?.data.error}
           </div>
         )}
 
@@ -154,9 +142,7 @@ const LiveStats = memo(() => {
             disabled={isFetchingNextPage}
           >
             {!isFetchingNextPage && "Load more"}
-            {isFetchingNextPage && (
-              <Spinner className="w-4 h-4 border-4 sm:border-2 mx-4" />
-            )}
+            {isFetchingNextPage && <Spinner className="w-4 h-4 border-4 sm:border-2 mx-4" />}
           </button>
         )}
       </div>

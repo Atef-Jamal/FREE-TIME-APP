@@ -4,22 +4,12 @@ import { FcConferenceCall } from "react-icons/fc";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
 import Spinner from "../../Others/Spinner";
-import {
-  handleApiError,
-  formateDate,
-  collectReward,
-} from "../../../utils/common";
+import { handleApiError, formateDate, collectReward } from "../../../utils/common";
 import { TypeReferrerNotify } from "../../../types/notificationTypes";
 
 type PropType = Omit<TypeReferrerNotify, "isRead" | "type">;
 
-const ReferrerNotify = ({
-  createdAt,
-  _id,
-  prize,
-  isCollected,
-  referredUser,
-}: PropType) => {
+const ReferrerNotify = ({ createdAt, _id, prize, isCollected, referredUser }: PropType) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isRewardCollected, setIsRewadCollected] = useState(isCollected);
@@ -69,10 +59,7 @@ const ReferrerNotify = ({
       </div>
       <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
         successfully Reffered Your Friend
-        <Link
-          to={`/user/${referredUser._id}`}
-          className="text-sm text-[#696cf3] mx-1 underline"
-        >
+        <Link to={`/user/${referredUser._id}`} className="text-sm text-[#696cf3] mx-1 underline">
           {referredUser.name}
         </Link>
         and Get {prize} points as a Reward

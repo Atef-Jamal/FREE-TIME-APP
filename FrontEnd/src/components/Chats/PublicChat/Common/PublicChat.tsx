@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useListenToSocketEvents } from "../../../../hooks/listenersHooks";
+import { useListenToSocketEvents } from "../../../../hooks";
 import { useSearchParams } from "react-router-dom";
 import SendMessage from "./SendMessage";
 import Message from "./Message";
@@ -11,7 +11,7 @@ import { fetchPublicChatMessages, makeRequest } from "../../../../utils";
 import { showPopup } from "../../../../context/StateManeger";
 import { debounce, handleApiError } from "../../../../utils/common";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useScrollToElement } from "../../../../hooks/commonHooks";
+import { useScrollToElement } from "../../../../hooks";
 import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
 import { CgClose } from "react-icons/cg";
 import { ChatModelDeletion } from "./ChatModelDeletion";
@@ -24,9 +24,7 @@ const PublicChat = memo(() => {
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [oldMessage, setOldMessage] = useState<TypePublicChatMessage | null>(
-    null
-  );
+  const [oldMessage, setOldMessage] = useState<TypePublicChatMessage | null>(null);
   const [isLoadingOldMsg, setIsLoadingOldMsg] = useState(false);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
@@ -51,8 +49,7 @@ const PublicChat = memo(() => {
     fetchPreviousPage,
   } = useInfiniteQuery({
     queryKey: ["public-chat-messages"],
-    queryFn: ({ pageParam }) =>
-      fetchPublicChatMessages({ pageParam, limit: 15 }),
+    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
     initialPageParam: 1,
     getPreviousPageParam: (firstPage, _, pageParam) => {
       return firstPage.hasOlder ? pageParam + 1 : undefined;
@@ -64,16 +61,14 @@ const PublicChat = memo(() => {
   const flatedMessages = data?.pages.map((page) => page.messages).flat();
 
   const messages = flatedMessages?.filter(
-    (msg, index, selfArray) =>
-      index === selfArray.findIndex((t) => t._id === msg._id)
+    (msg, index, selfArray) => index === selfArray.findIndex((t) => t._id === msg._id),
   );
 
   const isThereMessages = messages && messages.length > 0;
 
   const handleRecievedMessage = () => {
     const element = messageContainerRef.current!;
-    const addToStaging =
-      element.scrollHeight - element.scrollTop > element.clientHeight + 70;
+    const addToStaging = element.scrollHeight - element.scrollTop > element.clientHeight + 70;
 
     if (addToStaging) {
       setStagingMessages((prev) => prev + 1);
@@ -92,7 +87,7 @@ const PublicChat = memo(() => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     } finally {
       setIsLoadingOldMsg(false);
@@ -140,15 +135,11 @@ const PublicChat = memo(() => {
     if (!element) return;
 
     const handleScroll = () => {
-      if (
-        element.scrollHeight - element.scrollTop >
-        element.clientHeight + 90
-      ) {
+      if (element.scrollHeight - element.scrollTop > element.clientHeight + 90) {
         setStopScrolling(true);
       } else {
         if (queryParam) {
-          if (searchParamsTimout.current)
-            clearTimeout(searchParamsTimout.current);
+          if (searchParamsTimout.current) clearTimeout(searchParamsTimout.current);
           searchParamsTimout.current = setTimeout(() => {
             setSearchParams((prev) => {
               prev.delete("messageId");
@@ -217,9 +208,7 @@ const PublicChat = memo(() => {
         )}
 
         {status === "pending" &&
-          [...Array(numofSkeleton).keys()].map((skeleton) => (
-            <MessageSkeleton key={skeleton} />
-          ))}
+          [...Array(numofSkeleton).keys()].map((skeleton) => <MessageSkeleton key={skeleton} />)}
 
         {error && (
           <div className="m-auto w-full text-center text-lg font-bold text-[#d15e5e]">
@@ -244,10 +233,7 @@ const PublicChat = memo(() => {
 
         {!isLoadingOldMsg && oldMessage && (
           <div className="sticky z-[1] top-0 left-0 w-full rounded-md border border-[#a59e9eee] bg-black">
-            <Message
-              singleMessage={oldMessage}
-              handleSetMessageIdToDelete={handleSetMessageIdToDelete}
-            />
+            <Message singleMessage={oldMessage} handleSetMessageIdToDelete={handleSetMessageIdToDelete} />
             <button
               onClick={handleCloseOldMsg}
               className="absolute top-0 right-0 rounded-md py-1 px-2 bg-[#0d0d22]"

@@ -1,16 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import {
-  TypeInitialState,
-  TypeMusicInfo,
-  TypePopup,
-} from "../types/reduxTypes";
+import { TypeInitialState, TypeMusicInfo, TypePopup } from "../types/reduxTypes";
 import { User } from "../types/userTypes";
 
 const initialState: TypeInitialState = {
   currentUser: null,
   currentUserIsLoading: false,
-  currentAccountRequestFullfiled: false,
+  isCurrentUserReqFinished: false,
   openNotification: false,
   ToastNotify: {
     type: null,
@@ -71,7 +67,7 @@ const StateManegerSlice = createSlice({
       state.currentUserIsLoading = action.payload;
     },
     setCurrentAccountRequestFullfiled(state, action: PayloadAction<boolean>) {
-      state.currentAccountRequestFullfiled = action.payload;
+      state.isCurrentUserReqFinished = action.payload;
     },
     handleRefetchUnReadedMsgCount(state, action) {
       state.reFetchThisUserId = action.payload;
@@ -81,10 +77,7 @@ const StateManegerSlice = createSlice({
       state.ToastNotify.message = action.payload.message;
       state.ToastNotify.type = action.payload.type;
     },
-    openModel(
-      state,
-      action: PayloadAction<{ status: boolean; children: React.ReactNode }>
-    ) {
+    openModel(state, action: PayloadAction<{ status: boolean; children: React.ReactNode }>) {
       state.model.status = true;
       state.model.children = action.payload.children;
     },
@@ -125,10 +118,7 @@ const StateManegerSlice = createSlice({
     setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
       state.publicMsgRedPoint = action.payload;
     },
-    updateSidebarUnReadedMsgCount(
-      state,
-      action: PayloadAction<TypeSidbareUnreadedMsgs>
-    ) {
+    updateSidebarUnReadedMsgCount(state, action: PayloadAction<TypeSidbareUnreadedMsgs>) {
       const { type, userId } = action.payload;
       if (type === "ADD-ALL") {
         state.allUnReadedMesseges = userId as string[];
@@ -137,9 +127,7 @@ const StateManegerSlice = createSlice({
         state.allUnReadedMesseges.push(userId as string);
       }
       if (type === "REMOVE-ONE") {
-        state.allUnReadedMesseges = state.allUnReadedMesseges.filter(
-          (item) => item !== userId
-        );
+        state.allUnReadedMesseges = state.allUnReadedMesseges.filter((item) => item !== userId);
       }
       if (type === "REMOVE-ALL") {
         state.allUnReadedMesseges = [];
