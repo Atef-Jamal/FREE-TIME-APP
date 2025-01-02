@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
-import { showPopup, openModel, toggleThisEntity } from "../../../context/StateManeger";
+import { showPopup, openModel, updateThisEntity } from "../../../context/StateManeger";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
 import notificationSoundSrc from "../../../assets/images/notificationSound.wav";
@@ -59,7 +59,7 @@ const ProfileActions = () => {
           showPopup({
             message: handleApiError(error),
             type: "ERROR_GENERAL",
-          })
+          }),
         );
       } finally {
         setLoadingNotifications(false);
@@ -111,9 +111,9 @@ const ProfileActions = () => {
           <div
             onClick={() => {
               if (!openNotification) {
-                dispatch(toggleThisEntity({ entity: "openNotification", value: true }));
+                dispatch(updateThisEntity({ entity: "openNotification", value: true }));
               } else {
-                dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
+                dispatch(updateThisEntity({ entity: "openNotification", value: false }));
               }
             }}
             className="flex items-center justify-center relative cursor-pointer h-full w-[14%] rounded-md bg-[#3a3e58b7]"

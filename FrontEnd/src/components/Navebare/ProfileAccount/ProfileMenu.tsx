@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { toggleThisEntity } from "../../../context/StateManeger";
+import { updateThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
@@ -27,7 +27,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   };
 
   const handleToggleLiveStats = () => {
-    dispatch(toggleThisEntity({ entity: "hiddenLiveStats" }));
+    dispatch(updateThisEntity({ entity: "hiddenLiveStats", value: !hiddenLiveStats }));
   };
 
   const handleClose = () => {

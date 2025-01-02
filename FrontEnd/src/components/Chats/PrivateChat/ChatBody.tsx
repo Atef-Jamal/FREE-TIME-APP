@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import UserImage from "../../Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
-import SendMessagePrivateChat from "./SendMessagePrivateChat"; // TypeCashedChat,
+import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import { TypeCashedConversations } from "../../../types/privateChatTypes";
 import { showPopup } from "../../../context/StateManeger";
 import { handleApiError } from "../../../utils/common";
@@ -24,7 +24,7 @@ const ChatBody = () => {
     status,
     error,
   } = useQuery({
-    queryKey: ["private-messages", activeConversation],
+    queryKey: ["conversation-messages", activeConversation],
     queryFn: activeConversation
       ? () => fetchPrivateChatMessages({ secondUserId: activeConversation })
       : skipToken,
@@ -32,18 +32,16 @@ const ChatBody = () => {
   });
 
   const markAsReaded = useCallback(async () => {
-    const isThereMessagesUnReaded = data.messages.some(
-      (msg) => !msg.isRead && msg.sender._id === activeConversation
-    );
-    if (data.messages.length === 0 || !isThereMessagesUnReaded) return;
+    const isUnReadMsgs = data.messages.some((msg) => !msg.isRead && msg.sender._id === activeConversation);
+    if (data.messages.length === 0 || !isUnReadMsgs) return;
+
     socket?.emit("conversation-readed", {
       reciever: activeConversation,
       sender: currentUser?._id,
     });
+
     try {
-      await makeRequest.patch(`api/conversations/${activeConversation}`, {
-        FOR_CONSISTENCY: "FOR_CONSISTENCY",
-      });
+      await makeRequest.get(`api/conversations/${activeConversation}/mark-as-read`);
       queryClient.setQueryData(
         ["conversations"],
         (previous: TypeCashedConversations): TypeCashedConversations => {
@@ -61,14 +59,14 @@ const ChatBody = () => {
               };
             }),
           };
-        }
+        },
       );
     } catch (error) {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     }
   }, [activeConversation, data.messages, queryClient, dispatch, socket, currentUser?._id]);
@@ -102,7 +100,7 @@ const ChatBody = () => {
 
   return (
     <div className="w-full flex flex-col items-center h-full gap-1 pb-2 bg-[#332342]">
-      <div className="flex items-center justify-center w-full gap-10 bg-[#1f1f2e9a] border border-gray-700 py-1">
+      <div className="flex items-center justify-center w-full gap-10 bg-[#1f1f2e9a] border-b border-x border-gray-700 py-1">
         <div className="flex items-center gap-3">
           <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
             <UserImage user={data.secondUser} />

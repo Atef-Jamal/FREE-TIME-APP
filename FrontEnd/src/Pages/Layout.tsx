@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { showPopup } from "../context/StateManeger";
+import { showPopup, updateThisEntity } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import Model from "../components/Others/Model";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -19,9 +19,9 @@ const Layout = () => {
   const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
+  const isMobile = useAppSelector((state) => state.stateManeger.isMobile);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 867);
   const timeOutRef = useRef(null);
 
   const dispatch = useAppDispatch();
@@ -49,15 +49,15 @@ const Layout = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 867) {
-        setIsMobile(true);
+        dispatch(updateThisEntity({ entity: "isMobile", value: true }));
       } else {
-        setIsMobile(false);
+        dispatch(updateThisEntity({ entity: "isMobile", value: false }));
       }
     };
     const debouncedResize = debounce(handleResize, 100, timeOutRef);
     window.addEventListener("resize", debouncedResize);
     return () => window.removeEventListener("resize", debouncedResize);
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-full">

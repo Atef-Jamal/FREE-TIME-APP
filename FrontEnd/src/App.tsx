@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider future={{ v7_startTransition: true }} router={router} />;
+      <RouterProvider future={{ v7_startTransition: true }} router={router} />
     </QueryClientProvider>
   );
 };

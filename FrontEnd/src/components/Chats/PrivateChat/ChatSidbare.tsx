@@ -1,5 +1,4 @@
 import People from "./People";
-import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { useAppSelector } from "../../../context/Hooks";
 import SearchBar from "../../Search/SearchBar";
 import PeopleSkeleton from "./PeopleSkeleton";
@@ -10,6 +9,7 @@ import { useListenToSocketEvents } from "../../../hooks";
 import { TypePrivateMessage } from "../../../types/privateChatTypes";
 import { debounce } from "../../../utils/common";
 import Spinner from "../../Others/Spinner";
+import { MdOutlineMenu } from "react-icons/md";
 
 interface TypeProps {
   toggleSidbare: () => void;
@@ -70,11 +70,10 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
     <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
       <span
         onClick={toggleSidbare}
-        className="hidden lg:flex items-center justify-center absolute top-0 -right-9 w-9 h-11 sm:h-8 bg-[#000000] rounded-sm"
+        className="hidden xl:flex items-center justify-center absolute top-[1px] -right-9 w-9 h-10 sm:h-8 bg-[#1f1425] rounded-sm"
       >
         {redPoint && <span className="absolute top-[2px] right-[2px] w-3 h-3 bg-red-600 rounded-full"></span>}
-        {!openSidbare && <MdKeyboardDoubleArrowRight className="text-2xl" />}
-        {openSidbare && <MdKeyboardDoubleArrowLeft className="text-2xl" />}
+        <MdOutlineMenu className="text-2xl" />
       </span>
       <div className="w-full h-12 sm:h-10 overflow-hidden">
         <SearchBar placeholder="search people..." onChange={() => {}} />

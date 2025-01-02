@@ -21,7 +21,7 @@ const LiveStats = memo(() => {
 
   const { data, status, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
     useInfiniteQuery({
-      queryKey: ["users"],
+      queryKey: ["live-stats-users"],
       queryFn: ({ pageParam }) => getUsers({ pageParam }),
       initialPageParam: 1,
       getNextPageParam: (lastpage, _, pageParam) => {
@@ -35,28 +35,32 @@ const LiveStats = memo(() => {
 
   useEffect(() => {
     if (!currentUser) return;
-    queryClient.setQueryData(["users"], (previous: TypeCashedUsers): TypeCashedUsers | undefined => {
-      if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            users: page.users.map((user) => {
-              if (user._id === currentUser._id) {
-                return currentUser;
-              }
-              return user;
-            }),
-          };
-        }),
-      };
-    });
+    queryClient.setQueryData(
+      ["live-stats-users"],
+      (previous: TypeCashedUsers): TypeCashedUsers | undefined => {
+        if (!previous) return;
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              users: page.users.map((user) => {
+                if (user._id === currentUser._id) {
+                  return currentUser;
+                }
+                return user;
+              }),
+            };
+          }),
+        };
+      },
+    );
+    queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
   }, [currentUser, queryClient]);
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
     }, 1000);
     return () => clearTimeout(timeOut);
   }, [onlineUsers, queryClient]);

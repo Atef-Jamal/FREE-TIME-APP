@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.get("/:seconduserid", protectedRoute, getConversationMessages);
-router.post("/:seconduserid", protectedRoute, createMessage);
+router.get("/:seconduserId", protectedRoute, getConversationMessages);
+router.post("/:seconduserId", protectedRoute, createMessage);
 router.get("/all-conversations/allusers", protectedRoute, getAllConversations);
 router.get("/all/all-unreaded-count", protectedRoute, getAllUnReadedMessages);
-router.patch("/:seconduserid", protectedRoute, markAsReaded);
+router.get("/:seconduserId/mark-as-read", protectedRoute, markAsReaded);
 
 export default router;

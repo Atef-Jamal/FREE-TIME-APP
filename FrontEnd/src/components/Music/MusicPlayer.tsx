@@ -9,7 +9,7 @@ import {
   handleCloseMusic,
   handlePauseMusic,
   handlePlayMusic,
-  toggleThisEntity,
+  updateThisEntity,
 } from "../../context/StateManeger";
 import { MdClose } from "react-icons/md";
 
@@ -108,7 +108,7 @@ const MusicPlayer = memo(() => {
         <span
           onClick={() => {
             dispatch(handleCloseMusic());
-            dispatch(toggleThisEntity({ entity: "openMusicModal", value: false }));
+            dispatch(updateThisEntity({ entity: "openMusicModal", value: false }));
           }}
           className="w-full h-[40%] flex items-center justify-center bg-[#c96d6d] "
         >

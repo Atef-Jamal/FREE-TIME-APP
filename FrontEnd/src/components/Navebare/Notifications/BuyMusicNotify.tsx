@@ -1,7 +1,7 @@
 import { formateDate } from "../../../utils/common";
 import { FcMusic } from "react-icons/fc";
 import { Link } from "react-router-dom";
-import { toggleThisEntity } from "../../../context/StateManeger";
+import { updateThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch } from "../../../context/Hooks";
 import { TypeMusicNotify } from "../../../types/notificationTypes";
 
@@ -25,7 +25,7 @@ const BuyMusicNotify = ({ musicTitle, createdAt, price, musicId }: PropType) => 
         <Link
           to={`/musics?to=${musicId}`}
           onClick={() => {
-            dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
+            dispatch(updateThisEntity({ entity: "openNotification", value: false }));
           }}
           className="text-sm text-[#696cf3] mx-1 underline sm:text-xs"
         >
@@ -37,7 +37,7 @@ const BuyMusicNotify = ({ musicTitle, createdAt, price, musicId }: PropType) => 
       <Link
         to={`/myprofile?to=${musicId}`}
         onClick={() => {
-          dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
+          dispatch(updateThisEntity({ entity: "openNotification", value: false }));
         }}
         className="text-sm bg-[#414a77ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
       >

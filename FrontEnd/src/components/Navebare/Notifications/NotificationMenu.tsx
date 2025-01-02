@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { MdOutlineClose, MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
+import { showPopup, updateThisEntity } from "../../../context/StateManeger";
 import ReferrerNotify from "./ReferrerNotify";
 import BuyFrameNotify from "./BuyFrameNotify";
 import QuizTaskNotify from "./QuizTaskNotify";
@@ -43,7 +43,7 @@ const NotificationMenu = ({ notifications, setNotifications, loadingNotification
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     }
   }, [dispatch, setNotifications]);
@@ -58,7 +58,7 @@ const NotificationMenu = ({ notifications, setNotifications, loadingNotification
   return (
     <>
       <div
-        onClick={() => dispatch(toggleThisEntity({ entity: "openNotification", value: false }))}
+        onClick={() => dispatch(updateThisEntity({ entity: "openNotification", value: false }))}
         className="fixed top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#010107a1] "
       ></div>
 
@@ -68,7 +68,7 @@ const NotificationMenu = ({ notifications, setNotifications, loadingNotification
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
           </h1>
           <MdOutlineClose
-            onClick={() => dispatch(toggleThisEntity({ entity: "openNotification", value: false }))}
+            onClick={() => dispatch(updateThisEntity({ entity: "openNotification", value: false }))}
             className="text-2xl"
           />
         </div>

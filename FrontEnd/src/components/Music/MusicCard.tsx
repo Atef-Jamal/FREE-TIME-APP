@@ -13,7 +13,7 @@ import {
   handlePlayMusic,
   setCurrentUser,
   showPopup,
-  toggleThisEntity,
+  updateThisEntity,
 } from "../../context/StateManeger";
 
 interface TypeProps {
@@ -35,7 +35,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
     onSuccess: (data) => {
@@ -45,13 +45,13 @@ const MusicCard = ({ songDetails }: TypeProps) => {
           ...currentUser,
           points: data.points,
           mySongs: [...currentUser.mySongs, data.musicId],
-        })
+        }),
       );
       dispatch(
         showPopup({
           type: "SUCESS",
           message: "successfully purshased",
-        })
+        }),
       );
     },
   });
@@ -61,7 +61,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
         showPopup({
           message: "Log In First",
           type: "ERROR_LOCK",
-        })
+        }),
       );
       return;
     }
@@ -72,7 +72,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
 
   const handleAdd = () => {
     if (!openMusicModal) {
-      dispatch(toggleThisEntity({ entity: "openMusicModal", value: true }));
+      dispatch(updateThisEntity({ entity: "openMusicModal", value: true }));
     }
     dispatch(
       handleAddMusic({
@@ -81,7 +81,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
         title: songDetails.title,
         cover: songDetails.album.cover,
         artist: songDetails.artist.name,
-      })
+      }),
     );
   };
 

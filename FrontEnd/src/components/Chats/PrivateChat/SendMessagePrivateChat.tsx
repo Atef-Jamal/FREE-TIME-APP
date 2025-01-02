@@ -36,7 +36,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
   const mutation = useMutation({
     mutationFn: sendPrivateChatMessage,
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["private-messages", id] });
+      await queryClient.cancelQueries({ queryKey: ["conversation-messages", id] });
       const uniqeIdForRollback = uuId();
       const optimisticMsg = {
         _id: uniqeIdForRollback,
@@ -48,7 +48,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
         isSended: "PENDING",
       };
 
-      queryClient.setQueryData(["private-messages", id], (previous: TypeCashedChat) => {
+      queryClient.setQueryData(["conversation-messages", id], (previous: TypeCashedChat) => {
         return {
           ...previous,
           messages: [...previous.messages, optimisticMsg],
@@ -60,7 +60,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
       return { uniqeIdForRollback };
     },
     onSuccess: (data, _, context) => {
-      queryClient.setQueryData(["private-messages", id], (old: TypeCashedChat) => {
+      queryClient.setQueryData(["conversation-messages", id], (old: TypeCashedChat) => {
         if (old) {
           return {
             ...old,
@@ -91,13 +91,13 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
               };
             }),
           };
-        }
+        },
       );
       socket?.emit("private-message", { to: id, data: data });
     },
     onError: (error, _, context) => {
       if (context)
-        queryClient.setQueryData(["private-messages", id], (old: TypeCashedChat) => {
+        queryClient.setQueryData(["conversation-messages", id], (old: TypeCashedChat) => {
           if (old) {
             return {
               ...old,
@@ -115,7 +115,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
   });
@@ -127,7 +127,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
         showPopup({
           type: "ERROR_GENERAL",
           message: "Enter a Message",
-        })
+        }),
       );
       return;
     }

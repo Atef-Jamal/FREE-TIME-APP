@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FcPaid } from "react-icons/fc";
-import { toggleThisEntity } from "../../../context/StateManeger";
+import { updateThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch } from "../../../context/Hooks";
 import { TypeBuyFrameNotify } from "../../../types/notificationTypes";
@@ -26,7 +26,7 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
         <Link
           to={`/marketplace?to=${frame._id}`}
           onClick={() => {
-            dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
+            dispatch(updateThisEntity({ entity: "openNotification", value: false }));
           }}
           className="text-sm text-[#696cf3] mx-1 underline sm:text-xs"
         >
@@ -39,7 +39,7 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
       <Link
         to={`/myprofile?to=${frame._id}`}
         onClick={() => {
-          dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
+          dispatch(updateThisEntity({ entity: "openNotification", value: false }));
         }}
         className="text-sm bg-[#3d4675ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
       >

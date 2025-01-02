@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { GoMention } from "react-icons/go";
-import { toggleThisEntity } from "../../../context/StateManeger";
+import { updateThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { TypeMentionNotify } from "../../../types/notificationTypes";
@@ -9,6 +9,7 @@ type PropType = Omit<TypeMentionNotify, "_id" | "type" | "isRead">;
 
 const MentionNotify = ({ mentionedUser, messageLocation, createdAt }: PropType) => {
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
+  const isMobile = useAppSelector((state) => state.stateManeger.isMobile);
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -32,14 +33,14 @@ const MentionNotify = ({ mentionedUser, messageLocation, createdAt }: PropType) 
 
       <Link
         to={
-          window.innerWidth > 867
-            ? `${location.pathname === "/chat" ? "/" : location.pathname}?messageId=${messageLocation}`
-            : `/chat?messageId=${messageLocation}`
+          isMobile
+            ? `/chat?messageId=${messageLocation}`
+            : `${location.pathname}?messageId=${messageLocation}`
         }
         onClick={() => {
-          dispatch(toggleThisEntity({ entity: "openNotification", value: false }));
-          if (!isChatOpen && window.innerWidth > 867) {
-            dispatch(toggleThisEntity({ entity: "isChatOpen" }));
+          dispatch(updateThisEntity({ entity: "openNotification", value: false }));
+          if (!isChatOpen && !isMobile) {
+            dispatch(updateThisEntity({ entity: "isChatOpen", value: true }));
           }
         }}
         className="text-sm bg-[#364072ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"

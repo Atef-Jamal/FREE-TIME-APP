@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setOnlineUsers, showPopup, toggleThisEntity } from "../../context/StateManeger";
+import { setOnlineUsers, showPopup, updateThisEntity } from "../../context/StateManeger";
 import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks";
 import { User } from "../../types/userTypes";
@@ -35,7 +35,7 @@ const HiddenComponent = () => {
   });
 
   useQuery({
-    queryKey: ["private-messages", activeConversation],
+    queryKey: ["conversation-messages", activeConversation],
     queryFn: activeConversation
       ? () => fetchPrivateChatMessages({ secondUserId: activeConversation })
       : skipToken,
@@ -79,9 +79,9 @@ const HiddenComponent = () => {
   };
 
   const handleUserUpdated = (updatedUser: User) => {
-    console.log("i am updated");
     queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
-    queryClient.invalidateQueries({ queryKey: ["users"] });
+    queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
+    queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
     queryClient.setQueryData(
       ["conversations"],
       (previous: TypeCashedConversations): TypeCashedConversations => {
@@ -102,33 +102,21 @@ const HiddenComponent = () => {
       },
     );
     queryClient.setQueryData(
-      ["private-messages", updatedUser._id],
-      (old: TypeCashedChat): TypeCashedChat | undefined => {
-        if (!old) return;
-        return { ...old, secondUser: updatedUser };
+      ["conversation-messages", updatedUser._id],
+      (previous: TypeCashedChat): TypeCashedChat | undefined => {
+        if (!previous) return;
+        return { ...previous, secondUser: updatedUser };
       },
     );
   };
 
-  // const handleAddNewUser = (newUser: User) => {
-  //   queryClient.setQueryData(["conversations"], (old: TypeConversation[]) => {
-  //     return [
-  //       ...old,
-  //       { secondParty: newUser, lastMessage: null, unreadedCount: 0 },
-  //     ];
-  //   });
-  //   queryClient.setQueryData(["users"], (previous: User[]) => {
-  //     return [...previous, newUser];
-  //   });
-  // };
-
   const handleConversationReaded = useCallback(
     (data: TypeConversationSocketData) => {
-      queryClient.setQueryData(["private-messages", data.sender], (old: TypeCashedChat) => {
-        if (old) {
+      queryClient.setQueryData(["conversation-messages", data.sender], (previous: TypeCashedChat) => {
+        if (previous) {
           return {
-            ...old,
-            messages: old.messages.map((msg) => ({
+            ...previous,
+            messages: previous.messages.map((msg) => ({
               ...msg,
               isRead: true,
             })),
@@ -144,18 +132,11 @@ const HiddenComponent = () => {
     handlers: [handleUpdateOnlineUsers],
   });
   useListenToSocketEvents({
-    eventsToListen: [
-      "online-users",
-      "public-message",
-      "user-updated",
-      // "new-user-joined",
-      "conversation-readed",
-    ],
+    eventsToListen: ["online-users", "public-message", "user-updated", "conversation-readed"],
     handlers: [
       handleUpdateOnlineUsers,
       handleRecieveNewPublicChatMessage,
       handleUserUpdated,
-      // handleAddNewUser,
       handleConversationReaded,
     ],
   });
@@ -186,11 +167,13 @@ const HiddenComponent = () => {
       }
     }
   }, [redirectQuery, searchParams, setSearchParams, dispatch]);
+
   useEffect(() => {
     if (refQuery && !currentUser?._id && isCurrentUserReqFinished) {
-      dispatch(toggleThisEntity({ entity: "openRegisterForm", value: true }));
+      dispatch(updateThisEntity({ entity: "openRegisterForm", value: true }));
     }
   }, [dispatch, refQuery, currentUser?._id, isCurrentUserReqFinished]);
+
   return <></>;
 };
 

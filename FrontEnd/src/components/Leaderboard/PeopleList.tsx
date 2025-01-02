@@ -1,20 +1,18 @@
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
-import { useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getLeaderboardUsers } from "../../utils";
 import Skeleton from "../Others/Skeleton";
 import { empty } from "../../assets";
+import { AxiosError } from "axios";
+import { User } from "../../types/userTypes";
 
-const PeopleList = () => {
-  const [pageParam, setPageParam] = useState(1);
+interface TypeProps {
+  data: { users: User[]; allDataLength: number } | undefined;
+  status: "error" | "success" | "pending";
+  error: AxiosError<{ error: string }, any> | null;
+  pageParam: number;
+  setPageParam: React.Dispatch<React.SetStateAction<number>>;
+}
 
-  const { data, status, error } = useQuery({
-    queryKey: ["users-leaderboard", pageParam],
-    queryFn: () => getLeaderboardUsers({ pageParam }),
-    placeholderData: keepPreviousData,
-    staleTime: 60 * 60 * 1000,
-  });
-
+const PeopleList = ({ status, data, error, pageParam, setPageParam }: TypeProps) => {
   return (
     <div>
       <div className=" w-full flex items-center justify-between bg-[#3b2f5cc4] rounded-[4px] ">
@@ -62,7 +60,7 @@ const PeopleList = () => {
           </span>
         </div>
       ))}
-      {status === "success" && data.users.length === 0 && (
+      {data && data.users.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-y-3 my-6">
           <img src={empty} alt="" className="w-12 h-12" />
           <p className="text-gray-500 font-bold">No More Peoples</p>

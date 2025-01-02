@@ -25,7 +25,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
     const newArr = conversations.map((conv) => {
       let count = 0;
       conv.messages.forEach((msg) => {
-        if (msg.sender !== currentUserId && msg.isRead === false) {
+        if (msg.sender.toString() !== currentUserId.toString() && msg.isRead === false) {
           count = count + 1;
         }
       });
@@ -73,13 +73,13 @@ export const getAllConversations = async (req: Request, res: Response) => {
 
 export const getConversationMessages = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { seconduserid } = req.params;
+  const { seconduserId } = req.params;
   try {
     const getConversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, seconduserid] },
+      participants: { $all: [currentUserId, seconduserId] },
     });
 
-    const getSecondUser = await User.findById(seconduserid).select("-password");
+    const getSecondUser = await User.findById(seconduserId).select("-password");
 
     if (!getSecondUser) {
       return res.status(404).json({ error: "User Not Found" });
@@ -97,16 +97,16 @@ export const getConversationMessages = async (req: Request, res: Response) => {
 
 export const createMessage = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { seconduserid } = req.params;
+  const { seconduserId } = req.params;
   const { messageText } = req.body;
   try {
     let getConversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, seconduserid] },
+      participants: { $all: [currentUserId, seconduserId] },
     });
 
     if (!getConversation) {
       getConversation = new Conversation({
-        participants: [currentUserId, seconduserid],
+        participants: [currentUserId, seconduserId],
       });
     }
 
@@ -142,11 +142,7 @@ export const getAllUnReadedMessages = async (req: Request, res: Response) => {
 
     conversations.forEach((conversation) => {
       conversation.messages.forEach((message) => {
-        if (
-          message.sender &&
-          message.sender.toString() !== currentUserId.toString() &&
-          message.isRead === false
-        ) {
+        if (message.sender.toString() !== currentUserId.toString() && message.isRead === false) {
           usersIds.push(message.sender.toString());
         }
       });
@@ -160,10 +156,10 @@ export const getAllUnReadedMessages = async (req: Request, res: Response) => {
 
 export const markAsReaded = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { seconduserid } = req.params;
+  const { seconduserId } = req.params;
   try {
     const conversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, seconduserid] },
+      participants: { $all: [currentUserId, seconduserId] },
     });
 
     if (!conversation) {
@@ -171,7 +167,7 @@ export const markAsReaded = async (req: Request, res: Response) => {
     }
 
     conversation.messages.forEach((item) => {
-      if (item.sender?.toString() === seconduserid && item.isRead === false) {
+      if (item.sender?.toString() === seconduserId && item.isRead === false) {
         return (item.isRead = true);
       }
     });

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
-import { showPopup, toggleThisEntity } from "../../../context/StateManeger";
+import { showPopup, updateThisEntity } from "../../../context/StateManeger";
 import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
 import Input from "./Input";
 import LeftSide from "./LeftSide";
@@ -63,7 +63,7 @@ const RegisterationForm = () => {
         showPopup({
           message: errorMessage,
           type: "ERROR_GENERAL",
-        })
+        }),
       );
       setSubmiting(false);
       return;
@@ -99,7 +99,7 @@ const RegisterationForm = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     } finally {
       setSubmiting(false);
@@ -115,7 +115,7 @@ const RegisterationForm = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     }
   };
@@ -124,7 +124,7 @@ const RegisterationForm = () => {
     <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-[5] ">
       <div
         onClick={() => {
-          dispatch(toggleThisEntity({ entity: "openRegisterForm", value: false }));
+          dispatch(updateThisEntity({ entity: "openRegisterForm", value: false }));
         }}
         className="fixed top-0 left-0 w-full h-full bg-[#000000b0] sm:hidden "
       ></div>
@@ -133,7 +133,7 @@ const RegisterationForm = () => {
           <span className="text-white text-2xl font-bold sm:hidden">{t("Welcome")}</span>
           <div className="flex gap-5">
             <button
-              onClick={() => dispatch(toggleThisEntity({ entity: "isSignInMode", value: true }))}
+              onClick={() => dispatch(updateThisEntity({ entity: "isSignInMode", value: true }))}
               className={`${
                 isSignInMode ? " border-b-[#fff]  text-[#f8dcdc] " : " text-gray-600"
               } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
@@ -143,7 +143,7 @@ const RegisterationForm = () => {
 
             <button
               onClick={() => {
-                dispatch(toggleThisEntity({ entity: "isSignInMode", value: false }));
+                dispatch(updateThisEntity({ entity: "isSignInMode", value: false }));
               }}
               className={`${
                 !isSignInMode ? "pacity-25 border-b-[#fff] text-[#f8dcdc] " : "text-gray-600"
@@ -154,7 +154,7 @@ const RegisterationForm = () => {
           </div>
           <button
             onClick={() => {
-              dispatch(toggleThisEntity({ entity: "openRegisterForm", value: false }));
+              dispatch(updateThisEntity({ entity: "openRegisterForm", value: false }));
             }}
             className="w-8 h-6 flex items-center justify-center font-bold bg-[#43a153] rounded-md"
           >

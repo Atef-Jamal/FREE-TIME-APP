@@ -1,13 +1,13 @@
 import { BiMenu } from "react-icons/bi";
-import { toggleThisEntity } from "../../context/StateManeger";
+import { updateThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { useListenToSocketEvents } from "../../hooks";
 import { TypeCashedConversations, TypePrivateMessage } from "../../types/privateChatTypes";
 import { showPopup, updateSidebarUnReadedMsgCount } from "../../context/StateManeger";
-import { debounce, handleApiError } from "../../utils/common";
+import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import { RiCloseFill } from "react-icons/ri";
@@ -24,8 +24,7 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
   const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
-  const timeOutRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 867);
+  const isMobile = useAppSelector((state) => state.stateManeger.isMobile);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const location = useLocation();
@@ -33,7 +32,8 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
 
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
 
-  const handleCollaps = () => dispatch(toggleThisEntity({ entity: "resizeSidebare" }));
+  const handleCollaps = () =>
+    dispatch(updateThisEntity({ entity: "resizeSidebare", value: !resizeSidebare }));
 
   const handleNewPrivateMessage = useCallback(
     (data: TypePrivateMessage) => {
@@ -42,7 +42,7 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
           updateSidebarUnReadedMsgCount({
             type: "ADD-ONE",
             userId: data.sender._id,
-          })
+          }),
         );
         const messageSound = new Audio();
         messageSound.src = messageSoundSrc;
@@ -70,14 +70,14 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
               };
             }),
           };
-        }
+        },
       );
-      queryClient.setQueryData(["private-messages", data.sender._id], (old: TypeCashedChat) => {
-        if (!old) return;
-        return { ...old, messages: [...old.messages, data] };
+      queryClient.setQueryData(["conversation-messages", data.sender._id], (previous: TypeCashedChat) => {
+        if (!previous) return;
+        return { ...previous, messages: [...previous.messages, data] };
       });
     },
-    [queryClient, activeConversation, dispatch, isPrivateChatPageOpen]
+    [queryClient, activeConversation, dispatch, isPrivateChatPageOpen],
   );
 
   useListenToSocketEvents({
@@ -90,7 +90,7 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
       dispatch(
         updateSidebarUnReadedMsgCount({
           type: "REMOVE-ALL",
-        })
+        }),
       );
     }
   }, [allUnReadedMesseges, dispatch, isPrivateChatPageOpen]);
@@ -103,14 +103,14 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
           updateSidebarUnReadedMsgCount({
             type: "ADD-ALL",
             userId: response.data,
-          })
+          }),
         );
       } catch (error) {
         dispatch(
           showPopup({
             message: handleApiError(error),
             type: "ERROR_GENERAL",
-          })
+          }),
         );
       }
     };
@@ -119,19 +119,6 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
       getAllUnReadedMsgs();
     }
   }, [currentUser?._id, dispatch]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 867) {
-        setIsMobile(true);
-      } else {
-        setIsMobile(false);
-      }
-    };
-    const debounced = debounce(handleResize, 100, timeOutRef);
-    window.addEventListener("resize", debounced);
-    return () => window.removeEventListener("resize", debounced);
-  }, []);
 
   return (
     <div className="sticky top-[85px] sm:top-[55px] overflow-hidden">

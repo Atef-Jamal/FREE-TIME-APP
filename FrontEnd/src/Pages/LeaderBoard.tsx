@@ -3,15 +3,21 @@ import { MdLiveHelp } from "react-icons/md";
 import UsersWinnerCard from "../components/Leaderboard/UsersWinnerCard";
 import PeopleList from "../components/Leaderboard/PeopleList";
 import { useScrollToElement } from "../hooks";
-import { useQueryClient } from "@tanstack/react-query";
-import { User } from "../types/userTypes";
-
-type TypeCashedData = { users: User[]; allDataLength: number } | undefined;
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getLeaderboardUsers } from "../utils";
+import { useState } from "react";
 
 const LeaderBoard = () => {
-  const queryClinet = useQueryClient();
-  const getTopThreeUsers: TypeCashedData = queryClinet.getQueryData(["users-leaderboard", 1]);
-  const topThreeUsers = getTopThreeUsers?.users.slice(0, 3);
+  const [pageParam, setPageParam] = useState(1);
+
+  const { data, status, error } = useQuery({
+    queryKey: ["leaderboard-users", pageParam],
+    queryFn: () => getLeaderboardUsers({ pageParam }),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const topThreeUsers = data?.users.slice(0, 3);
 
   useScrollToElement({});
 
@@ -53,7 +59,13 @@ const LeaderBoard = () => {
           </div>
         </div>
         <div className="flex flex-col sm:w-[98%] w-[90%] max-w-[1400px] mx-auto">
-          <PeopleList />
+          <PeopleList
+            data={data}
+            status={status}
+            error={error}
+            pageParam={pageParam}
+            setPageParam={setPageParam}
+          />
         </div>
       </div>
     </div>

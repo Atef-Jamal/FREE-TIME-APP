@@ -15,6 +15,7 @@ const initialState: TypeInitialState = {
   openRegisterForm: false,
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")) || false,
   isSignInMode: false,
+  isMobile: window.innerWidth <= 867,
   openSidebarMobile: false,
   resizeSidebare: window.innerWidth < 1300 ? true : false,
   hiddenLiveStats: false,
@@ -38,13 +39,14 @@ export interface TypeTogglActionPayload {
     | "openRegisterForm"
     | "openNotification"
     | "isSignInMode"
+    | "isMobile"
     | "hiddenLiveStats"
     | "isChatOpen"
     | "openSidebarMobile"
     | "resizeSidebare"
     | "openMusicModal"
     | "musicIsPlaying";
-  value?: boolean;
+  value: boolean;
 }
 
 interface TypeSidbareUnreadedMsgs {
@@ -56,9 +58,9 @@ const StateManegerSlice = createSlice({
   name: "stateManeger",
   initialState,
   reducers: {
-    toggleThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
+    updateThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
       const { entity, value } = action.payload;
-      state[entity] = value || !state[entity];
+      state[entity] = value;
     },
     setCurrentUser(state, action: PayloadAction<User>) {
       state.currentUser = action.payload;
@@ -156,7 +158,7 @@ export const {
   setActiveConversation,
   openModel,
   resetModel,
-  toggleThisEntity,
+  updateThisEntity,
   setPublicMsgRedPoint,
 } = StateManegerSlice.actions;
 
