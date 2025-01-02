@@ -21,9 +21,7 @@ export const applyCoupon = async (req: Request, res: Response) => {
     const user = await User.findById(currentUserId);
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "an Error Occurred, User must be Log In" });
+      return res.status(404).json({ error: "an Error Occurred, User must be Log In" });
     }
 
     if (code.trim() === "") {
@@ -32,8 +30,7 @@ export const applyCoupon = async (req: Request, res: Response) => {
 
     if (user.coupons.includes(code.toString())) {
       return res.status(404).json({
-        error:
-          "Already Consummed, stay up to date for upcoming New Bounus code",
+        error: "Already Consummed, stay up to date for upcoming New Bounus code",
       });
     }
 

@@ -13,9 +13,7 @@ export const searchController = async (req: Request, res: Response) => {
     const regex = new RegExp(searchTerm, "gi");
 
     const getFeatures = features
-      .filter((item) =>
-        item.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-      )
+      .filter((item) => item.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
       .slice(0, 12);
 
     const getUsers = await User.find({

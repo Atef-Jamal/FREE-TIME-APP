@@ -3,9 +3,9 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export const onLineUsers: { [key: string]: string } = {};
 
-const socketOperations = function (
-  io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
-) {
+type TypeIO = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+
+const socketOperations = function (io: TypeIO) {
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId as string;
     if (userId && userId !== "undefined") {

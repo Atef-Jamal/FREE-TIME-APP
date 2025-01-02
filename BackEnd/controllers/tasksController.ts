@@ -12,10 +12,8 @@ type TypeFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
 type TypeFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
 
 export const getAllTasks = async (req: Request, res: Response) => {
-  const filterByPopularity =
-    (req.query.filterByPopularity as TypeFilterByPopularity) || "ALL";
-  const filterByDevice =
-    (req.query.filterByDevice as TypeFilterByDevice) || "ALL";
+  const filterByPopularity = (req.query.filterByPopularity as TypeFilterByPopularity) || "ALL";
+  const filterByDevice = (req.query.filterByDevice as TypeFilterByDevice) || "ALL";
 
   const pageParam = parseInt(req.query.pageParam as string) || 1;
   const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 20;
@@ -61,15 +59,11 @@ export const getTaskDetails = async (req: Request, res: Response) => {
     }
 
     if (task.isAvailable === "UNAVAILABLE") {
-      return res
-        .status(404)
-        .json({ error: "This app is Not Available, try another app" });
+      return res.status(404).json({ error: "This app is Not Available, try another app" });
     }
     return res.status(200).json(task);
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't Load task, an Error occurred" });
+    return res.status(404).json({ error: "can't Load task, an Error occurred" });
   }
 };
 
@@ -90,9 +84,7 @@ export const publicTaskDetails = async (req: Request, res: Response) => {
 
     return res.status(200).json(task);
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't Load task, an Error occurred" });
+    return res.status(404).json({ error: "can't Load task, an Error occurred" });
   }
 };
 
@@ -109,19 +101,13 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     }
 
     if (task.isAvailable === "UNAVAILABLE") {
-      return res
-        .status(404)
-        .json({ error: "sorry, this app is not available" });
+      return res.status(404).json({ error: "sorry, this app is not available" });
     }
 
-    const isCompletedBefore =
-      task.completedBy.includes(currentUserId) ||
-      completedTasks.includes(quizappId);
+    const isCompletedBefore = task.completedBy.includes(currentUserId) || completedTasks.includes(quizappId);
 
     if (isCompletedBefore) {
-      return res
-        .status(404)
-        .json({ error: "sorry, offer already completed, try another" });
+      return res.status(404).json({ error: "sorry, offer already completed, try another" });
     }
 
     let corrects = 0;
@@ -145,11 +131,7 @@ export const completingQuizApp = async (req: Request, res: Response) => {
 
     task.completedBy.push(currentUserId);
     const savedTask = await task.save();
-    await User.findByIdAndUpdate(
-      currentUserId,
-      { $push: { completedTasks: quizappId } },
-      { new: true }
-    );
+    await User.findByIdAndUpdate(currentUserId, { $push: { completedTasks: quizappId } }, { new: true });
     const createNotification = new Notification({
       belongsTo: currentUserId,
       isCollected: false,
@@ -165,19 +147,12 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     const saveMessage = await createPublicMessage.save();
     const populatedMessage = await saveMessage.populate("sender", "-password");
 
-    io.to(onLineUsers[currentUserId]).emit(
-      "new-notification",
-      savedNotification
-    );
+    io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);
     io.emit("public-message", populatedMessage);
 
-    return res
-      .status(200)
-      .json({ corrects, wrongs, message: "successfully completed" });
+    return res.status(200).json({ corrects, wrongs, message: "successfully completed" });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't complete task an error occurred" });
+    return res.status(404).json({ error: "can't complete task an error occurred" });
   }
 };
 
@@ -191,9 +166,7 @@ export const completingGuessCard = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Game Not Found" });
     }
     if (task.isAvailable === "UNAVAILABLE") {
-      return res
-        .status(404)
-        .json({ error: "sorry, this app is not available" });
+      return res.status(404).json({ error: "sorry, this app is not available" });
     }
 
     const user = await User.findById(currentUserId);
@@ -202,14 +175,10 @@ export const completingGuessCard = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User Not Found" });
     }
 
-    const isCompleted =
-      user.completedTasks.includes(task._id) ||
-      task.completedBy.includes(user._id);
+    const isCompleted = user.completedTasks.includes(task._id) || task.completedBy.includes(user._id);
 
     if (isCompleted) {
-      return res
-        .status(404)
-        .json({ error: "Game is already completed, try another" });
+      return res.status(404).json({ error: "Game is already completed, try another" });
     }
 
     task.completedBy.push(user._id);
@@ -228,14 +197,8 @@ export const completingGuessCard = async (req: Request, res: Response) => {
       typeOfTask: "TASK",
     });
     const savePublicMessage = await createPublicMessage.save();
-    const populatedPublicMessage = await savePublicMessage.populate(
-      "sender",
-      "-password"
-    );
-    io.to(onLineUsers[user._id.toString()]).emit(
-      "new-notification",
-      savedNotification
-    );
+    const populatedPublicMessage = await savePublicMessage.populate("sender", "-password");
+    io.to(onLineUsers[user._id.toString()]).emit("new-notification", savedNotification);
 
     io.emit("public-message", populatedPublicMessage);
     await user.save();

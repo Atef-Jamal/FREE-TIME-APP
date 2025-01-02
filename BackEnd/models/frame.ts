@@ -24,7 +24,7 @@ const framesSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Frame = mongoose.model("Frame", framesSchema);

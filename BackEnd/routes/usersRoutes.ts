@@ -15,11 +15,7 @@ const router = express.Router();
 router.get("/", allUsers);
 router.get("/onlines", protectedRoute, getOnlineUsers);
 router.get("/users-leaderboard", getLeaderboardUsers);
-router.get(
-  "/select-myphoto-frame/:frameId",
-  protectedRoute,
-  changeUserPhotoFrame
-);
+router.get("/select-myphoto-frame/:frameId", protectedRoute, changeUserPhotoFrame);
 router.get("/unselect-myphoto-frame", protectedRoute, unselectUserPhotoFrame);
 router.get("/:userId", getUser);
 router.get("/who-visit-me/me", protectedRoute, getWhoVisitMe);

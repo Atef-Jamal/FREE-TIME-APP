@@ -28,9 +28,7 @@ export const collectReward = async (req: Request, res: Response) => {
     const today = new Date();
 
     if (day.availableAt > today) {
-      return res
-        .status(404)
-        .json({ error: "can not collect future day reward" });
+      return res.status(404).json({ error: "can not collect future day reward" });
     }
 
     if (targetDay > 7 || targetDay === 0) {
@@ -46,13 +44,10 @@ export const collectReward = async (req: Request, res: Response) => {
       }
     });
 
-    const isAllRewardOfWeekCollected = user.dailyReward.every(
-      (day) => day.isCollected === true
-    );
+    const isAllRewardOfWeekCollected = user.dailyReward.every((day) => day.isCollected === true);
 
     if (isAllRewardOfWeekCollected) {
-      const lastDate =
-        user.dailyReward[user.dailyReward.length - 1].availableAt;
+      const lastDate = user.dailyReward[user.dailyReward.length - 1].availableAt;
 
       const newWeekRewards = generateNewWeekRewards(lastDate);
 

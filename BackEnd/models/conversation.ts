@@ -10,7 +10,7 @@ const messageSchema = new mongoose.Schema(
     message: { type: String, required: true },
     isRead: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const conversationSchema = new mongoose.Schema(
@@ -31,7 +31,7 @@ const conversationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Conversation = mongoose.model("Conversation", conversationSchema);

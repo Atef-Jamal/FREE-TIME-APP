@@ -9,8 +9,7 @@ export const features = [
   {
     _id: "2",
     title: "My Uniqe Refferal link",
-    description:
-      "you can invite your friend to join to our website and get rewards",
+    description: "you can invite your friend to join to our website and get rewards",
     image: "",
     link: "/myprofile?to=my-referral-link",
   },
@@ -24,16 +23,14 @@ export const features = [
   {
     _id: "4",
     title: "Daily Streak Rewards",
-    description:
-      "Check your Rewards page and collect your daily fantastic reward every day",
+    description: "Check your Rewards page and collect your daily fantastic reward every day",
     image: "",
     link: "/rewards?to=daily-reward",
   },
   {
     _id: "5",
     title: "Private Chat and Messaging",
-    description:
-      "Chating with any people of our community with all privacy and Security",
+    description: "Chating with any people of our community with all privacy and Security",
     image: "",
     link: "/privatechat",
   },

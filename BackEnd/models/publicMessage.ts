@@ -55,7 +55,7 @@ const PublicMessageSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const PublicMessage = mongoose.model("PublicMessage", PublicMessageSchema);

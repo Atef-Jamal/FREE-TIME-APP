@@ -20,9 +20,7 @@ export const register = async (req: Request, res: Response) => {
     const userExisted = await User.findOne({ email });
 
     if (userExisted) {
-      return res
-        .status(404)
-        .json({ error: "User already existed, Try Log in" });
+      return res.status(404).json({ error: "User already existed, Try Log in" });
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -42,15 +40,10 @@ export const register = async (req: Request, res: Response) => {
     const savedUser = await newUser.save();
 
     if (!process.env.JWT_SECRET_KEY) {
-      return res
-        .status(404)
-        .json({ error: "an Error occurred, try again later" });
+      return res.status(404).json({ error: "an Error occurred, try again later" });
     }
 
-    const token = jwt.sign(
-      { userId: savedUser._id },
-      process.env.JWT_SECRET_KEY
-    );
+    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET_KEY);
 
     if (referrerUser) {
       const existedUser = await User.findById(referrerUser);
@@ -63,10 +56,7 @@ export const register = async (req: Request, res: Response) => {
           prize: 100,
         });
         const saveNotification = await createNotification.save();
-        const savedNotification = await saveNotification.populate(
-          "referredUser",
-          "-password"
-        );
+        const savedNotification = await saveNotification.populate("referredUser", "-password");
         const createPublicMessage = new PublicMessage({
           type: "FREETIME",
           typeOfTask: "REFERRER",
@@ -79,18 +69,13 @@ export const register = async (req: Request, res: Response) => {
           { path: "newUserReferred", select: "-password" },
         ]);
         io.emit("public-message", savedMessage);
-        io.to(onLineUsers[referrerUser.toString()]).emit(
-          "new-notification",
-          savedNotification
-        );
+        io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", savedNotification);
       }
     }
     io.emit("new-user-joined", savedUser);
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "an Error occurred, Try again Later" });
+    return res.status(404).json({ error: "an Error occurred, Try again Later" });
   }
 };
 
@@ -110,18 +95,14 @@ export const login = async (req: Request, res: Response) => {
     }
 
     if (!process.env.JWT_SECRET_KEY) {
-      return res
-        .status(404)
-        .json({ error: "an Error occurred, Try again later" });
+      return res.status(404).json({ error: "an Error occurred, Try again later" });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
 
     return res.status(200).json({ ...user, token });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "an Error occurred, Try again later" });
+    return res.status(404).json({ error: "an Error occurred, Try again later" });
   }
 };
 
@@ -141,10 +122,7 @@ export const signInWithGoogle = async (req: Request, res: Response) => {
         profilePicture,
       });
       const savedUser = await newUser.save();
-      const token = jwt.sign(
-        { userId: savedUser._id },
-        process.env.JWT_SECRET_KEY!
-      );
+      const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET_KEY!);
 
       return res.status(200).json({ ...savedUser, token });
     }
@@ -155,9 +133,7 @@ export const signInWithGoogle = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   try {
-    const currentUser = await User.findById(req.currentUser._id)
-      .select("-password")
-      .populate("myFrames");
+    const currentUser = await User.findById(req.currentUser._id).select("-password").populate("myFrames");
     if (!currentUser) {
       return res.status(404).json({ error: "User Not found" });
     }
@@ -167,10 +143,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   }
 };
 
-export const sendEmailVerificationCode = async (
-  req: Request,
-  res: Response
-) => {
+export const sendEmailVerificationCode = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
   try {
     const user = await User.findById(currentUserId);
@@ -255,15 +228,9 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
       type: "FREETIME",
     });
     const savePublicMessage = await createPublicMessage.save();
-    const populatedMessage = await savePublicMessage.populate(
-      "sender",
-      "-password"
-    );
+    const populatedMessage = await savePublicMessage.populate("sender", "-password");
 
-    io.to(onLineUsers[currentUserId]).emit(
-      "new-notification",
-      savedNotification
-    );
+    io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);
 
     io.emit("public-message", populatedMessage);
     io.emit("user-updated", savedUser);
@@ -301,9 +268,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
     return res.status(200).json({ message: "Password changed successfullty" });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "Can't change password, an error occurred" });
+    return res.status(404).json({ error: "Can't change password, an error occurred" });
   }
 };
 
@@ -314,9 +279,7 @@ export const changeName = async (req: Request, res: Response) => {
     const user = await User.findById(currentUserId);
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "Can't change name because user not found" });
+      return res.status(404).json({ error: "Can't change name because user not found" });
     }
     if (newName === "" || typeof newName !== "string") {
       return res.status(404).json({ error: "please Enter Name" });
@@ -325,8 +288,6 @@ export const changeName = async (req: Request, res: Response) => {
     const savedUser = await user.save();
     return res.status(200).json({ name: savedUser.name });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "Can't change name, an error occurred" });
+    return res.status(404).json({ error: "Can't change name, an error occurred" });
   }
 };

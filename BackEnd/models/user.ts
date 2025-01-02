@@ -17,10 +17,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: [true, "Email is Required"],
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please provide a valid Email address",
-      ],
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please provide a valid Email address"],
     },
     profilePicture: {
       type: String,
@@ -63,7 +60,7 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre("save", function (next) {

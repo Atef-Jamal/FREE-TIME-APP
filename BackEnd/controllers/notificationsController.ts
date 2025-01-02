@@ -52,7 +52,7 @@ export const markAsReaded = async (req: Request, res: Response) => {
   try {
     const notifications = await Notification.updateMany(
       { belongsTo: userid, isRead: false },
-      { isRead: true }
+      { isRead: true },
     );
 
     if (!notifications) {
@@ -91,8 +91,6 @@ export const collectReward = async (req: Request, res: Response) => {
 
     return res.status(200).json(saveNotify);
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't collect a Reward, an error occurred" });
+    return res.status(404).json({ error: "can't collect a Reward, an error occurred" });
   }
 };

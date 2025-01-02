@@ -4,9 +4,7 @@ export const generateNewWeekRewards = (startDay?: Date) => {
       return {
         day: item + 1,
         availableAt: new Date(
-          new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-            startDay.getDate() + item + 1
-          )
+          new Date(new Date().setHours(0, 0, 0, 0)).setDate(startDay.getDate() + item + 1),
         ),
         isCollected: false,
         reward: 50 * (item + 1),
@@ -14,11 +12,7 @@ export const generateNewWeekRewards = (startDay?: Date) => {
     } else {
       return {
         day: item + 1,
-        availableAt: new Date(
-          new Date(new Date().setHours(0, 0, 0, 0)).setDate(
-            new Date().getDate() + item
-          )
-        ),
+        availableAt: new Date(new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + item)),
         isCollected: false,
         reward: 50 * (item + 1),
       };

@@ -18,7 +18,7 @@ const server = http.createServer(app);
 app.use(
   cors({
     origin: [process.env.CLIENT_BASE_URL!],
-  })
+  }),
 );
 
 export const io = new Server(server, {

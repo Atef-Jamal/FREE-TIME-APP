@@ -17,11 +17,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/login-with-google", signInWithGoogle);
 router.get("/currentuser", protectedRoute, getCurrentUser);
-router.get(
-  "/send-verification-email-code",
-  protectedRoute,
-  sendEmailVerificationCode
-);
+router.get("/send-verification-email-code", protectedRoute, sendEmailVerificationCode);
 router.post("/verifiyemail", protectedRoute, verifyEmailCode);
 router.post("/changepassword", protectedRoute, changePassword);
 router.post("/changename", protectedRoute, changeName);

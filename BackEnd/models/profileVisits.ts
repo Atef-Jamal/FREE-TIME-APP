@@ -15,7 +15,7 @@ const profileVisitsSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const ProfileVisits = mongoose.model("ProfileVisits", profileVisitsSchema);

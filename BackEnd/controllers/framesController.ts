@@ -27,15 +27,11 @@ export const buyFrame = async (req: Request, res: Response) => {
     const price = getFrame.price;
 
     if (points < price) {
-      return res
-        .status(404)
-        .json({ error: "sorry, your points is not Enough" });
+      return res.status(404).json({ error: "sorry, your points is not Enough" });
     }
 
     if (myFrames.includes(getFrame._id)) {
-      return res
-        .status(404)
-        .json({ error: "Already buyed Before, try with another" });
+      return res.status(404).json({ error: "Already buyed Before, try with another" });
     }
     const user = await User.findByIdAndUpdate(
       _id,
@@ -43,7 +39,7 @@ export const buyFrame = async (req: Request, res: Response) => {
         points: points - price,
         $push: { myFrames: getFrame._id },
       },
-      { new: true }
+      { new: true },
     );
 
     if (!user) {
@@ -71,10 +67,7 @@ export const buyFrame = async (req: Request, res: Response) => {
     });
 
     const savePublicMessage = await createPublicMessage.save();
-    const savedPublicMessage = await savePublicMessage.populate(
-      "sender",
-      "-password"
-    );
+    const savedPublicMessage = await savePublicMessage.populate("sender", "-password");
 
     io.emit("public-message", savedPublicMessage);
 

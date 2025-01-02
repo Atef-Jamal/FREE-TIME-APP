@@ -29,9 +29,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
           count = count + 1;
         }
       });
-      const second = conv.participants.filter(
-        (user) => user._id.toString() !== currentUserId.toString()
-      )[0];
+      const second = conv.participants.filter((user) => user._id.toString() !== currentUserId.toString())[0];
 
       excludeThoseUsers.push(second._id);
       return {
@@ -90,13 +88,8 @@ export const getConversationMessages = async (req: Request, res: Response) => {
       return res.status(200).json({ messages: [], secondUser: getSecondUser });
     }
 
-    const conversation = await getConversation.populate(
-      "messages.sender",
-      "-password"
-    );
-    return res
-      .status(200)
-      .json({ messages: conversation.messages, secondUser: getSecondUser });
+    const conversation = await getConversation.populate("messages.sender", "-password");
+    return res.status(200).json({ messages: conversation.messages, secondUser: getSecondUser });
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }
@@ -122,17 +115,14 @@ export const createMessage = async (req: Request, res: Response) => {
       sender: currentUserId,
     });
 
-    getConversation.lastMessage =
-      getConversation.messages[getConversation.messages.length - 1];
+    getConversation.lastMessage = getConversation.messages[getConversation.messages.length - 1];
 
     const saveConversation = await getConversation.save();
     const conversation = await saveConversation.populate("lastMessage.sender");
 
     return res.status(200).json(conversation.lastMessage);
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't create message, an Error occurred" });
+    return res.status(404).json({ error: "can't create message, an Error occurred" });
   }
 };
 

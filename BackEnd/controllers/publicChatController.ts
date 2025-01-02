@@ -56,17 +56,12 @@ export const createPublicMessage = async (req: Request, res: Response) => {
         messageLocation: saveMessage._id,
       });
       const saveNotification = await createNotification.save();
-      const savedNotification = await saveNotification.populate(
-        "mentionedUser",
-        "-password"
-      );
+      const savedNotification = await saveNotification.populate("mentionedUser", "-password");
       io.to(onLineUsers[mentioned]).emit("new-notification", savedNotification);
     }
     return res.status(200).json(savedMessage);
   } catch (error) {
-    return res
-      .status(404)
-      .json({ error: "can't send your message, an Error occurred" });
+    return res.status(404).json({ error: "can't send your message, an Error occurred" });
   }
 };
 
@@ -79,7 +74,7 @@ export const deletePublicMessage = async (req: Request, res: Response) => {
       {
         isDeleted: true,
       },
-      { new: true }
+      { new: true },
     ).populate("sender", "-password");
     return res.status(200).json(deletedMessage);
   } catch (error) {
@@ -134,10 +129,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
         // typeOfInteraction: fieldName,
       });
 
-      if (
-        interactedWithMessageBefore &&
-        interactedWithMessageBefore.typeOfInteraction !== fieldName
-      ) {
+      if (interactedWithMessageBefore && interactedWithMessageBefore.typeOfInteraction !== fieldName) {
         interactedWithMessageBefore.typeOfInteraction = fieldName;
         interactedWithMessageBefore.isRead = false;
 
@@ -147,14 +139,11 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
 
         io.to(onLineUsers[savedNotification.belongsTo.toString()]).emit(
           "new-notification",
-          savedNotification
+          savedNotification,
         );
       }
 
-      if (
-        !interactedWithMessageBefore &&
-        message.sender._id.toString() !== currentUserId.toString()
-      ) {
+      if (!interactedWithMessageBefore && message.sender._id.toString() !== currentUserId.toString()) {
         const createNotification = new Notification({
           type: "INTERACT-WITH-MESSAGE",
           belongsTo: message.sender._id,
@@ -169,24 +158,18 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
 
         io.to(onLineUsers[savedNotification.belongsTo.toString()]).emit(
           "new-notification",
-          savedNotification
+          savedNotification,
         );
       }
     }
 
-    if (
-      message[getOtherTwoFields[0] as TypeFieldName].includes(currentUserId)
-    ) {
-      const index =
-        message[getOtherTwoFields[0] as TypeFieldName].indexOf(currentUserId);
+    if (message[getOtherTwoFields[0] as TypeFieldName].includes(currentUserId)) {
+      const index = message[getOtherTwoFields[0] as TypeFieldName].indexOf(currentUserId);
       message[getOtherTwoFields[0] as TypeFieldName].splice(index, 1);
     }
 
-    if (
-      message[getOtherTwoFields[1] as TypeFieldName].includes(currentUserId)
-    ) {
-      const index =
-        message[getOtherTwoFields[1] as TypeFieldName].indexOf(currentUserId);
+    if (message[getOtherTwoFields[1] as TypeFieldName].includes(currentUserId)) {
+      const index = message[getOtherTwoFields[1] as TypeFieldName].indexOf(currentUserId);
       message[getOtherTwoFields[1] as TypeFieldName].splice(index, 1);
     }
 

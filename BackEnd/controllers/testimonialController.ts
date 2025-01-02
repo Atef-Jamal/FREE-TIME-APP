@@ -3,10 +3,7 @@ import Testimonial from "../models/testimonial";
 
 export const getAllTestimonials = async (_: Request, res: Response) => {
   try {
-    const allTestimonials = await Testimonial.find({}).populate(
-      "user",
-      "-password"
-    );
+    const allTestimonials = await Testimonial.find({}).populate("user", "-password");
     return res.status(200).json(allTestimonials);
   } catch (error) {
     return res.status(404).json({ error: "Failed to Load all testimonials" });

@@ -10,26 +10,18 @@ declare global {
   }
 }
 
-const protectedRoute = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const protectedRoute = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1];
 
     if (!token) {
-      return res
-        .status(401)
-        .json({ error: "UnAuthorized Request, Log in with your credientials" });
+      return res.status(401).json({ error: "UnAuthorized Request, Log in with your credientials" });
     }
 
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY!);
 
     if (!decoded) {
-      return res
-        .status(404)
-        .json({ error: "UnAuthorized, Invalid credientials" });
+      return res.status(404).json({ error: "UnAuthorized, Invalid credientials" });
     }
 
     const user = await User.findById(decoded.userId).select("-password");
@@ -42,9 +34,7 @@ const protectedRoute = async (
 
     return next();
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error, log in with your credentials" });
+    return res.status(500).json({ error: "Internal Server Error, log in with your credentials" });
   }
 };
 

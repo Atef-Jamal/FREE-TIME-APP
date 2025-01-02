@@ -17,17 +17,13 @@ export const buyMusic = async (req: Request, res: Response) => {
     }
 
     if (10 > user.points) {
-      return res
-        .status(404)
-        .json({ error: "sorry, your points is not Enough" });
+      return res.status(404).json({ error: "sorry, your points is not Enough" });
     }
 
     const isPurshasedBefore = user.mySongs.includes(songId);
 
     if (isPurshasedBefore) {
-      return res
-        .status(404)
-        .json({ error: "already purshased, try with another" });
+      return res.status(404).json({ error: "already purshased, try with another" });
     }
 
     user.points = user.points - 10;
@@ -49,21 +45,13 @@ export const buyMusic = async (req: Request, res: Response) => {
     });
     const savedNotification = await createNotification.save();
     const savedPublicMessage = await createPublicMessage.save();
-    const populatedMessage = await savedPublicMessage.populate(
-      "sender",
-      "-password"
-    );
+    const populatedMessage = await savedPublicMessage.populate("sender", "-password");
     const updatedUser = await user.save();
 
-    io.to(onLineUsers[currentUserId]).emit(
-      "new-notification",
-      savedNotification
-    );
+    io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);
     io.emit("public-message", populatedMessage);
 
-    return res
-      .status(200)
-      .json({ points: updatedUser.points, musicId: songId });
+    return res.status(200).json({ points: updatedUser.points, musicId: songId });
   } catch (error) {
     return res.status(404).json({ error: "can't buy this Musics, try again" });
   }

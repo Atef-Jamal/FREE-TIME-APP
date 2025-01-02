@@ -38,9 +38,7 @@ export const allUsers = async (req: Request, res: Response) => {
 };
 
 export const getOnlineUsers = async (req: Request, res: Response) => {
-  const onlines = Object.keys(onLineUsers).filter(
-    (id) => id !== req.currentUser._id
-  );
+  const onlines = Object.keys(onLineUsers).filter((id) => id !== req.currentUser._id);
   try {
     const users = await User.find({ _id: { $in: onlines } })
       .sort({ points: -1, createdAt: 1 })
@@ -74,9 +72,7 @@ export const getUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId).select(
-      "-password -email -usersVisitedMe"
-    );
+    const user = await User.findById(userId).select("-password -email -usersVisitedMe");
 
     if (!user) {
       return res.status(404).json({ error: "User Not Found" });
@@ -129,7 +125,7 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
       },
       {
         new: true,
-      }
+      },
     );
 
     return res.status(200).json(frame);
