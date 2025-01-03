@@ -1,6 +1,11 @@
+import { lazy, memo, useEffect, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { memo, useEffect } from "react";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+import SearchBar from "../Search/SearchBar";
+import { BiSearch } from "react-icons/bi";
+import { useTranslation } from "react-i18next";
 import {
   setCurrentUser,
   setCurrentAccountRequestFullfiled,
@@ -8,16 +13,13 @@ import {
   showPopup,
   openModel,
 } from "../../context/StateManeger";
-import { makeRequest } from "../../utils";
-import { handleApiError } from "../../utils/common";
+
 import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "./ProfileAccount/ProfileActions";
 import RegisterButtons from "./Registration/RegisterButtons";
-import RegisterationForm from "./Registration/RegisterationForm";
 import Search from "../Search/Search";
-import SearchBar from "../Search/SearchBar";
-import { BiSearch } from "react-icons/bi";
-import { useTranslation } from "react-i18next";
+
+const RegisterationForm = lazy(() => import("./Registration/RegisterationForm"));
 
 const Navbare = memo(() => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
@@ -52,7 +54,13 @@ const Navbare = memo(() => {
     getCurrentUser();
   }, [token, dispatch]);
 
-  const handleOpenSearch = () => dispatch(openModel({ status: true, children: <Search /> }));
+  const handleOpenSearch = () =>
+    dispatch(
+      openModel({
+        status: true,
+        children: <Search />,
+      }),
+    );
 
   return (
     <div className="relative w-full h-[80%] flex items-center justify-between">
@@ -74,7 +82,11 @@ const Navbare = memo(() => {
         <BiSearch className=" text-xl opacity-70" />
       </button>
       {!currentUserIsLoading && !currentUser && isCurrentUserReqFinished && <RegisterButtons />}
-      {openRegisterForm && !currentUser && <RegisterationForm />}
+      {openRegisterForm && !currentUser && (
+        <Suspense>
+          <RegisterationForm />
+        </Suspense>
+      )}
       {currentUserIsLoading && (
         <div className="h-full">
           <ProfileSkeleton />

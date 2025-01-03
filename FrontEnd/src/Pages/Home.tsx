@@ -1,7 +1,7 @@
-import Faq from "../components/Home/Faq";
 import HeroSection from "../components/Home/HeroSection";
 import HowToStart from "../components/Home/HowToStart";
 import WhyIsFreeTime from "../components/Home/WhyIsFreeTime";
+import Faq from "../components/Home/Faq";
 import TestimonialSection from "../components/Home/TestimonialSection";
 
 const Home = () => {

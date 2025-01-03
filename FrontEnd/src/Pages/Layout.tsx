@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { showPopup, updateThisEntity } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
-import Model from "../components/Others/Model";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Navbare from "../components/Navebare/Navbare";
-import Footer from "../components/Footer/Footer";
-import DisktopChat from "../components/Chats/PublicChat/DisktopChat/DisktopChat";
-import LiveStats from "../components/LiveStats/LiveStats";
-import NavebareBottom from "../components/Navebare/NavebareBottom";
+import Model from "../components/Others/Model";
 import ToastNotify from "../components/Others/ToastNotify";
-import MusicPlayer from "../components/Music/MusicPlayer";
 import { debounce } from "../utils/common";
 import HiddenComponent from "../components/Layout/HiddenComponent";
+
+const DisktopChat = lazy(() => import("../components/Chats/PublicChat/DisktopChat/DisktopChat"));
+const LiveStats = lazy(() => import("../components/LiveStats/LiveStats"));
+const Footer = lazy(() => import("../components/Footer/Footer"));
+const NavebareBottom = lazy(() => import("../components/Navebare/NavebareBottom"));
+const MusicPlayer = lazy(() => import("../components/Music/MusicPlayer"));
 
 const Layout = () => {
   const model = useAppSelector((state) => state.stateManeger.model);
@@ -66,7 +67,9 @@ const Layout = () => {
         <Navbare />
         {openMusicModal && (
           <div className={`absolute top-0 left-0 z-[1] transition-all h-full`}>
-            <MusicPlayer />
+            <Suspense>
+              <MusicPlayer />
+            </Suspense>
           </div>
         )}
         <ToastNotify />
@@ -101,13 +104,17 @@ const Layout = () => {
             <div
               className={`border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[4] `}
             >
-              <LiveStats />
+              <Suspense>
+                <LiveStats />
+              </Suspense>
             </div>
           )}
           <div className="min-h-[70dvh]">
             <Outlet />
           </div>
-          <Footer />
+          <Suspense>
+            <Footer />
+          </Suspense>
         </div>
         {!isMobile && (
           <div
@@ -120,13 +127,20 @@ const Layout = () => {
               isChatOpen ? " translate-x-0" : " translate-x-[100%]"
             }`}
           >
-            <DisktopChat />
+            <Suspense>
+              <DisktopChat />
+            </Suspense>
           </div>
         )}
       </div>
       {isMobile && (
         <div className="w-full bg-[#2b2b55] fixed bottom-0 z-[3]">
-          <NavebareBottom setOpenSidbareMobile={setOpenSidbareMobile} openSidbareMobile={openSidbareMobile} />
+          <Suspense>
+            <NavebareBottom
+              setOpenSidbareMobile={setOpenSidbareMobile}
+              openSidbareMobile={openSidbareMobile}
+            />
+          </Suspense>
         </div>
       )}
       <HiddenComponent />

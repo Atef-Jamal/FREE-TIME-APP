@@ -1,35 +1,23 @@
 import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-
-import Layout from "./Pages/Layout";
-import Home from "./Pages/Home";
-import Earn from "./Pages/Earn";
-import Affiliates from "./Pages/Affiliates";
-import MarketPlace from "./Pages/MarketPlace";
-import LeaderBoard from "./Pages/LeaderBoard";
-import CashOut from "./Pages/CashOut";
-import Rewards from "./Pages/Rewards";
-import MyProfile from "./Pages/MyProfile";
-import Musics from "./Pages/Musics";
-import PrivateChat from "./Pages/PrivateChat";
-import PublicUserProfile from "./Pages/PublicUserProfile";
-import Playing from "./Pages/Playing";
-
-import MobileChat from "./components/Chats/PublicChat/MobileChat/MobileChat";
-import LoadingWebsite from "./components/Others/LoadingWebsite";
-import ProtectedPage from "./components/Others/ProtectedPage";
-import PageNotFound from "./components/Errors/PageNotFound";
-import AppError from "./components/Errors/AppError";
+import LoadingWebsite from "./Pages/LoadingWebsite";
+import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, PublicChatMobile } from "./Pages";
+import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./Pages";
+import { ProtectedPage, PageNotFound, AppError } from "./Pages";
 
 export const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <Layout />,
+      element: (
+        <Suspense fallback={<LoadingWebsite className="w-screen h-screen" />}>
+          <Layout />
+        </Suspense>
+      ),
       errorElement: <AppError />,
       children: [
         {
-          path: "",
+          index: true,
           element: (
             <Suspense fallback={<LoadingWebsite />}>
               <Home />
@@ -38,8 +26,6 @@ export const router = createBrowserRouter(
         },
         {
           path: "earn",
-          errorElement: <div className="w-full h-full">an error ocurred</div>,
-
           element: (
             <Suspense fallback={<LoadingWebsite />}>
               <Earn />
@@ -108,7 +94,7 @@ export const router = createBrowserRouter(
           path: "chat",
           element: (
             <Suspense fallback={<LoadingWebsite />}>
-              <MobileChat />
+              <PublicChatMobile />
             </Suspense>
           ),
         },
@@ -121,7 +107,6 @@ export const router = createBrowserRouter(
               </ProtectedPage>
             </Suspense>
           ),
-          errorElement: <div>an error occurred!</div>,
         },
         {
           path: "user/:id",

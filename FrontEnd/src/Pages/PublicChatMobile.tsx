@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import PublicChat from "../Common/PublicChat";
-import { setPublicMsgRedPoint } from "../../../../context/StateManeger";
+import { useAppDispatch, useAppSelector } from "../context/Hooks";
+import PublicChat from "../components/Chats/PublicChat/Common/PublicChat";
+import { setPublicMsgRedPoint } from "../context/StateManeger";
 
-const MobileChat = () => {
+const PublicChatMobile = () => {
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const dispatch = useAppDispatch();
 
@@ -25,4 +25,4 @@ const MobileChat = () => {
   );
 };
 
-export default MobileChat;
+export default PublicChatMobile;

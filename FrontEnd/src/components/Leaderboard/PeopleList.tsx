@@ -43,7 +43,7 @@ const PeopleList = ({ status, data, error, pageParam, setPageParam }: TypeProps)
           className=" w-full flex items-center justify-between rounded-[4px] h-[50px] border-b border-gray-400"
         >
           <span className="w-[20%] flex items-center justify-center overflow-scroll scrollbar-none font-bold text-[#86b3ee] h-full border-r">
-            <span className="rounded-md w-[50px] h-[40px] bg-[#e4b42f31] flex items-center justify-center text-[#c3ccf5] sm:text-sm">
+            <span className="leaderboardUserRankNumber rounded-md w-[50px] h-[40px] bg-[#e4b42f31] flex items-center justify-center text-[#c3ccf5] sm:text-sm">
               {(pageParam - 1) * 100 + index + 1}
             </span>
           </span>
