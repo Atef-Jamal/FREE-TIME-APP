@@ -4,16 +4,15 @@ import { TypeInitialState, TypeMusicInfo, TypePopup } from "../types/reduxTypes"
 import { User } from "../types/userTypes";
 
 const initialState: TypeInitialState = {
+  currentUserStatus: "pending",
   currentUser: null,
-  currentUserIsLoading: false,
   isCurrentUserReqFinished: false,
   openNotification: false,
   ToastNotify: {
     type: null,
     message: "",
   },
-  openRegisterForm: false,
-  isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")) || false,
+  isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
   isSignInMode: false,
   isMobile: window.innerWidth <= 867,
   openSidebarMobile: false,
@@ -27,7 +26,6 @@ const initialState: TypeInitialState = {
   },
   socket: null,
   onlineUsers: [],
-  reFetchThisUserId: "",
   allUnReadedMesseges: [],
   activeConversation: localStorage.getItem("active-converstaion") || null,
   model: { status: false, children: null },
@@ -36,7 +34,6 @@ const initialState: TypeInitialState = {
 
 export interface TypeTogglActionPayload {
   entity:
-    | "openRegisterForm"
     | "openNotification"
     | "isSignInMode"
     | "isMobile"
@@ -58,23 +55,19 @@ const StateManegerSlice = createSlice({
   name: "stateManeger",
   initialState,
   reducers: {
-    updateThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
-      const { entity, value } = action.payload;
-      state[entity] = value;
+    updateCurrentUserStatus(state, action: PayloadAction<typeof state.currentUserStatus>) {
+      state.currentUserStatus = action.payload;
     },
     setCurrentUser(state, action: PayloadAction<User>) {
       state.currentUser = action.payload;
     },
-    setCurrentUserIsLoading(state, action: PayloadAction<boolean>) {
-      state.currentUserIsLoading = action.payload;
+    updateThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
+      const { entity, value } = action.payload;
+      state[entity] = value;
     },
     setCurrentAccountRequestFullfiled(state, action: PayloadAction<boolean>) {
       state.isCurrentUserReqFinished = action.payload;
     },
-    handleRefetchUnReadedMsgCount(state, action) {
-      state.reFetchThisUserId = action.payload;
-    },
-
     showPopup(state, action: PayloadAction<TypePopup>) {
       state.ToastNotify.message = action.payload.message;
       state.ToastNotify.type = action.payload.type;
@@ -142,8 +135,8 @@ const StateManegerSlice = createSlice({
 });
 
 export const {
+  updateCurrentUserStatus,
   setCurrentUser,
-  setCurrentUserIsLoading,
   setCurrentAccountRequestFullfiled,
   showPopup,
   resetPopup,
@@ -153,7 +146,6 @@ export const {
   handlePauseMusic,
   setSocet,
   setOnlineUsers,
-  handleRefetchUnReadedMsgCount,
   updateSidebarUnReadedMsgCount,
   setActiveConversation,
   openModel,

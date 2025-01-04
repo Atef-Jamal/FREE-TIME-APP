@@ -24,7 +24,7 @@ interface TypeProps {
 }
 
 const NotificationMenu = ({ notifications, setNotifications, loadingNotifications }: TypeProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const dispatch = useAppDispatch();
 
   const markNotificationasRead = useCallback(async () => {
@@ -53,13 +53,13 @@ const NotificationMenu = ({ notifications, setNotifications, loadingNotification
     if (isThereNotificationUnReaded) {
       markNotificationasRead();
     }
-  }, [currentUser?._id, markNotificationasRead, notifications]);
+  }, [currentUserStatus, markNotificationasRead, notifications]);
 
   return (
     <>
       <div
         onClick={() => dispatch(updateThisEntity({ entity: "openNotification", value: false }))}
-        className="fixed top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#010107a1] "
+        className="fixed top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#010107c4] "
       ></div>
 
       <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-2">

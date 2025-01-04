@@ -24,7 +24,8 @@ interface TypeMessageProp {
 }
 
 const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelete }: TypeMessageProp) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const [messageItem, setMessageItem] = useState<TypePublicChatMessage>(singleMessage);
   const [date, setDate] = useState(formateDate(messageItem.createdAt));
@@ -33,26 +34,26 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   const mutation = useMutation({
     mutationFn: handleMessageReaction,
     onMutate: ({ fieldName, otherFieldOne, otherFieldTow }) => {
-      if (!currentUser) {
+      if (!currentUserId) {
         dispatch(
           showPopup({
             type: "ERROR_GENERAL",
             message: "Log in First",
-          })
+          }),
         );
         return;
       }
       const previousMessage = messageItem;
       const updateMessage = (prev: TypePublicChatMessage) => ({
         ...prev,
-        [fieldName]: prev[fieldName].includes(currentUser._id)
-          ? prev[fieldName].filter((item) => item !== currentUser._id)
-          : [...prev[fieldName], currentUser._id],
-        [otherFieldOne]: prev[otherFieldOne].includes(currentUser._id)
-          ? prev[otherFieldOne].filter((item) => item !== currentUser._id)
+        [fieldName]: prev[fieldName].includes(currentUserId)
+          ? prev[fieldName].filter((item) => item !== currentUserId)
+          : [...prev[fieldName], currentUserId],
+        [otherFieldOne]: prev[otherFieldOne].includes(currentUserId)
+          ? prev[otherFieldOne].filter((item) => item !== currentUserId)
           : prev[otherFieldOne],
-        [otherFieldTow]: prev[otherFieldTow].includes(currentUser._id)
-          ? prev[otherFieldTow].filter((item) => item !== currentUser._id)
+        [otherFieldTow]: prev[otherFieldTow].includes(currentUserId)
+          ? prev[otherFieldTow].filter((item) => item !== currentUserId)
           : prev[otherFieldTow],
       });
       setMessageItem(updateMessage);
@@ -64,7 +65,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
     onSuccess: (newMessage) => {
@@ -104,12 +105,12 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   }, [messageItem.createdAt]);
 
   const handleLove = () => {
-    if (!currentUser) {
+    if (currentUserStatus !== "authenticated") {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
           message: "Log in First",
-        })
+        }),
       );
       return;
     }
@@ -122,12 +123,12 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   const handleLike = () => {
-    if (!currentUser) {
+    if (currentUserStatus !== "authenticated") {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
           message: "Log in First",
-        })
+        }),
       );
       return;
     }
@@ -140,12 +141,12 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   const handleDisLike = () => {
-    if (!currentUser) {
+    if (currentUserStatus !== "authenticated") {
       dispatch(
         showPopup({
           type: "ERROR_GENERAL",
           message: "Log in First",
-        })
+        }),
       );
       return;
     }
@@ -168,7 +169,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
           <UserImage user={messageItem.sender} />
         </div>
         <Link
-          to={currentUser?._id === messageItem.sender._id ? "/myprofile" : `/user/${messageItem.sender._id}`}
+          to={currentUserId === messageItem.sender._id ? "/myprofile" : `/user/${messageItem.sender._id}`}
           className={`ml-2 sm:ml-[6px] max-w-[60%]  overflow-hidden -mt-1`}
         >
           <span className="flex items-center  text-[#6dca51] text-sm font-bold capitalize -mb-[6px]">
@@ -184,7 +185,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
           {messageItem.createdAt && <span className="text-xs text-[#857272] font-bold">{date}</span>}
         </Link>
 
-        {currentUser?._id === messageItem.sender._id && !messageItem.isDeleted && (
+        {currentUserId === messageItem.sender._id && !messageItem.isDeleted && (
           <button onClick={handleDelete} className="ml-auto flex items-center justify-center rounded-sm">
             <FaRegTrashCan className="text-lg sm:text-sm opacity-70" />
           </button>

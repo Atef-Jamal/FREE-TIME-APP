@@ -2,7 +2,7 @@ import egypt from "../../assets/images/eg.svg";
 import { MdLanguage } from "react-icons/md";
 import { SetStateAction, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useCloseMenuOnClickOutSide } from "../../hooks";
+import { useClickOutside } from "../../hooks";
 
 interface TypeProps {
   setOpenLangMenu: React.Dispatch<SetStateAction<boolean>>;
@@ -21,14 +21,7 @@ const LangMenu = ({ setOpenLangMenu }: TypeProps) => {
     i18n.changeLanguage(lang);
   };
 
-  const handleClose = () => {
-    setOpenLangMenu(false);
-  };
-
-  useCloseMenuOnClickOutSide({
-    menuRef: langRef,
-    handleClose,
-  });
+  useClickOutside(langRef, () => setOpenLangMenu(false));
 
   return (
     <div

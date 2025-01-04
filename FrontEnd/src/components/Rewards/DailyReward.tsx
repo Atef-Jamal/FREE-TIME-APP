@@ -13,7 +13,7 @@ import { showPopup } from "../../context/StateManeger";
 
 const DailyReward = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
 
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<string | null>(null);
@@ -27,12 +27,12 @@ const DailyReward = () => {
     if (currentUser && nearstNexttDay) {
       setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
     }
-    if (isCurrentUserReqFinished && !currentUser) {
+    if (currentUserStatus !== "pending" && !currentUser) {
       const nextDay =
         new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split("T")[0] + "T00:00:00.000Z";
       setDayWhichTimmerIsLocated(nextDay);
     }
-  }, [currentUser, isCurrentUserReqFinished]);
+  }, [currentUser, currentUserStatus]);
 
   const handleUpdateNextTimerDay = useCallback(() => {
     const addOneDay = new Date(new Date().setDate(new Date().getDate() + 2)).toISOString();
@@ -108,10 +108,10 @@ const DailyReward = () => {
             resizeSidebare ? "grid-cols-4 lg:grid-cols-3" : "grid-cols-3 lg:grid-cols-2"
           }  sm:grid-cols-3 xs:grid-cols-2`}
         >
-          {!isCurrentUserReqFinished &&
+          {currentUserStatus === "pending" &&
             [...Array(7).keys()].map((item) => <DailyStreakRewardCardSkeleton key={item} />)}
 
-          {isCurrentUserReqFinished &&
+          {currentUserStatus === "authenticated" &&
             currentUser?.dailyReward.map((item) => (
               <DailyStreakRewardCard
                 key={item.day}
@@ -121,8 +121,7 @@ const DailyReward = () => {
               />
             ))}
 
-          {isCurrentUserReqFinished &&
-            !currentUser &&
+          {currentUserStatus === "unauthenticated" &&
             [...Array(7).keys()].map((item) => {
               return (
                 <DailyStreakRewardCard

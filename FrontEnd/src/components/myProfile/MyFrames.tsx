@@ -8,6 +8,7 @@ import Empty from "../Others/Empty";
 
 const MyFrames = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const dispatch = useAppDispatch();
 
@@ -20,7 +21,7 @@ const MyFrames = () => {
         showPopup({
           message: "Changed Successfully",
           type: "SUCESS",
-        })
+        }),
       );
       socket?.emit("user-updated", {
         ...currentUser,
@@ -32,7 +33,7 @@ const MyFrames = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     },
   });
@@ -45,7 +46,7 @@ const MyFrames = () => {
         showPopup({
           message: "Removed Successfully",
           type: "SUCESS",
-        })
+        }),
       );
       socket?.emit("user-updated", { ...currentUser, activeFrame: null });
     },
@@ -54,18 +55,18 @@ const MyFrames = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     },
   });
 
   const changeFrameHandler = (frameId: string) => {
-    if (!currentUser) return;
+    if (currentUserStatus !== "authenticated") return;
     changeMutation.mutate({ frameId });
   };
 
   const unselectFrameHandler = () => {
-    if (!currentUser) return;
+    if (currentUserStatus !== "authenticated") return;
     unselectMutation.mutate();
   };
 

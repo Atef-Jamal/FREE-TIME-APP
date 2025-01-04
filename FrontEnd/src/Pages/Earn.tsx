@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
 import { IoDesktop, IoFilter } from "react-icons/io5";
@@ -35,41 +35,28 @@ const Earn = () => {
   const [filterByPopularity, setFilterByPopularity] = useState<TypeFilterByPopularity>("ALL");
   const [filterByDevice, setFilterByDevice] = useState<TypeFilterByDevice>("ALL");
   const [searchParams] = useSearchParams();
+  // const filterByDeviceRef = useRef<HTMLDivElement | null>(null);
+  // const filterByPopularityRef = useRef<HTMLDivElement | null>(null);
+
   const { t } = useTranslation("earn");
 
-  const allDevicesRef = useRef<HTMLDivElement | null>(null);
-  const desktopRef = useRef<HTMLDivElement | null>(null);
-  const androidRef = useRef<HTMLDivElement | null>(null);
-  const macRef = useRef<HTMLDivElement | null>(null);
+  const { status, data, error, isFetchingNextPage, fetchNextPage, hasNextPage, isFetchNextPageError } =
+    useInfiniteQuery({
+      queryKey: ["tasks", filterByDevice, filterByPopularity, limitPerPage],
+      queryFn: ({ pageParam }) =>
+        fetchAllTasks({
+          filterByDevice,
+          filterByPopularity,
+          limitPerPage,
+          pageParam,
+        }),
 
-  const allRef = useRef<HTMLSpanElement | null>(null);
-  const popularRef = useRef<HTMLSpanElement | null>(null);
-  const heighestRewardRef = useRef<HTMLSpanElement | null>(null);
-  const heighestRatingRef = useRef<HTMLSpanElement | null>(null);
-
-  const {
-    status,
-    data,
-    error,
-    isFetchingNextPage,
-    refetch,
-    fetchNextPage,
-    hasNextPage,
-    isFetchNextPageError,
-  } = useInfiniteQuery({
-    queryKey: ["tasks", filterByDevice, filterByPopularity, limitPerPage],
-    queryFn: ({ pageParam }) =>
-      fetchAllTasks({
-        filterByDevice,
-        filterByPopularity,
-        limitPerPage,
-        pageParam,
-      }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => {
-      return lastPage.hasMore ? pages.length + 1 : undefined;
-    },
-  });
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, pages) => {
+        return lastPage.hasMore ? pages.length + 1 : undefined;
+      },
+      staleTime: 60 * 60 * 1000,
+    });
 
   const allTasks = data?.pages.map((page) => page.tasks).flat();
 
@@ -100,29 +87,21 @@ const Earn = () => {
     setTranslate("-translate-x-[0%]");
   };
 
-  const activeFilterByPopularity = (
-    e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type: TypeFilterByPopularity,
-  ) => {
-    [allRef, popularRef, heighestRewardRef, heighestRatingRef].forEach((item) =>
-      item.current?.classList.remove("bg-[#3d34647e]"),
-    );
-    e.currentTarget.classList.add("bg-[#3d34647e]");
+  const activeFilterByPopularity = useCallback((type: TypeFilterByPopularity) => {
     setFilterByPopularity(type);
-    refetch();
-  };
+  }, []);
 
-  const activeFilterByDevice = (
-    e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
-    type: TypeFilterByDevice,
-  ) => {
-    [allDevicesRef, desktopRef, androidRef, macRef].forEach((item) =>
-      item.current?.classList.remove("bg-[#3d34647e]"),
-    );
-    e.currentTarget.classList.add("bg-[#3d34647e]");
+  const activeFilterByDevice = useCallback((type: TypeFilterByDevice) => {
     setFilterByDevice(type);
-    refetch();
-  };
+  }, []);
+
+  const handleCloseFilterByPopularityMenu = useCallback((open: boolean) => {
+    setOpenFilterByPopularityMenu(open);
+  }, []);
+
+  const handleCloseFilterByDevice = useCallback((open: boolean) => {
+    setSelectDevice(open);
+  }, []);
 
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
@@ -147,7 +126,7 @@ const Earn = () => {
             </span>
             <div
               onClick={() => setSelectDevice((prev) => !prev)}
-              className="flex items-center justify-center gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4 cursor-pointer"
+              className="flex items-center justify-around gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4 cursor-pointer"
             >
               {filterByDevice === "ALL" && (
                 <>
@@ -159,17 +138,14 @@ const Earn = () => {
               {filterByDevice === "DESKTOP" && <IoDesktop className="text-lg" />}
               {filterByDevice === "ANDROID" && <DiAndroid className="text-lg" />}
               {filterByDevice === "MAC" && <SiApple className="text-lg" />}
-              <FaCaretDown className="text-lg ml-auto" />
+              <FaCaretDown className="text-lg" />
             </div>
           </div>
           {selectDevice && (
             <FilterByDeviceMenu
-              allDevicesRef={allDevicesRef}
-              androidRef={androidRef}
-              desktopRef={desktopRef}
-              macRef={macRef}
+              // filterByDeviceRef={filterByDeviceRef}
+              handleCloseFilterByDevice={handleCloseFilterByDevice}
               filterByDevice={filterByDevice}
-              setSelectDevice={setSelectDevice}
               activeFilterByDevice={activeFilterByDevice}
             />
           )}
@@ -188,14 +164,13 @@ const Earn = () => {
               <IoMdArrowDropdown className="text-2xl" />
             </div>
           </div>
+
           {openFilterByPopularityMenu && (
             <FilterByPopularityMenu
-              allRef={allRef}
+              // filterByPopularityRef={filterByPopularityRef}
+              filterByPopularity={filterByPopularity}
               activeFilterByPopularity={activeFilterByPopularity}
-              setOpenFilterByPopularityMenu={setOpenFilterByPopularityMenu}
-              heighestRatingRef={heighestRatingRef}
-              popularRef={popularRef}
-              heighestRewardRef={heighestRewardRef}
+              handleCloseFilterByPopularityMenu={handleCloseFilterByPopularityMenu}
             />
           )}
         </div>

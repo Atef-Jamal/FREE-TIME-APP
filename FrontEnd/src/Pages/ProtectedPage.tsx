@@ -3,11 +3,9 @@ import LockedPage from "../components/Errors/LockedPage";
 import LoadingWebsite from "./LoadingWebsite";
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
-
-  if (!isCurrentUserReqFinished) return <LoadingWebsite />;
-  if (!currentUser) return <LockedPage />;
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  if (currentUserStatus === "pending") return <LoadingWebsite />;
+  if (currentUserStatus === "unauthenticated") return <LockedPage />;
   return children;
 };
 

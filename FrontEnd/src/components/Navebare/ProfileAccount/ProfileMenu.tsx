@@ -6,18 +6,20 @@ import { LuLogOut } from "react-icons/lu";
 import { MdContactSupport } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import { useRef } from "react";
-import { useCloseMenuOnClickOutSide } from "../../../hooks";
+import { useClickOutside } from "../../../hooks";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase";
 
-interface ProfilTypeProp {
+interface TypeProps {
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
+const ProfileMenu = ({ setOpenProfileMenu }: TypeProps) => {
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+
+  useClickOutside(menuRef, () => setOpenProfileMenu(false));
 
   const handleLogOut = async () => {
     localStorage.clear();
@@ -29,11 +31,6 @@ const ProfileMenu = ({ setOpenProfileMenu }: ProfilTypeProp) => {
   const handleToggleLiveStats = () => {
     dispatch(updateThisEntity({ entity: "hiddenLiveStats", value: !hiddenLiveStats }));
   };
-
-  const handleClose = () => {
-    setOpenProfileMenu(false);
-  };
-  useCloseMenuOnClickOutSide({ menuRef, handleClose });
 
   return (
     <div ref={menuRef} className="py-2">

@@ -2,7 +2,7 @@ import { howItWorksLeft, affiliateExplained, howItWorksRight, affiliateBag } fro
 import { useAppSelector } from "../context/Hooks";
 
 const Affiliates = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   return (
     <div className="flex flex-col bg-[#141523]">
       <div className="affiliate__background__left flex flex-col gap-5 w-[80%] lg:w-[90%] sm:w-[90%] mx-auto items-center justify-center py-8">
@@ -13,7 +13,7 @@ const Affiliates = () => {
         <p className="font-bold tracking-wide mt-4 text-gray-300 sm:text-center">
           We offer the most rewarding referral system in the market.
         </p>
-        {!currentUser && (
+        {currentUserStatus === "unauthenticated" && (
           <button className="bg-[#01D676] rounded-md w-40 py-2 text-black font-bold tracking-wider mt-6">
             Sign Up
           </button>

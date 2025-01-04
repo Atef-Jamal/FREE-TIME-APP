@@ -14,7 +14,6 @@ type TypeFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
 export const getAllTasks = async (req: Request, res: Response) => {
   const filterByPopularity = (req.query.filterByPopularity as TypeFilterByPopularity) || "ALL";
   const filterByDevice = (req.query.filterByDevice as TypeFilterByDevice) || "ALL";
-
   const pageParam = parseInt(req.query.pageParam as string) || 1;
   const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 20;
   const skip = (pageParam - 1) * limitedPerPage;

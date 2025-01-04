@@ -1,4 +1,4 @@
-import { lazy, memo, useEffect, Suspense } from "react";
+import { memo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
@@ -6,26 +6,14 @@ import { handleApiError } from "../../utils/common";
 import SearchBar from "../Search/SearchBar";
 import { BiSearch } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
-import {
-  setCurrentUser,
-  setCurrentAccountRequestFullfiled,
-  setCurrentUserIsLoading,
-  showPopup,
-  openModel,
-} from "../../context/StateManeger";
-
+import { setCurrentUser, showPopup, openModel, updateCurrentUserStatus } from "../../context/StateManeger";
 import ProfileSkeleton from "./ProfileAccount/ProfileSkeleton";
 import ProfileActions from "./ProfileAccount/ProfileActions";
 import RegisterButtons from "./Registration/RegisterButtons";
 import Search from "../Search/Search";
 
-const RegisterationForm = lazy(() => import("./Registration/RegisterationForm"));
-
 const Navbare = memo(() => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserIsLoading = useAppSelector((state) => state.stateManeger.currentUserIsLoading);
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
-  const openRegisterForm = useAppSelector((state) => state.stateManeger.openRegisterForm);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const { t } = useTranslation("navbar");
 
   const dispatch = useAppDispatch();
@@ -35,20 +23,20 @@ const Navbare = memo(() => {
     const getCurrentUser = async () => {
       try {
         if (token) {
-          dispatch(setCurrentUserIsLoading(true));
           const response = await makeRequest.get("api/auth/currentuser");
           dispatch(setCurrentUser(response.data));
+          dispatch(updateCurrentUserStatus("authenticated"));
+        } else {
+          dispatch(updateCurrentUserStatus("unauthenticated"));
         }
       } catch (error) {
+        dispatch(updateCurrentUserStatus("unauthenticated"));
         dispatch(
           showPopup({
             type: "ERROR_GENERAL",
             message: handleApiError(error),
           }),
         );
-      } finally {
-        dispatch(setCurrentUserIsLoading(false));
-        dispatch(setCurrentAccountRequestFullfiled(true));
       }
     };
     getCurrentUser();
@@ -81,18 +69,13 @@ const Navbare = memo(() => {
       >
         <BiSearch className=" text-xl opacity-70" />
       </button>
-      {!currentUserIsLoading && !currentUser && isCurrentUserReqFinished && <RegisterButtons />}
-      {openRegisterForm && !currentUser && (
-        <Suspense>
-          <RegisterationForm />
-        </Suspense>
-      )}
-      {currentUserIsLoading && (
+      {currentUserStatus === "unauthenticated" && <RegisterButtons />}
+      {token && currentUserStatus === "pending" && (
         <div className="h-full">
           <ProfileSkeleton />
         </div>
       )}
-      {currentUser && <ProfileActions />}
+      {currentUserStatus === "authenticated" && <ProfileActions />}
     </div>
   );
 });

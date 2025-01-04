@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from "react";
+import { lazy, Suspense, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setOnlineUsers, showPopup, updateThisEntity } from "../../context/StateManeger";
+import { openModel, setOnlineUsers, setSocet, showPopup } from "../../context/StateManeger";
 import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks";
 import { User } from "../../types/userTypes";
@@ -10,6 +10,9 @@ import { TypeCashedConversations } from "../../types/privateChatTypes";
 import { TypeConversationSocketData } from "../../types/othersTypes";
 import { TypeCashedChat } from "../../components/Chats/PrivateChat/SendMessagePrivateChat";
 import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessages } from "../../utils";
+import io from "socket.io-client";
+
+const RegisterationForm = lazy(() => import("../Navebare/Registration/RegisterationForm"));
 
 // implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering
 // unnecessarily
@@ -17,8 +20,8 @@ import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessage
 const HiddenComponent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
+  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
 
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -169,10 +172,32 @@ const HiddenComponent = () => {
   }, [redirectQuery, searchParams, setSearchParams, dispatch]);
 
   useEffect(() => {
-    if (refQuery && !currentUser?._id && isCurrentUserReqFinished) {
-      dispatch(updateThisEntity({ entity: "openRegisterForm", value: true }));
+    if (refQuery && currentUserStatus === "unauthenticated") {
+      dispatch(
+        openModel({
+          status: true,
+          children: (
+            <Suspense>
+              <RegisterationForm />
+            </Suspense>
+          ),
+        }),
+      );
     }
-  }, [dispatch, refQuery, currentUser?._id, isCurrentUserReqFinished]);
+  }, [dispatch, refQuery, currentUserStatus]);
+
+  useEffect(() => {
+    if (currentUserStatus === "pending") return;
+    const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
+      query: { userId: currentUserId },
+    });
+    dispatch(setSocet(socket));
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [currentUserStatus, currentUserId, dispatch]);
 
   return <></>;
 };

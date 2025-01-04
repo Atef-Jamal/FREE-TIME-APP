@@ -12,7 +12,7 @@ import {
 import protectedRoute from "../middleware";
 const router = express.Router();
 
-router.get("/", allUsers);
+router.get("/live-stats-users", allUsers);
 router.get("/onlines", protectedRoute, getOnlineUsers);
 router.get("/users-leaderboard", getLeaderboardUsers);
 router.get("/select-myphoto-frame/:frameId", protectedRoute, changeUserPhotoFrame);

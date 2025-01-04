@@ -13,13 +13,14 @@ interface TypeAppCard {
 }
 
 const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
-  const currentUserIsLoading = useAppSelector((state) => state.stateManeger.currentUserIsLoading);
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
 
   const { t } = useTranslation("earn");
   const { _id, description, image, prize, title, isAvailable, devices } = taskDetail;
   const isCompleted = currentUser?.completedTasks.includes(_id);
-  if (currentUserIsLoading) return;
+
+  if (currentUserStatus !== "authenticated") return;
 
   return (
     <div

@@ -16,13 +16,14 @@ interface TypeProps {
 
 const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: TypeProps) => {
   const publicMsgRedPoint = useAppSelector((state) => state.stateManeger.publicMsgRedPoint);
+  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);
   const dispatch = useAppDispatch();
 
   const handleNotifyNewPublicMessage = () => {
-    if (location.pathname !== "/chat") {
+    if (location.pathname !== "/chat" && !isChatOpen) {
       dispatch(setPublicMsgRedPoint(true));
     }
   };

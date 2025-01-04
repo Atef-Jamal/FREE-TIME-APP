@@ -9,7 +9,7 @@ import { skipToken, useQuery } from "@tanstack/react-query";
 import { fetchAppDetails, fetchUserById } from "../utils";
 
 const Playing = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
   const { taskId } = useParams();
 
   const {
@@ -17,8 +17,8 @@ const Playing = () => {
     status: userStatus,
     error: errorUser,
   } = useQuery({
-    queryKey: ["user", currentUser?._id],
-    queryFn: currentUser?._id ? () => fetchUserById(currentUser._id) : skipToken,
+    queryKey: ["user", currentUserId],
+    queryFn: currentUserId ? () => fetchUserById(currentUserId) : skipToken,
   });
 
   const {
@@ -82,7 +82,7 @@ const Playing = () => {
     return <GuessCardApp taskApp={taskApp} />;
   }
 
-  return null;
+  return <></>;
 };
 
 export default Playing;

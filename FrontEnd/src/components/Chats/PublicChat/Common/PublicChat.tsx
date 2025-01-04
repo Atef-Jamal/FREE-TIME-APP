@@ -21,18 +21,19 @@ export interface TypeMsgModelDeletion {
 }
 
 const PublicChat = memo(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [oldMessage, setOldMessage] = useState<TypePublicChatMessage | null>(null);
   const [isLoadingOldMsg, setIsLoadingOldMsg] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
-  const queryParam = searchParams.get("messageId");
-  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
-  const dispatch = useAppDispatch();
   const scrollTimout = useRef<NodeJS.Timeout | null>(null);
   const searchParamsTimout = useRef<NodeJS.Timeout | null>(null);
+  const dispatch = useAppDispatch();
+
+  const queryParam = searchParams.get("messageId");
 
   let numofSkeleton = 5;
   if (messageContainerRef.current) {
@@ -69,7 +70,6 @@ const PublicChat = memo(() => {
   const handleRecievedMessage = () => {
     const element = messageContainerRef.current!;
     const addToStaging = element.scrollHeight - element.scrollTop > element.clientHeight + 70;
-
     if (addToStaging) {
       setStagingMessages((prev) => prev + 1);
     }

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
-import { showPopup, updateThisEntity } from "../../../context/StateManeger";
+import { resetModel, showPopup, updateThisEntity } from "../../../context/StateManeger";
 import { useAppSelector, useAppDispatch } from "../../../context/Hooks";
 import Input from "./Input";
 import LeftSide from "./LeftSide";
@@ -22,7 +22,7 @@ const initialValue = {
 };
 
 const RegisterationForm = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const isSignInMode = useAppSelector((state) => state.stateManeger.isSignInMode);
   const [formData, setFormData] = useState<TypeFormData>(initialValue);
@@ -46,7 +46,7 @@ const RegisterationForm = () => {
 
   const handleSubmite = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (currentUser) return;
+    if (currentUserStatus === "authenticated") return;
     if (imageIsUploading) return;
     setSubmiting(true);
 
@@ -123,9 +123,7 @@ const RegisterationForm = () => {
   return (
     <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-[5] ">
       <div
-        onClick={() => {
-          dispatch(updateThisEntity({ entity: "openRegisterForm", value: false }));
-        }}
+        onClick={() => dispatch(resetModel())}
         className="fixed top-0 left-0 w-full h-full bg-[#000000b0] sm:hidden "
       ></div>
       <div className="absolute top-16 xl:top-9 sm:top-0 w-[60%] max-w-[1300px] min-w-[650px]  h-[75%] sm:min-w-full sm:max-w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-auto ">
@@ -153,9 +151,7 @@ const RegisterationForm = () => {
             </button>
           </div>
           <button
-            onClick={() => {
-              dispatch(updateThisEntity({ entity: "openRegisterForm", value: false }));
-            }}
+            onClick={() => dispatch(resetModel())}
             className="w-8 h-6 flex items-center justify-center font-bold bg-[#43a153] rounded-md"
           >
             <GrClose />

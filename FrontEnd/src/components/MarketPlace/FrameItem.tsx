@@ -11,8 +11,8 @@ interface TypeProps {
 }
 
 const FrameItem = ({ singleFrame }: TypeProps) => {
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const purshasedByCurrentUser = !!currentUser?.myFrames.find((item) => item._id === singleFrame._id);
   const dispatch = useAppDispatch();
 
@@ -71,7 +71,7 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
         </span>
       </div>
 
-      {isCurrentUserReqFinished && purshasedByCurrentUser && (
+      {currentUserStatus !== "pending" && purshasedByCurrentUser && (
         <button
           onClick={() =>
             dispatch(
@@ -86,7 +86,7 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
           Purshased
         </button>
       )}
-      {isCurrentUserReqFinished && !purshasedByCurrentUser && (
+      {currentUserStatus !== "pending" && !purshasedByCurrentUser && (
         <button
           onClick={handlePurshaseFrame}
           disabled={mutation.isPending}
@@ -100,7 +100,7 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
         </button>
       )}
 
-      {!isCurrentUserReqFinished && (
+      {currentUserStatus === "pending" && (
         <span className="text-sm  border border-gray-500 rounded-md py-1 mt-3 font-bold">
           <Spinner className="w-5 h-5 mx-auto border-t-[#533a70] border-r-[#533a70]" />
         </span>

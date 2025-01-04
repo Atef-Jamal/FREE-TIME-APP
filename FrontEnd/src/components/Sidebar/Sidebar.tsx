@@ -20,7 +20,7 @@ interface TypeProps {
 }
 
 const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
@@ -115,10 +115,10 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
       }
     };
 
-    if (currentUser?._id) {
+    if (currentUserStatus === "authenticated") {
       getAllUnReadedMsgs();
     }
-  }, [currentUser?._id, dispatch]);
+  }, [currentUserStatus, dispatch]);
 
   return (
     <div className="sticky top-[85px] sm:top-[55px] overflow-hidden">
@@ -165,11 +165,13 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
                 >
                   {t(item.title)}
                 </span>
-                {currentUser && allUnReadedMesseges.length > 0 && item.path === "privatechat" && (
-                  <span className="absolute top-2 right-1 w-5 h-5 text-xs font-bold flex items-center justify-center rounded-full bg-[#e23e32]">
-                    {allUnReadedMesseges.length}
-                  </span>
-                )}
+                {currentUserStatus === "authenticated" &&
+                  allUnReadedMesseges.length > 0 &&
+                  item.path === "privatechat" && (
+                    <span className="absolute top-2 right-1 w-5 h-5 text-xs font-bold flex items-center justify-center rounded-full bg-[#e23e32]">
+                      {allUnReadedMesseges.length}
+                    </span>
+                  )}
               </NavLink>
             </li>
           );

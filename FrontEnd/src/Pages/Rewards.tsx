@@ -14,7 +14,7 @@ import { useScrollToElement } from "../hooks";
 import { useTranslation } from "react-i18next";
 
 const Rewards = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
   const { t } = useTranslation("rewards");
@@ -23,7 +23,7 @@ const Rewards = () => {
   useScrollToElement({});
 
   const getBonusCode = async () => {
-    if (!currentUser) {
+    if (currentUserStatus !== "authenticated") {
       dispatch(
         showPopup({
           message: "Log In first",

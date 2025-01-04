@@ -15,7 +15,8 @@ import { formateDate } from "../utils/common";
 import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
 
 const PublicUserProfile = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const { id } = useParams();
 
   const {
@@ -45,26 +46,26 @@ const PublicUserProfile = () => {
       item.type === "EMAIL-VERIFIED" ||
       item.type === "GUESS-CARD" ||
       item.type === "QUIZ-APP" ||
-      item.type === "REFERRER"
+      item.type === "REFERRER",
   );
 
   const numberOfCompletedTasks = activities?.filter(
-    (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED"
+    (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED",
   ).length;
 
   const numberOfReferredUser = activities?.filter((item) => item.type === "REFERRER").length;
 
   useEffect(() => {
-    if (currentUser?._id && id && id != currentUser?._id) {
+    if (currentUserStatus === "authenticated" && id && id != currentUserId) {
       mutate(id);
     }
-  }, [id, currentUser?._id, mutate]);
+  }, [id, currentUserStatus, currentUserId, mutate]);
 
   if (error) {
     return <div className="w-full h-full flex items-center justify-center">{error.response?.data.error}</div>;
   }
 
-  if (id === currentUser?._id) {
+  if (id === currentUserId) {
     return <Navigate to={"/myprofile"} />;
   }
 

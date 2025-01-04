@@ -69,7 +69,7 @@ export const getUsers = async ({
   userHighestPoints: string | undefined;
   hasMore: boolean;
 }> => {
-  const response = await makeRequest.get(`/api/users?pageParam=${pageParam}`);
+  const response = await makeRequest.get(`/api/users/live-stats-users?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };

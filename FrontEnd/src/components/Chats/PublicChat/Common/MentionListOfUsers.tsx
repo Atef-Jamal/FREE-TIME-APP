@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../../../context/Hooks";
 import { User } from "../../../../types/userTypes";
-import { useCloseMenuOnClickOutSide } from "../../../../hooks";
+import { useClickOutside } from "../../../../hooks";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getOnlineUsers } from "../../../../utils";
@@ -11,8 +11,9 @@ interface TypeProps {
 }
 
 const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const {
     data: users = [],
@@ -23,17 +24,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
     queryFn: getOnlineUsers,
   });
 
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  const handleClose = () => {
-    setOpenMentionList(false);
-  };
-
-  useCloseMenuOnClickOutSide({ menuRef, handleClose });
-
-  if (!currentUser) {
-    return;
-  }
+  useClickOutside(menuRef, () => setOpenMentionList(false));
 
   return (
     <div
@@ -59,7 +50,7 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
           return 1;
         })
         .map((user: User) => {
-          if (user._id === currentUser._id) return;
+          if (user._id === currentUserId) return;
           return (
             <div
               key={user._id}

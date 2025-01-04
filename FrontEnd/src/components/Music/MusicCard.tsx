@@ -25,7 +25,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
   const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
   const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
   const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const isAlreadyPurshased = !!currentUser?.mySongs.includes(songDetails.id.toString());
 
   const mutation = useMutation({
@@ -120,12 +120,12 @@ const MusicCard = ({ songDetails }: TypeProps) => {
           <span className="text-xs font-bold text-gray-300 truncate ">10 Points</span>
         </div>
       </div>
-      {!isCurrentUserReqFinished && (
+      {currentUserStatus === "pending" && (
         <button className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center">
           <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
         </button>
       )}
-      {!isAlreadyPurshased && isCurrentUserReqFinished && (
+      {!isAlreadyPurshased && currentUserStatus !== "pending" && (
         <button
           onClick={handlePurshase}
           className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center"
@@ -137,7 +137,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
           )}
         </button>
       )}
-      {isAlreadyPurshased && isCurrentUserReqFinished && (
+      {isAlreadyPurshased && currentUserStatus !== "pending" && (
         <>
           {musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
             <button

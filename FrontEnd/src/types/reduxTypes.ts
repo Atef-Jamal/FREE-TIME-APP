@@ -18,10 +18,9 @@ export interface TypeMusicInfo {
 }
 
 export interface TypeInitialState {
+  currentUserStatus: "pending" | "authenticated" | "unauthenticated";
   currentUser: User | null;
-  currentUserIsLoading: boolean;
   isCurrentUserReqFinished: boolean;
-  openRegisterForm: boolean;
   openNotification: boolean;
   isChatOpen: boolean;
   isSignInMode: boolean;
@@ -38,7 +37,6 @@ export interface TypeInitialState {
   };
   socket: Socket | null;
   onlineUsers: string[];
-  reFetchThisUserId: string;
   allUnReadedMesseges: string[];
   activeConversation: string | null;
   model: { status: boolean; children: React.ReactNode };

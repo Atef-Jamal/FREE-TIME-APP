@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useAppSelector } from "../context/Hooks";
 import { useSearchParams } from "react-router-dom";
 
@@ -13,7 +13,6 @@ interface TypeSocketHook {
 }
 
 interface TypeUseScrollToElementHook {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dependencies?: any[];
   scrollPosition?: "center" | "start" | "end" | "nearest";
   key?: string;
@@ -72,31 +71,19 @@ export const useScrollToElement = ({
         if (callback) callback();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryParam, setSearchParams, key, ...dependencies]);
 };
 
-export const useCloseMenuOnClickOutSide = ({
-  menuRef,
-  handleClose,
-}: {
-  menuRef: React.RefObject<HTMLElement | null>;
-  handleClose: () => void;
-}) => {
-  const [initialRender, setInitialRender] = useState(false);
-
+export const useClickOutside = (ref: React.RefObject<HTMLDivElement | null>, callback: () => void) => {
   useEffect(() => {
-    if (!initialRender) return;
-    const handler = (event: any) => {
-      if (!menuRef.current?.contains(event.target)) {
-        handleClose();
+    const handleClickOutside = (event: globalThis.MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
       }
     };
-    document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
-  }, [initialRender, handleClose, menuRef]);
-
-  useEffect(() => {
-    setInitialRender(true);
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, callback]);
 };
