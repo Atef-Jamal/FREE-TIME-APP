@@ -1,9 +1,9 @@
+import { lazy, Suspense } from "react";
 import { ImKey2 } from "react-icons/im";
 import { openModel, updateThisEntity } from "../../../context/StateManeger";
 import { BsFillPersonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useTranslation } from "react-i18next";
-import { lazy, Suspense } from "react";
 const RegisterationForm = lazy(() => import("./RegisterationForm"));
 
 const RegisterButtons = () => {
