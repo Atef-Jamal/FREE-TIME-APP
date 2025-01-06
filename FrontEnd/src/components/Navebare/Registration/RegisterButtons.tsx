@@ -19,7 +19,7 @@ const RegisterButtons = () => {
             openModel({
               status: true,
               children: (
-                <Suspense>
+                <Suspense fallback={"loading.."}>
                   <RegisterationForm />
                 </Suspense>
               ),
