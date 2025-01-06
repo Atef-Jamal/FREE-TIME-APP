@@ -14,7 +14,11 @@ export const router = createBrowserRouter(
           <Layout />
         </Suspense>
       ),
-      errorElement: <AppError />,
+      errorElement: (
+        <Suspense>
+          <AppError />
+        </Suspense>
+      ),
       children: [
         {
           index: true,
@@ -133,7 +137,11 @@ export const router = createBrowserRouter(
         },
         {
           path: "*",
-          element: <PageNotFound />,
+          element: (
+            <Suspense>
+              <PageNotFound />
+            </Suspense>
+          ),
         },
       ],
     },

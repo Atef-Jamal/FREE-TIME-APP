@@ -1,10 +1,9 @@
-import { lazy, Suspense } from "react";
 import { ImKey2 } from "react-icons/im";
 import { openModel, updateThisEntity } from "../../../context/StateManeger";
 import { BsFillPersonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useTranslation } from "react-i18next";
-const RegisterationForm = lazy(() => import("./RegisterationForm"));
+import RegisterationForm from "./RegisterationForm";
 
 const RegisterButtons = () => {
   const isSignInMode = useAppSelector((state) => state.stateManeger.isSignInMode);
@@ -18,11 +17,7 @@ const RegisterButtons = () => {
           dispatch(
             openModel({
               status: true,
-              children: (
-                <Suspense fallback={"loading.."}>
-                  <RegisterationForm />
-                </Suspense>
-              ),
+              children: <RegisterationForm />,
             }),
           );
         }}
@@ -37,11 +32,7 @@ const RegisterButtons = () => {
           dispatch(
             openModel({
               status: true,
-              children: (
-                <Suspense>
-                  <RegisterationForm />
-                </Suspense>
-              ),
+              children: <RegisterationForm />,
             }),
           );
         }}
