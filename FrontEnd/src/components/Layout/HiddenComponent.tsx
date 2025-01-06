@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { openModel, setOnlineUsers, setSocet, showPopup } from "../../context/StateManeger";
@@ -11,8 +11,7 @@ import { TypeConversationSocketData } from "../../types/othersTypes";
 import { TypeCashedChat } from "../../components/Chats/PrivateChat/SendMessagePrivateChat";
 import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessages } from "../../utils";
 import io from "socket.io-client";
-
-const RegisterationForm = lazy(() => import("../Navebare/Registration/RegisterationForm"));
+import RegisterationForm from "../Navebare/Registration/RegisterationForm";
 
 // implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering
 // unnecessarily
@@ -176,11 +175,7 @@ const HiddenComponent = () => {
       dispatch(
         openModel({
           status: true,
-          children: (
-            <Suspense>
-              <RegisterationForm />
-            </Suspense>
-          ),
+          children: <RegisterationForm />,
         }),
       );
     }

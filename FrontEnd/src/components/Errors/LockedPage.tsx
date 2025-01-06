@@ -2,8 +2,7 @@ import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { openModel, updateThisEntity } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
-import { lazy, Suspense } from "react";
-const RegisterationForm = lazy(() => import("../Navebare/Registration/RegisterationForm"));
+import RegisterationForm from "../Navebare/Registration/RegisterationForm";
 
 const LockedPage = () => {
   const dispatch = useAppDispatch();
@@ -23,11 +22,7 @@ const LockedPage = () => {
               dispatch(
                 openModel({
                   status: true,
-                  children: (
-                    <Suspense>
-                      <RegisterationForm />
-                    </Suspense>
-                  ),
+                  children: <RegisterationForm />,
                 }),
               );
             }}
