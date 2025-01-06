@@ -6,7 +6,6 @@ import { User } from "../types/userTypes";
 const initialState: TypeInitialState = {
   currentUserStatus: "pending",
   currentUser: null,
-  isCurrentUserReqFinished: false,
   openNotification: false,
   ToastNotify: {
     type: null,
@@ -64,9 +63,6 @@ const StateManegerSlice = createSlice({
     updateThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
       const { entity, value } = action.payload;
       state[entity] = value;
-    },
-    setCurrentAccountRequestFullfiled(state, action: PayloadAction<boolean>) {
-      state.isCurrentUserReqFinished = action.payload;
     },
     showPopup(state, action: PayloadAction<TypePopup>) {
       state.ToastNotify.message = action.payload.message;
@@ -137,7 +133,6 @@ const StateManegerSlice = createSlice({
 export const {
   updateCurrentUserStatus,
   setCurrentUser,
-  setCurrentAccountRequestFullfiled,
   showPopup,
   resetPopup,
   handleAddMusic,
