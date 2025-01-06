@@ -9,10 +9,10 @@ import messageSoundSrc from "../assets/images/messageSound.mp3";
 import { setActiveConversation } from "../context/StateManeger";
 
 const PrivateChat = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
-  const isCurrentUserReqFinished = useAppSelector((state) => state.stateManeger.isCurrentUserReqFinished);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openSidbare, setOpenSidbare] = useState<boolean>(true);
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ const PrivateChat = () => {
   };
 
   useEffect(() => {
-    if (secondPartyId && secondPartyId !== currentUser?._id) {
+    if (secondPartyId && secondPartyId !== currentUserId) {
       dispatch(setActiveConversation(secondPartyId));
       localStorage.setItem("active-converstaion", secondPartyId);
       setSearchParams((prev) => {
@@ -40,9 +40,9 @@ const PrivateChat = () => {
         return prev;
       });
     }
-  }, [dispatch, secondPartyId, currentUser?._id, setSearchParams]);
+  }, [dispatch, secondPartyId, currentUserId, setSearchParams]);
 
-  if (!isCurrentUserReqFinished) {
+  if (currentUserStatus === "pending") {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <Spinner className="w-12 h-12 border-3" />
@@ -50,7 +50,7 @@ const PrivateChat = () => {
     );
   }
 
-  if (!currentUser) {
+  if (currentUserStatus === "unauthenticated") {
     return <div className="w-full h-full flex items-center justify-center">Sign In First</div>;
   }
 

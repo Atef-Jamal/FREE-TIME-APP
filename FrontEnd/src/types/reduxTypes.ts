@@ -20,7 +20,6 @@ export interface TypeMusicInfo {
 export interface TypeInitialState {
   currentUserStatus: "pending" | "authenticated" | "unauthenticated";
   currentUser: User | null;
-  isCurrentUserReqFinished: boolean;
   openNotification: boolean;
   isChatOpen: boolean;
   isSignInMode: boolean;

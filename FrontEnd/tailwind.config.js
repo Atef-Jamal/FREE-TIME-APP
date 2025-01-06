@@ -1,3 +1,4 @@
+import tailwindScrollbar from "tailwind-scrollbar";
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -15,5 +16,5 @@ export default {
       xs: { max: "500px" },
     },
   },
-  plugins: [require("tailwind-scrollbar")],
+  plugins: [tailwindScrollbar],
 };
