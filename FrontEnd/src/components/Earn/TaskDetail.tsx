@@ -83,55 +83,51 @@ const TaskDetail = ({ taskId }: TypeProps) => {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-[#78bd4f] mb-3">{t("Offer Details")}</h1>
+      <h1 className="mb-3 text-2xl font-bold text-[#78bd4f]">{t("Offer Details")}</h1>
       <img
         alt=""
         src={`${import.meta.env.VITE_SERVER_BASE_URL}/${taskDetails.image}`}
-        className="w-full h-[300px] object-cover mb-3"
+        className="mb-3 h-[300px] w-full object-cover"
       />
 
-      <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-1">
-        <span className="w-full text-[#537692] text-sm">
-          <span className="mr-2 text-[#aebeb5] text-base">{t("Name")} :</span> {taskDetails?.title}
+      <div className="flex w-full flex-col items-center justify-center gap-1 md:gap-3">
+        <span className="w-full text-sm text-[#537692]">
+          <span className="mr-2 text-base text-[#aebeb5]">{t("Name")} :</span> {taskDetails?.title}
         </span>
-        <span className="w-full text-[#537692] text-sm">
-          <span className="mr-2 text-[#aebeb5] text-base">{t("Description")} :</span>
+        <span className="w-full text-sm text-[#537692]">
+          <span className="mr-2 text-base text-[#aebeb5]">{t("Description")} :</span>
           {taskDetails?.description}
         </span>
-        <span className="w-full text-[#537692] text-sm">
-          <span className="mr-2 text-[#aebeb5] text-base">{t("available on")} :</span>
+        <span className="w-full text-sm text-[#537692]">
+          <span className="mr-2 text-base text-[#aebeb5]">{t("available on")} :</span>
           {taskDetails?.devices === "ALL" ? "ALL DEVICES" : taskDetails.devices}
         </span>
         <div
           onClick={() => setExpandUsers((prev) => !prev)}
-          className="w-full bg-[#333030] rounded-md flex item-center justify-between p-2 my-2"
+          className="item-center my-2 flex w-full justify-between rounded-md bg-[#333030] p-2"
         >
           <span className="text-[#73f1a8]">{t("People who completed this app")}</span>
-          <FaRegArrowAltCircleDown className="opacity-50 text-xl" />
+          <FaRegArrowAltCircleDown className="text-xl opacity-50" />
         </div>
         <div
-          className={`w-full transition-all flex flex-col gap-1  ${
-            expandUsers ? "p-1" : "overflow-hidden h-0 p-0"
+          className={`flex w-full flex-col gap-1 transition-all ${
+            expandUsers ? "p-1" : "h-0 overflow-hidden p-0"
           }`}
         >
           {taskDetails.completedBy.length === 0 && (
-            <span className="text-gray-400 text-sm w-full flex items-center justify-center gap-2">
-              <img src={empty} alt="" className="w-5 h-5 object-cover" />
+            <span className="flex w-full items-center justify-center gap-2 text-sm text-gray-400">
+              <img src={empty} alt="" className="h-5 w-5 object-cover" />
               {t("No one complete this app before")}
             </span>
           )}
           {taskDetails.completedBy.length > 0 &&
             taskDetails.completedBy.map((item) => (
-              <Link
-                key={item._id}
-                to={`/user/${item._id}`}
-                className="text-gray-400 text-sm block underline "
-              >
+              <Link key={item._id} to={`/user/${item._id}`} className="block text-sm text-gray-400 underline">
                 {item.name}
               </Link>
             ))}
         </div>
-        <span className="flex items-center gap-3 w-full text-[#aebeb5]">
+        <span className="flex w-full items-center gap-3 text-[#aebeb5]">
           {t("Rating")} :
           <span className="flex items-center justify-center gap-1">
             {[...Array(taskDetails.rating).keys()].map((item) => (
@@ -144,30 +140,27 @@ const TaskDetail = ({ taskId }: TypeProps) => {
         </span>
         <span
           onClick={() => setOpenReviews((prev) => !prev)}
-          className="w-full flex items-center justify-between bg-[#333030] p-2 rounded-md my-2"
+          className="my-2 flex w-full items-center justify-between rounded-md bg-[#333030] p-2"
         >
           <span className="text-[#cec8c8]">{t("Reviews")}</span>
           <BsArrowDownCircle className="text-xl opacity-50" />
         </span>
-        <div
-          className={`w-full h-0 overflow-hidden ${openReviews && "h-auto"} flex flex-col items-center"
-          `}
-        >
+        <div className={`h-0 w-full overflow-hidden ${openReviews && "h-auto"} flex flex-col items-center`}>
           {taskDetails.reviews.map((review) => {
             return (
               <div
                 key={review._id}
-                className="w-full flex flex-col items-center gap-2 border-b border-gray-500 pb-1 mb-1"
+                className="mb-1 flex w-full flex-col items-center gap-2 border-b border-gray-500 pb-1"
               >
-                <div className="w-full flex items-center gap-2">
+                <div className="flex w-full items-center gap-2">
                   <img
                     src={review.user.profilePicture}
                     alt=""
-                    className="w-8 h-8 sm:w-6 sm:h-6 rounded-full object-fill"
+                    className="h-6 w-6 rounded-full object-fill md:h-8 md:w-8"
                   />
                   <span className="text-sm text-[#d1cfcf]">{review.user.name}</span>
                 </div>
-                <p className="w-full text-sm sm:text-xs text-[#9d79ff]">{review.comment}</p>
+                <p className="w-full text-xs text-[#9d79ff] md:text-sm">{review.comment}</p>
               </div>
             );
           })}
@@ -179,20 +172,20 @@ const TaskDetail = ({ taskId }: TypeProps) => {
               placeholder="Write your opinion"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full outline-none placeholder:text-gray-500 border-gray-700 text-sm bg-[#171227fd] p-3 rounded-md"
+              className="w-full rounded-md border-gray-700 bg-[#171227fd] p-3 text-sm outline-none placeholder:text-gray-500"
             />
-            <button className="w-full text-center rounded-md py-2 bg-[#6f9c5a] mt-2">Send</button>
+            <button className="mt-2 w-full rounded-md bg-[#6f9c5a] py-2 text-center">Send</button>
           </form>
         </div>
-        <span className="text-[#aebeb5] flex items-center gap-3 w-full mb-2">
+        <span className="mb-2 flex w-full items-center gap-3 text-[#aebeb5]">
           {t("Reward")} :
-          <span className="text-[#6676ff] text-sm">
+          <span className="text-sm text-[#6676ff]">
             {taskDetails.prize} {t("Points")}
           </span>
         </span>
         {isCompleted && (
           <button
-            className={`w-full py-2 sm:text-xs bg-[#171430d5] text-sm text-white rounded-md border border-gray-700`}
+            className={`w-full rounded-md border border-gray-700 bg-[#171430d5] py-2 text-sm text-white`}
           >
             Completed
           </button>
@@ -200,15 +193,13 @@ const TaskDetail = ({ taskId }: TypeProps) => {
         {!isCompleted && taskDetails.isAvailable === "AVAILABLE" && (
           <Link
             to={`/playing/${taskDetails._id}`}
-            className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
+            className={`w-full rounded-md bg-[#a4ec52cc] py-2 text-center text-sm font-bold`}
           >
             {t("START NOW")}
           </Link>
         )}
         {taskDetails.isAvailable === "UNAVAILABLE" && (
-          <button
-            className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}
-          >
+          <button className={`w-full rounded-md bg-[#528feccc] py-2 text-center text-sm font-bold`}>
             {t("Not Available")}
           </button>
         )}

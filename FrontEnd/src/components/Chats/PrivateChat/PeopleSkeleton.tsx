@@ -2,18 +2,18 @@ import Skeleton from "../../Others/Skeleton";
 
 const PeopleSkeleton = () => {
   return (
-    <div className="w-full flex flex-col gap-y-2 p-2 bg-[#27273afb] rounded-md">
+    <div className="flex w-full flex-col gap-y-2 rounded-md bg-[#27273afb] p-2">
       <div className="flex items-center gap-2">
-        <Skeleton className="w-7 h-6 rounded-lg" />
+        <Skeleton className="h-6 w-7 rounded-lg" />
         <div>
-          <Skeleton className="w-20 h-[7px] mb-[3px] rounded-sm" />
-          <Skeleton className="w-10 h-[6px] rounded-sm" />
+          <Skeleton className="mb-[3px] h-[7px] w-20 rounded-sm" />
+          <Skeleton className="h-[6px] w-10 rounded-sm" />
         </div>
       </div>
       <div className="w-full">
-        <Skeleton className="w-[60%] h-[6px] rounded-sm mb-[2px]" />
-        <Skeleton className="w-[50%] h-[6px] rounded-sm mb-[2px]" />
-        <Skeleton className="w-[70%] h-[6px] rounded-sm" />
+        <Skeleton className="mb-[2px] h-[6px] w-[60%] rounded-sm" />
+        <Skeleton className="mb-[2px] h-[6px] w-[50%] rounded-sm" />
+        <Skeleton className="h-[6px] w-[70%] rounded-sm" />
       </div>
     </div>
   );

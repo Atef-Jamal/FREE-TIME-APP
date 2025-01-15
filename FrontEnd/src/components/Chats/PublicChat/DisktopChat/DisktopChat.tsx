@@ -5,6 +5,7 @@ import PublicChat from "../Common/PublicChat";
 import { BsChatLeftText } from "react-icons/bs";
 import { memo, useEffect } from "react";
 import { useListenToSocketEvents } from "../../../../hooks";
+import { cn } from "../../../../utils/common";
 
 const DisktopChat = memo(() => {
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
@@ -36,15 +37,23 @@ const DisktopChat = memo(() => {
   });
 
   return (
-    <div className="relative flex flex-col items-center bg-[#241f31c0] h-full w-full">
+    <div
+      style={{
+        height: `calc(100dvh - 55px)`,
+      }}
+      className={cn(
+        "fixed right-0 top-[55px] z-[4] hidden w-[30%] flex-col items-center border-l border-[#8a5f5f] bg-[#202138] transition-all duration-300 ease-in-out lg:flex lg:w-[38%]",
+        !isChatOpen && "translate-x-[100%]",
+      )}
+    >
       <span
         onClick={() => {
           dispatch(updateThisEntity({ entity: "isChatOpen", value: !isChatOpen }));
           localStorage.setItem("isDesktopChatOpen", isChatOpen ? "" : "open");
         }}
-        className="w-10 h-10 absolute top-[7%] -left-[42px] bg-[#513d80f8] rounded-sm flex items-center justify-center cursor-pointer"
+        className="absolute -left-[42px] top-[7%] flex h-10 w-10 cursor-pointer items-center justify-center rounded-sm bg-[#513d80f8]"
       >
-        {publicMsgRedPoint && <span className="absolute top-2 left-3 bg-red-500 w-4 h-4 rounded-full"></span>}
+        {publicMsgRedPoint && <span className="absolute left-3 top-2 h-4 w-4 rounded-full bg-red-500"></span>}
         <BsChatLeftText className="text-3xl" />
       </span>
       <ChatHeader />

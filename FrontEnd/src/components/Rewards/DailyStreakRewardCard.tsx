@@ -49,7 +49,7 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
         showPopup({
           message: `successfully collect ${dayInfo.reward} points`,
           type: "SUCESS",
-        })
+        }),
       );
     } catch (error) {
       dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
@@ -79,25 +79,25 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
   return (
     <div
       id={scrollToThisCard}
-      className="relative p-2 flex flex-col items-center justify-center gap-3 bg-[#242438] rounded-md"
+      className="relative flex flex-col items-center justify-center gap-3 rounded-md bg-[#242438] p-2"
     >
-      <div className="flex items-center justify-center w-full gap-3">
+      <div className="flex w-full items-center justify-center gap-3">
         <BsClockHistory className="text-4xl" />
-        <span className="text-[#c9c6c6] text-xl sm:text-lg font-bold">
+        <span className="text-lg font-bold text-[#c9c6c6]">
           {t("Day")} {dayInfo.day}
         </span>
       </div>
-      <div className="w-full flex items-center justify-center flex-wrap gap-3 text-[#aec94f] text-xl xl:text-base font-bold ">
+      <div className="flex w-full flex-wrap items-center justify-center gap-2 font-bold text-[#aec94f]">
         {t("Reward")} : <span className="text-[#aec94f]">{dayInfo.reward}</span>
       </div>
       {dayInfo.isCollected ? (
-        <button className="w-full py-1 bg-[#170e27]  font-bold rounded-md">{t("Collected")}</button>
+        <button className="w-full rounded-md bg-[#170e27] py-1 font-bold">{t("Collected")}</button>
       ) : undefined}
 
       {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
-        <button onClick={collectDailyReward} className="w-full py-1 bg-[#01d641]  font-bold rounded-md">
+        <button onClick={collectDailyReward} className="w-full rounded-md bg-[#01D676] py-1">
           {isLoading ? (
-            <Spinner className="mx-auto w-6 h-6 border-b-blue-950 border-r-blue-950" />
+            <Spinner className="mx-auto h-6 w-6 border-b-blue-950 border-r-blue-950" />
           ) : (
             t("Collect")
           )}
@@ -105,7 +105,7 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
       ) : undefined}
 
       {new Date(dayInfo.availableAt) > today ? (
-        <button className="w-full h-[30px] bg-[#205764] font-bold rounded-md">
+        <button className="h-[30px] w-full rounded-md bg-[#205764] font-bold">
           {dayWhichTimmerIsLocated === dayInfo.availableAt ? (
             <Timer date={new Date(dayInfo.availableAt)} handleUpdateNextTimerDay={handleUpdateNextTimerDay} />
           ) : (

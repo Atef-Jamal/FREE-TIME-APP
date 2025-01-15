@@ -1,5 +1,5 @@
 import { BiMenu } from "react-icons/bi";
-import { updateThisEntity } from "../../context/StateManeger";
+import { openModel, updateThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
@@ -10,21 +10,18 @@ import { showPopup, updateSidebarUnReadedMsgCount } from "../../context/StateMan
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
-import { RiCloseFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { TypeCashedChat } from "../Chats/PrivateChat/SendMessagePrivateChat";
+import Search from "../Search/Search";
+import SearchBar from "../Search/SearchBar";
 
-interface TypeProps {
-  handleCloseMobileSidebare: (open: boolean) => void;
-}
-
-const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
+const Sidebar = memo(() => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
-  const isMobile = useAppSelector((state) => state.stateManeger.isMobile);
+  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const location = useLocation();
@@ -32,8 +29,9 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
 
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
 
-  const handleCollaps = () =>
+  const handleCollaps = () => {
     dispatch(updateThisEntity({ entity: "resizeSidebare", value: !resizeSidebare }));
+  };
 
   const handleNewPrivateMessage = useCallback(
     (data: TypePrivateMessage) => {
@@ -121,26 +119,24 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
   }, [currentUserStatus, dispatch]);
 
   return (
-    <div className="sticky top-[85px] sm:top-[55px] overflow-hidden">
-      <div
-        onClick={handleCollaps}
-        className={`sm:hidden ml-auto mr-[6px] w-[51px] h-[40px] flex items-center justify-center rounded-md hover:bg-[#40496975]`}
-      >
-        <BiMenu className="text-2xl" />
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="flex h-full w-[250px] flex-col gap-y-2 bg-[#29293a] px-2 pt-3 lg:w-full"
+    >
+      <div className={`hidden lg:block`}>
+        <BiMenu onClick={handleCollaps} className={`${resizeSidebare ? "mx-auto" : "ml-auto"} text-2xl`} />
       </div>
 
-      <div className="hidden sm:flex items-center justify-between border-b border-gray-700">
-        <span className="text-2xl text-[#74c43f] font-bold">
-          FREE
-          <span className="text-2xl text-[#d0ddc7] font-bold">TIME</span>
-        </span>
-        <span onClick={() => handleCloseMobileSidebare(false)} className="bg-[#489b2f] p-[4px] rounded-sm">
-          <RiCloseFill style={{ fontSize: "20px" }} />
-        </span>
+      <div
+        onClick={() => dispatch(openModel({ status: true, children: <Search /> }))}
+        className="h-10 lg:hidden"
+      >
+        <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
-      <ul className="flex flex-col px-1 gap-1 w-full overflow-scroll scrollbar-none mt-2">
+
+      <ul className="flex w-full flex-col gap-1">
         {sidebareItems.map((item, index) => {
-          if (isMobile) {
+          if (smallScreen) {
             if (item.path === "leaderboard" || item.path === "earn" || item.path === "rewards") return;
           }
           return (
@@ -150,26 +146,18 @@ const Sidebar = memo(({ handleCloseMobileSidebare }: TypeProps) => {
                 className={({ isActive }) =>
                   `${
                     isActive ? "bg-[#40496975]" : ""
-                  } relative transition-all hover:bg-[#40496975] flex items-center gap-1 py-2 rounded-md`
+                  } relative flex items-center gap-x-3 rounded-md px-4 py-2 transition-all hover:bg-[#40496975]`
                 }
               >
-                <span
-                  className={`transition-all duration-300 text-[16px] py-1 pl-4 pr-3 sm:px-2 hover:rotate-[360deg]`}
-                >
-                  {item.icon}
-                </span>
-                <span
-                  className={`${
-                    resizeSidebare && "hidden sm:flex"
-                  } font-bold tracking-wide text-gray-400 text-sm `}
-                >
+                <span className={`py-1 transition-all duration-300 hover:rotate-[360deg]`}>{item.icon}</span>
+                <span className={`truncate text-sm font-bold tracking-wide text-gray-400`}>
                   {t(item.title)}
                 </span>
                 {currentUserStatus === "authenticated" &&
                   allUnReadedMesseges.length > 0 &&
                   item.path === "privatechat" && (
-                    <span className="absolute top-2 right-1 w-5 h-5 text-xs font-bold flex items-center justify-center rounded-full bg-[#e23e32]">
-                      {allUnReadedMesseges.length}
+                    <span className="absolute right-1 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#e23e32] text-xs font-bold">
+                      {allUnReadedMesseges.length + 2}
                     </span>
                   )}
               </NavLink>

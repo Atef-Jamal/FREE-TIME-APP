@@ -6,13 +6,13 @@ import { useTranslation } from "react-i18next";
 const Ladder = () => {
   const { t } = useTranslation("rewards");
   return (
-    <div className="flex flex-col gap-10 py-6 px-4 lg:px-2 bg-[#2C2C44] w-[42%] max-w-[800px] rounded-lg sm:w-full">
+    <div className="flex w-full max-w-[800px] flex-col gap-10 rounded-lg bg-[#2C2C44] px-2 py-6 lg:w-[42%] lg:px-4">
       <div className="flex gap-2">
-        <h1 className="text-green-400 font-bold text-xl">{t("Daily Bonus Laddar")}</h1>
+        <h1 className="text-xl font-bold text-green-400">{t("Daily Bonus Laddar")}</h1>
         <IoIosHelpCircleOutline />
       </div>
-      <div className="relative flex flex-col bg-[#242438] rounded-md gap-3 overflow-hidden py-6">
-        <div className="w-[100%] flex flex-col items-center">
+      <div className="relative flex flex-col gap-3 overflow-hidden rounded-md bg-[#242438] py-6">
+        <div className="flex w-[100%] flex-col items-center">
           {[
             { width: "100%", height: "60px" },
             { width: "88%", height: "60px" },
@@ -33,7 +33,7 @@ const Ladder = () => {
                   width: item.width,
                   height: item.height,
                 }}
-                className={` flex items-center justify-center relative`}
+                className={`relative flex items-center justify-center`}
               >
                 <span className="absolute z-[1]">556.48</span>
                 <div
@@ -49,11 +49,11 @@ const Ladder = () => {
                     i === 0
                       ? "bg-[#7af162]"
                       : i === 1
-                      ? "bg-[#568bb6a1]"
-                      : i === 2
-                      ? "bg-[#924747af]"
-                      : "bg-[#3b578a5b]"
-                  } w-[90%] h-full border border-gray-500 flex items-center justify-center rounded-lg mt-1`}
+                        ? "bg-[#568bb6a1]"
+                        : i === 2
+                          ? "bg-[#924747af]"
+                          : "bg-[#3b578a5b]"
+                  } mt-1 flex h-full w-[90%] items-center justify-center rounded-lg border border-gray-500`}
                 >
                   {i === 0 && (
                     <span className="absolute -bottom-[20px] -right-[16px] z-[1]">
@@ -66,29 +66,29 @@ const Ladder = () => {
           })}
         </div>
       </div>
-      <div className="flex gap-4 lg:gap-2 justify-center items-center bg-[#242438] py-4">
-        <button className="bg-[#01D676] rounded-md text-white px-6 text-sm lg:px-4 py-2">
+      <div className="flex items-center justify-center gap-2 bg-[#242438] py-4 lg:gap-4">
+        <button className="rounded-md bg-[#01D676] px-4 py-2 text-sm text-white lg:px-6">
           {t("Double or 0")}
         </button>
-        <button className="bg-[#01D676] rounded-md text-white px-8 text-sm lg:px-4 py-2">
+        <button className="rounded-md bg-[#01D676] px-4 py-2 text-sm text-white lg:px-8">
           {t("Claim 10")}
         </button>
       </div>
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <span className="text-xs ">{t("Level 0")}</span>
-          <span className="text-xs ">{t("Level 1")}</span>
+        <div className="flex items-center justify-between">
+          <span className="text-xs">{t("Level 0")}</span>
+          <span className="text-xs">{t("Level 1")}</span>
         </div>
-        <div className="relative reach__level w-full h-3 bg-[#242438] rounded-lg"></div>
-        <div className="flex justify-between px-5 mt-[-6px]">
-          <span className="text-xs text-yellow-200 ml-1">10</span>
+        <div className="reach__level relative h-3 w-full rounded-lg bg-[#242438]"></div>
+        <div className="mt-[-6px] flex justify-between px-5">
+          <span className="ml-1 text-xs text-yellow-200">10</span>
           <span className="text-[10px]">{t("Reach level 1 to Double or Claim your first daily reward")}</span>
           <span className="text-xs">10</span>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center bg-[#242438]  py-8 gap-6 ">
+      <div className="flex flex-col items-center justify-center gap-6 bg-[#242438] py-8">
         <h1 className="text-sm">{t("Top Wins Last 24 Hours")}</h1>
-        <div className="flex gap-2 w-full px-2 ">
+        <div className="flex w-full gap-2 px-2">
           <TopWinsLast24Hours name={"John"} money={"22,963"} color={"one"} />
           <TopWinsLast24Hours name={"Max"} money={"22,963"} color={"two"} />
           <TopWinsLast24Hours name={"Atef"} money={"22,963"} color={"three"} />

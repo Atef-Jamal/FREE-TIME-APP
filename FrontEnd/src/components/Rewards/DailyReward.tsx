@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { makeRequest } from "../../utils";
 import { showPopup } from "../../context/StateManeger";
+import { cn } from "../../utils/common";
 
 const DailyReward = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
@@ -54,59 +55,56 @@ const DailyReward = () => {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="relative rounded-lg h-[200px] overflow-hidden">
-        <img src={desktopAffiliateBannerBg} alt="" className="absolute w-full h-full" />
+    <div className="flex w-full flex-col gap-4">
+      <div className="relative h-[200px] overflow-hidden rounded-lg">
+        <img src={desktopAffiliateBannerBg} alt="" className="absolute h-full w-full" />
         <img
           alt={""}
           src={desktopAffiliateGraphicRight}
-          className="absolute bottom-0 right-0 w-[240px] h-full"
+          className="absolute bottom-0 right-0 h-full w-[240px]"
         />
-        <div className="absolute flex flex-col gap-3 w-[95%] xs:w-[90%] mt-5 xs:mx-2 mx-5">
-          <p className="text-white text-xl lg:text-sm font-bold tracking-wider ">
+        <div className="absolute mx-2 mt-5 flex h-[80%] w-[95%] flex-col gap-3 sm:mx-5 sm:w-[90%]">
+          <p className="text-sm font-bold tracking-wider text-white md:text-xl">
             {t("The Most Rewarding Affiliate System in The Mareket is Now Live")}
           </p>
-          <p className="text-white lg:text-sm tracking-wider">
+          <p className="text-sm tracking-wider text-white">
             {t("Earn Up to")}
-            <span className="text-yellow-400 ">30% Commission!</span>
-          </p>
-          <p className="text-sm lg:text-xs sm:text-[#99a1ce]">
-            {t("Git Your Friend A Free time and Earn Up to 30% Commission From What They Earn")}
+            <span className="text-yellow-400">30% Commission!</span>
+            <p className="text-xs text-[#99a1ce] sm:text-sm">
+              {t("Git Your Friend A Free time and Earn Up to 30% Commission From What They Earn")}
+            </p>
           </p>
           <Link
             to={"/affiliates"}
-            className="w-[200px] bg-[#87ec8ec7] text-black rounded-md font-bold  py-1 text-center"
+            className="mt-auto w-[200px] rounded-md bg-[#01D676] py-1 text-center font-bold text-black"
           >
             {t("Go To Affiliate Page")}
           </Link>
         </div>
       </div>
-      <div className="flex flex-col bg-[#2C2C44] gap-4 sm:gap-2 p-5 rounded-md sm:p-4 xs:p-2 ">
-        <div className="flex justify-between items-center gap-x-10 flex-wrap">
-          <p className="text-[#4cf871] text-xl sm:text-lg lg:text-lg font-bold tracking-wider">
-            {t("7 Day Streak Rewards")}
-          </p>
+      <div className="flex flex-col gap-2 rounded-md bg-[#2C2C44] p-2 sm:p-4 md:gap-4 md:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-x-10">
+          <p className="font-bold tracking-wider text-yellow-500 md:text-lg">{t("7 Day Streak Rewards")}</p>
           {currentUser && (
-            <span className="text-[#4cf871] text-xl sm:text-lg lg:text-lg font-bold  tracking-widest">
+            <span className="tracking-wide text-[#4cf871] md:text-lg">
               {t("week")} : {currentUser?.week}
             </span>
           )}
         </div>
-        <p className="text-yellow-400  sm:text-sm lg:text-xs ">
+        <p className="text-center text-sm text-[#5fadec]">
           {t("Earn 1,000 or more points within 24 hours to keep you streak")}
-        </p>
-        <p className="text-yellow-400 sm:text-sm lg:text-xs">
           {t("according to your timezoon the day beginning at")}{" "}
-          <span className="font-bold text-[#646df5]">
+          <span className="ml-1 font-bold text-[#9ead54]">
             {new Date(today).toLocaleTimeString().split(" ")[0].slice(0, -3)}{" "}
             {t(new Date(today).toLocaleTimeString().split(" ")[1].toLocaleLowerCase())}
           </span>
         </p>
         <div
           id={!currentUser ? "daily-reward" : undefined}
-          className={`gap-2 grid ${
-            resizeSidebare ? "grid-cols-4 lg:grid-cols-3" : "grid-cols-3 lg:grid-cols-2"
-          }  sm:grid-cols-3 xs:grid-cols-2`}
+          className={cn(
+            "grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4",
+            resizeSidebare ? "lg:grid-cols-4" : "lg:grid-cols-3",
+          )}
         >
           {currentUserStatus === "pending" &&
             [...Array(7).keys()].map((item) => <DailyStreakRewardCardSkeleton key={item} />)}
@@ -140,32 +138,32 @@ const DailyReward = () => {
               );
             })}
         </div>
-        <div className="flex items-center gap-2 text-orange-400 text-sm bg-[#a5a5a425] px-4 py-2 rounded-md">
-          <MdOutlineGppMaybe className="min-w-fit h-8 opacity-70" />
+        <div className="flex items-center gap-2 rounded-md bg-[#a5a5a425] px-4 py-2 text-sm text-orange-400">
+          <MdOutlineGppMaybe className="h-8 min-w-fit opacity-70" />
           {t("Earn 1000 more coins today to keep your streak! Time left")}
         </div>
       </div>
-      <div className="flex items-center gap-4 flex-wrap sm:flex-col overflow-hidden">
-        <div className="w-[300px] xs:w-full bg-[#746dac33] flex items-center justify-between  rounded-lg border-b border-b-gray-300 p-3">
-          <div className="w-[20%] py-2 bg-[#191c3aad] rounded-lg flex items-center justify-center border-b border-b-gray-300">
-            <BsTwitter className="text-3xl " />
+      <div className="flex flex-col items-center justify-between gap-4 overflow-hidden sm:flex-row">
+        <div className="flex w-full items-center justify-between rounded-lg border-b border-b-gray-300 bg-[#746dac33] p-3 md:w-[300px]">
+          <div className="flex w-[20%] items-center justify-center rounded-lg border-b border-b-gray-300 bg-[#191c3aad] py-2">
+            <BsTwitter className="text-3xl" />
           </div>
 
-          <div className="w-[68%] flex flex-col items-center justify-center gap-1 ">
-            <span className=" text-[#b3ddb1] font-bold ">{t("Follow Us On Twitter")}</span>
-            <button className="text-black bg-[#87ec8ed0] rounded-sm w-full border border-gray-400 flex items-center justify-center font-bold ml-auto">
+          <div className="flex w-[68%] flex-col items-center justify-center gap-1">
+            <span className="font-bold text-[#b3ddb1]">{t("Follow Us On Twitter")}</span>
+            <button className="ml-auto flex w-full items-center justify-center rounded-sm border border-gray-400 bg-[#87ec8ed0] font-bold text-black">
               {t("Claim Points")}
             </button>
           </div>
         </div>
-        <div className="w-[300px] xs:w-full bg-[#746dac33] flex items-center justify-between rounded-lg border-b border-b-gray-300 p-3">
-          <div className="w-[20%] py-2 bg-[#191c3aad] rounded-lg flex items-center justify-center border-b border-b-gray-300">
-            <MdAppSettingsAlt className="text-3xl " />
+        <div className="flex w-full items-center justify-between rounded-lg border-b border-b-gray-300 bg-[#746dac33] p-3 md:w-[300px]">
+          <div className="flex w-[20%] items-center justify-center rounded-lg border-b border-b-gray-300 bg-[#191c3aad] py-2">
+            <MdAppSettingsAlt className="text-3xl" />
           </div>
 
-          <div className="w-[68%] flex flex-col items-center gap-1  ">
-            <span className=" text-[#b3ddb1] font-bold ">{t("Download Our App")}</span>
-            <button className="text-black bg-[#87ec8ed0] rounded-sm w-full border border-gray-400 flex items-center justify-center  font-bold ">
+          <div className="flex w-[68%] flex-col items-center gap-1">
+            <span className="font-bold text-[#b3ddb1]">{t("Download Our App")}</span>
+            <button className="flex w-full items-center justify-center rounded-sm border border-gray-400 bg-[#87ec8ed0] font-bold text-black">
               {t("Download For Points")}
             </button>
           </div>

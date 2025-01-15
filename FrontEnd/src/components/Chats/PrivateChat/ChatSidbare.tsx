@@ -8,8 +8,9 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useListenToSocketEvents } from "../../../hooks";
 import { TypePrivateMessage } from "../../../types/privateChatTypes";
 import { debounce } from "../../../utils/common";
-import Spinner from "../../Others/Spinner";
+// import Spinner from "../../Others/Spinner";
 import { MdOutlineMenu } from "react-icons/md";
+import { IoCloseSharp } from "react-icons/io5";
 
 interface TypeProps {
   toggleSidbare: () => void;
@@ -67,26 +68,27 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
   }, [hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   return (
-    <div className="relative  h-full flex flex-col items-center gap-2 p-2 sm:p-1 bg-[#131129]">
+    <div className="relative flex h-full flex-col space-y-2 bg-[#131129] p-1 sm:p-2">
       <span
         onClick={toggleSidbare}
-        className="hidden xl:flex items-center justify-center absolute top-[1px] -right-9 w-9 h-10 sm:h-8 bg-[#1f1425] rounded-sm"
+        className="absolute -right-[45px] top-0 flex h-8 w-11 items-center justify-center rounded-sm bg-[#1f1425] sm:h-[48px] sm:w-11 2xl:hidden"
       >
-        {redPoint && <span className="absolute top-[2px] right-[2px] w-3 h-3 bg-red-600 rounded-full"></span>}
-        <MdOutlineMenu className="text-2xl" />
+        {redPoint && <span className="absolute right-[2px] top-[2px] h-3 w-3 rounded-full bg-red-600"></span>}
+        {!openSidbare && <IoCloseSharp className="text-2xl sm:text-3xl" />}
+        {openSidbare && <MdOutlineMenu className="text-2xl sm:text-3xl" />}
       </span>
-      <div className="w-full h-12 sm:h-10 overflow-hidden">
-        <SearchBar placeholder="search people..." onChange={() => {}} />
+      <div className="h-8 w-full overflow-hidden">
+        <SearchBar placeholder="Find Conversation" onChange={() => {}} />
       </div>
-      <div className="w-full text-[#81bef0] pl-2">Peoples</div>
-      <div
-        ref={conversationsListRef}
-        className="w-full flex flex-1 flex-col items-center gap-2 sm:gap-1 overflow-auto lg:scrollbar-thin  overflow-x-hidden"
-      >
+      <div className="flex items-center justify-center gap-2 text-xs text-[#c9d1d8] sm:text-sm">
+        <span className="flex-1 border-t border-zinc-600"></span>Peoples
+        <span className="flex-1 border-t border-zinc-600"></span>
+      </div>
+      <div ref={conversationsListRef} className="flex-1 overflow-y-scroll scrollbar-thin">
         {error && (
           <>
-            <div className="mt-2 text-gray-400 font-bold">{error.response?.data.error}</div>
-            <button className="text-sm rounded-md text-[#8fa4bd] px-4 py-1 bg-[#645a5a] font-bold">
+            <div className="mt-2 font-bold text-gray-400">{error.response?.data.error}</div>
+            <button className="rounded-md bg-[#645a5a] px-4 py-1 text-sm font-bold text-[#8fa4bd]">
               Try Again
             </button>
           </>
@@ -95,25 +97,25 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
         {status === "success" &&
           conversations?.map((conversation) => {
             const isOnLine = onlineUsers.includes(conversation.secondParty._id);
+            const chatWithUserOpen = activeConversation === conversation.secondParty._id;
             return (
-              <div
-                onClick={toggleSidbare}
+              <People
                 key={conversation.secondParty._id}
-                className={`w-full ${activeConversation === conversation.secondParty._id && "bg-[#24233b]"}`}
-              >
-                <People conversation={conversation} isOnLine={isOnLine} />
-              </div>
+                conversation={conversation}
+                isOnLine={isOnLine}
+                chatWithUserOpen={chatWithUserOpen}
+              />
             );
           })}
 
         {isFetchNextPageError && <p className="text-sm text-[#dd2a2a]">an Error occurred!</p>}
-        <div
+        {/* <div
           className={`${
             isFetchingNextPage ? "visible" : "invisible"
-          } w-full bg-[#131129] flex items-center justify-center`}
+          } flex w-full items-center justify-center bg-[#131129]`}
         >
-          <Spinner className="w-7 h-7 sm:w-5 sm:h-5 border-4 sm:border-[3px]" />
-        </div>
+          <Spinner className="h-7 w-7 border-4 sm:h-5 sm:w-5 sm:border-[3px]" />
+        </div> */}
       </div>
     </div>
   );

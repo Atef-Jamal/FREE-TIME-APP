@@ -66,20 +66,22 @@ const LiveStats = memo(() => {
   }, [onlineUsers, queryClient]);
 
   return (
-    <div className={`flex w-full`}>
+    <div
+      className={`sticky top-[55px] z-[4] flex h-[40px] items-center border-b border-[#ffd7d728] bg-[#1a1a25] lg:h-[47px]`}
+    >
       <div
         onClick={() => setOpenLangMenu(!openLangMenu)}
-        className=" bg-[#222339] ml-2 sm:ml-1 flex items-center gap-2 p-[14px] sm:p-2 rounded-md my-1 relative"
+        className="relative m-1 flex items-center gap-2 rounded-md bg-[#222339] px-3 py-2 lg:py-3"
       >
         <MdLanguage />
         <IoIosArrowDown />
         {openLangMenu && <LangMenu setOpenLangMenu={setOpenLangMenu} />}
       </div>
-      <div className="flex items-center gap-2 xs:gap-[6px] overflow-auto scrollbar-none sm:scrollbar-thin pl-2  py-2 sm:py-1 w-full ">
+      <div className="flex items-center gap-[6px] overflow-scroll py-1 pl-2 scrollbar-thin sm:gap-2 lg:scrollbar-none">
         {status === "pending" && <LiveStatsSkeleton />}
 
         {error && (
-          <div className="xs:text-xs tracking-wide font-bold text-red-400 w-full flex items-center justify-center gap-3 py-1">
+          <div className="xs:text-xs flex w-full items-center justify-center gap-3 py-1 font-bold tracking-wide text-red-400">
             <FaExclamationCircle className="text-lg" />
             {error.message === "Network Error" ? "Network Error" : error.response?.data.error}
           </div>
@@ -89,33 +91,33 @@ const LiveStats = memo(() => {
           users?.map((user) => {
             const { _id, name, points, emailVerified } = user;
             const isOnline = onlineUsers.includes(_id);
-
+            const heighestUser = userHieghestPoints === _id;
             return (
               <Link
                 key={_id}
                 to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
-                className="relative bg-[#222339] text-sm h-[45px] min-w-[200px] rounded-sm px-[10px] text-gray-400 flex items-center justify-between sm:h-[30px] sm:px-[5px] sm:min-w-[155px] sm:gap-1 "
+                className="relative flex h-[30px] min-w-[155px] items-center justify-between gap-1 rounded-sm bg-[#222339] px-1 text-sm text-gray-400 lg:h-[37px] lg:min-w-[190px] lg:px-2"
               >
-                {userHieghestPoints === _id && (
-                  <span className="absolute -top-2 -left-2 w-5 h-5 -rotate-45">
+                {heighestUser && (
+                  <span className="absolute -left-2 -top-2 h-5 w-5 -rotate-45">
                     <img src={crown} alt="" className="" />
                   </span>
                 )}
-                <div className="w-[35px] h-[30px] sm:w-[25px] sm:h-[20px]">
+                <div className="h-[20px] w-[25px] lg:h-[27px] lg:w-[33px]">
                   <UserImage user={user} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="overflow-hidden  font-boldsm:font-[400] text-xs sm:text-[9px] sm:tracking-wide w-[80px] truncate sm:-mb-1 text-[#dddbdb] tracking-wider">
+                  <span className="-mb-2 w-[80px] overflow-hidden truncate text-[9px] font-[400] tracking-wide text-[#dddbdb] sm:tracking-wider lg:-mb-1 lg:text-[11px] lg:font-bold">
                     {name}
                   </span>
                   <div className="flex items-center gap-8">
                     {isOnline && (
-                      <span className="text-xs text-[#68e44a] font-bold tracking-wide sm:text-[9px]">
+                      <span className="text-[9px] font-bold tracking-wide text-[#68e44a] lg:text-[11px]">
                         online
                       </span>
                     )}
                     {!isOnline && (
-                      <span className="text-xs text-[#54724c] font-bold  tracking-wide sm:text-[9px]">
+                      <span className="text-[9px] font-bold tracking-wide text-[#54724c] lg:text-[11px]">
                         offline
                       </span>
                     )}
@@ -123,30 +125,30 @@ const LiveStats = memo(() => {
                       <img
                         src={verifiedImage}
                         alt=""
-                        className="w-4 h-4 sm:w-3 sm:h-3 object-contain -mt-[2px]"
+                        className="-mt-[2px] h-3 w-3 object-contain lg:h-4 lg:w-4"
                       />
                     )}
                   </div>
                 </div>
-                <span className=" sm:w-8 sm:h-6 w-9 h-8 sm:px-1 sm:text-[9px] flex items-center justify-center rounded-md bg-[#181616]  text-[#c1f018]">
+                <span className="flex h-6 min-w-9 items-center justify-center rounded-md bg-[#181616] px-1 text-xs text-[#c1f018] lg:h-7">
                   {points}
                 </span>
               </Link>
             );
           })}
         {isFetchNextPageError && (
-          <button className="text-red-400 sm:text-sm text-nowrap px-4 sm:h-[30px] h-[45px] rounded-sm ">
+          <button className="h-[45px] text-nowrap rounded-sm px-4 text-sm text-red-400 lg:h-[30px] lg:text-base">
             an error occurred
           </button>
         )}
         {hasNextPage && (
           <button
-            className="sm:text-sm text-nowrap px-4 sm:h-[30px] h-[45px] rounded-sm bg-[#393957]"
+            className="h-[30px] text-nowrap rounded-sm bg-[#393957] px-4 text-sm lg:h-[40px] lg:text-base"
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
           >
             {!isFetchingNextPage && "Load more"}
-            {isFetchingNextPage && <Spinner className="w-4 h-4 border-4 sm:border-2 mx-4" />}
+            {isFetchingNextPage && <Spinner className="mx-4 h-4 w-4 border-4 sm:border-2" />}
           </button>
         )}
       </div>

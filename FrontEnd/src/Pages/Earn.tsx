@@ -24,6 +24,7 @@ import FilterByPopularityMenu from "../components/Earn/FilterByPopularityMenu";
 import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchAllTasks } from "../utils";
+import { cn } from "../utils/common";
 
 const Earn = () => {
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
@@ -67,7 +68,7 @@ const Earn = () => {
     setTranslate("-translate-x-[50%]");
     const timout = setTimeout(() => {
       window.scrollTo({
-        top: window.innerWidth < 500 ? 155 : window.innerWidth < 867 ? 110 : 0,
+        top: window.innerWidth < 500 ? 155 : window.innerWidth < 1024 ? 110 : 0,
       });
     }, 500);
     return () => clearTimeout(timout);
@@ -117,57 +118,51 @@ const Earn = () => {
   };
 
   return (
-    <div className="flex flex-col p-4 lg:p-3 xs:p-2 gap-4 bg-[#21223a]">
-      <div className="flex items-ceneter sm:flex-col sm:gap-1 gap-2">
-        <div className="relative w-[40%] sm:w-full">
-          <div className=" flex justify-between overflow-hidden">
-            <span className="text-gray-300 text-2xl font-bold flex items-center whitespace-nowrap mr-1">
-              <span className="mr-1 text-[#bedf65]">{t("EARN")}</span> {t("ON")}
-            </span>
-            <div
-              onClick={() => setSelectDevice((prev) => !prev)}
-              className="flex items-center justify-around gap-4 lg:gap-2 bg-[#0b0b22a9] rounded-md w-[200px] sm:py-2 sm:px-4 py-[11px] px-6 lg:px-4 cursor-pointer"
-            >
-              {filterByDevice === "ALL" && (
-                <>
-                  <IoDesktop className="text-lg" />
-                  <DiAndroid className="text-lg" />
-                  <SiApple className="text-lg" />
-                </>
-              )}
-              {filterByDevice === "DESKTOP" && <IoDesktop className="text-lg" />}
-              {filterByDevice === "ANDROID" && <DiAndroid className="text-lg" />}
-              {filterByDevice === "MAC" && <SiApple className="text-lg" />}
-              <FaCaretDown className="text-lg" />
-            </div>
+    <div className="flex flex-col gap-4 bg-[#21223a] p-2 md:p-4">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="relative flex items-center justify-between">
+          <span className="mr-1 flex items-center whitespace-nowrap text-2xl font-bold text-gray-300">
+            <span className="mr-1 text-[#bedf65]">{t("EARN")}</span> {t("ON")}
+          </span>
+          <div
+            onClick={() => setSelectDevice((prev) => !prev)}
+            className="flex cursor-pointer items-center justify-around gap-4 rounded-md bg-[#0b0b22a9] px-4 py-3 lg:px-6"
+          >
+            {filterByDevice === "ALL" && (
+              <>
+                <IoDesktop className="text-lg" />
+                <DiAndroid className="text-lg" />
+                <SiApple className="text-lg" />
+              </>
+            )}
+            {filterByDevice === "DESKTOP" && <IoDesktop className="text-lg" />}
+            {filterByDevice === "ANDROID" && <DiAndroid className="text-lg" />}
+            {filterByDevice === "MAC" && <SiApple className="text-lg" />}
+            <FaCaretDown className="text-lg" />
           </div>
           {selectDevice && (
             <FilterByDeviceMenu
-              // filterByDeviceRef={filterByDeviceRef}
               handleCloseFilterByDevice={handleCloseFilterByDevice}
               filterByDevice={filterByDevice}
               activeFilterByDevice={activeFilterByDevice}
             />
           )}
         </div>
-        <div className="relative w-[60%] gap-2 sm:w-full ">
-          <div className="flex xs:flex-col items-center gap-2 justify-between">
-            <div className="w-full h-10  rounded-md overflow-hidden">
-              <SearchBar placeholder={t("search apps and offers...")} onChange={() => {}} />
-            </div>
-            <div
-              onClick={() => setOpenFilterByPopularityMenu((prev) => !prev)}
-              className="relative w-full max-w-[300px] xs:max-w-full flex items-center justify-evenly  bg-[#30304b] rounded-lg py-2 sm:gap-1 cursor-pointer"
-            >
-              <IoFilter />
-              <span className="text-gray-400 font-bold">{t(filterByPopularity)}</span>
-              <IoMdArrowDropdown className="text-2xl" />
-            </div>
-          </div>
 
+        <div className="h-10 w-full overflow-hidden rounded-md">
+          <SearchBar placeholder={t("search apps and offers...")} onChange={() => {}} />
+        </div>
+        <div className="relative">
+          <div
+            onClick={() => setOpenFilterByPopularityMenu((prev) => !prev)}
+            className="relative flex cursor-pointer items-center justify-evenly rounded-lg bg-[#30304b] py-2 sm:gap-1"
+          >
+            <IoFilter />
+            <span className="font-bold text-gray-400">{t(filterByPopularity)}</span>
+            <IoMdArrowDropdown className="text-2xl" />
+          </div>
           {openFilterByPopularityMenu && (
             <FilterByPopularityMenu
-              // filterByPopularityRef={filterByPopularityRef}
               filterByPopularity={filterByPopularity}
               activeFilterByPopularity={activeFilterByPopularity}
               handleCloseFilterByPopularityMenu={handleCloseFilterByPopularityMenu}
@@ -175,33 +170,34 @@ const Earn = () => {
           )}
         </div>
       </div>
-      <div className=" bg-[#1c1e31] p-4 rounded-xl flex flex-col gap-5 xs:px-2 overflow-x-hidden border border-gray-800">
-        <div className="flex xs:flex-col justify-between ">
+      <div className="flex flex-col gap-4 overflow-x-hidden rounded-xl border border-gray-800 bg-[#1c1e31] px-2 py-4 md:px-4">
+        <div className="flex flex-wrap justify-between gap-y-2">
           <div className="flex items-center gap-3">
             <ImFire className="text-xl" />
-            <h1 className="text-[#8a9fff] text-xl font-bold sm:text-lg">{t("FEATURED OFFERS")}</h1>
+            <h1 className="text-lg font-bold text-[#8a9fff] lg:text-xl">{t("FEATURED OFFERS")}</h1>
           </div>
-          <div className="flex items-center gap-3 justify-end">
-            <button onClick={next} className="px-4 py-2 sm:py-1 bg-[#85ac3e] rounded-md ">
+          <div className="flex items-center justify-end gap-3">
+            <button onClick={next} className="rounded-md bg-[#85ac3e] px-4 py-2 sm:py-1">
               <IoIosArrowBack className="text-xl" />
             </button>
-            <button onClick={prev} className="px-4 py-2 sm:py-1 bg-[#85ac3e] rounded-md">
+            <button onClick={prev} className="rounded-md bg-[#85ac3e] px-4 py-2 sm:py-1">
               <IoIosArrowForward className="text-xl" />
             </button>
           </div>
         </div>
         <div
-          className={`${translate} bg-[#1c1e31] transition-all duration-500 ease-in flex  gap-4 w-[200%] `}
+          className={`${translate} flex w-[207%] gap-4 bg-[#1c1e31] transition-all duration-300 ease-in-out`}
         >
-          <div className="w-[50%]">
+          <div className="w-[48%]">
             <div
-              className={`w-fll border-gray-500 ${
+              className={cn(
+                "grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5",
                 resizeSidebare
-                  ? "grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-2"
-                  : "grid grid-cols-7 xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 xs:grid-cols-2"
-              } gap-3 xs:gap-2 bg-[#1c1e31] h-fit`}
+                  ? "lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-9"
+                  : "lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8",
+              )}
             >
-              {status === "pending" && [...Array(21).keys()].map((item) => <AppSkeleton key={item} />)}
+              {status === "pending" && [...Array(50).keys()].map((item) => <AppSkeleton key={item} />)}
 
               {data?.pages.map((page) =>
                 page.tasks.map((taskDetail, inedx) => (
@@ -216,12 +212,12 @@ const Earn = () => {
             </div>
 
             {status === "error" && !isFetchNextPageError && (
-              <p className="py-10 font-bold text-center text-[#e45e3c]">{error.response?.data.error}</p>
+              <p className="py-10 text-center font-bold text-[#e45e3c]">{error.response?.data.error}</p>
             )}
 
             {isFetchingNextPage && (
               <div className="mt-4">
-                <Spinner className="w-8 h-8 border-[3px] border-b-yellow-400 border-l-yellow-400 mx-auto" />
+                <Spinner className="mx-auto h-8 w-8 border-[3px] border-b-yellow-400 border-l-yellow-400" />
               </div>
             )}
 
@@ -230,25 +226,25 @@ const Earn = () => {
             )}
 
             {!isFetchingNextPage && isFetchNextPageError && (
-              <p className="font-bold text-[#e45e3c] text-center">An Error Occurred During Loading More !</p>
+              <p className="text-center font-bold text-[#e45e3c]">An Error Occurred During Loading More !</p>
             )}
 
             {hasNextPage && (
               <button
                 onClick={() => fetchNextPage()}
-                className="w-full text-center py-1 mt-4 font-[600] tracking-wider text-[#c2c2f5] rounded-sm bg-[#6069857e]"
+                className="mt-4 w-full rounded-sm bg-[#6069857e] py-1 text-center font-[600] tracking-wider text-[#c2c2f5]"
               >
                 {t("Load More")}
               </button>
             )}
           </div>
-          <div className={`bg-[#1c1e31] w-[50%] `}>
-            <div className=" w-[50%] sm:w-full max-w-[500px] mx-auto">
+          <div className={`w-[50%] bg-[#1c1e31]`}>
+            <div className="mx-auto w-full max-w-[500px] pr-4 lg:w-[50%]">
               {taskId && <TaskDetail taskId={taskId} />}
               {!taskId && (
                 <button
                   onClick={selectApp}
-                  className="w-[90%] max-w-[500px] p-5 mt-5 text-gray-500 underline text-xl font-bold"
+                  className="mt-5 w-[90%] max-w-[500px] p-5 text-xl font-bold text-gray-500 underline"
                 >
                   {t("select an app to preview")}
                 </button>
@@ -262,7 +258,7 @@ const Earn = () => {
           <ImFire className="text-2xl" />
           <h1 className="text-xl font-bold text-[#8a9fff]">{t("OFFER PARTNERS")}</h1>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-3 xs:gap-2 mt-4">
+        <div className="xs:gap-2 mt-4 flex flex-wrap items-center justify-center gap-3">
           {arrayoffers.map(({ image }, index) => (
             <ParnterCard key={index} image={image} />
           ))}
@@ -273,7 +269,7 @@ const Earn = () => {
           <ImFire className="text-2xl" />
           <h1 className="text-xl font-bold text-[#8a9fff]">{t("SURVEY PARTNERS")}</h1>
         </div>
-        <div className="flex justify-center gap-3  xs:gap-2  flex-wrap mt-4">
+        <div className="xs:gap-2 mt-4 flex flex-wrap justify-center gap-3">
           {[notikLogo, AdscendMediaGlow, tapresearch].map((item) => (
             <ParnterCard key={item} image={item} />
           ))}

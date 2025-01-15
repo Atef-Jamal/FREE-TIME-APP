@@ -84,37 +84,37 @@ const ChatBody = () => {
 
   if (status === "pending") {
     return (
-      <div className="h-full flex items-center justify-center">
-        <ImSpinner3 className="text-6xl sm:text-4xl animate-spin" />
+      <div className="flex h-full items-center justify-center">
+        <ImSpinner3 className="animate-spin text-6xl sm:text-4xl" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center font-bold text-lg text-[#b95b5b]">
+      <div className="flex h-full w-full items-center justify-center text-lg font-bold text-[#b95b5b]">
         {error.response?.data.error}
       </div>
     );
   }
 
   return (
-    <div className="w-full flex flex-col items-center h-full gap-1 pb-2 bg-[#332342]">
-      <div className="flex items-center justify-center w-full gap-10 bg-[#1f1f2e9a] border-b border-x border-gray-700 py-1">
+    <div className="flex h-full flex-col border-x border-gray-700 bg-[#332342] 2xl:flex-1">
+      <div className="flex items-center justify-center gap-10 border-b border-gray-700 bg-[#1f1f2e9a] py-1 sm:py-2">
         <div className="flex items-center gap-3">
-          <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
+          <div className="h-[25px] w-[30px] sm:h-[32px] sm:w-[37px]">
             <UserImage user={data.secondUser} />
           </div>
-          <span className="sm:text-sm font-bold text-[#3785fa]">{data.secondUser?.name}</span>
+          <span className="text-sm font-bold text-[#3785fa] md:text-base">{data.secondUser?.name}</span>
         </div>
         {onlineUsers.includes(activeConversation) ? (
-          <span className="text-[13px] font-bold text-[#68e44a] tracking-wide">online</span>
+          <span className="text-xs font-bold tracking-wide text-[#68e44a] md:text-sm">online</span>
         ) : (
-          <span className="text-[13px] font-bold text-[#54724c] tracking-wide">offline</span>
+          <span className="text-xs font-bold tracking-wide text-[#54724c] md:text-sm">offline</span>
         )}
       </div>
 
-      <div className="flex flex-col items-center w-full gap-2 sm:gap-[3px] overflow-auto scrollbar-none grow">
+      <div className="flex-1 overflow-y-auto scrollbar-thin lg:scrollbar-none">
         {data.messages.map((msg, index) => (
           <PrivateMessageItem
             key={msg._id}
@@ -125,9 +125,8 @@ const ChatBody = () => {
           />
         ))}
       </div>
-      <div className="w-full">
-        <SendMessagePrivateChat id={activeConversation} />
-      </div>
+
+      <SendMessagePrivateChat id={activeConversation} />
     </div>
   );
 };

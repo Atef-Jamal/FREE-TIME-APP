@@ -24,7 +24,7 @@ export interface TypeInitialState {
   isChatOpen: boolean;
   isSignInMode: boolean;
   openSidebarMobile: boolean;
-  isMobile: boolean;
+  smallScreen: boolean;
   ToastNotify: TypePopup;
   resizeSidebare: boolean;
   hiddenLiveStats: boolean;

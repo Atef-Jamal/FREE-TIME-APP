@@ -17,6 +17,7 @@ import "swiper/css/scrollbar";
 
 const TestimonialSection = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const [comment, setComment] = useState<string>("");
   const [stars, setStars] = useState<number>(1);
   const { t } = useTranslation("home");
@@ -40,7 +41,7 @@ const TestimonialSection = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
     onSuccess: (newTestimonial) => {
@@ -58,7 +59,7 @@ const TestimonialSection = () => {
         showPopup({
           type: "ERROR_LOCK",
           message: "Log In First",
-        })
+        }),
       );
       return;
     }
@@ -67,7 +68,7 @@ const TestimonialSection = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: "Enter Your Opinion",
-        })
+        }),
       );
       return;
     }
@@ -75,20 +76,20 @@ const TestimonialSection = () => {
   };
 
   const numberOfCards = () => {
-    if (window.innerWidth <= 500) return 1.3;
-    return 2.2;
+    if (smallScreen) return 1.3;
+    return 2.3;
   };
 
   return (
-    <div className="w-full py-4 bg-[#1f3346]">
-      <h1 className="text-2xl sm:text-xl tracking-wider font-bold text-center text-[#b0d870]">
+    <div className="w-full bg-[#1f3346] py-4">
+      <h1 className="text-center text-xl font-bold tracking-wider text-[#b0d870] sm:text-2xl">
         {t("What do our users say")}
       </h1>
-      <div className="w-[900px] xl:w-[800px] lg:w-[600px] sm:w-full p-2 mx-auto my-5">
+      <div className="mx-auto my-5 w-full p-2 md:w-[600px] lg:w-[900px] xl:w-[800px]">
         {error && <p className="text-center text-[#f73737]">{error.response?.data.error}</p>}
         {status !== "pending" && !error && (
           <Swiper
-            className="w-full h-[350px] "
+            className="h-[350px] w-full"
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={10}
             slidesPerView={numberOfCards()}
@@ -98,10 +99,10 @@ const TestimonialSection = () => {
             {testimonials?.map((item) => {
               const numOtherStar = 5 - item.stars;
               return (
-                <SwiperSlide key={item._id} className="bg-[#272336ee] rounded-lg max-h-[315px]">
-                  <div className="flex flex-col justify-between h-full  px-3 pb-3">
-                    <span className=" text-5xl font-[900]">،،</span>
-                    <div className="text-[#b5cea4] h-[50%] overflow-scroll scrollbar-none">
+                <SwiperSlide key={item._id} className="max-h-[315px] rounded-lg bg-[#272336ee]">
+                  <div className="flex h-full flex-col justify-between px-3 pb-3">
+                    <span className="text-5xl font-[900]">،،</span>
+                    <div className="h-[50%] overflow-scroll text-[#b5cea4] scrollbar-none">
                       {item.content}
                     </div>
                     <div className="flex items-center justify-between">
@@ -119,8 +120,8 @@ const TestimonialSection = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="w-16 h-16 xs:w-9 xs:h-9 rounded-full border border-yellow-500">
-                        <img src={item.user.profilePicture} alt="" className="w-full h-full rounded-full" />
+                      <div className="h-9 w-9 rounded-full border border-yellow-500 sm:h-16 sm:w-16">
+                        <img src={item.user.profilePicture} alt="" className="h-full w-full rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -131,17 +132,17 @@ const TestimonialSection = () => {
         )}
       </div>
       <form onSubmit={addTestimonialHandler} className="w-full">
-        <div className="w-[500px] sm:w-[60%] xs:w-[94%] flex flex-col gap-3 items-center justify-center mx-auto ">
-          <div className="flex flex-col w-full">
+        <div className="mx-auto flex w-[94%] flex-col items-center justify-center gap-3 sm:w-[500px] md:w-[60%]">
+          <div className="flex w-full flex-col">
             <textarea
               id="comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder={t("Add Your Testimonial")}
-              className="placeholder:text-gray-500 outline-none p-4 sm:p-2 w-full min-h-[90px] bg-[#1b1b24f1] rounded-md text-[#92ccee] resize-none"
+              className="min-h-[90px] w-full resize-none rounded-md bg-[#1b1b24f1] p-4 text-[#92ccee] outline-none placeholder:text-gray-500 sm:p-2"
             />
           </div>
-          <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+          <div className="flex w-full flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               {stars >= 1 ? (
                 <button type="button" onClick={() => setStars(1)}>
@@ -189,27 +190,27 @@ const TestimonialSection = () => {
                 </button>
               )}
             </div>
-            <button className="bg-[#9dec6f] px-6 py-1 rounded-md text-black font-bold" type="submit">
+            <button className="rounded-md bg-[#9dec6f] px-6 py-1 font-bold text-black" type="submit">
               {t("Submit")}
             </button>
           </div>
         </div>
       </form>
-      <div className="flex items-center justify-center gap-6 xs:gap-3 my-16">
-        <div className="w-[45%] max-w-[300px] h-[250px] border-yellow-200 bg-gradient-to-br from-slate-900 to-zinc-800 rounded-lg flex flex-col items-center pt-20 relative">
-          <p className="text-xl font-bold mb-2 text-center">{t("Yesterday Users Cashed Out")}</p>
-          <span className="font-extrabold text-yellow-400 text-4xl xs:text-2xl">$37,392</span>
+      <div className="sm:ap-6 my-16 flex items-center justify-center gap-3">
+        <div className="relative flex h-[250px] w-[45%] max-w-[300px] flex-col items-center rounded-lg border-yellow-200 bg-gradient-to-br from-slate-900 to-zinc-800 pt-20">
+          <p className="mb-2 text-center text-xl font-bold">{t("Yesterday Users Cashed Out")}</p>
+          <span className="text-2xl font-extrabold text-yellow-400 sm:text-4xl">$37,392</span>
           <img
             alt={""}
             src={moneyHome}
-            className="absolute w-[50%] h-[120px] xs:w-[70%] xs:h-[90px] -bottom-10"
+            className="absolute -bottom-10 h-[90px] w-[70%] sm:h-[120px] sm:w-[50%]"
           />
         </div>
-        <div className="w-[45%] max-w-[300px] h-[250px] rounded-md flex flex-col items-center justify-center bg-[#1d1e31] gap-5 ">
-          <h1 className="text-white font-bold w-[80%] text-center sm:text-lg text-xl">
+        <div className="flex h-[250px] w-[45%] max-w-[300px] flex-col items-center justify-center gap-5 rounded-md bg-[#1d1e31]">
+          <h1 className="w-[80%] text-center text-xl font-bold text-white sm:text-lg">
             {t("Sign up now and Start earnig money")}
           </h1>
-          <div className="bg-[#01d676] text-lg rounded-md text-black font-bold px-3 py-1 xs:text-sm">
+          <div className="rounded-md bg-[#01d676] px-3 py-1 text-sm font-bold text-black sm:text-lg">
             {t("Start Earning Money")}
           </div>
         </div>

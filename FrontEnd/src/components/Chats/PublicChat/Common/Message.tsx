@@ -162,81 +162,77 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     <div
       ref={lastMessageRef}
       id={messageItem._id}
-      className={`special-for-deleting-${messageItem._id} bg-[#2f2f4e88] w-full flex flex-col gap-1  rounded-md p-[6px]`}
+      className={`special-for-deleting-${messageItem._id} flex flex-col gap-1 rounded-md bg-[#2f2f4e88] p-[6px]`}
     >
-      <div className="w-full flex relative ">
-        <div className="w-[35px] h-[30px] sm:w-[30px] sm:h-[25px]">
+      <div className="relative flex w-full">
+        <div className="h-[30px] w-[35px] sm:h-[25px] sm:w-[30px]">
           <UserImage user={messageItem.sender} />
         </div>
         <Link
           to={currentUserId === messageItem.sender._id ? "/myprofile" : `/user/${messageItem.sender._id}`}
-          className={`ml-2 sm:ml-[6px] max-w-[60%]  overflow-hidden -mt-1`}
+          className={`-mt-1 ml-2 max-w-[60%] overflow-hidden sm:ml-[6px]`}
         >
-          <span className="flex items-center  text-[#6dca51] text-sm font-bold capitalize -mb-[6px]">
+          <span className="-mb-[6px] flex items-center text-sm font-bold capitalize text-[#6dca51]">
             {messageItem.sender?.name}
             {messageItem.sender.emailVerified && (
-              <img
-                src={verifiedImage}
-                alt=""
-                className="w-4 h-4 sm:w-[14px] sm:h-[14px] object-cover mx-2 "
-              />
+              <img src={verifiedImage} alt="" className="mx-2 h-4 w-4 object-cover sm:h-[14px] sm:w-[14px]" />
             )}
           </span>
-          {messageItem.createdAt && <span className="text-xs text-[#857272] font-bold">{date}</span>}
+          {messageItem.createdAt && <span className="text-xs font-bold text-[#857272]">{date}</span>}
         </Link>
 
         {currentUserId === messageItem.sender._id && !messageItem.isDeleted && (
           <button onClick={handleDelete} className="ml-auto flex items-center justify-center rounded-sm">
-            <FaRegTrashCan className="text-lg sm:text-sm opacity-70" />
+            <FaRegTrashCan className="text-lg opacity-70 sm:text-sm" />
           </button>
         )}
       </div>
 
       {!messageItem.isDeleted ? (
         <div className="w-full pl-[3px]">
-          <p className="break-words text-sm text-[#97b5f7] w-full p-[2px]">
+          <p className="w-full break-words p-[2px] text-sm text-[#97b5f7]">
             {messageItem.mentioned && (
               <Link
                 to={`/user/${messageItem.mentioned._id}`}
-                className="text-xs sm:text-[10.5px] text-blue-700 font-extrabold mr-2"
+                className="mr-2 text-xs font-extrabold text-blue-700 sm:text-[10.5px]"
               >
                 @{messageItem.mentioned.name}
               </Link>
             )}
             {messageItem.message}
           </p>
-          <div className="flex items-center justify-end gap-3 ml-auto w-full">
-            {messageItem.isSended === "SUCCESS" && <FcOk className="mr-auto " />}
+          <div className="ml-auto flex w-full items-center justify-end gap-3">
+            {messageItem.isSended === "SUCCESS" && <FcOk className="mr-auto" />}
 
             {messageItem.isSended === "PENDING" && <BiCircle className="mr-auto opacity-70" />}
 
-            {messageItem.isSended === "FAILED" && <IoCloseCircleOutline className="mr-auto " />}
+            {messageItem.isSended === "FAILED" && <IoCloseCircleOutline className="mr-auto" />}
 
-            <button onClick={handleLove} className="flex items-center gap-1 ">
+            <button onClick={handleLove} className="flex items-center gap-1">
               <FcLike className="text-sm opacity-70" />
-              <span className="text-xs text-yellow-500 font-bold -mb-[2px]">
+              <span className="-mb-[2px] text-xs font-bold text-yellow-500">
                 {messageItem.loves.length || 0}
               </span>
             </button>
 
             <button onClick={handleLike} className="flex items-center gap-1">
               <AiTwotoneLike className="text-sm opacity-40" />
-              <span className="text-xs text-yellow-500 font-bold -mb-[2px]">
+              <span className="-mb-[2px] text-xs font-bold text-yellow-500">
                 {messageItem.likes.length || 0}
               </span>
             </button>
             <button onClick={handleDisLike} className="flex items-center gap-1">
               <AiTwotoneDislike className="text-sm opacity-40" />
-              <span className="text-xs text-yellow-500 font-bold -mb-[2px]">
+              <span className="-mb-[2px] text-xs font-bold text-yellow-500">
                 {messageItem.dislikes.length || 0}
               </span>
             </button>
           </div>
         </div>
       ) : (
-        <p className="flex items-center justify-center text-[12px] italic font-extrabold text-[#df9149af] mb-1">
+        <p className="mb-1 flex items-center justify-center text-[12px] font-extrabold italic text-[#df9149af]">
           DELETED BY
-          <span className="text-[12px] italic ml-1 text-gray-400">{messageItem.sender.name}</span>
+          <span className="ml-1 text-[12px] italic text-gray-400">{messageItem.sender.name}</span>
         </p>
       )}
     </div>

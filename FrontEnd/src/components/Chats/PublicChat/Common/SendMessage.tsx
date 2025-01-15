@@ -16,7 +16,7 @@ import MentionListOfUsers from "./MentionListOfUsers";
 import { sendPublicChatMessage } from "../../../../utils";
 import { handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
-import { RiBaseStationLine } from "react-icons/ri";
+// import { RiBaseStationLine } from "react-icons/ri";
 import { TypeCashedPublicChat, TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { User } from "../../../../types/userTypes";
 import { v4 as uuId } from "uuid";
@@ -32,7 +32,7 @@ interface typeProps {
 const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  // const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
@@ -77,7 +77,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
               return page;
             }),
           };
-        }
+        },
       );
 
       setMessage("");
@@ -107,7 +107,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
               return page;
             }),
           };
-        }
+        },
       );
       socket?.emit("public-message", data);
       if (user) {
@@ -151,7 +151,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
                 return page;
               }),
             };
-          }
+          },
         );
       }
 
@@ -159,7 +159,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
   });
@@ -172,7 +172,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         showPopup({
           type: "ERROR_GENERAL",
           message: "Enter a Message",
-        })
+        }),
       );
       return;
     }
@@ -217,7 +217,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         timeOutRef.current = timmer;
       }
     },
-    [socket, somoneTyping]
+    [socket, somoneTyping],
   );
 
   const handleOpenMentionList = (e: MouseEvent) => {
@@ -230,6 +230,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
       setSomeOneTyping(true);
     }
   };
+
   const handleStopTyping = () => {
     setSomeOneTyping(false);
   };
@@ -246,8 +247,8 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
   }, [socket]);
 
   return (
-    <div className="relative w-full bg-[#0a071670] flex flex-col items-center px-2 pb-2 pt-1">
-      <div className="flex items-center w-full">
+    <div className="relative flex w-full flex-col items-center bg-[#0a071670] px-2 pb-2 pt-1">
+      {/* <div className="flex items-center w-full">
         <span className="hidden sm:flex items-center justify-center text-xs text-[#a2a345]">
           <RiBaseStationLine className="opacity-70" />
           <span className="text-[#7ff349] mx-1">{onlineUsers.length}</span>
@@ -260,21 +261,21 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         >
           somone typing ...
         </span>
-      </div>
+      </div> */}
       {openMentionList && (
-        <div className="absolute -top-[152px] left-2 w-[95%] h-[150px] border border-gray-500">
+        <div className="absolute -top-[152px] left-2 h-[150px] w-[95%] border border-gray-500">
           <MentionListOfUsers setUser={setUser} setOpenMentionList={setOpenMentionList} />
         </div>
       )}
       {!currentUser && (
-        <div className="absolute z-[1] sm:top-5 top-1 w-full sm:h-[48px] h-[55px] flex sm:pt-1 sm:items-start items-center justify-center gap-4 text-lg font-bold">
-          <span className="py-1 px-2 rounded-md bg-[#000000]">
+        <div className="absolute top-1 z-[1] flex h-[55px] w-full items-center justify-center gap-4 text-lg font-bold sm:top-5 sm:h-[48px] sm:items-start sm:pt-1">
+          <span className="rounded-md bg-[#000000] px-2 py-1">
             <FcLock className="text-xl" />
           </span>
           Sign Up To Unlock
         </div>
       )}
-      <form className={`${!currentUser && "blur-sm"} w-full relative flex items-end justify-between gap-1`}>
+      <form className={`${!currentUser && "blur-sm"} relative flex w-full items-end justify-between gap-1`}>
         <textarea
           ref={inputRef}
           onChange={handleInputChange}
@@ -284,23 +285,23 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
           style={{ lineHeight: "1", maxHeight: "250px" }}
           rows={1}
           className={`${
-            user ? "pl-[60px] pt-3 py-3" : "p-3"
-          } bg-[#2f3042a2] text-[#afc6e0] rounded-md border-none outline-none placeholder:text-gray-600 w-full resize-none overflow-scroll scrollbar-none`}
+            user ? "py-3 pl-[60px] pt-3" : "p-3"
+          } w-full resize-none overflow-scroll rounded-md border-none bg-[#2f3042a2] text-[#afc6e0] outline-none scrollbar-none placeholder:text-gray-600`}
         />
         {user && (
           <span
             onClick={() => setUser(null)}
-            className="absolute top-1 left-1 text-center py-[6px] text-[11px] w-[50px] truncate bg-[#3c5db8e0] rounded-md px-[3px] cursor-pointer"
+            className="absolute left-1 top-1 w-[50px] cursor-pointer truncate rounded-md bg-[#3c5db8e0] px-[3px] py-[6px] text-center text-[11px]"
           >
             {user.name}
           </span>
         )}
-        <div onClick={handleOpenMentionList} className="relative py-[6px] px-3 rounded-md bg-[#542ba06e] ">
-          <p className=" text-gray-400 font-bold text-lg">@</p>
+        <div onClick={handleOpenMentionList} className="relative rounded-md bg-[#542ba06e] px-3 py-[6px]">
+          <p className="text-lg font-bold text-gray-400">@</p>
         </div>
         <button
           type="submit"
-          className="bg-[#217ebbf3] rounded-md w-12 h-10 flex items-center justify-center"
+          className="flex h-10 w-12 items-center justify-center rounded-md bg-[#217ebbf3]"
           onClick={sendMessageHandler}
           disabled={!currentUser || mutation.isPending}
         >

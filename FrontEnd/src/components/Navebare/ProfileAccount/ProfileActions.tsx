@@ -74,61 +74,54 @@ const ProfileActions = () => {
   });
 
   return (
-    <>
-      {currentUser && (
-        <div className="relative h-full flex items-center justify-between w-[500px] sm:w-[320px]">
-          <div className="w-[28%] h-full flex items-center rounded-md bg-[#04050a] overflow-scroll scrollbar-none">
-            <button
-              onClick={() => {
-                dispatch(openModel({ status: true, children: <ApplyCoupon /> }));
-              }}
-              className="w-1/3 h-full flex items-center justify-center"
-            >
-              <FaPlus />
-            </button>
-            <span className="border-l h-full flex flex-col items-center justify-center flex-1">
-              <span className="text-[#3de21c] -mb-[1px] text-lg sm:text-xs">{currentUser.points}</span>
-              <span className="sm:text-[9px] text-xs text-[#c2bebe] ">points</span>
-            </span>
-          </div>
-          <div
-            onClick={() => setOpenProfileMenu(!openProfileMenu)}
-            className="cursor-pointer w-[55%] h-full bg-[#3a3e58b7] flex items-center justify-around rounded-md "
-          >
-            <div className="w-[40px] h-[35px] sm:w-[30px] sm:h-[25px]">
-              <UserImage user={currentUser} />
-            </div>
-            <span className="text-[#c0c0ba] text-md sm:text-xs max-w-[120px] sm:max-w-[80px] sm:px-1 text-center whitespace-nowrap overflow-scroll scrollbar-none ">
-              {currentUser.name}
-            </span>
-            <BsArrowDown className="sm:text-sm" />
-            {openProfileMenu && (
-              <div className="bg-[#32324c] absolute top-[60px] sm:top-12 right-7 sm:right-4 w-[65%] rounded-lg">
-                <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
-              </div>
-            )}
-          </div>
-          <div
-            onClick={() => {
-              if (!openNotification) {
-                dispatch(updateThisEntity({ entity: "openNotification", value: true }));
-              } else {
-                dispatch(updateThisEntity({ entity: "openNotification", value: false }));
-              }
-            }}
-            className="flex items-center justify-center relative cursor-pointer h-full w-[14%] rounded-md bg-[#3a3e58b7]"
-          >
-            {numUnReaded > 0 && (
-              <span className="w-[18px] h-[18px] flex items-center justify-center absolute top-1 right-1 rounded-full bg-red-600 text-xs">
-                {numUnReaded}
-              </span>
-            )}
-            <IoMdNotifications className="cursor-pointer text-2xl" />
-          </div>
+    <div className="relative flex h-10 items-center gap-x-1 sm:gap-x-2 lg:h-11">
+      <div className="flex h-full items-center overflow-scroll rounded-md bg-[#000000] scrollbar-none">
+        <button
+          onClick={() => {
+            dispatch(openModel({ status: true, children: <ApplyCoupon /> }));
+          }}
+          className="px-2"
+        >
+          <FaPlus />
+        </button>
+        <span className="pr-2 text-xs text-[#3de21c] sm:text-lg">{currentUser?.points}</span>
+      </div>
+      <div
+        onClick={() => setOpenProfileMenu(!openProfileMenu)}
+        className="relative flex h-full cursor-pointer items-center gap-x-4 rounded-md bg-[#3a3e58b7] px-2 sm:px-4"
+      >
+        <div className="h-[25px] w-[30px] sm:h-[30px] sm:w-[35px]">
+          <UserImage user={currentUser} />
         </div>
-      )}
+        <span className="max-w-[80px] overflow-scroll whitespace-nowrap text-center text-xs text-[#c0c0ba] scrollbar-none sm:max-w-[120px] sm:text-base">
+          {currentUser?.name}
+        </span>
+        <BsArrowDown className="text-sm sm:text-base" />
+        {openProfileMenu && (
+          <div className="absolute left-0 top-[105%] z-[100] w-[210px] rounded-lg bg-[#32324c] sm:w-[280px]">
+            <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
+          </div>
+        )}
+      </div>
+      <div
+        onClick={() => {
+          if (!openNotification) {
+            dispatch(updateThisEntity({ entity: "openNotification", value: true }));
+          } else {
+            dispatch(updateThisEntity({ entity: "openNotification", value: false }));
+          }
+        }}
+        className="relative flex h-full cursor-pointer items-center justify-center rounded-md bg-[#3a3e58b7] px-2 sm:px-4"
+      >
+        {numUnReaded > 0 && (
+          <span className="absolute right-1 top-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-600 text-xs">
+            {numUnReaded}
+          </span>
+        )}
+        <IoMdNotifications className="cursor-pointer text-2xl" />
+      </div>
       {openNotification && (
-        <div className="fixed top-[70px] sm:top-[53px] right-0 w-[100vw] z-[4] h-[100vh] sm:w-full">
+        <div className="fixed right-0 top-[70px] z-[4] h-[100vh] w-[100vw] sm:top-[53px] sm:w-full">
           <NotificationMenu
             loadingNotifications={loadingNotifications}
             notifications={notifications}
@@ -136,7 +129,7 @@ const ProfileActions = () => {
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

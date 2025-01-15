@@ -2,19 +2,19 @@ import Skeleton from "../../Others/Skeleton";
 
 const ProfileSkeleton = () => {
   return (
-    <div className="h-full flex items-center gap-2 sm:gap-1">
-      <div className="h-full flex items-center gap-1 bg-[#2f3043] p-3 sm:p-2 rounded-md">
-        <Skeleton className="w-[25px] h-[25px]" />
+    <div className="flex h-10 items-center gap-1 sm:gap-2 lg:h-11">
+      <div className="flex h-full items-center gap-1 rounded-md bg-[#2f3043] p-2 sm:p-3">
+        <Skeleton className="h-[25px] w-[25px] rounded-md" />
       </div>
-      <div className="h-full flex items-center gap-2 bg-[#2f3043] rounded-md p-2">
-        <Skeleton className="w-[30px] h-[30px] rounded-lg" />
+      <div className="flex h-full items-center gap-2 rounded-md bg-[#2f3043] p-2">
+        <Skeleton className="h-[25px] w-[25px] rounded-lg" />
         <div className="flex flex-col items-center gap-1">
-          <Skeleton className="w-[170px] xs:w-[100px] h-[8px]" />
-          <Skeleton className="w-[170px] xs:w-[100px] h-[8px]" />
+          <Skeleton className="h-[8px] w-[100px] sm:w-[170px]" />
+          <Skeleton className="h-[8px] w-[100px] sm:w-[170px]" />
         </div>
       </div>
-      <div className="flex h-full items-center gap-1 bg-[#2f3043] p-3 sm:p-2 rounded-md">
-        <Skeleton className="w-[25px] h-[25px]" />
+      <div className="flex h-full items-center gap-1 rounded-md bg-[#2f3043] p-2 sm:p-3">
+        <Skeleton className="h-[25px] w-[25px] rounded-md" />
       </div>
     </div>
   );

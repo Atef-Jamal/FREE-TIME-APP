@@ -13,9 +13,9 @@ const initialState: TypeInitialState = {
   },
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
   isSignInMode: false,
-  isMobile: window.innerWidth <= 867,
+  smallScreen: window.innerWidth < 1024,
   openSidebarMobile: false,
-  resizeSidebare: window.innerWidth < 1300 ? true : false,
+  resizeSidebare: window.innerWidth < 1400 ? true : false,
   hiddenLiveStats: false,
   openMusicModal: false,
   musicIsPlaying: false,
@@ -35,7 +35,7 @@ export interface TypeTogglActionPayload {
   entity:
     | "openNotification"
     | "isSignInMode"
-    | "isMobile"
+    | "smallScreen"
     | "hiddenLiveStats"
     | "isChatOpen"
     | "openSidebarMobile"

@@ -23,38 +23,38 @@ const FilterByPopularityMenu = memo(
     return (
       <div
         ref={filterByPopularityRef}
-        className="sm:relative absolute top-9 sm:top-0 right-0 z-[2] w-[300px] sm:w-full h- ml-auto mt-2 p-1 border border-gray-700 bg-[#2f2f38] flex flex-col rounded-md cursor-pointer"
+        className="absolute right-0 top-12 z-[2] flex w-full cursor-pointer flex-col rounded-md border border-gray-700 bg-[#202029] p-2"
       >
         <span
           onClick={() => handleCloseFilterByPopularityMenu(false)}
-          className="absolute top-0 right-0  rounded-sm ml-auto p-2"
+          className="absolute right-0 top-0 ml-auto rounded-sm p-2"
         >
           <CgClose className="text-xl" />
         </span>
         <span
           onClick={() => activeFilterByPopularity("ALL")}
-          className={`${filterByPopularity === "ALL" ? "bg-[#3d34647e]" : ""} text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold`}
+          className={`${filterByPopularity === "ALL" ? "bg-[#3d34647e]" : ""} flex items-center gap-4 rounded-sm p-2 font-bold text-gray-400`}
         >
           <VscExpandAll className="text-lg" />
           {t("ALL")}
         </span>
         <span
           onClick={() => activeFilterByPopularity("REWARD")}
-          className={`${filterByPopularity === "REWARD" ? "bg-[#3d34647e]" : ""} text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold`}
+          className={`${filterByPopularity === "REWARD" ? "bg-[#3d34647e]" : ""} flex items-center gap-4 rounded-sm p-2 font-bold text-gray-400`}
         >
           <SiFirewalla className="text-lg" />
           {t("REWARD")}
         </span>
         <span
           onClick={() => activeFilterByPopularity("POPULAR")}
-          className={`${filterByPopularity === "POPULAR" ? "bg-[#3d34647e]" : ""} text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold`}
+          className={`${filterByPopularity === "POPULAR" ? "bg-[#3d34647e]" : ""} flex items-center gap-4 rounded-sm p-2 font-bold text-gray-400`}
         >
           <FaHeart className="text-lg" />
           {t("POPULAR")}
         </span>
         <span
           onClick={() => activeFilterByPopularity("RAITING")}
-          className={`${filterByPopularity === "RAITING" ? "bg-[#3d34647e]" : ""} text-gray-400 flex items-center gap-4 p-2 rounded-sm font-bold`}
+          className={`${filterByPopularity === "RAITING" ? "bg-[#3d34647e]" : ""} flex items-center gap-4 rounded-sm p-2 font-bold text-gray-400`}
         >
           <FaStar className="text-lg" /> {t("RAITING")}
         </span>

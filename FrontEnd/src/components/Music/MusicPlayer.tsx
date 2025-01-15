@@ -12,12 +12,14 @@ import {
   updateThisEntity,
 } from "../../context/StateManeger";
 import { MdClose } from "react-icons/md";
+import { cn } from "../../utils/common";
 
 const MusicPlayer = memo(() => {
   const [expand, setExpand] = useState(false);
   const [trackValue, setTrackValue] = useState(0);
   const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
   const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
+  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
   const dispatch = useAppDispatch();
 
   const formatTime = (timeInSeconds: number) => {
@@ -50,27 +52,29 @@ const MusicPlayer = memo(() => {
 
   return (
     <div
-      className={`transition-all ${
-        !expand ? "translate-x-0" : "-translate-x-[92%] sm:-translate-x-[90%]"
-      } w-[360px] sm:w-[260px] h-full sm:h-full rounded-lg xs:rounded-s-none xs:absolute left-0 top-0 flex items-center justify-between  bg-[#3d4174c0]`}
+      className={cn(
+        "fixed top-32 z-[5] flex h-16 w-[80%] max-w-[360px] items-center justify-between bg-[#3d4174] transition-all lg:top-[100px]",
+        resizeSidebare ? "lg:left-[65px]" : "lg:left-[250px]",
+        expand && "-translate-x-[92%]",
+      )}
     >
-      <div className=" w-full h-full xs:px-1 px-3 flex justify-between items-center gap-2">
+      <div className="flex h-full flex-1 items-center justify-between gap-2 px-2">
         <span
-          className={`transition-all  ${
-            musicIsPlaying ? "animate-spin " : ""
-          } w-10 h-10 rounded-full border-2 border-l-[#ffae45] border-t-[#222770] border-r-[#cef03a] border-b-[#192461]`}
+          className={`transition-all ${
+            musicIsPlaying ? "animate-spin" : ""
+          } h-11 w-11 rounded-full border-2 border-b-[#192461] border-l-[#ffae45] border-r-[#cef03a] border-t-[#222770]`}
         >
-          <img src={activeMusic.musicInfo?.cover} alt="" className="w-full h-full rounded-full" />
+          <img src={activeMusic.musicInfo?.cover} alt="" className="h-full w-full rounded-full" />
         </span>
-        <div className="w-[75%] h-full flex flex-col justify-between py-1">
-          <span className=" w-full flex items-center justify-between">
-            <span className="w-[120px] text-xs text-[#abcdff] truncate font-bold ">
-              {activeMusic.musicInfo?.title || "Song name"}
-              <span className="text-[#e6f74e] font-extrabold mx-2">|</span>
-              {activeMusic.musicInfo?.artist || "Artist name"}
+        <div className="flex h-full flex-1 flex-col justify-between py-[6px]">
+          <span className="flex w-full items-center justify-between">
+            <span className="w-[120px] truncate text-xs font-bold text-[#abcdff]">
+              {activeMusic.musicInfo?.title || "----"}
+              <span className="mx-2 font-extrabold text-[#e6f74e]">|</span>
+              {activeMusic.musicInfo?.artist || "----"} 55ddj
             </span>
           </span>
-          <div className="grid grid-cols-4 -mt-[6px] ">
+          <div className="flex items-center justify-between">
             <span>
               <IoPlaySkipBackSharp />
             </span>
@@ -88,7 +92,7 @@ const MusicPlayer = memo(() => {
               <IoPlaySkipForward />
             </span>
             {!!activeMusic.audio.duration && (
-              <span className="text-xs text-gray-300 ml-auto">{formatTime(activeMusic.audio.duration)}</span>
+              <span className="text-xs text-gray-300">{formatTime(activeMusic.audio.duration)}</span>
             )}
           </div>
           <input
@@ -100,21 +104,24 @@ const MusicPlayer = memo(() => {
             onChange={(e) => {
               activeMusic.audio.currentTime = Number(e.target.value);
             }}
-            className="w-full h-[4px] outline-none"
+            className="h-1 w-full outline-none"
           />
         </div>
       </div>
-      <span className=" h-full bg-[#5aec7f] w-[30px] flex flex-col items-center justify-center cursor-pointer">
-        <span
-          onClick={() => {
-            dispatch(handleCloseMusic());
-            dispatch(updateThisEntity({ entity: "openMusicModal", value: false }));
-          }}
-          className="w-full h-[40%] flex items-center justify-center bg-[#c96d6d] "
-        >
-          <MdClose className="text-2xl" />
-        </span>
-        <FaAngleLeft onClick={() => setExpand((prev) => !prev)} className="text-2xl w-full h-[60%]" />
+      <span
+        onClick={() => {
+          dispatch(handleCloseMusic());
+          dispatch(updateThisEntity({ entity: "openMusicModal", value: false }));
+        }}
+        className="flex h-full w-[30px] items-center justify-center bg-[#be4b4b]"
+      >
+        <MdClose className="text-2xl" />
+      </span>
+      <span
+        onClick={() => setExpand((prev) => !prev)}
+        className="flex h-full w-[30px] items-center justify-center bg-[#5d68cc]"
+      >
+        <FaAngleLeft className="text-2xl" />
       </span>
     </div>
   );

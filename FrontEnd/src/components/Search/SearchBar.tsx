@@ -9,11 +9,9 @@ interface TypeSearchBar {
 
 const SearchBar = ({ placeholder, onChange, readOnly = false }: TypeSearchBar) => {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-[#242424] border border-gray-700 rounded-md overflow-hidden">
-      <span
-        className={`min-w-[70px] lg:min-w-[60px] sm:min-w-[50px] h-full flex items-center justify-center`}
-      >
-        <BiSearch className={`${readOnly ? "text-3xl" : "text-xl sm:text-lg"} opacity-70`} />
+    <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-md border border-gray-700 bg-[#333030]">
+      <span className={`flex h-full min-w-[50px] items-center justify-center lg:min-w-[60px]`}>
+        <BiSearch className={`${readOnly ? "text-2xl lg:text-3xl" : "text-lg lg:text-xl"} opacity-70`} />
       </span>
 
       <input
@@ -21,7 +19,7 @@ const SearchBar = ({ placeholder, onChange, readOnly = false }: TypeSearchBar) =
         onChange={onChange}
         readOnly={readOnly}
         placeholder={placeholder}
-        className="truncate outline-none text-[#6cb4f8] border-gray-500 bg-[#383849] w-full h-full px-4 sm:px-2 border-l"
+        className="h-full w-full truncate border-l border-gray-500 bg-[#1f1f22] px-2 text-sm text-[#6cb4f8] outline-none placeholder:text-[#8b6868] md:px-4 md:text-base"
       />
     </div>
   );

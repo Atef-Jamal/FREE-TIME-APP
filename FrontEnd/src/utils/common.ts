@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RefObject } from "react";
 import { makeRequest } from "../utils";
+import { ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export const validation = (values: string[], signIn: boolean, agreePrivacy?: boolean) => {
   let result = `Must Be Exist-`;
@@ -94,7 +96,7 @@ export const collectReward = async (notificationId: string) => {
 export const debounce = (
   func: (params: any) => void,
   wait: number,
-  timoutRef: RefObject<NodeJS.Timeout | null>
+  timoutRef: RefObject<NodeJS.Timeout | null>,
 ) => {
   return (...arg: any) => {
     if (timoutRef.current) clearTimeout(timoutRef.current);
@@ -103,3 +105,7 @@ export const debounce = (
     }, wait);
   };
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

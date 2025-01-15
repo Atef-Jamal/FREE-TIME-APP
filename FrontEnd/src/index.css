@@ -4,6 +4,7 @@
 
 * {
   margin: 0;
+  padding: 0;
   box-sizing: border-box;
   color: #e7dcdc;
   scroll-behavior: smooth;
@@ -11,7 +12,6 @@
 
 @layer base {
   html {
-    font-size: medium;
     font-family: "Poppins", system-ui, sans-serif;
   }
 }

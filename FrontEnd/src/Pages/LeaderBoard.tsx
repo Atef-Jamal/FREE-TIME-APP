@@ -22,43 +22,45 @@ const LeaderBoard = () => {
   useScrollToElement({});
 
   return (
-    <div className=" bg-[#1d2c35] relative pt-8">
-      <div className="flex justify-between items-center p-4 sm:justify-between  mx-16 sm:mx-0 ">
-        <div className="flex gap-8 sm:gap-3 ">
-          <button className="bg-[#83478398] p-4 sm:p-2 rounded-md text-yellow-300 tracking-wider sm:text-xs">
+    <div className="relative bg-[#1d2c35] pt-4 md:pt-8">
+      <div className="flex items-center justify-between p-4 sm:justify-between lg:mx-16">
+        <div className="flex gap-3 lg:gap-8">
+          <button className="rounded-md bg-[#83478398] px-5 py-2 text-sm tracking-wider text-yellow-300 md:text-base">
             $500 Daily
           </button>
-          <button className="bg-[#3316168e] p-4 sm:p-2 rounded-md text-[#43d616] tracking-wider sm:border border-gray-500 sm:text-xs">
+          <button className="rounded-md border border-gray-500 bg-[#3316168e] px-5 py-2 text-sm tracking-wider text-[#43d616] md:text-base">
             $5000 Monthly
           </button>
         </div>
         <MdLiveHelp />
       </div>
-      <div className="overflow-hidden relative flex justify-center items-center z-0 mt-16 sm:mt-8">
-        <img
-          alt={""}
-          src={dailyleaderboard}
-          className="w-[35%] h-[75%] sm:w-[70%] sm:max-w-[300px] mb-[8%] sm:mb-9 object-contain"
-        />
-        <div className=" bg-[#1f1f30] mx-auto rounded-full absolute top-[34%] sm:top-[44%] w-[185%] h-[800%]  z-[-1] "></div>
+      <div className="relative z-0 overflow-hidden">
+        <div className="mt-5 flex h-28 items-center justify-center">
+          <img
+            alt={""}
+            src={dailyleaderboard}
+            className="absolute -bottom-10 h-[250px] w-[250px] object-contain md:-bottom-20 md:h-[320px] md:w-[320px]"
+          />
+          <div className="absolute top-16 z-[-1] mx-auto h-[1600px] w-[1600px] rounded-full bg-[#1f1f30] sm:h-[2500px] sm:w-[2500px] md:h-[3800px] md:w-[3800px] lg:h-[6100px] lg:w-[6100px] xl:h-[13000px] xl:w-[13000px]"></div>
+        </div>
       </div>
       <div className="bg-[#1f1f30]">
-        <div className="relative border-t-2 border-gray-400 bg-gradient-to-b from-[#1D2C35] to-slate-900  w-[50%] sm:w-[90%] sm:text-sm p-4 text-gray-200 tracking-wide after:absolute after:h-full after:w-[1.3px] after:bg-gradient-to-b after:from-slate-100 after:to-slate-900 after:top-0 after:right-0 before:absolute before:h-full before:w-[1.3px] before:bg-gradient-to-b before:from-slate-100 before:to-slate-900 before:top-0 before:left-0 mx-auto">
+        <div className="relative mx-auto w-[90%] border-t-2 border-gray-400 bg-gradient-to-b from-[#1D2C35] to-slate-900 p-4 text-sm tracking-wide text-gray-200 before:absolute before:left-0 before:top-0 before:h-full before:w-[1.3px] before:bg-gradient-to-b before:from-slate-100 before:to-slate-900 after:absolute after:right-0 after:top-0 after:h-full after:w-[1.3px] after:bg-gradient-to-b after:from-slate-100 after:to-slate-900 lg:w-[50%] lg:text-base">
           The daily leaderboard will reward
           <span className="text-yellow-400"> $500</span> per day, and the monthly leaderboard{" "}
           <span className="text-yellow-400">$5000</span>. A total of{" "}
           <span className="text-yellow-400">$20,000 </span>in rewards for you this month!
         </div>
-        <div className="sm:w-[98%] w-[90%] max-w-[1400px] mx-auto mt-36 mb-16">
+        <div className="mx-auto mb-16 mt-36 w-[98%] max-w-[1400px] lg:w-[90%]">
           <div className="flex items-center justify-center">
             <UsersWinnerCard user={topThreeUsers && topThreeUsers[0]} index={0} />
           </div>
-          <div className="flex flex-wrap sm:flex-col items-center justify-center xl:gap-x-[20%] gap-x-[35%] lg:mt-32 mt-16 gap-y-32">
+          <div className="mx-4 mt-16 flex flex-col flex-wrap items-center justify-between gap-y-32 sm:mt-32 sm:flex-row xl:px-16">
             <UsersWinnerCard user={topThreeUsers && topThreeUsers[1]} index={1} />
             <UsersWinnerCard user={topThreeUsers && topThreeUsers[2]} index={2} />
           </div>
         </div>
-        <div className="flex flex-col sm:w-[98%] w-[90%] max-w-[1400px] mx-auto">
+        <div className="mx-auto flex w-[98%] max-w-[1400px] flex-col lg:w-[90%]">
           <PeopleList
             data={data}
             status={status}

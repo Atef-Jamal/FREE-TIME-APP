@@ -17,7 +17,7 @@ const ToastNotify = memo(() => {
       () => {
         dispatch(resetPopup());
       },
-      type === "LOADING" ? 15000 : 5000
+      type === "LOADING" ? 15000 : 5000,
     );
 
     return () => clearTimeout(timeOutId);
@@ -25,17 +25,17 @@ const ToastNotify = memo(() => {
 
   return (
     <div
-      className={`absolute top-3 sm:top-1 z-[50] ${
-        message ? " translate-y-0 p-2 border  border-[#e0d975]" : "-translate-y-[150%] p-0"
-      } transition duration-200 ease-linear w-fit flex items-center gap-3 xs:gap-2 bg-[#776ae7f8] rounded-lg `}
+      className={`absolute top-1 z-[50] md:top-3 ${
+        message ? "translate-y-0 border border-[#e0d975] p-2" : "-translate-y-[150%] p-0"
+      } xs:gap-2 flex w-fit items-center gap-3 rounded-lg bg-[#776ae7f8] transition duration-200 ease-linear`}
     >
       <span className="text-xl">
         {type === "ERROR_LOCK" && <IoLockClosed />}
         {type === "ERROR_GENERAL" && <BiErrorAlt />}
-        {type === "LOADING" && <Spinner className="w-6 h-6 border-[4px]" />}
+        {type === "LOADING" && <Spinner className="h-6 w-6 border-[4px]" />}
         {type === "SUCESS" && <FaRegCheckCircle />}
       </span>
-      <p className="sm:text-sm text-md font-[500] tracking-wider text-[#f7ffe6]">{message}</p>
+      <p className="text-md font-[500] tracking-wider text-[#f7ffe6] sm:text-sm">{message}</p>
     </div>
   );
 });

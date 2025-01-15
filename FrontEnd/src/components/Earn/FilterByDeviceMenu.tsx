@@ -23,11 +23,11 @@ const FilterByDeviceMenu = memo(
     return (
       <div
         ref={filterByDeviceRef}
-        className={`border border-[#3c4053] p-2 xs:p-1 sm:relative ml-auto absolute right-0 z-[1] w-[200px] sm:w-full bg-[#161033] rounded-md mt-1 flex flex-col items-center justify-center cursor-pointer`}
+        className={`absolute right-0 top-12 z-[1] flex w-full cursor-pointer flex-col items-center justify-center rounded-md border border-[#3c4053] bg-[#161033] p-1 sm:p-2`}
       >
         <div
           onClick={() => activeFilterByDevice("ALL")}
-          className={`${filterByDevice === "ALL" ? "bg-[#3d34647e]" : ""} w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+          className={`${filterByDevice === "ALL" ? "bg-[#3d34647e]" : ""} flex w-full items-center justify-between rounded-sm p-2 sm:p-1`}
         >
           <div className="flex items-center gap-3">
             <GiHamburgerMenu className="text-lg" />
@@ -35,58 +35,58 @@ const FilterByDeviceMenu = memo(
             <span className="text-gray-400">{t("ALL DEVICES")}</span>
           </div>
           <span
-            className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+            className={`flex h-5 w-5 items-center justify-center rounded-full border border-gray-400 p-[2px]`}
           >
             <span
-              className={`${filterByDevice === "ALL" && "bg-[#43da63]"} w-full h-full rounded-full`}
+              className={`${filterByDevice === "ALL" && "bg-[#43da63]"} h-full w-full rounded-full`}
             ></span>
           </span>
         </div>
         <div
           onClick={() => activeFilterByDevice("DESKTOP")}
-          className={`${filterByDevice === "DESKTOP" ? "bg-[#3d34647e]" : ""} w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+          className={`${filterByDevice === "DESKTOP" ? "bg-[#3d34647e]" : ""} flex w-full items-center justify-between rounded-sm p-2 sm:p-1`}
         >
           <div className="flex items-center gap-3">
             <IoDesktop className="text-lg" />
             <span className="text-gray-400">{t("DESKTOP")}</span>
           </div>
           <span
-            className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+            className={`flex h-5 w-5 items-center justify-center rounded-full border border-gray-400 p-[2px]`}
           >
             <span
-              className={`${filterByDevice === "DESKTOP" && "bg-[#43da63]"} w-full h-full rounded-full`}
+              className={`${filterByDevice === "DESKTOP" && "bg-[#43da63]"} h-full w-full rounded-full`}
             ></span>
           </span>
         </div>
         <div
           onClick={() => activeFilterByDevice("ANDROID")}
-          className={`${filterByDevice === "ANDROID" ? "bg-[#3d34647e]" : ""} w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+          className={`${filterByDevice === "ANDROID" ? "bg-[#3d34647e]" : ""} flex w-full items-center justify-between rounded-sm p-2 sm:p-1`}
         >
           <div className="flex items-center gap-3">
             <DiAndroid className="text-lg" />
             <span className="text-gray-400">{t("ANDROID")}</span>
           </div>
           <span
-            className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+            className={`flex h-5 w-5 items-center justify-center rounded-full border border-gray-400 p-[2px]`}
           >
             <span
-              className={`${filterByDevice === "ANDROID" && "bg-[#43da63]"} w-full h-full rounded-full`}
+              className={`${filterByDevice === "ANDROID" && "bg-[#43da63]"} h-full w-full rounded-full`}
             ></span>
           </span>
         </div>
         <div
           onClick={() => activeFilterByDevice("MAC")}
-          className={`${filterByDevice === "MAC" ? "bg-[#3d34647e]" : ""} w-full flex items-center justify-between p-2 sm:p-1 rounded-sm`}
+          className={`${filterByDevice === "MAC" ? "bg-[#3d34647e]" : ""} flex w-full items-center justify-between rounded-sm p-2 sm:p-1`}
         >
           <div className="flex items-center gap-3">
             <SiApple className="text-lg" />
             <span className="text-gray-400">{t("MAC")}</span>
           </div>
           <span
-            className={`w-5 h-5 p-[2px] rounded-full border border-gray-400 flex items-center justify-center`}
+            className={`flex h-5 w-5 items-center justify-center rounded-full border border-gray-400 p-[2px]`}
           >
             <span
-              className={`${filterByDevice === "MAC" && "bg-[#43da63]"} w-full h-full rounded-full`}
+              className={`${filterByDevice === "MAC" && "bg-[#43da63]"} h-full w-full rounded-full`}
             ></span>
           </span>
         </div>

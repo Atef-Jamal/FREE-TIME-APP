@@ -9,23 +9,23 @@ type PropType = Omit<TypeMentionNotify, "_id" | "type" | "isRead">;
 
 const MentionNotify = ({ mentionedUser, messageLocation, createdAt }: PropType) => {
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
-  const isMobile = useAppSelector((state) => state.stateManeger.isMobile);
+  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const dispatch = useAppDispatch();
   const location = useLocation();
 
   const date = formateDate(createdAt);
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">
-      <div className="flex gap-2 w-full">
-        <span className="w-8 h-6 rounded-lg bg-[#7aec2e25] flex items-center justify-center">
+    <div className="xs:gap-1 xs:p-1 flex w-full flex-col items-center gap-2 rounded-md border border-gray-700 bg-[#1010308e] p-2">
+      <div className="flex w-full gap-2">
+        <span className="flex h-6 w-8 items-center justify-center rounded-lg bg-[#7aec2e25]">
           <GoMention />
         </span>
         <h1 className="text-[#d67d54]">MENTION</h1>
-        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
+        <span className="ml-auto pr-1 text-xs text-[#9b9090]">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
-        <Link to={`/user/${mentionedUser._id}`} className="text-sm text-[#696cf3] mr-1 underline sm:text-xs">
+      <p className="w-full text-sm text-[#bbc6d1] sm:text-xs">
+        <Link to={`/user/${mentionedUser._id}`} className="mr-1 text-sm text-[#696cf3] underline sm:text-xs">
           {mentionedUser.name}
         </Link>
         mentioned you in public chat
@@ -33,17 +33,17 @@ const MentionNotify = ({ mentionedUser, messageLocation, createdAt }: PropType) 
 
       <Link
         to={
-          isMobile
+          smallScreen
             ? `/chat?messageId=${messageLocation}`
             : `${location.pathname}?messageId=${messageLocation}`
         }
         onClick={() => {
           dispatch(updateThisEntity({ entity: "openNotification", value: false }));
-          if (!isChatOpen && !isMobile) {
+          if (!isChatOpen && !smallScreen) {
             dispatch(updateThisEntity({ entity: "isChatOpen", value: true }));
           }
         }}
-        className="text-sm bg-[#364072ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
+        className="xs:py-[3px] ml-auto w-[100px] rounded-md border border-gray-700 bg-[#364072ee] py-1 text-center text-sm text-[#eee] underline"
       >
         see that
       </Link>

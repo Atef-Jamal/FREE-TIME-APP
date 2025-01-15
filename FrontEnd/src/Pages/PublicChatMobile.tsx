@@ -14,11 +14,9 @@ const PublicChatMobile = () => {
   return (
     <div
       style={{
-        height: hiddenLiveStats ? `calc(100dvh - 120px)` : `calc(100dvh - 163px)`,
+        height: hiddenLiveStats ? `calc(100vh - 118px)` : `calc(100vh - 158px)`,
       }}
-      className={`hidden sm:flex flex-col items-center fixed ${
-        hiddenLiveStats ? "top-[55px]" : "top-[98px]"
-      } w-full bg-[#202233]`}
+      className={`bg-[#202233] lg:hidden`}
     >
       <PublicChat />
     </div>

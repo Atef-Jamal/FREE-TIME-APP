@@ -6,24 +6,20 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import Navbare from "../components/Navebare/Navbare";
 import Model from "../components/Others/Model";
 import ToastNotify from "../components/Others/ToastNotify";
-import { debounce } from "../utils/common";
+import { cn, debounce } from "../utils/common";
 import HiddenComponent from "../components/Layout/HiddenComponent";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const DisktopChat = lazy(() => import("../components/Chats/PublicChat/DisktopChat/DisktopChat"));
 const LiveStats = lazy(() => import("../components/LiveStats/LiveStats"));
 const Footer = lazy(() => import("../components/Footer/Footer"));
-const NavebareBottom = lazy(() => import("../components/Navebare/NavebareBottom"));
 const MusicPlayer = lazy(() => import("../components/Music/MusicPlayer"));
-
-const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
+const NavebareBottom = lazy(() => import("../components/Navebare/NavebareBottom"));
 
 const Layout = () => {
   const model = useAppSelector((state) => state.stateManeger.model);
-  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
-  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
-  const isMobile = useAppSelector((state) => state.stateManeger.isMobile);
+  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
+  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
   const timeOutRef = useRef(null);
@@ -52,10 +48,10 @@ const Layout = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 867) {
-        dispatch(updateThisEntity({ entity: "isMobile", value: true }));
+      if (window.innerWidth < 1024) {
+        dispatch(updateThisEntity({ entity: "smallScreen", value: true }));
       } else {
-        dispatch(updateThisEntity({ entity: "isMobile", value: false }));
+        dispatch(updateThisEntity({ entity: "smallScreen", value: false }));
       }
     };
     const debouncedResize = debounce(handleResize, 100, timeOutRef);
@@ -63,93 +59,61 @@ const Layout = () => {
     return () => window.removeEventListener("resize", debouncedResize);
   }, [dispatch]);
 
+  const sidebarHeigh = smallScreen ? `calc(100vh - 115px)` : `calc(100vh - 55px)`;
+
+  const sidebarWidth =
+    !smallScreen && resizeSidebare ? "65px" : !smallScreen && !resizeSidebare ? "250px" : "100%";
+
+  const contentWidth =
+    !smallScreen && resizeSidebare
+      ? `calc(100% - 65px)`
+      : !smallScreen && !resizeSidebare
+        ? `calc(100% - 250px)`
+        : "100%";
+
+  const sidebarClassName = cn(
+    "fixed top-[55px] z-[5] flex -translate-x-[100%] flex-col overflow-auto border-r border-r-gray-500 bg-[#0a0202bb] scrollbar-thin lg:sticky lg:translate-x-0 lg:transition-all",
+    openSidbareMobile && "translate-x-[0%]",
+  );
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="w-full">
-        {model.status && <Model children={model.children} />}
-        <div className=" h-[70px] sm:h-[55px] sticky top-0 z-[6] bg-[#22162c] flex items-center justify-center px-3 sm:px-1  border-b border-[#f8d3d32a]">
-          <Navbare />
-          {openMusicModal && (
-            <div className={`absolute top-0 left-0 z-[1] transition-all h-full`}>
-              <Suspense>
-                <MusicPlayer />
-              </Suspense>
-            </div>
-          )}
-          <ToastNotify />
-        </div>
-        <div
-          style={{
-            minHeight: `calc(100dvh - 70px)`,
-          }}
-          className="flex"
-        >
-          <div
-            onClick={() => handleCloseMobileSidebare(false)}
-            className={`transition-all sm:transition-none ${
-              resizeSidebare ? "min-w-[80px] " : "min-w-[250px]"
-            } ${
-              !openSidbareMobile && "sm:-translate-x-[100%]"
-            } sm:w-full sm:h-screen sm:fixed sm:top-[55px] left-0 z-[5] bg-[#0a0202bb] `}
-          >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="sm:w-[250px] bg-[#29293a] h-full p-2 border-r border-[#f8cdcd36]"
-            >
-              <Sidebar handleCloseMobileSidebare={handleCloseMobileSidebare} />
+    <main className="min-h-screen">
+      {model.status && <Model children={model.children} />}
+      {openMusicModal && <Suspense children={<MusicPlayer />} />}
+      <ToastNotify />
+      <Navbare />
+      <section className="">
+        <div className="flex">
+          <div style={{ height: sidebarHeigh, width: sidebarWidth }} className={sidebarClassName}>
+            <div onClick={() => handleCloseMobileSidebare(false)} className={"h-full w-full"}>
+              <Sidebar />
             </div>
           </div>
-          <div
-            className={`${
-              resizeSidebare ? "w-[90%]" : "w-[70%]"
-            } sm:w-full flex flex-col flex-1 relative bg-[#202338]`}
-          >
-            {!hiddenLiveStats && (
-              <div
-                className={`border-b border-[#ffd7d728] w-full bg-[#1a1a25] sticky top-[70px] sm:top-[55px] z-[4] `}
-              >
-                <Suspense>
-                  <LiveStats />
-                </Suspense>
-              </div>
-            )}
-            <div className="min-h-[70dvh]">
+          <div style={{ width: contentWidth }} className="transition-all ease-in-out">
+            {!hiddenLiveStats && <Suspense children={<LiveStats />} />}
+            <div
+
+            // style={{ minHeight: smallScreen ? `calc(100vh - 158px)` : `calc(100vh - 102px)` }}
+            >
               <Outlet />
             </div>
-            <Suspense>
-              <Footer />
-            </Suspense>
+            <Suspense children={<Footer />} />
           </div>
-          {!isMobile && (
-            <div
-              style={{
-                height: `calc(100dvh - 70px)`,
-                transitionTimingFunction: `cubic-bezier(1, 0.5, 0.5, 0.5)`,
-                transitionDuration: "300ms",
-              }}
-              className={`w-[30%] lg:w-[38%] bg-[#202138]  border-l border-[#8a5f5f] fixed top-[70px] right-0 z-[4] ${
-                isChatOpen ? " translate-x-0" : " translate-x-[100%]"
-              }`}
-            >
-              <Suspense>
-                <DisktopChat />
-              </Suspense>
-            </div>
-          )}
         </div>
-        {isMobile && (
-          <div className="w-full bg-[#2b2b55] fixed bottom-0 z-[3]">
-            <Suspense>
+        {!smallScreen && <Suspense children={<DisktopChat />} />}
+        {smallScreen && (
+          <Suspense
+            children={
               <NavebareBottom
                 setOpenSidbareMobile={setOpenSidbareMobile}
                 openSidbareMobile={openSidbareMobile}
               />
-            </Suspense>
-          </div>
+            }
+          />
         )}
         <HiddenComponent />
-      </div>
-    </QueryClientProvider>
+      </section>
+    </main>
   );
 };
 

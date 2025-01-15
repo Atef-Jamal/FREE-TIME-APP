@@ -194,10 +194,10 @@ const PublicChat = memo(() => {
   }, [messages, stopScrolling, scrollToLastMessage]);
 
   return (
-    <>
+    <div className="flex h-full flex-col gap-y-1">
       <div
         ref={messageContainerRef}
-        className="w-full h-full px-2 sm:px-1 pb-2 sm:pb-1 flex flex-col items-center gap-[5px] overflow-y-scroll sm:scrollbar-none relative"
+        className="relative flex-1 space-y-[6px] overflow-y-scroll px-2 scrollbar-thin"
       >
         {messageToDelete && (
           <ChatModelDeletion
@@ -216,44 +216,45 @@ const PublicChat = memo(() => {
           </div>
         )}
 
+        {isFetchingPreviousPage && <MessageSkeleton />}
+
         {hasPreviousPage && !isFetchingPreviousPage && (
           <button
             onClick={handleLoadMoreMessages}
-            className="mt-1 sm:text-sm w-full text-center bg-[#414752] rounded-md"
+            className="mt-1 w-full rounded-sm bg-[#414752] text-center sm:text-sm"
           >
             Load More
           </button>
         )}
-
-        {isFetchingPreviousPage && <MessageSkeleton />}
 
         {isFetchPreviousPageError && !isFetchingPreviousPage && (
           <p className="text-sm">an error occurred during load more</p>
         )}
 
         {!isLoadingOldMsg && oldMessage && (
-          <div className="sticky z-[1] top-0 left-0 w-full rounded-md border border-[#a59e9eee] bg-black">
+          <div className="sticky left-0 top-0 z-[1] w-full rounded-md border border-[#a59e9eee] bg-black">
             <Message singleMessage={oldMessage} handleSetMessageIdToDelete={handleSetMessageIdToDelete} />
             <button
               onClick={handleCloseOldMsg}
-              className="absolute top-0 right-0 rounded-md py-1 px-2 bg-[#0d0d22]"
+              className="absolute right-0 top-0 rounded-md bg-[#0d0d22] px-2 py-1"
             >
               <CgClose className="text-xl" />
             </button>
           </div>
         )}
+
         {isLoadingOldMsg && (
-          <div className="sticky z-[1] top-0 left-0 w-full rounded-md border border-[#464646ee] bg-black">
+          <div className="sticky left-0 top-0 z-[1] w-full rounded-md border border-[#464646ee] bg-black">
             <MessageSkeleton />
           </div>
         )}
         {messagesList}
       </div>
-      <div className="w-full relative flex items-center justify-center">
+      <div className="relative">
         {stagingMessages > 0 && (
           <button
             onClick={scrollToLastMessage}
-            className="absolute -top-[40px] sm:-top-[35px] px-2 py-1 bg-[#1564d1ee] text-sm sm:text-xs  rounded-full font-bold tracking-wider flex items-center justify-center gap-1"
+            className="absolute -top-[40px] flex items-center justify-center gap-1 rounded-full bg-[#1564d1ee] px-2 py-1 text-sm font-bold tracking-wider sm:-top-[35px] sm:text-xs"
           >
             <FaArrowDownLong />
             {stagingMessages} new Message{stagingMessages > 1 ? "s" : ""}
@@ -265,7 +266,7 @@ const PublicChat = memo(() => {
           setSearchParams={setSearchParams}
         />
       </div>
-    </>
+    </div>
   );
 });
 

@@ -10,8 +10,9 @@ const RegisterButtons = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation("navbar");
   return (
-    <div className="h-full flex items-center gap-2 xs:gap-1 overflow-scroll scrollbar-none">
+    <div className="ml-auto flex items-center gap-2">
       <button
+        className="flex items-center justify-center gap-3 rounded-md border border-gray-500 bg-[#3b3b7eef] px-6 py-2 text-sm font-[600] tracking-wide text-white"
         onClick={() => {
           if (!isSignInMode) dispatch(updateThisEntity({ entity: "isSignInMode", value: true }));
           dispatch(
@@ -21,9 +22,8 @@ const RegisterButtons = () => {
             }),
           );
         }}
-        className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ebeaea] bg-[#3b3b7eef] font-bold border border-gray-500 px-7 h-full tracking-wider sm:px-3 sm:text-sm"
       >
-        <BsFillPersonFill className="text-xl sm:text-lg" />
+        <BsFillPersonFill />
         {t("sign In")}
       </button>
       <button
@@ -36,10 +36,10 @@ const RegisterButtons = () => {
             }),
           );
         }}
-        className=" flex items-center justify-center gap-3 sm:gap-2 rounded-md text-[#ffffff] bg-[#01D676] font-bold border border-gray-500 px-6 sm:px-3 h-full  tracking-wider sm:text-sm"
+        className="flex items-center justify-center gap-3 rounded-md border border-gray-500 bg-[#01D676] px-6 py-2 text-sm font-[600] tracking-wide text-black"
       >
         <ImKey2 />
-        {t("sign Up")}
+        {t("Register")}
       </button>
     </div>
   );

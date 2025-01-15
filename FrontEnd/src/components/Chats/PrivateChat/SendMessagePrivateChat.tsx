@@ -135,21 +135,20 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
   };
 
   return (
-    <form className="w-full flex items-end justify-between gap-3 sm:gap-1 px-1">
+    <form className="flex items-end gap-1 p-1">
       <textarea
         ref={inputRef}
-        style={{ lineHeight: "1", maxHeight: "300px" }}
         onChange={handleChange}
         value={message}
         rows={1}
-        className="outline-none rounded-md grow p-3 placeholder:opacity-30 placeholder:text-[#a39595] bg-[#090b20] text-[#a0bb9d] placeholder:tracking-wide sm:text-sm  resize-none overflow-scroll scrollbar-none"
+        className="max-h-[300px] min-h-[32px] flex-1 resize-none overflow-scroll rounded-sm bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm"
         placeholder="Enter a message"
       />
       <button
-        className="bg-[#3c3b72] rounded-md flex items-center justify-center py-2 sm:px-3 px-5"
+        className="flex h-[32px] w-[55px] items-center justify-center rounded-sm bg-[#3c3b72] md:h-[36px]"
         onClick={sendPrivateMessageHandler}
       >
-        <IoMdSend className="text-2xl sm:text-[22px]" />
+        <IoMdSend className="text-xl" />
       </button>
     </form>
   );

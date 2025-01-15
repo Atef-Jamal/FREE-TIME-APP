@@ -27,7 +27,7 @@ const HeroSection = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     }
   };
@@ -41,93 +41,93 @@ const HeroSection = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     }
   };
 
   return (
     <div
-      className={`w-[90%] max-w-[1400px] mx-auto flex ${
-        !isTokenExists ? "justify-between " : "justify-center px-16"
+      className={`mx-auto flex w-[90%] max-w-[1400px] ${
+        !isTokenExists ? "justify-between" : "justify-center px-16"
       } lg:flex-col lg:items-center lg:px-0`}
     >
       <div
         className={`${
           isTokenExists && "w-full"
-        } flex flex-col items-start justify-center sm:items-center gap-2 sm:gap-1`}
+        } flex flex-col items-center justify-center gap-1 sm:items-start sm:gap-2`}
       >
-        <h1 className="w-full text-center text-6xl sm:text-4xl font-bold text-[#af5a5a] mb-4">
+        <h1 className="mb-4 w-full text-center text-4xl font-bold text-[#af5a5a] sm:text-6xl">
           {t("Get Paid For")}
         </h1>
-        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">{t("Opening Bank Account")}</p>
-        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
+        <p className="w-full text-center text-sm text-[#b8c2ca] sm:text-xl">{t("Opening Bank Account")}</p>
+        <p className="w-full text-center text-sm text-[#b8c2ca] sm:text-xl">
           {t("Refer Your Friend Through your Referal Link")}
         </p>
-        <p className="w-full text-center text-xl sm:text-sm text-[#b8c2ca]">
+        <p className="w-full text-center text-sm text-[#b8c2ca] sm:text-xl">
           {t("complete Tasks and apps, offers and much more")}
         </p>
-        <p className="w-full text-center text-lg sm:text-xs text-[#95afff]">
+        <p className="w-full text-center text-xs text-[#95afff] sm:text-lg">
           {t("Earn up to $2.05 per offer 20 Offers available See our 33,225 reviews on Trustpilot")}
         </p>
 
-        <div className="w-full text-center flex items-center justify-center gap-1 rounded-sm mb-6">
-          <FaStar className="bg-red-300  w-6 h-6" />
-          <FaStar className="bg-red-300  w-6 h-6" />
-          <FaStar className="bg-red-300  w-6 h-6" />
-          <FaStar className="bg-red-300  w-6 h-6" />
-          <FaStar className="bg-red-300  w-6 h-6" />
+        <div className="mb-6 flex w-full items-center justify-center gap-1 rounded-sm text-center">
+          <FaStar className="h-6 w-6 bg-red-300" />
+          <FaStar className="h-6 w-6 bg-red-300" />
+          <FaStar className="h-6 w-6 bg-red-300" />
+          <FaStar className="h-6 w-6 bg-red-300" />
+          <FaStar className="h-6 w-6 bg-red-300" />
         </div>
-        <div className="mx-auto grid grid-cols-4 gap-2 sm:gap-1 overflow-scroll scrollbar-none">
-          <span className=" bg-yellow-400 text-[#fff] sm:text-xs text-center flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+        <div className="mx-auto grid grid-cols-4 gap-1 overflow-scroll scrollbar-none sm:gap-2">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-yellow-400 text-center text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             Bitcoin
           </span>
-          <span className=" bg-slate-400 text-[#fff] sm:text-xs text-center flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="t-[#fff] flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-slate-400 text-sm sm:w-[120px] sm:text-center sm:text-xs">
             Ethereum
           </span>
-          <span className=" bg-red-900 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-red-900 text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             Litecoin
           </span>
-          <span className="bg-blue-800 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-blue-800 text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             PayPal
           </span>
-          <span className=" bg-cyan-700 text-[#fff] sm:text-xs  flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-cyan-700 text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             Amazon
           </span>
-          <span className=" bg-pink-800 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-pink-800 text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             Steam
           </span>
-          <span className=" bg-green-400 text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-green-400 text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             Apple
           </span>
-          <span className=" bg-[#63636e] text-[#fff] sm:text-xs flex items-center justify-center w-[120px] xs:w-[75px] h-[30px] rounded-sm text-sm">
+          <span className="flex h-[30px] w-[75px] items-center justify-center rounded-sm bg-[#63636e] text-xs text-[#fff] sm:w-[120px] sm:text-sm">
             Google Play
           </span>
         </div>
       </div>
       {!isTokenExists && (
-        <div className="flex flex-col gap-2 w-[50%] bg-[#33334c] p-8 sm:px-2 sm:py-3 rounded-md sm:w-[92%] lg:w-[87%] lg:mt-10 border border-gray-600 sm:mx-auto ">
-          <div className="text-center mb-4 sm:bg-[#18193fb4] sm:py-3 sm:rounded-md ">
-            <h1 className="font-bold text-2xl tracking-wider text-white mb-2">{t("Sign Up For Free")}</h1>
-            <p className="text-sm text-[#a6ada0] ">{t("and win up to $250 in the free time")}</p>
+        <div className="mx-auto mt-10 flex w-[92%] flex-col gap-2 rounded-md border border-gray-600 bg-[#33334c] p-8 px-2 py-3 sm:w-[50%]">
+          <div className="mb-4 text-center sm:rounded-md sm:bg-[#18193fb4] sm:py-3">
+            <h1 className="mb-2 text-2xl font-bold tracking-wider text-white">{t("Sign Up For Free")}</h1>
+            <p className="text-sm text-[#a6ada0]">{t("and win up to $250 in the free time")}</p>
           </div>
-          <div className="bg-blue-900 h-12 mb-4 rounded-md sing-up-free"></div>
+          <div className="sing-up-free mb-4 h-12 rounded-md bg-blue-900"></div>
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={handleSignInWithGoogle}
-              className="text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md w-full px-4 py-2 sm:text-xs text-[#f7d0d0]"
+              className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs"
             >
               {t("Sign In With Google")} <FcGoogle />
             </button>
-            <button className=" text-[.8rem] flex justify-between items-center bg-[#25253b] rounded-md px-4 py-2 sm:text-xs w-full text-[#f7d0d0]">
+            <button className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs">
               {t("Sign In With GitHub")}
               <VscGithub />
             </button>
           </div>
-          <div className="flex w-[90%] mx-auto gap-2 items-center my-1">
-            <div className="w-[45%] h-[1px] bg-gradient-to-l from-blue-300 to-[#2b2350] "></div>
+          <div className="mx-auto my-1 flex w-[90%] items-center gap-2">
+            <div className="h-[1px] w-[45%] bg-gradient-to-l from-blue-300 to-[#2b2350]"></div>
             <span>{t("OR")}</span>
-            <div className="w-[45%] h-[1px] bg-gradient-to-r from-blue-300 to-[#342872] "></div>
+            <div className="h-[1px] w-[45%] bg-gradient-to-r from-blue-300 to-[#342872]"></div>
           </div>
           <form className="flex flex-col gap-2">
             <Input
@@ -148,11 +148,11 @@ const HeroSection = () => {
               type={"password"}
               name={"password"}
             />
-            <div className="text-center mt-8 sm:mt-4">
+            <div className="mt-8 text-center sm:mt-4">
               <button
                 type="submit"
                 onClick={handlaSignIn}
-                className="bg-[#05BA6B] text-black py-2 w-[45%] font-[600] rounded-md border-[0.2px] border-white "
+                className="w-[45%] rounded-md border-[0.2px] border-white bg-[#05BA6B] py-2 font-[600] text-black"
               >
                 {t("Sign In")}
               </button>

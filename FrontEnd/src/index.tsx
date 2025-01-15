@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { StrictMode } from "react";
-// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Provider } from "react-redux";
 import store from "./context/store";
@@ -11,15 +11,15 @@ import "@fontsource/roboto";
 import "./i18next";
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-// const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
+const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
 
 root.render(
   <StrictMode>
     <Provider store={store}>
-      {/* <QueryClientProvider client={queryClient}> */}
-      <App />
-      <SpeedInsights />
-      {/* </QueryClientProvider> */}
+      <QueryClientProvider client={queryClient}>
+        <App />
+        <SpeedInsights />
+      </QueryClientProvider>
     </Provider>
   </StrictMode>,
 );
