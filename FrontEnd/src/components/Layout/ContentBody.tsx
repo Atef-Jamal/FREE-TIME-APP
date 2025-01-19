@@ -44,12 +44,12 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: Type
       </div>
       <div
         style={{ width: contentWidth }}
-        className="flex flex-col transition-all ease-in-out max-lg:mb-[60px]"
+        className="transition-all ease-in-out max-lg:mb-[60px]"
       >
         {!hiddenLiveStats && <Suspense children={<LiveStats />} />}
         <div
           style={{ minHeight: smallScreen ? `calc(100dvh - 158px)` : `calc(100dvh - 102px)` }}
-          className="flex-1"
+         
         >
           <Outlet />
         </div>
