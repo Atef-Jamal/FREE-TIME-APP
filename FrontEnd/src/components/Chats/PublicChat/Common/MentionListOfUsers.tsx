@@ -6,11 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getOnlineUsers } from "../../../../utils";
 
 interface TypeProps {
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setMentionedUsers: React.Dispatch<React.SetStateAction<User[]>>;
   setOpenMentionList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
+const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: TypeProps) => {
   const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -31,15 +31,15 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
       ref={menuRef}
       onClick={() => setOpenMentionList(false)}
       style={{ scrollbarColor: "red" }}
-      className="bg-[#141a36] w-full h-full flex flex-col items-center p-1 gap-1 overflow-auto sm:scrollbar-thin"
+      className="flex h-full w-full flex-col items-center gap-1 overflow-auto bg-[#141a36] p-1 sm:scrollbar-thin"
     >
-      {error && <div className="w-full my-4">{error.response?.data.error}</div>}
+      {error && <div className="my-4 w-full">{error.response?.data.error}</div>}
       {status === "pending" && (
         <div className="w-full space-y-1">
           {[1, 2, 3, 4, 5].map((item) => (
             <div
               key={item}
-              className="px-3 py-3 w-full animate-pulse bg-[#23388593] rounded-sm hover:bg-[#475aa06b] flex items-center justify-between"
+              className="flex w-full animate-pulse items-center justify-between rounded-sm bg-[#23388593] px-3 py-3 hover:bg-[#475aa06b]"
             ></div>
           ))}
         </div>
@@ -54,12 +54,12 @@ const MentionListOfUsers = ({ setUser, setOpenMentionList }: TypeProps) => {
           return (
             <div
               key={user._id}
-              onClick={() => setUser(user)}
-              className="px-3 py-2 w-full bg-[#475aa02c] rounded-sm hover:bg-[#475aa06b] flex items-center justify-between"
+              onClick={() => setMentionedUsers((prev) => [...prev, user])}
+              className="flex w-full items-center justify-between rounded-sm bg-[#475aa02c] px-3 py-2 hover:bg-[#475aa06b]"
             >
-              <p className=" text-blue-700 text-xs font-bold tracking-wide ">@{user.name}</p>
+              <p className="text-xs font-bold tracking-wide text-blue-700">@{user.name}</p>
               {onlineUsers.includes(user._id) && (
-                <span className="rounded-full bg-[#c92626] w-3 h-3 animate-pulse"></span>
+                <span className="h-3 w-3 animate-pulse rounded-full bg-[#c92626]"></span>
               )}
             </div>
           );

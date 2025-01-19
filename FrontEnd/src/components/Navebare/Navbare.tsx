@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { lazy, memo, Suspense, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
@@ -13,8 +13,12 @@ import RegisterButtons from "./Registration/RegisterButtons";
 import Search from "../Search/Search";
 import SearchBar from "../Search/SearchBar";
 
+const MusicPlayer = lazy(() => import("../../components/Music/MusicPlayer"));
+
 const Navbare = memo(() => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
+  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
 
   const { t } = useTranslation("navbar");
 
@@ -59,14 +63,17 @@ const Navbare = memo(() => {
         <span className="font-extrabold italic tracking-wider text-gray-300">TIME</span>
       </Link>
 
+      {/* <div className="hidden h-11 w-[300px] border lg:block"></div> */}
+      {openMusicModal && !smallScreen && <Suspense children={<MusicPlayer />} />}
+
       <div
         onClick={() => dispatch(openModel({ status: true, children: <Search /> }))}
-        className="mx-4 hidden h-10 md:block lg:h-11"
+        className="mx-4 hidden h-10 max-w-[500px] flex-1 sm:block lg:h-11"
       >
         <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
 
-      <button onClick={handleOpenSearch} className="mr-1 h-10 rounded-md bg-[#383847] px-2 md:hidden lg:h-11">
+      <button onClick={handleOpenSearch} className="mr-1 h-10 rounded-md bg-[#383847] px-2 sm:hidden lg:h-11">
         <BiSearch className="text-xl opacity-90" />
       </button>
 

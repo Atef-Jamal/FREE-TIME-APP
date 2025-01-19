@@ -16,7 +16,7 @@ const PeopleList = ({ status, data, error, pageParam, setPageParam }: TypeProps)
   return (
     <div>
       <div className="flex w-full items-center justify-between rounded-[4px] bg-[#3b2f5cc4]">
-        <span className="flex w-[20%] items-center justify-center gap-2 overflow-scroll border-r py-3 font-bold text-[#86b3ee] scrollbar-none sm:text-sm">
+        <span className="md:text-bas flex w-[20%] items-center justify-center gap-2 overflow-scroll border-r py-3 text-sm font-bold text-[#86b3ee] scrollbar-none">
           <FaRankingStar className="text-sm md:text-base" />
           Rank
         </span>
@@ -55,7 +55,7 @@ const PeopleList = ({ status, data, error, pageParam, setPageParam }: TypeProps)
             />
             <span className="w-[70%] whitespace-nowrap text-[#6baaf1ee] sm:text-sm">{user.name}</span>
           </span>
-          <span className="flex h-full w-[20%] items-center justify-center overflow-scroll font-bold text-[#86b3ee] scrollbar-none sm:text-sm">
+          <span className="flex h-full w-[20%] items-center justify-center overflow-scroll text-sm font-bold text-[#86b3ee] scrollbar-none md:text-base">
             {user.points}
           </span>
         </div>
@@ -66,7 +66,7 @@ const PeopleList = ({ status, data, error, pageParam, setPageParam }: TypeProps)
           <p className="font-bold text-gray-500">No More Peoples</p>
         </div>
       )}
-      <ul className="mx-auto my-10 grid w-[95%] grid-cols-10 gap-x-2 gap-y-1 md:w-[70%]">
+      <ul className="mx-auto my-10 grid w-[95%] grid-cols-10 gap-1 md:w-[70%] md:grid-cols-12 md:gap-2">
         {[...Array(20).keys()].map((item) => (
           <li
             key={item}

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import LoadingWebsite from "./Pages/LoadingWebsite";
+import BigLoading from "./Pages/BigLoading";
 import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, PublicChatMobile } from "./Pages";
 import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./Pages";
 import { ProtectedPage, PageNotFound, AppError } from "./Pages";
@@ -9,116 +9,74 @@ export const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: (
-        <Suspense fallback={<LoadingWebsite className="w-screen h-screen" />}>
-          <Layout />
-        </Suspense>
-      ),
-      errorElement: (
-        <Suspense>
-          <AppError />
-        </Suspense>
-      ),
+      element: <Suspense fallback={<BigLoading className="h-screen w-screen" />} children={<Layout />} />,
+      errorElement: <Suspense children={<AppError />} />,
       children: [
         {
           index: true,
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <Home />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<Home />} />,
         },
         {
           path: "earn",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <Earn />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<Earn />} />,
         },
         {
           path: "affiliates",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <Affiliates />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<Affiliates />} />,
         },
         {
           path: "marketplace",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <MarketPlace />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<MarketPlace />} />,
         },
         {
           path: "leaderboard",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <LeaderBoard />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<LeaderBoard />} />,
         },
         {
           path: "cashout",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <CashOut />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<CashOut />} />,
         },
         {
           path: "rewards",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <Rewards />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<Rewards />} />,
         },
         {
           path: "myprofile",
           element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <ProtectedPage>
-                <MyProfile />
-              </ProtectedPage>
-            </Suspense>
+            <Suspense
+              fallback={<BigLoading />}
+              children={
+                <ProtectedPage>
+                  <MyProfile />
+                </ProtectedPage>
+              }
+            />
           ),
         },
         {
           path: "musics",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <Musics />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<Musics />} />,
         },
         {
           path: "chat",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <PublicChatMobile />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<PublicChatMobile />} />,
         },
         {
           path: "privatechat",
           element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <ProtectedPage>
-                <PrivateChat />
-              </ProtectedPage>
-            </Suspense>
+            <Suspense
+              fallback={<BigLoading />}
+              children={
+                <ProtectedPage>
+                  <PrivateChat />
+                </ProtectedPage>
+              }
+            />
           ),
         },
         {
           path: "user/:id",
-          element: (
-            <Suspense fallback={<LoadingWebsite />}>
-              <PublicUserProfile />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<BigLoading />} children={<PublicUserProfile />} />,
         },
         {
           path: "playing",
@@ -126,22 +84,21 @@ export const router = createBrowserRouter(
             {
               path: ":id",
               element: (
-                <Suspense fallback={<LoadingWebsite />}>
-                  <ProtectedPage>
-                    <Playing />
-                  </ProtectedPage>
-                </Suspense>
+                <Suspense
+                  fallback={<BigLoading />}
+                  children={
+                    <ProtectedPage>
+                      <Playing />
+                    </ProtectedPage>
+                  }
+                />
               ),
             },
           ],
         },
         {
           path: "*",
-          element: (
-            <Suspense>
-              <PageNotFound />
-            </Suspense>
-          ),
+          element: <Suspense fallback={<></>} children={<PageNotFound />} />,
         },
       ],
     },

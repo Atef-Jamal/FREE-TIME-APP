@@ -199,16 +199,9 @@ const Earn = () => {
             >
               {status === "pending" && [...Array(50).keys()].map((item) => <AppSkeleton key={item} />)}
 
-              {data?.pages.map((page) =>
-                page.tasks.map((taskDetail, inedx) => (
-                  <TaskCard
-                    taskDetail={taskDetail}
-                    setTaskId={setTaskId}
-                    key={taskDetail._id}
-                    index={inedx}
-                  />
-                )),
-              )}
+              {allTasks?.map((taskDetail, inedx) => (
+                <TaskCard taskDetail={taskDetail} setTaskId={setTaskId} key={taskDetail._id} index={inedx} />
+              ))}
             </div>
 
             {status === "error" && !isFetchNextPageError && (

@@ -194,10 +194,10 @@ const PublicChat = memo(() => {
   }, [messages, stopScrolling, scrollToLastMessage]);
 
   return (
-    <div className="flex h-full flex-col gap-y-1">
+    <div className="relative flex h-full flex-col gap-y-1">
       <div
         ref={messageContainerRef}
-        className="relative flex-1 space-y-[6px] overflow-y-scroll px-2 scrollbar-thin"
+        className="relative flex-1 space-y-1 overflow-y-scroll px-1 pb-[2px] max-lg:scrollbar-thin lg:px-2 lg:[&::-webkit-scrollbar-thumb]:bg-[#79b6fc] lg:[&::-webkit-scrollbar-track]:bg-[#5e5d5dee] lg:[&::-webkit-scrollbar]:w-2"
       >
         {messageToDelete && (
           <ChatModelDeletion
@@ -250,22 +250,20 @@ const PublicChat = memo(() => {
         )}
         {messagesList}
       </div>
-      <div className="relative">
-        {stagingMessages > 0 && (
-          <button
-            onClick={scrollToLastMessage}
-            className="absolute -top-[40px] flex items-center justify-center gap-1 rounded-full bg-[#1564d1ee] px-2 py-1 text-sm font-bold tracking-wider sm:-top-[35px] sm:text-xs"
-          >
-            <FaArrowDownLong />
-            {stagingMessages} new Message{stagingMessages > 1 ? "s" : ""}
-          </button>
-        )}
-        <SendMessage
-          stopScrolling={stopScrolling}
-          setStopScrolling={setStopScrolling}
-          setSearchParams={setSearchParams}
-        />
-      </div>
+      {stagingMessages > 0 && (
+        <button
+          onClick={scrollToLastMessage}
+          className="absolute bottom-[66px] left-[50%] z-[1] flex -translate-x-[50%] items-center justify-center gap-x-1 rounded-full bg-[#1564d1ee] px-2 py-1 text-xs tracking-wider md:text-sm"
+        >
+          <FaArrowDownLong />
+          {stagingMessages} new Message{stagingMessages > 1 ? "s" : ""}
+        </button>
+      )}
+      <SendMessage
+        stopScrolling={stopScrolling}
+        setStopScrolling={setStopScrolling}
+        setSearchParams={setSearchParams}
+      />
     </div>
   );
 });

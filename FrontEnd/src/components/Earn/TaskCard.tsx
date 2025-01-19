@@ -14,13 +14,10 @@ interface TypeAppCard {
 
 const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
 
   const { t } = useTranslation("earn");
   const { _id, description, image, prize, title, isAvailable, devices } = taskDetail;
   const isCompleted = currentUser?.completedTasks.includes(_id);
-
-  if (currentUserStatus !== "authenticated") return;
 
   return (
     <div
@@ -28,26 +25,26 @@ const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
       onClick={() => setTaskId(taskDetail._id)}
       className={` ${
         index === 0 ? "col-span-2" : ""
-      } relative flex flex-col  bg-[#55539b3a] rounded-md p-2 justify-between overflow-hidden border border-gray-700 h-[230px]`}
+      } relative flex h-[230px] flex-col justify-between overflow-hidden rounded-md border border-gray-700 bg-[#55539b3a] p-2`}
     >
       {currentUser?.completedTasks.includes(_id) ? (
-        <div className="absolute z-[1] top-7 -left-7 py-1 px-6 -rotate-45 flex items-center justify-center gap-2 bg-[#9cf155]">
+        <div className="absolute -left-7 top-7 z-[1] flex -rotate-45 items-center justify-center gap-2 bg-[#9cf155] px-6 py-1">
           <BsCheckCircleFill />
-          <span className="font-bold text-xs text-[#5e5656]">{t("Completed")}</span>
+          <span className="text-xs font-bold text-[#5e5656]">{t("Completed")}</span>
         </div>
       ) : undefined}
 
       <div className="relative overflow-hidden">
-        <div className="w-full mx-auto  overflow-hidden">
+        <div className="mx-auto w-full overflow-hidden">
           <img
             alt={""}
             src={`${import.meta.env.VITE_SERVER_BASE_URL}/${image}`}
             width={"100%"}
-            className={`w-full h-[95px] rounded-sm  object-fill`}
+            className={`h-[95px] w-full rounded-sm object-fill`}
           />
         </div>
         <span
-          className={`flex items-center justify-center gap-1 absolute top-1 left-0 right-0 w-[83px] mx-auto px-3 py-1 bg-[#000000c5] border border-gray-600 rounded-md`}
+          className={`absolute left-0 right-0 top-1 mx-auto flex w-[83px] items-center justify-center gap-1 rounded-md border border-gray-600 bg-[#000000c5] px-3 py-1`}
         >
           {devices === "DESKTOP" && <MdDesktopMac className="min-w-fit" />}
           {devices === "ANDROID" && <AiFillAndroid className="min-w-fit" />}
@@ -62,27 +59,27 @@ const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
         </span>
       </div>
       <div className="flex flex-col">
-        <p className="font-bold text-sm text-[#8ad657]  truncate">{title}</p>
-        <p className="text-xs text-[#cea5a5] h-4 truncate">{description}</p>
-        <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-300 font-bold py-1">{t("Reward")}</span>
-          <span className="text-sm sm:text-xs text-[#5dd140] text-center font-bold pr-1 ">{prize}</span>
+        <p className="truncate text-sm font-bold text-[#8ad657]">{title}</p>
+        <p className="h-4 truncate text-xs text-[#cea5a5]">{description}</p>
+        <div className="flex items-center justify-between">
+          <span className="py-1 text-xs font-bold text-gray-300">{t("Reward")}</span>
+          <span className="pr-1 text-center text-sm font-bold text-[#5dd140] sm:text-xs">{prize}</span>
         </div>
       </div>
       {isCompleted && (
         <button
-          className={`w-full py-2 sm:text-xs bg-[#171430d5] text-sm text-white rounded-md border border-gray-700`}
+          className={`w-full rounded-md border border-gray-700 bg-[#171430d5] py-2 text-sm text-white sm:text-xs`}
         >
           {t("Completed")}
         </button>
       )}
       {!isCompleted && isAvailable === "AVAILABLE" && (
-        <button className={`bg-[#a4ec52cc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}>
+        <button className={`w-full rounded-md bg-[#a4ec52cc] py-2 text-center text-sm font-bold sm:text-xs`}>
           {t("START NOW")}
         </button>
       )}
       {isAvailable === "UNAVAILABLE" && (
-        <button className={`bg-[#528feccc] w-full py-2  sm:text-xs text-sm font-bold rounded-md text-center`}>
+        <button className={`w-full rounded-md bg-[#528feccc] py-2 text-center text-sm font-bold sm:text-xs`}>
           {t("Not Available")}
         </button>
       )}

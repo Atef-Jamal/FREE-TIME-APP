@@ -27,6 +27,8 @@ const MusicCard = ({ songDetails }: TypeProps) => {
   const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const isAlreadyPurshased = !!currentUser?.mySongs.includes(songDetails.id.toString());
+  const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const mutation = useMutation({
     mutationFn: purshaseMusic,
@@ -55,6 +57,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
       );
     },
   });
+
   const handlePurshase = () => {
     if (!currentUser) {
       dispatch(
@@ -67,8 +70,6 @@ const MusicCard = ({ songDetails }: TypeProps) => {
     }
     mutation.mutate({ musicId: songDetails.id.toString() });
   };
-  const dispatch = useAppDispatch();
-  const location = useLocation();
 
   const handleAdd = () => {
     if (!openMusicModal) {
@@ -88,50 +89,50 @@ const MusicCard = ({ songDetails }: TypeProps) => {
   return (
     <div
       id={songDetails.id.toString()}
-      className="relative p-2 flex items-center justify-between flex-col h-[200px] bg-[#354253ee] rounded-md overflow-hidden"
+      className="relative flex h-[200px] flex-col items-center justify-between overflow-hidden rounded-md bg-[#354253ee] p-2"
     >
       {isAlreadyPurshased && location.pathname !== "/myprofile" && (
-        <span className="absolute z-[1] top-5 -left-10 -rotate-45 bg-[#94d34b] font-extrabold text-sm xs:text-xs text-zinc-700 w-[90%] text-center py-1">
+        <span className="absolute -left-10 top-5 z-[1] w-[90%] -rotate-45 bg-[#94d34b] py-1 text-center text-xs font-extrabold text-zinc-700 md:text-sm">
           My Music
         </span>
       )}
       <span
         className={`${
           musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() ? "animate-spin" : ""
-        } w-[80px] h-[80px] rounded-full border-2 border-l-[#cef03a] border-t-[#222770] border-r-[#cef03a] border-b-[#222770]`}
+        } h-[80px] w-[80px] rounded-full border-2 border-b-[#222770] border-l-[#cef03a] border-r-[#cef03a] border-t-[#222770]`}
       >
-        <img alt={""} src={songDetails.album.cover} className="w-full h-full rounded-full object-contain" />
+        <img alt={""} src={songDetails.album.cover} className="h-full w-full rounded-full object-contain" />
       </span>
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-400 truncate ">Title :</span>
-          <span className="text-xs font-bold text-gray-300 truncate max-w-[85px]  text-center">
+          <span className="truncate text-xs font-bold text-gray-400">Title :</span>
+          <span className="max-w-[85px] truncate text-center text-xs font-bold text-gray-300">
             {songDetails.title}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-400 truncate ">Singer :</span>
-          <span className="text-xs font-bold text-gray-300 truncate max-w-[85px]  text-center">
+          <span className="truncate text-xs font-bold text-gray-400">Singer :</span>
+          <span className="max-w-[85px] truncate text-center text-xs font-bold text-gray-300">
             {songDetails.artist.name}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-400 truncate ">Price :</span>
-          <span className="text-xs font-bold text-gray-300 truncate ">10 Points</span>
+          <span className="truncate text-xs font-bold text-gray-400">Price :</span>
+          <span className="truncate text-xs font-bold text-gray-300">10 Points</span>
         </div>
       </div>
       {currentUserStatus === "pending" && (
-        <button className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center">
-          <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
+        <button className="w-full rounded-md bg-[#5de768] py-1 text-center font-bold text-blue-800">
+          <Spinner className="mx-auto h-6 w-6 border-b-[#291a3b] border-l-[#291a3b]" />
         </button>
       )}
       {!isAlreadyPurshased && currentUserStatus !== "pending" && (
         <button
           onClick={handlePurshase}
-          className="rounded-md bg-[#5de768] w-full py-1 text-blue-800 font-bold text-center"
+          className="w-full rounded-md bg-[#5de768] py-1 text-center font-bold text-blue-800"
         >
           {mutation.isPending ? (
-            <Spinner className="w-6 h-6 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
+            <Spinner className="mx-auto h-6 w-6 border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "Buy"
           )}
@@ -142,7 +143,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
           {musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
             <button
               onClick={() => dispatch(handlePauseMusic())}
-              className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] py-1 font-bold text-gray-300"
             >
               <IoIosPause />
               Pause
@@ -151,7 +152,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
           {!musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
             <button
               onClick={() => dispatch(handlePlayMusic())}
-              className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] py-1 font-bold text-gray-300"
             >
               <FaPlay />
               Play
@@ -160,7 +161,7 @@ const MusicCard = ({ songDetails }: TypeProps) => {
           {activeMusic.musicInfo?.id !== songDetails.id.toString() && (
             <button
               onClick={handleAdd}
-              className="rounded-md bg-[#4aa551] w-full py-1 text-gray-300 font-bold flex items-center justify-center gap-2"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] py-1 font-bold text-gray-300"
             >
               <FaPlay />
               Play

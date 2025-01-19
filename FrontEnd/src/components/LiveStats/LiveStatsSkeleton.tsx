@@ -2,20 +2,22 @@ import Skeleton from "../Others/Skeleton";
 
 const LiveStatsSkeleton = () => {
   return (
+    // <div className="flex h-[40px] flex-nowrap items-center gap-x-1 lg:h-[47px] lg:gap-x-[6px]">
     <>
       {[...Array(20).keys()].map((item) => (
         <div
           key={item}
-          className="flex items-center gap-2 bg-[#222339] px-3 py-2 sm:py-[6px] rounded-sm"
+          className="flex h-[30px] items-center gap-x-2 rounded-sm bg-[#222339] px-3 lg:h-[37px]"
         >
-          <Skeleton className="h-7 w-7 sm:h-5 xs:w-5" />
-          <div className="flex flex-col gap-[6px] xs:gap-1 h-full">
-            <Skeleton className="h-[5px] sm:h-[4px] w-[110px] rounded-sm" />
-            <Skeleton className="h-[5px] sm:h-[4px] w-[85px] rounded-sm" />
+          <Skeleton className="h-5 w-5 rounded-md lg:h-7 lg:w-7" />
+          <div className="space-y-[5px] lg:space-y-[7px]">
+            <Skeleton className="h-[5px] w-[110px] rounded-sm lg:h-[6px]" />
+            <Skeleton className="h-[5px] w-[85px] rounded-sm lg:h-[6px]" />
           </div>
         </div>
       ))}
     </>
+    // </div>
   );
 };
 

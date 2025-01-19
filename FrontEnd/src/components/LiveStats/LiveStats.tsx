@@ -77,11 +77,11 @@ const LiveStats = memo(() => {
         <IoIosArrowDown />
         {openLangMenu && <LangMenu setOpenLangMenu={setOpenLangMenu} />}
       </div>
-      <div className="flex items-center gap-[6px] overflow-scroll py-1 pl-2 scrollbar-thin sm:gap-2 lg:scrollbar-none">
+      <div className="flex items-center gap-[6px] gap-x-2 overflow-x-auto py-1 pl-2 scrollbar max-lg:scrollbar-thin lg:[&::-webkit-scrollbar-thumb]:bg-[#79b6fc] lg:[&::-webkit-scrollbar-track]:bg-[#5e5d5dee] lg:[&::-webkit-scrollbar]:h-[2px]">
         {status === "pending" && <LiveStatsSkeleton />}
 
         {error && (
-          <div className="xs:text-xs flex w-full items-center justify-center gap-3 py-1 font-bold tracking-wide text-red-400">
+          <div className="flex w-full items-center justify-center gap-x-3 py-1 text-xs font-bold tracking-wide text-red-400">
             <FaExclamationCircle className="text-lg" />
             {error.message === "Network Error" ? "Network Error" : error.response?.data.error}
           </div>
@@ -100,7 +100,7 @@ const LiveStats = memo(() => {
               >
                 {heighestUser && (
                   <span className="absolute -left-2 -top-2 h-5 w-5 -rotate-45">
-                    <img src={crown} alt="" className="" />
+                    <img src={crown} alt="" />
                   </span>
                 )}
                 <div className="h-[20px] w-[25px] lg:h-[27px] lg:w-[33px]">
@@ -148,7 +148,7 @@ const LiveStats = memo(() => {
             disabled={isFetchingNextPage}
           >
             {!isFetchingNextPage && "Load more"}
-            {isFetchingNextPage && <Spinner className="mx-4 h-4 w-4 border-4 sm:border-2" />}
+            {isFetchingNextPage && <Spinner className="mx-4 h-4 w-4 border-2 lg:border-4" />}
           </button>
         )}
       </div>

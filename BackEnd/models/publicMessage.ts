@@ -46,10 +46,12 @@ const PublicMessageSchema = new mongoose.Schema(
       ref: "User",
       default: [],
     },
-    mentioned: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+    mentioned: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     isDeleted: {
       type: Boolean,
       default: false,

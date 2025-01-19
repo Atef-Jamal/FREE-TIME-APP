@@ -52,9 +52,6 @@ const PrivateChat = () => {
     );
   }
 
-  if (currentUserStatus === "unauthenticated") {
-    return <div className="flex h-full w-full items-center justify-center">Sign In First</div>;
-  }
   const height = {
     height: hiddenLiveStats
       ? smallScreen

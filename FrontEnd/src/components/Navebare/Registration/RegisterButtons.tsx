@@ -10,9 +10,9 @@ const RegisterButtons = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation("navbar");
   return (
-    <div className="ml-auto flex items-center gap-2">
+    <div className="flex h-10 items-center gap-x-1 sm:gap-x-2 lg:h-11">
       <button
-        className="flex items-center justify-center gap-3 rounded-md border border-gray-500 bg-[#3b3b7eef] px-6 py-2 text-sm font-[600] tracking-wide text-white"
+        className="flex h-full items-center gap-x-3 rounded-md border border-gray-500 bg-[#3b3b7eef] px-6 text-sm font-bold tracking-wide text-white"
         onClick={() => {
           if (!isSignInMode) dispatch(updateThisEntity({ entity: "isSignInMode", value: true }));
           dispatch(
@@ -24,7 +24,7 @@ const RegisterButtons = () => {
         }}
       >
         <BsFillPersonFill />
-        {t("sign In")}
+        {t("Login")}
       </button>
       <button
         onClick={() => {
@@ -36,7 +36,7 @@ const RegisterButtons = () => {
             }),
           );
         }}
-        className="flex items-center justify-center gap-3 rounded-md border border-gray-500 bg-[#01D676] px-6 py-2 text-sm font-[600] tracking-wide text-black"
+        className="flex h-full items-center gap-x-3 rounded-md border border-gray-500 bg-[#01D676] px-6 text-sm font-bold tracking-wide text-black"
       >
         <ImKey2 />
         {t("Register")}

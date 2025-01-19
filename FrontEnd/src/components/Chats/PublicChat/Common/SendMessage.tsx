@@ -14,9 +14,9 @@ import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import MentionListOfUsers from "./MentionListOfUsers";
 import { sendPublicChatMessage } from "../../../../utils";
-import { handleApiError } from "../../../../utils/common";
+import { cn, handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
-// import { RiBaseStationLine } from "react-icons/ri";
+import { RiBaseStationLine } from "react-icons/ri";
 import { TypeCashedPublicChat, TypePublicChatItem } from "../../../../types/publicChatTypes";
 import { User } from "../../../../types/userTypes";
 import { v4 as uuId } from "uuid";
@@ -31,11 +31,12 @@ interface typeProps {
 
 const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
-  // const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [user, setUser] = useState<User | null>(null);
+  const [mentionedUsers, setMentionedUsers] = useState<User[]>([]);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -57,7 +58,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         likes: [],
         dislikes: [],
         isDeleted: false,
-        mentioned: user || null,
+        mentioned: mentionedUsers,
         createdAt: new Date(new Date().toLocaleString("en-US")),
         updatedAt: new Date(new Date().toLocaleString("en-US")),
         isSended: "PENDING",
@@ -110,8 +111,8 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         },
       );
       socket?.emit("public-message", data);
-      if (user) {
-        setUser(null);
+      if (mentionedUsers.length > 0) {
+        setMentionedUsers([]);
       }
     },
     onError: (error, _, context) => {
@@ -125,7 +126,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
           likes: [],
           dislikes: [],
           isDeleted: false,
-          mentioned: user || null,
+          mentioned: mentionedUsers,
           createdAt: new Date(new Date().toLocaleString("en-US")),
           updatedAt: new Date(new Date().toLocaleString("en-US")),
           isSended: "FAILED",
@@ -182,7 +183,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
     });
     if (stopScrolling) setStopScrolling(false);
 
-    mutation.mutate({ message, mentionedUserId: user?._id });
+    mutation.mutate({ message, mentionedUsers });
   };
 
   const handleInputChange = useCallback(
@@ -247,67 +248,75 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
   }, [socket]);
 
   return (
-    <div className="relative flex w-full flex-col items-center bg-[#0a071670] px-2 pb-2 pt-1">
-      {/* <div className="flex items-center w-full">
-        <span className="hidden sm:flex items-center justify-center text-xs text-[#a2a345]">
-          <RiBaseStationLine className="opacity-70" />
-          <span className="text-[#7ff349] mx-1">{onlineUsers.length}</span>
-          Online Now
-        </span>
-        <span
-          className={`transition-all ${
-            somoneTyping ? "opacity-100" : "opacity-0"
-          } pl-3 text-xs text-[#f58585]`}
-        >
-          somone typing ...
-        </span>
-      </div> */}
-      {openMentionList && (
-        <div className="absolute -top-[152px] left-2 h-[150px] w-[95%] border border-gray-500">
-          <MentionListOfUsers setUser={setUser} setOpenMentionList={setOpenMentionList} />
+    <div className="relative">
+      {currentUserStatus !== "authenticated" && (
+        <div className="absolute z-[1] flex h-full w-full items-center justify-center gap-x-3">
+          <FcLock className="text-2xl" />
+          <span className="">Register To Unlock</span>
         </div>
       )}
-      {!currentUser && (
-        <div className="absolute top-1 z-[1] flex h-[55px] w-full items-center justify-center gap-4 text-lg font-bold sm:top-5 sm:h-[48px] sm:items-start sm:pt-1">
-          <span className="rounded-md bg-[#000000] px-2 py-1">
-            <FcLock className="text-xl" />
-          </span>
-          Sign Up To Unlock
-        </div>
-      )}
-      <form className={`${!currentUser && "blur-sm"} relative flex w-full items-end justify-between gap-1`}>
-        <textarea
-          ref={inputRef}
-          onChange={handleInputChange}
-          readOnly={!currentUser}
-          value={message}
-          placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
-          style={{ lineHeight: "1", maxHeight: "250px" }}
-          rows={1}
-          className={`${
-            user ? "py-3 pl-[60px] pt-3" : "p-3"
-          } w-full resize-none overflow-scroll rounded-md border-none bg-[#2f3042a2] text-[#afc6e0] outline-none scrollbar-none placeholder:text-gray-600`}
-        />
-        {user && (
-          <span
-            onClick={() => setUser(null)}
-            className="absolute left-1 top-1 w-[50px] cursor-pointer truncate rounded-md bg-[#3c5db8e0] px-[3px] py-[6px] text-center text-[11px]"
-          >
-            {user.name}
-          </span>
+
+      <div className={cn("relative flex flex-col", currentUserStatus !== "authenticated" && "blur-[2.5px]")}>
+        {openMentionList && (
+          <div className="absolute -top-[152px] left-0 h-[150px] w-full border border-gray-500">
+            <MentionListOfUsers
+              setMentionedUsers={setMentionedUsers}
+              setOpenMentionList={setOpenMentionList}
+            />
+          </div>
         )}
-        <div onClick={handleOpenMentionList} className="relative rounded-md bg-[#542ba06e] px-3 py-[6px]">
-          <p className="text-lg font-bold text-gray-400">@</p>
+
+        <div className="flex items-center gap-x-1 bg-[#302d2dee] p-[2px]">
+          <span className="flex items-center justify-center text-xs text-[#898a54]">
+            <RiBaseStationLine className="text-lg" />
+            <span className="mx-1 text-[#78cc52]">{onlineUsers.length}</span>
+            Onlines
+          </span>
+
+          {somoneTyping && <p className="text-xs">somone is typing...</p>}
+
+          <div className="flex flex-1 items-center gap-x-1 overflow-x-auto scrollbar-thin">
+            {mentionedUsers.map((user) => (
+              <div
+                key={user._id}
+                onClick={() => setMentionedUsers([])}
+                className="flex items-center justify-center gap-x-2 rounded-sm bg-[#201d42] px-1 py-[2px]"
+              >
+                <span className="text-[10px]">{user.name}</span>
+                <span className="text-[10px]">x</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <button
-          type="submit"
-          className="flex h-10 w-12 items-center justify-center rounded-md bg-[#217ebbf3]"
-          onClick={sendMessageHandler}
-          disabled={!currentUser || mutation.isPending}
-        >
-          <MdSend />
-        </button>
-      </form>
+
+        <form className={`mb-1 flex w-full items-end justify-center lg:mb-0`}>
+          <textarea
+            ref={inputRef}
+            onChange={handleInputChange}
+            // readOnly={!currentUser}
+            value={message}
+            placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
+            rows={1}
+            className={`max-h-[250px] min-h-[32px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm`}
+          />
+
+          <span
+            onClick={handleOpenMentionList}
+            className="flex h-[32px] w-[32px] items-center justify-center bg-[#542ba06e] text-lg font-bold text-gray-400 md:h-[36px]"
+          >
+            @
+          </span>
+
+          <button
+            type="submit"
+            className="flex h-[32px] w-[55px] items-center justify-center bg-[#217ebbf3] md:h-[36px]"
+            onClick={sendMessageHandler}
+            disabled={!currentUser || mutation.isPending}
+          >
+            <MdSend className="text-xl" />
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

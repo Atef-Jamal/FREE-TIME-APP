@@ -264,15 +264,15 @@ export const fetchPublicChatMessages = async ({
 
 export const sendPublicChatMessage = async ({
   message,
-  mentionedUserId,
+  mentionedUsers,
 }: {
   message: string;
-  mentionedUserId: string | undefined;
+  mentionedUsers: User[];
 }): Promise<TypePublicChatMessage> => {
   const response = await makeRequest.post("api/publicchat", {
     type: "MESSAGE",
     messageText: message,
-    mentioned: mentionedUserId,
+    mentioned: mentionedUsers,
   });
   const messageData = response.data;
   return messageData;

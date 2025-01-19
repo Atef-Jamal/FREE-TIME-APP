@@ -16,9 +16,9 @@ const MyMusics = () => {
   useScrollToElement({ dependencies: [musics] });
 
   return (
-    <div id="my-musics" className=" w-full flex flex-col items-center gap-2 mt-5 bg-[#222339] p-2 rounded-md">
-      <h1 className="text-[#a0e965ee] font-bold text-center ">My Musics</h1>
-      <div className="w-full grid grid-cols-8 xl:grid-cols-6 lg:grid-cols-5 sm:grid-cols-4 xs:grid-cols-2 gap-2">
+    <div id="my-musics" className="mt-5 flex w-full flex-col items-center gap-2 rounded-md bg-[#222339] p-2">
+      <h1 className="text-center font-bold text-[#a0e965ee]">My Musics</h1>
+      <div className="grid w-full grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5">
         {musics
           ?.filter((item) => {
             if (currentUser?.mySongs?.includes(item.id.toString())) {

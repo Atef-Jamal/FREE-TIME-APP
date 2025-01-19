@@ -159,49 +159,45 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   return (
-    <div
-      ref={lastMessageRef}
-      id={messageItem._id}
-      className={`special-for-deleting-${messageItem._id} flex flex-col gap-1 rounded-md bg-[#2f2f4e88] p-[6px]`}
-    >
+    <div ref={lastMessageRef} id={messageItem._id} className={"space-y-1 rounded-md bg-[#2f2f4e88] p-[6px]"}>
       <div className="relative flex w-full">
-        <div className="h-[30px] w-[35px] sm:h-[25px] sm:w-[30px]">
+        <div className="h-[25px] w-[30px] md:h-[30px] md:w-[35px]">
           <UserImage user={messageItem.sender} />
         </div>
         <Link
           to={currentUserId === messageItem.sender._id ? "/myprofile" : `/user/${messageItem.sender._id}`}
-          className={`-mt-1 ml-2 max-w-[60%] overflow-hidden sm:ml-[6px]`}
+          className={`-mt-1 ml-[6px] max-w-[60%] overflow-hidden md:ml-2`}
         >
-          <span className="-mb-[6px] flex items-center text-sm font-bold capitalize text-[#6dca51]">
+          <span className="-mb-[6px] flex items-center text-xs font-bold capitalize text-[#6dca51] md:text-sm">
             {messageItem.sender?.name}
             {messageItem.sender.emailVerified && (
-              <img src={verifiedImage} alt="" className="mx-2 h-4 w-4 object-cover sm:h-[14px] sm:w-[14px]" />
+              <img src={verifiedImage} alt="" className="mx-2 h-[14px] w-[14px] object-cover md:h-4 md:w-4" />
             )}
           </span>
-          {messageItem.createdAt && <span className="text-xs font-bold text-[#857272]">{date}</span>}
+          {messageItem.createdAt && <span className="text-[10px] font-bold text-[#857272]">{date}</span>}
         </Link>
 
         {currentUserId === messageItem.sender._id && !messageItem.isDeleted && (
           <button onClick={handleDelete} className="ml-auto flex items-center justify-center rounded-sm">
-            <FaRegTrashCan className="text-lg opacity-70 sm:text-sm" />
+            <FaRegTrashCan className="text-sm opacity-70 md:text-lg" />
           </button>
         )}
       </div>
 
       {!messageItem.isDeleted ? (
-        <div className="w-full pl-[3px]">
+        <div className="pl-[3px]">
           <p className="w-full break-words p-[2px] text-sm text-[#97b5f7]">
-            {messageItem.mentioned && (
+            {messageItem.mentioned.map((user) => (
               <Link
-                to={`/user/${messageItem.mentioned._id}`}
-                className="mr-2 text-xs font-extrabold text-blue-700 sm:text-[10.5px]"
+                to={`/user/${user._id}`}
+                className="mr-2 text-[10.5px] font-extrabold text-blue-700 sm:text-xs"
               >
-                @{messageItem.mentioned.name}
+                @{user.name}
               </Link>
-            )}
+            ))}
             {messageItem.message}
           </p>
-          <div className="ml-auto flex w-full items-center justify-end gap-3">
+          <div className="ml-auto flex w-full items-center justify-end gap-x-3">
             {messageItem.isSended === "SUCCESS" && <FcOk className="mr-auto" />}
 
             {messageItem.isSended === "PENDING" && <BiCircle className="mr-auto opacity-70" />}

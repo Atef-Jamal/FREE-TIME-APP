@@ -52,22 +52,22 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
   };
 
   return (
-    <div id={singleFrame._id} className="flex flex-col justify-center p-2 bg-[#5b667a42] rounded-md ">
+    <div id={singleFrame._id} className="flex flex-col justify-center rounded-md bg-[#5b667a42] p-2">
       <div className="relative">
-        <img src={singleFrame.image} alt="" className="w-full h-[120px] rounded-md mb-3" />
-        <span className="absolute bg-[#222339] w-[70%] h-[65%] top-0 translate-y-[19%] translate-x-[22%]"></span>
+        <img src={singleFrame.image} alt="" className="mb-3 h-[120px] w-full rounded-md" />
+        <span className="absolute top-0 h-[65%] w-[70%] translate-x-[22%] translate-y-[19%] bg-[#222339]"></span>
       </div>
       <div className="mt-2 overflow-hidden">
-        <p className=" text-xs font-extrabold text-[#58eb78] mb-1 sm:mb-[2px]">
+        <p className="mb-[2px] text-xs font-extrabold text-[#58eb78] sm:mb-1">
           Title:
-          <span className="font-[200] text-[#b2cdf0d5] ml-2">{singleFrame.title}</span>
+          <span className="ml-2 font-[200] text-[#b2cdf0d5]">{singleFrame.title}</span>
         </p>
-        <p className="text-xs font-extrabold text-[#58eb78] mb-1 sm:mb-[2px] whitespace-nowrap">
+        <p className="mb-[2px] whitespace-nowrap text-xs font-extrabold text-[#58eb78] sm:mb-1">
           description :
-          <span className="font-[200] text-[#b2cdf0d5] ml-2 overflow-hidden">{singleFrame.description}</span>
+          <span className="ml-2 overflow-hidden font-[200] text-[#b2cdf0d5]">{singleFrame.description}</span>
         </p>
-        <span className="text-sm font-extrabold text-[#58eb78] mb-1 sm:mb-[2px]">
-          Price :<span className="font-[200] text-[#b2cdf0d5] ml-2">{singleFrame.price}</span>
+        <span className="mb-[2px] text-sm font-extrabold text-[#58eb78] sm:mb-1">
+          Price :<span className="ml-2 font-[200] text-[#b2cdf0d5]">{singleFrame.price}</span>
         </span>
       </div>
 
@@ -81,7 +81,7 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
               }),
             )
           }
-          className="text-sm border border-gray-500 bg-[#1a202c] rounded-md py-[6px] mt-3 text-[#ffffff] font-bold"
+          className="mt-3 rounded-md border border-gray-500 bg-[#1a202c] py-[6px] text-sm font-bold text-[#ffffff]"
         >
           Purshased
         </button>
@@ -90,10 +90,10 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
         <button
           onClick={handlePurshaseFrame}
           disabled={mutation.isPending}
-          className="text-sm  border border-gray-500 bg-[#4ab646] rounded-md py-[6px] mt-3 font-bold "
+          className="mt-3 rounded-md border border-gray-500 bg-[#4ab646] py-[6px] text-sm font-bold"
         >
           {mutation.isPending ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#252525]  border-l-[#252525]" />
+            <Spinner className="mx-auto h-5 w-5 border-b-[#252525] border-l-[#252525]" />
           ) : (
             <p className="text-[#252525]">Buy Now</p>
           )}
@@ -101,8 +101,8 @@ const FrameItem = ({ singleFrame }: TypeProps) => {
       )}
 
       {currentUserStatus === "pending" && (
-        <span className="text-sm  border border-gray-500 rounded-md py-1 mt-3 font-bold">
-          <Spinner className="w-5 h-5 mx-auto border-t-[#533a70] border-r-[#533a70]" />
+        <span className="mt-3 rounded-md border border-gray-500 py-1 text-sm font-bold">
+          <Spinner className="mx-auto h-5 w-5 border-r-[#533a70] border-t-[#533a70]" />
         </span>
       )}
     </div>

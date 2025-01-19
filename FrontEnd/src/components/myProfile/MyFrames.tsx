@@ -73,36 +73,36 @@ const MyFrames = () => {
   return (
     <div
       id="my-frames"
-      className=" mt-5 flex flex-col gap-2 p-2 items-center justify-center bg-[#222339] rounded-md"
+      className="mt-5 flex flex-col items-center justify-center gap-2 rounded-md bg-[#222339] p-2"
     >
-      <span className="text-[#7dec73] font-bold">My Frames</span>
-      <div className={`w-full grid grid-cols-5 lg:grid-cols-4 sm:grid-cols-4 xs:grid-cols-3 gap-2`}>
+      <span className="font-bold text-[#7dec73]">My Frames</span>
+      <div className={`grid w-full grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5`}>
         {currentUser?.myFrames?.map((item: TypeFrame) => {
           return (
             <div
               key={item._id}
               id={item._id}
-              className="flex flex-col items-center w-full justify-center gap-3 px-2 py-3 bg-[#5b667a42] rounded-md"
+              className="flex w-full flex-col items-center justify-center gap-3 rounded-md bg-[#5b667a42] px-2 py-3"
             >
-              <div className="relative w-full flex items-center justify-center">
+              <div className="relative flex w-full items-center justify-center">
                 <img
                   src={item.image}
                   alt=""
-                  className="w-[70%] lg:w-full h-[120px] sm:h-[90px] lg:h-[110px] rounded-md mb-3"
+                  className="mb-3 h-[120px] w-[70%] rounded-md sm:h-[90px] lg:h-[110px] lg:w-full"
                 />
-                <span className="absolute bg-[#222339] top-[16%] lg:top-[18%] left-[29%] lg:left-[22%] w-[43%] lg:w-[55%] sm:w-[55%] lg:h-[52%] h-[59%]"></span>
+                <span className="absolute left-[29%] top-[16%] w-[55%] bg-[#222339] md:left-[22%] md:top-[18%] md:h-[52%] md:w-[55%] lg:h-[59%] lg:w-[43%]"></span>
               </div>
               {currentUser?.activeFrame?._id === item._id ? (
                 <button
                   onClick={unselectFrameHandler}
-                  className="rounded-md font-bold bg-[#2d704ad8] w-[80%] xs:w-[95%] py-1 text-center mx-auto"
+                  className="mx-auto w-[95%] rounded-md bg-[#2d704ad8] py-1 text-center font-bold md:w-[80%]"
                 >
                   unselect
                 </button>
               ) : (
                 <button
                   onClick={() => changeFrameHandler(item._id)}
-                  className=" rounded-md font-bold bg-[#467cce71] w-[80%] xs:w-[95%]  py-1 text-center mx-auto"
+                  className="mx-auto w-[95%] rounded-md bg-[#467cce71] py-1 text-center font-bold md:w-[80%]"
                 >
                   select
                 </button>

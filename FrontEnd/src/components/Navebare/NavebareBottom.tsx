@@ -47,7 +47,7 @@ const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: TypeProps) 
   }, [openSidbareMobile, setPrivateMsgRedPoint]);
 
   return (
-    <ul className="sticky bottom-0 z-[10] flex h-[60px] w-full items-center justify-between gap-1 bg-[#2b2b55] lg:hidden">
+    <ul className="fixed bottom-0 left-0 z-[10] flex h-[60px] w-full items-center justify-between gap-x-1 bg-[#2b2b55] lg:hidden">
       <li className="relative flex h-[65px] w-[17%] items-center justify-center">
         {openSidbareMobile && <RiCloseFill className="text-3xl" onClick={handleToggleMobileSidbare} />}
         {!openSidbareMobile && <FaList className="text-xl" onClick={handleToggleMobileSidbare} />}

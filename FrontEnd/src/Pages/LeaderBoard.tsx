@@ -25,10 +25,10 @@ const LeaderBoard = () => {
     <div className="relative bg-[#1d2c35] pt-4 md:pt-8">
       <div className="flex items-center justify-between p-4 sm:justify-between lg:mx-16">
         <div className="flex gap-3 lg:gap-8">
-          <button className="rounded-md bg-[#83478398] px-5 py-2 text-sm tracking-wider text-yellow-300 md:text-base">
+          <button className="rounded-md bg-[#83478398] px-2 py-2 text-sm tracking-wider text-yellow-300 md:px-5 md:text-base">
             $500 Daily
           </button>
-          <button className="rounded-md border border-gray-500 bg-[#3316168e] px-5 py-2 text-sm tracking-wider text-[#43d616] md:text-base">
+          <button className="rounded-md border border-gray-500 bg-[#3316168e] px-2 py-2 text-sm tracking-wider text-[#43d616] md:px-5 md:text-base">
             $5000 Monthly
           </button>
         </div>

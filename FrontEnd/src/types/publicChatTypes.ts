@@ -11,7 +11,7 @@ export interface TypePublicChatMessage {
   likes: string[];
   dislikes: string[];
   loves: string[];
-  mentioned: User | null;
+  mentioned: User[];
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }
 

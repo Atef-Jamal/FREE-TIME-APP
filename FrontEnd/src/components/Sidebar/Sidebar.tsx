@@ -3,7 +3,7 @@ import { openModel, updateThisEntity } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
-import { memo, useCallback, useEffect } from "react";
+import { lazy, memo, Suspense, useCallback, useEffect } from "react";
 import { useListenToSocketEvents } from "../../hooks";
 import { TypeCashedConversations, TypePrivateMessage } from "../../types/privateChatTypes";
 import { showPopup, updateSidebarUnReadedMsgCount } from "../../context/StateManeger";
@@ -15,12 +15,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { TypeCashedChat } from "../Chats/PrivateChat/SendMessagePrivateChat";
 import Search from "../Search/Search";
 import SearchBar from "../Search/SearchBar";
+const MusicPlayer = lazy(() => import("../../components/Music/MusicPlayer"));
 
 const Sidebar = memo(() => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -121,7 +123,7 @@ const Sidebar = memo(() => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="flex h-full w-[250px] flex-col gap-y-2 bg-[#29293a] px-2 pt-3 lg:w-full"
+      className="flex h-full w-[250px] flex-col gap-y-2 bg-[#29293a] px-2 pt-1 lg:w-full lg:pt-3"
     >
       <div className={`hidden lg:block`}>
         <BiMenu onClick={handleCollaps} className={`${resizeSidebare ? "mx-auto" : "ml-auto"} text-2xl`} />
@@ -133,6 +135,8 @@ const Sidebar = memo(() => {
       >
         <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
+
+      {openMusicModal && smallScreen && <Suspense children={<MusicPlayer />} />}
 
       <ul className="flex w-full flex-col gap-1">
         {sidebareItems.map((item, index) => {

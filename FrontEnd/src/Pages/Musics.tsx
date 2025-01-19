@@ -15,14 +15,14 @@ const Musics = () => {
   useScrollToElement({ dependencies: [musics] });
 
   return (
-    <div className="xs:p-3 p-6">
+    <div className="p-3 sm:p-6">
       <div className="mb-5 flex items-center gap-3 border-b pb-5 text-3xl text-[#73eb63]">
         <span className="flex h-8 w-8 items-center justify-center rounded-md bg-[#dd40403b]">
           <FcMusic />
         </span>
         Musics
       </div>
-      <div className="xs:grid-cols-2 grid grid-cols-8 gap-4 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6">
         {status === "pending" &&
           [...Array(21).keys()].map((i) => (
             <div

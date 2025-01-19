@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { openModel, setOnlineUsers, setSocet, showPopup } from "../../context/StateManeger";
+import { openModel, setOnlineUsers, setSocet, showPopup, updateThisEntity } from "../../context/StateManeger";
 import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks";
 import { User } from "../../types/userTypes";
@@ -11,6 +11,7 @@ import { TypeConversationSocketData } from "../../types/othersTypes";
 import { TypeCashedChat } from "../../components/Chats/PrivateChat/SendMessagePrivateChat";
 import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessages } from "../../utils";
 import io from "socket.io-client";
+import { debounce } from "../../utils/common";
 import RegisterationForm from "../Navebare/Registration/RegisterationForm";
 
 // implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering
@@ -21,7 +22,7 @@ const HiddenComponent = () => {
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-
+  const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -130,10 +131,6 @@ const HiddenComponent = () => {
   );
 
   useListenToSocketEvents({
-    eventsToListen: [],
-    handlers: [handleUpdateOnlineUsers],
-  });
-  useListenToSocketEvents({
     eventsToListen: ["online-users", "public-message", "user-updated", "conversation-readed"],
     handlers: [
       handleUpdateOnlineUsers,
@@ -142,6 +139,30 @@ const HiddenComponent = () => {
       handleConversationReaded,
     ],
   });
+
+  useEffect(() => {
+    if (currentUserStatus === "pending") return;
+    const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
+      query: { userId: currentUserId },
+    });
+    dispatch(setSocet(socket));
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [currentUserStatus, currentUserId, dispatch]);
+
+  useEffect(() => {
+    if (refQuery && currentUserStatus === "unauthenticated") {
+      dispatch(
+        openModel({
+          status: true,
+          children: <RegisterationForm />,
+        }),
+      );
+    }
+  }, [dispatch, refQuery, currentUserStatus]);
 
   useEffect(() => {
     if (redirectQuery) {
@@ -171,29 +192,33 @@ const HiddenComponent = () => {
   }, [redirectQuery, searchParams, setSearchParams, dispatch]);
 
   useEffect(() => {
-    if (refQuery && currentUserStatus === "unauthenticated") {
-      dispatch(
-        openModel({
-          status: true,
-          children: <RegisterationForm />,
-        }),
-      );
-    }
-  }, [dispatch, refQuery, currentUserStatus]);
+    const handleNetworkOnline = () => {
+      dispatch(showPopup({ message: "Back online", type: "SUCESS" }));
+    };
+    const handleNetworkOffline = () => {
+      dispatch(showPopup({ message: "No internet connection", type: "ERROR_GENERAL" }));
+    };
+
+    window.addEventListener("online", handleNetworkOnline);
+    window.addEventListener("offline", handleNetworkOffline);
+    return () => {
+      window.removeEventListener("online", handleNetworkOnline);
+      window.removeEventListener("offline", handleNetworkOffline);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
-    if (currentUserStatus === "pending") return;
-    const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-      query: { userId: currentUserId },
-    });
-    dispatch(setSocet(socket));
-    return () => {
-      if (socket) {
-        socket.close();
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        dispatch(updateThisEntity({ entity: "smallScreen", value: true }));
+      } else {
+        dispatch(updateThisEntity({ entity: "smallScreen", value: false }));
       }
     };
-  }, [currentUserStatus, currentUserId, dispatch]);
-
+    const debouncedResize = debounce(handleResize, 100, timeOutRef);
+    window.addEventListener("resize", debouncedResize);
+    return () => window.removeEventListener("resize", debouncedResize);
+  }, [dispatch]);
   return <></>;
 };
 

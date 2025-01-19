@@ -4,6 +4,7 @@ import FrameItem from "../components/MarketPlace/FrameItem";
 import { fetchAllFrames } from "../utils";
 import { useScrollToElement } from "../hooks";
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "../utils/common";
 
 const MarketPlace = () => {
   const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
@@ -21,18 +22,17 @@ const MarketPlace = () => {
   useScrollToElement({ dependencies: [frames] });
 
   return (
-    <div className="min-h-screen p-5 sm:p-3 w-full">
-      <h1 className="border-b text-3xl text-[#7cec50] w-[40%] lg:w-[70%] py-2 mb-6 lg:text-xl font-bold flex items-center gap-5 lg:gap-3">
+    <div className="min-h-screen w-full p-3 lg:p-5">
+      <h1 className="mb-6 flex w-[70%] items-center gap-x-3 border-b py-2 text-xl font-bold text-[#7cec50] lg:w-[40%] lg:gap-x-5 lg:text-3xl">
         <MdStorefront /> MARKET STORE
       </h1>
       {status === "error" && <p>{error.response?.data.error}</p>}
-      {status === "pending" && <div className="text-center my-10">Loading</div>}
+      {status === "pending" && <div className="my-10 text-center">Loading</div>}
       <div
-        className={`${
-          resizeSidebare
-            ? "grid-cols-8 xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2"
-            : "grid-cols-7 xl:grid-cols-5 lg:grid-cols-3 xs:grid-cols-2"
-        } w-full grid gap-4 sm:gap-2 `}
+        className={cn(
+          "grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 md:gap-4",
+          resizeSidebare ? "lg:grid-cols-5 xl:grid-cols-6" : "lg:grid-cols-4 xl:grid-cols-5",
+        )}
       >
         {frames.map((item) => {
           return <FrameItem key={item._id} singleFrame={item} />;

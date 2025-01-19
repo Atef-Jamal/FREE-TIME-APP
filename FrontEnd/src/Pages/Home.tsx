@@ -127,13 +127,16 @@ const Home = () => {
 
   const numberOfCards = () => {
     if (window.innerWidth <= 500) return 1.3;
-    return 2.2;
+    if (window.innerWidth <= 700) return 2.3;
+    if (window.innerWidth <= 800) return 3.3;
+    if (window.innerWidth <= 1000) return 4.3;
+    return 5.3;
   };
 
   return (
     <div className="bg-[#222339] py-6 lg:py-12">
       <div className="mx-auto w-[90%] max-w-7xl space-y-16">
-        <div className={!token ? "flex flex-col justify-between gap-y-6 border md:flex-row" : ""}>
+        <div className={!token ? "flex flex-col justify-between gap-y-6 md:flex-row" : ""}>
           <div className={cn("h-full w-full", !token && "md:w-[48%]")}>
             <h1 className="mb-4 w-full text-center text-4xl font-bold text-[#af5a5a] md:text-6xl">
               {t("Get Paid For")}
@@ -439,13 +442,14 @@ const Home = () => {
         <h1 className="text-center text-xl font-bold tracking-wider text-[#b0d870] lg:text-2xl">
           {t("What do our users say")}
         </h1>
-        <div className="mx-auto w-[310px]">
+
+        <div className="mx-auto w-full">
           {error && <p className="text-center text-[#f73737]">{error.response?.data.error}</p>}
           {status !== "pending" && !error && (
             <Swiper
               className="h-[350px]"
               modules={[Navigation, Pagination, Scrollbar, A11y]}
-              spaceBetween={10}
+              spaceBetween={window.innerWidth < 500 ? 4 : window.innerWidth < 800 ? 6 : 10}
               slidesPerView={numberOfCards()}
               navigation
               pagination={{ clickable: true }}
@@ -489,6 +493,7 @@ const Home = () => {
             </Swiper>
           )}
         </div>
+
         <form onSubmit={addTestimonialHandler} className="">
           <div className="mx-auto flex w-[94%] flex-col items-center justify-center gap-3 md:w-[60%]">
             <div className="flex w-full flex-col">
@@ -554,6 +559,7 @@ const Home = () => {
             </div>
           </div>
         </form>
+
         <div className="flex flex-col items-center justify-center gap-3 md:flex-row">
           <div className="relative flex h-[250px] w-[90%] flex-col items-center rounded-lg border-yellow-200 bg-gradient-to-br from-slate-900 to-[#43800a3a] pt-16 md:w-[45%]">
             <p className="mb-2 text-center text-xl font-bold">{t("Yesterday Users Cashed Out")}</p>

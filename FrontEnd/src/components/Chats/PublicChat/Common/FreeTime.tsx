@@ -13,29 +13,26 @@ const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const date = formateDate(singleMessage.createdAt);
   return (
-    <div
-      ref={lastMessageRef}
-      className="w-full p-2 flex flex-col items-center justify-center gap-2 bg-[#2f2f4e88] rounded-md"
-    >
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center">
-          <span className="p-1 flex items-center justify-center bg-[#854f22c7] rounded-md text-[9px] font-extrabold tracking-wider text-[#5dce67] mr-1">
+    <div ref={lastMessageRef} className="space-y-2 rounded-md bg-[#2f2f4e88] p-2">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex">
+          <span className="mr-1 flex items-center justify-center rounded-md bg-[#854f22c7] p-1 text-[9px] font-extrabold tracking-wider text-[#5dce67]">
             BOT
           </span>
-          <span className=" text-sm tracking-wider text-[#01D676] font-bold">FREE</span>
-          <span className="text-sm text-gray-300 tracking-wider font-bold">TIME</span>
+          <span className="text-sm font-bold tracking-wider text-[#01D676]">FREE</span>
+          <span className="text-sm font-bold tracking-wider text-gray-300">TIME</span>
         </div>
-        <span className="text-xs text-gray-500 font-bold">{date}</span>
+        <span className="text-xs font-bold text-gray-500">{date}</span>
       </div>
       {singleMessage.typeOfTask === "TASK" && (
-        <p className="text-xs text-[#d9dfdb] mr-auto">
+        <p className="mr-auto text-xs text-[#d9dfdb]">
           <Link
             to={
               currentUser?._id === singleMessage.sender._id
                 ? "/myprofile"
                 : `/user/${singleMessage.sender._id}`
             }
-            className="text-xs text-[#6385e2ee] font-bold mr-2 underline"
+            className="mr-2 text-xs font-bold text-[#6385e2ee] underline"
           >
             {singleMessage.sender.name}
           </Link>
@@ -43,40 +40,40 @@ const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
         </p>
       )}
       {singleMessage.typeOfTask === "EMAIL-VERIFIED" && (
-        <p className="text-sm text-[#d9dfdb] mr-auto flex items-center">
-          <span className="text-xs text-[#6385e2ee] font-bold underline">{singleMessage.sender.name}</span>
-          <img src={verifiedImage} alt="" className="w-4 h-4 object-cover mx-2 " />
+        <p className="mr-auto flex items-center text-sm text-[#d9dfdb]">
+          <span className="text-xs font-bold text-[#6385e2ee] underline">{singleMessage.sender.name}</span>
+          <img src={verifiedImage} alt="" className="mx-2 h-4 w-4 object-cover" />
           verified his Email Now
         </p>
       )}
       {singleMessage.typeOfTask === "REFERRER" && (
-        <p className="text-xs text-[#d9dfdb] mr-auto">
+        <p className="mr-auto text-xs text-[#d9dfdb]">
           <Link
             to={
               currentUser?._id === singleMessage.sender._id
                 ? "/myprofile"
                 : `/user/${singleMessage.sender._id}`
             }
-            className="text-xs text-[#6385e2ee] font-bold mr-1 underline"
+            className="mr-1 text-xs font-bold text-[#6385e2ee] underline"
           >
             {singleMessage.sender.name}
           </Link>
           Referred His Friend
-          <Link to={`/user/${singleMessage._id}`} className=" text-[#6385e2ee] font-bold mx-[3px] underline">
+          <Link to={`/user/${singleMessage._id}`} className="mx-[3px] font-bold text-[#6385e2ee] underline">
             {singleMessage.newUserReferred.name}
           </Link>
           Now
         </p>
       )}
       {singleMessage.typeOfTask === "MUSIC" && (
-        <p className="text-xs text-[#d9dfdb] mr-auto">
+        <p className="mr-auto text-xs text-[#d9dfdb]">
           <Link
             to={
               currentUser?._id === singleMessage.sender._id
                 ? "/myprofile"
                 : `/user/${singleMessage.sender._id}`
             }
-            className="text-xs text-[#6385e2ee] font-bold mr-2 underline"
+            className="mr-2 text-xs font-bold text-[#6385e2ee] underline"
           >
             {singleMessage.sender.name}
           </Link>
@@ -84,14 +81,14 @@ const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
         </p>
       )}
       {singleMessage.typeOfTask === "FRAME" && (
-        <p className="text-xs text-[#d9dfdb] mr-auto">
+        <p className="mr-auto text-xs text-[#d9dfdb]">
           <Link
             to={
               currentUser?._id === singleMessage.sender._id
                 ? "/myprofile"
                 : `/user/${singleMessage.sender._id}`
             }
-            className="text-xs text-[#6385e2ee] font-bold mr-2 underline"
+            className="mr-2 text-xs font-bold text-[#6385e2ee] underline"
           >
             {singleMessage.sender.name}
           </Link>

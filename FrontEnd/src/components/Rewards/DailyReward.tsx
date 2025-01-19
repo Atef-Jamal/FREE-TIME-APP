@@ -70,9 +70,9 @@ const DailyReward = () => {
           <p className="text-sm tracking-wider text-white">
             {t("Earn Up to")}
             <span className="text-yellow-400">30% Commission!</span>
-            <p className="text-xs text-[#99a1ce] sm:text-sm">
+            <span className="text-xs text-[#99a1ce] sm:text-sm">
               {t("Git Your Friend A Free time and Earn Up to 30% Commission From What They Earn")}
-            </p>
+            </span>
           </p>
           <Link
             to={"/affiliates"}

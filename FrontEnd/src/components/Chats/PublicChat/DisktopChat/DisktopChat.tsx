@@ -42,7 +42,7 @@ const DisktopChat = memo(() => {
         height: `calc(100dvh - 55px)`,
       }}
       className={cn(
-        "fixed right-0 top-[55px] z-[4] hidden w-[30%] flex-col items-center border-l border-[#8a5f5f] bg-[#202138] transition-all duration-300 ease-in-out lg:flex lg:w-[38%]",
+        "fixed right-0 top-[55px] z-[4] hidden w-[35%] max-w-[500px] flex-col border-l border-[#8a5f5f] bg-[#202138] transition-all duration-300 ease-in-out lg:flex",
         !isChatOpen && "translate-x-[100%]",
       )}
     >
@@ -57,7 +57,9 @@ const DisktopChat = memo(() => {
         <BsChatLeftText className="text-3xl" />
       </span>
       <ChatHeader />
-      <PublicChat />
+      <div className="flex-1 overflow-hidden">
+        <PublicChat />
+      </div>
     </div>
   );
 });

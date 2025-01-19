@@ -32,12 +32,12 @@ export const getAllPublicMessages = async (req: Request, res: Response) => {
 
 export const createPublicMessage = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { messageText, type, mentioned } = req.body;
+  const { messageText, type, mentionedUsers } = req.body;
   try {
     const message = new PublicMessage({
       sender: currentUserId,
       message: messageText,
-      mentioned,
+      mentioned: mentionedUsers,
       type,
     });
 
@@ -48,16 +48,28 @@ export const createPublicMessage = async (req: Request, res: Response) => {
       { path: "newUserReferred", select: "-password" },
     ]);
 
-    if (mentioned) {
-      const createNotification = new Notification({
-        belongsTo: mentioned,
-        type: "MENTION",
-        mentionedUser: currentUserId,
-        messageLocation: saveMessage._id,
+    if (mentionedUsers.length > 0) {
+      const newNotifications: any[] = [];
+
+      mentionedUsers.forEach((user: any) => {
+        const newNotification = new Notification({
+          belongsTo: user._id,
+          type: "MENTION",
+          mentionedUser: currentUserId,
+          messageLocation: saveMessage._id,
+        });
+        newNotifications.push(newNotification);
       });
-      const saveNotification = await createNotification.save();
-      const savedNotification = await saveNotification.populate("mentionedUser", "-password");
-      io.to(onLineUsers[mentioned]).emit("new-notification", savedNotification);
+
+      const saveNotifications = await Notification.insertMany(newNotifications);
+      const ids = saveNotifications.map((item) => item._id);
+      const getCreatedNotifications = await Notification.find({ _id: { $in: ids } }).populate(
+        "mentionedUser",
+        "-password",
+      );
+      getCreatedNotifications.forEach((notify) => {
+        io.to(onLineUsers[notify.belongsTo.toString()]).emit("new-notification", notify);
+      });
     }
     return res.status(200).json(savedMessage);
   } catch (error) {
