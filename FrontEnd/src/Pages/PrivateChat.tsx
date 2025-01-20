@@ -53,7 +53,7 @@ const PrivateChat = () => {
   }
 
   const height = {
-    minHeight: hiddenLiveStats
+    height: hiddenLiveStats
       ? smallScreen
         ? `calc(100dvh - 115px)`
         : "calc(100dvh - 55px)"
