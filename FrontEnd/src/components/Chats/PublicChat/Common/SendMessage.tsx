@@ -17,26 +17,26 @@ import { sendPublicChatMessage } from "../../../../utils";
 import { cn, handleApiError } from "../../../../utils/common";
 import { useListenToSocketEvents } from "../../../../hooks";
 import { RiBaseStationLine } from "react-icons/ri";
-import { TypeCashedPublicChat, TypePublicChatItem } from "../../../../types/publicChatTypes";
-import { User } from "../../../../types/userTypes";
+import { ICashedPublicChat, IPublicChatItem } from "../../../../types/publicChatTypes";
+import { IUser } from "../../../../types/userTypes";
 import { v4 as uuId } from "uuid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SetURLSearchParams } from "react-router-dom";
 
-interface typeProps {
+interface IProps {
   stopScrolling: boolean;
   setStopScrolling: Dispatch<SetStateAction<boolean>>;
   setSearchParams: SetURLSearchParams;
 }
 
-const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeProps) => {
+const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [mentionedUsers, setMentionedUsers] = useState<User[]>([]);
+  const [mentionedUsers, setMentionedUsers] = useState<IUser[]>([]);
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -49,7 +49,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
       if (!currentUser) return;
       await queryClient.cancelQueries({ queryKey: ["public-chat-messages"] });
       const uniqeIdForRollback = uuId();
-      const optimisticMsg: TypePublicChatItem = {
+      const optimisticMsg: IPublicChatItem = {
         _id: uniqeIdForRollback,
         sender: currentUser,
         type: "MESSAGE",
@@ -66,7 +66,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
 
       queryClient.setQueryData(
         ["public-chat-messages"],
-        (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+        (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
           if (!previous) return;
 
           return {
@@ -89,7 +89,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
     onSuccess: (data, _, context) => {
       queryClient.setQueryData(
         ["public-chat-messages"],
-        (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+        (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
           if (!previous) return;
           return {
             ...previous,
@@ -117,7 +117,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
     },
     onError: (error, _, context) => {
       if (context && currentUser) {
-        const failedMessage: TypePublicChatItem = {
+        const failedMessage: IPublicChatItem = {
           _id: uuId(),
           sender: currentUser,
           type: "MESSAGE",
@@ -133,7 +133,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
         };
         queryClient.setQueryData(
           ["public-chat-messages"],
-          (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+          (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
             if (!previous) return;
             return {
               ...previous,
@@ -266,10 +266,10 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
           </div>
         )}
 
-        <div className="flex items-center gap-x-1 bg-[#302d2dee] p-[2px]">
-          <span className="flex items-center justify-center text-xs text-[#898a54]">
+        <div className="flex items-center gap-x-1 bg-[#302d2dee] p-[2px] lg:px-2">
+          <span className="flex items-center justify-center text-xs text-[#a5a760]">
             <RiBaseStationLine className="text-lg" />
-            <span className="mx-1 text-[#78cc52]">{onlineUsers.length}</span>
+            <span className="mx-1 text-[#83db5a]">{onlineUsers.length}</span>
             Onlines
           </span>
 
@@ -289,27 +289,29 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: typeP
           </div>
         </div>
 
-        <form className={`mb-1 flex w-full items-end justify-center lg:mb-0`}>
+        <form className={"flex w-full items-end justify-center gap-x-1"}>
           <textarea
             ref={inputRef}
             onChange={handleInputChange}
-            // readOnly={!currentUser}
+            readOnly={!currentUser}
             value={message}
-            placeholder={!currentUser ? "Sign Up First " : "Type Here.."}
+            placeholder={!currentUser ? "Register First " : "Type here.."}
             rows={1}
-            className={`max-h-[250px] min-h-[32px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm`}
+            className={
+              "max-h-[250px] min-h-[35px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm lg:text-base"
+            }
           />
 
           <span
             onClick={handleOpenMentionList}
-            className="flex h-[32px] w-[32px] items-center justify-center bg-[#542ba06e] text-lg font-bold text-gray-400 md:h-[36px]"
+            className="flex h-[35px] w-[45px] items-center justify-center bg-[#542ba06e] text-lg font-bold text-gray-400 md:h-[36px] lg:h-[40px]"
           >
             @
           </span>
 
           <button
             type="submit"
-            className="flex h-[32px] w-[55px] items-center justify-center bg-[#217ebbf3] md:h-[36px]"
+            className="flex h-[35px] w-[55px] items-center justify-center bg-[#217ebbf3] md:h-[36px] lg:h-[40px]"
             onClick={sendMessageHandler}
             disabled={!currentUser || mutation.isPending}
           >

@@ -1,13 +1,13 @@
 import { BiSearch } from "react-icons/bi";
 
-interface TypeSearchBar {
+interface IProps {
   placeholder: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
   hideInput?: boolean;
 }
 
-const SearchBar = ({ placeholder, onChange, readOnly = false }: TypeSearchBar) => {
+const SearchBar = ({ placeholder, onChange, readOnly = false }: IProps) => {
   return (
     <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-md border border-gray-700 bg-[#333030]">
       <span className={`flex h-full min-w-[50px] items-center justify-center lg:min-w-[60px]`}>

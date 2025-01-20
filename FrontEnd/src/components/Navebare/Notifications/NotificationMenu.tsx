@@ -13,17 +13,17 @@ import EmailVerifiedNotify from "./EmailVerifiedNotify";
 import { makeRequest } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
 import Spinner from "../../Others/Spinner";
-import { TypeNotifications } from "../../../types/notificationTypes";
+import { INotifications } from "../../../types/notificationTypes";
 import Empty from "../../Others/Empty";
 import MessageReactionNotify from "./InteractwithMessageNotify";
 
-interface TypeProps {
-  notifications: TypeNotifications[];
+interface IProps {
+  notifications: INotifications[];
   loadingNotifications: boolean;
-  setNotifications: React.Dispatch<React.SetStateAction<TypeNotifications[]>>;
+  setNotifications: React.Dispatch<React.SetStateAction<INotifications[]>>;
 }
 
-const NotificationMenu = ({ notifications, setNotifications, loadingNotifications }: TypeProps) => {
+const NotificationMenu = ({ notifications, setNotifications, loadingNotifications }: IProps) => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const dispatch = useAppDispatch();
 
@@ -59,12 +59,12 @@ const NotificationMenu = ({ notifications, setNotifications, loadingNotification
     <>
       <div
         onClick={() => dispatch(updateThisEntity({ entity: "openNotification", value: false }))}
-        className="fixed top-0 right-0 w-[100vw] h-[100vh] rounded-lg bg-[#010107c4] "
+        className="fixed right-0 top-0 h-[100vh] w-[100vw] rounded-lg bg-[#010107c4]"
       ></div>
 
-      <div className=" absolute right-4 sm:right-[2.5%] top-0 w-[480px] sm:w-[95%] max-h-[85dvh] bg-[#2e2e4b] rounded-lg flex flex-col items-center gap-2 overflow-auto pb-2">
-        <div className=" bg-[#2e2e4b] flex justify-between w-[96%] my-1 ">
-          <h1 className="text-lg font-bold tracking-wider text-gray-300 border-b w-[50%] pb-2 flex items-center gap-2">
+      <div className="absolute right-4 top-0 flex max-h-[85dvh] w-[480px] flex-col items-center gap-2 overflow-auto rounded-lg bg-[#2e2e4b] pb-2 sm:right-[2.5%] sm:w-[95%]">
+        <div className="my-1 flex w-[96%] justify-between bg-[#2e2e4b]">
+          <h1 className="flex w-[50%] items-center gap-2 border-b pb-2 text-lg font-bold tracking-wider text-gray-300">
             <MdOutlineEditNotifications className="text-2xl" /> Notifications
           </h1>
           <MdOutlineClose
@@ -72,10 +72,10 @@ const NotificationMenu = ({ notifications, setNotifications, loadingNotification
             className="text-2xl"
           />
         </div>
-        <div className="w-[96%] overflow-y-auto scrollbar-thin scrollbar-thumb-[#6d7c5a] scrollbar-track-[#251b3f85] flex flex-col gap-1">
+        <div className="flex w-[96%] flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-[#251b3f85] scrollbar-thumb-[#6d7c5a]">
           {loadingNotifications && (
-            <div className="w-full h-full flex items-center justify-center">
-              <Spinner className="w-8 h-8 border-[4px]" />
+            <div className="flex h-full w-full items-center justify-center">
+              <Spinner className="h-8 w-8 border-[4px]" />
             </div>
           )}
           {!loadingNotifications &&

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import UserImage from "../../Others/UserImage";
 import PrivateMessageItem from "./PrivateMessageItem";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
-import { TypeCashedConversations } from "../../../types/privateChatTypes";
+import { ICashedConversations } from "../../../types/privateChatTypes";
 import { showPopup } from "../../../context/StateManeger";
 import { handleApiError } from "../../../utils/common";
 import { fetchPrivateChatMessages, makeRequest } from "../../../utils";
@@ -42,25 +42,22 @@ const ChatBody = () => {
 
     try {
       await makeRequest.get(`api/conversations/${activeConversation}/mark-as-read`);
-      queryClient.setQueryData(
-        ["conversations"],
-        (previous: TypeCashedConversations): TypeCashedConversations => {
-          return {
-            ...previous,
-            pages: previous.pages.map((page) => {
-              return {
-                ...page,
-                conversations: page.conversations.map((conv) => {
-                  if (conv.secondParty._id === activeConversation) {
-                    return { ...conv, unreadedCount: 0 };
-                  }
-                  return conv;
-                }),
-              };
-            }),
-          };
-        },
-      );
+      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations.map((conv) => {
+                if (conv.secondParty._id === activeConversation) {
+                  return { ...conv, unreadedCount: 0 };
+                }
+                return conv;
+              }),
+            };
+          }),
+        };
+      });
     } catch (error) {
       dispatch(
         showPopup({
@@ -84,15 +81,15 @@ const ChatBody = () => {
 
   if (status === "pending") {
     return (
-      <div className="flex h-full items-center justify-center">
-        <ImSpinner3 className="animate-spin text-6xl sm:text-4xl" />
+      <div className="flex h-full items-center justify-center border border-x border-gray-700 bg-[#332342] 2xl:flex-1">
+        <ImSpinner3 className="animate-spin text-4xl md:text-6xl" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex h-full w-full items-center justify-center text-lg font-bold text-[#b95b5b]">
+      <div className="flex h-full items-center justify-center border border-x border-gray-700 bg-[#332342] px-5 text-center text-[#f12828] 2xl:flex-1">
         {error.response?.data.error}
       </div>
     );

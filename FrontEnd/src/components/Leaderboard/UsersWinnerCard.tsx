@@ -1,12 +1,12 @@
 import { leaderboard_place1_winnings, leaderboard_place3_winnings, crown } from "../../assets";
-import { User } from "../../types/userTypes";
+import { IUser } from "../../types/userTypes";
 
-interface TypeProps {
-  user: User | undefined;
+interface IProps {
+  user: IUser | undefined;
   index: number;
 }
 
-const UsersWinnerCard = ({ user, index }: TypeProps) => {
+const UsersWinnerCard = ({ user, index }: IProps) => {
   return (
     <div
       id={index === 0 ? "top-earner" : undefined}

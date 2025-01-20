@@ -3,17 +3,17 @@ import { useAppSelector } from "../../../context/Hooks";
 import { formateDate } from "../../../utils/common";
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp, IoCloseCircleOutline } from "react-icons/io5";
 import { RefObject } from "react";
-import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import { IPrivateMessage } from "../../../types/privateChatTypes";
 import { BiCircle } from "react-icons/bi";
 
-interface TypeProps {
+interface IProps {
   messagesLength: number;
-  message: TypePrivateMessage;
+  message: IPrivateMessage;
   lastMessageRef: RefObject<HTMLDivElement | null>;
   index: number;
 }
 
-const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: TypeProps) => {
+const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const date = formateDate(message.createdAt);
   return (

@@ -1,25 +1,25 @@
-import { TypeFrame } from "./frameTypes";
-import { User } from "./userTypes";
+import { IFrame } from "./frameTypes";
+import { IUser } from "./userTypes";
 
-export interface TypeMentionNotify {
+export interface IMentionNotify {
   _id: string;
   type: "MENTION";
   createdAt: Date;
   isRead: boolean;
   messageLocation: string;
-  mentionedUser: User;
+  mentionedUser: IUser;
 }
 
-export interface TypeInteractWithMessageNotify {
+export interface IInteractWithMessageNotify {
   _id: string;
   type: "INTERACT-WITH-MESSAGE";
   typeOfInteraction: "loves" | "likes" | "dislikes";
   createdAt: Date;
   isRead: boolean;
   messageLocation: string;
-  interactedUser: User;
+  interactedUser: IUser;
 }
-export interface TypeEmailVerifiedNotify {
+export interface IEmailVerifiedNotify {
   _id: string;
   type: "EMAIL-VERIFIED";
   createdAt: Date;
@@ -27,24 +27,24 @@ export interface TypeEmailVerifiedNotify {
   isCollected: boolean;
   prize: number;
 }
-export interface TypeReferrerNotify {
+export interface IReferrerNotify {
   _id: string;
   type: "REFERRER";
   createdAt: Date;
   isRead: boolean;
   isCollected: boolean;
-  referredUser: User;
+  referredUser: IUser;
   prize: number;
 }
-export interface TypeBuyFrameNotify {
+export interface IBuyFrameNotify {
   _id: string;
   type: "BUY-FRAME";
   createdAt: Date;
   updatedAt: Date;
   isRead: boolean;
-  frame: TypeFrame;
+  frame: IFrame;
 }
-export interface TypeQuizAppNotify {
+export interface IQuizTaskNotify {
   _id: string;
   type: "QUIZ-APP";
   createdAt: Date;
@@ -52,14 +52,14 @@ export interface TypeQuizAppNotify {
   isCollected: boolean;
   prize: number;
 }
-export interface TypeAnnouncementNoify {
+export interface IAnnouncementNoify {
   _id: string;
   type: "ANNOUNCEMENT";
   announceContent: string;
   createdAt: Date;
   isRead: boolean;
 }
-export interface TypeGuessCardNotify {
+export interface IGuessCardTaskNotify {
   _id: string;
   type: "GUESS-CARD";
   isCollected: boolean;
@@ -67,7 +67,7 @@ export interface TypeGuessCardNotify {
   createdAt: Date;
   isRead: boolean;
 }
-export interface TypeMusicNotify {
+export interface IMusicNotify {
   _id: string;
   type: "MUSIC";
   musicId: string;
@@ -77,13 +77,13 @@ export interface TypeMusicNotify {
   isRead: boolean;
 }
 
-export type TypeNotifications =
-  | TypeMentionNotify
-  | TypeEmailVerifiedNotify
-  | TypeReferrerNotify
-  | TypeBuyFrameNotify
-  | TypeQuizAppNotify
-  | TypeAnnouncementNoify
-  | TypeGuessCardNotify
-  | TypeMusicNotify
-  | TypeInteractWithMessageNotify;
+export type INotifications =
+  | IMentionNotify
+  | IEmailVerifiedNotify
+  | IReferrerNotify
+  | IBuyFrameNotify
+  | IQuizTaskNotify
+  | IAnnouncementNoify
+  | IGuessCardTaskNotify
+  | IMusicNotify
+  | IInteractWithMessageNotify;

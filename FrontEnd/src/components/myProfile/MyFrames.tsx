@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { TypeFrame } from "../../types/frameTypes";
+import { IFrame } from "../../types/frameTypes";
 import { changeMyPictureFrame, unselectMyPictureFrame } from "../../utils";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
@@ -77,7 +77,7 @@ const MyFrames = () => {
     >
       <span className="font-bold text-[#7dec73]">My Frames</span>
       <div className={`grid w-full grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5`}>
-        {currentUser?.myFrames?.map((item: TypeFrame) => {
+        {currentUser?.myFrames?.map((item: IFrame) => {
           return (
             <div
               key={item._id}

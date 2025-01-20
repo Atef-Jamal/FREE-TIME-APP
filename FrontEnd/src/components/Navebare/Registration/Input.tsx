@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 
-interface TypeInput {
+interface IInput {
   label: string;
   type: string;
   value: string;
@@ -11,7 +11,7 @@ interface TypeInput {
   placeholder: string;
 }
 
-const Input = ({ label, id, name, type, value, placeholder, onChange }: TypeInput) => {
+const Input = ({ label, id, name, type, value, placeholder, onChange }: IInput) => {
   const [inputType, setInputType] = useState(type);
 
   const handleShowPassword = () => {
@@ -19,8 +19,8 @@ const Input = ({ label, id, name, type, value, placeholder, onChange }: TypeInpu
   };
 
   return (
-    <div className="w-full flex flex-col gap-1">
-      <label htmlFor={id} className=" tracking-wider text-[#6be8f8ee]">
+    <div className="flex w-full flex-col gap-1">
+      <label htmlFor={id} className="tracking-wider text-[#6be8f8ee]">
         {label}
       </label>
       <div className="relative">
@@ -31,7 +31,7 @@ const Input = ({ label, id, name, type, value, placeholder, onChange }: TypeInpu
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`w-full outline-none py-2 px-4 text-[#7295f7] bg-[#0d0d22b9] placeholder:opacity-50 sm:text-sm rounded-md`}
+          className={`w-full rounded-md bg-[#0d0d22b9] px-4 py-2 text-[#7295f7] outline-none placeholder:opacity-50 sm:text-sm`}
         />
         {name === "password" && (
           <button type="button" onClick={handleShowPassword} className="absolute right-2 top-[6px]">

@@ -3,37 +3,37 @@ import { FcPaid } from "react-icons/fc";
 import { updateThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch } from "../../../context/Hooks";
-import { TypeBuyFrameNotify } from "../../../types/notificationTypes";
+import { IBuyFrameNotify } from "../../../types/notificationTypes";
 
-type PropType = Omit<TypeBuyFrameNotify, "_id" | "isRead" | "type">;
+type IProps = Omit<IBuyFrameNotify, "_id" | "isRead" | "type">;
 
-const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
+const BuyFrameNotify = ({ createdAt, frame }: IProps) => {
   const dispatch = useAppDispatch();
 
   const date = formateDate(createdAt);
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">
-      <div className="flex gap-2 w-full">
-        <span className="w-8 h-6 rounded-lg bg-[#7aec2e25] flex items-center justify-center">
-          <FcPaid className=" text-xl" />
+    <div className="xs:gap-1 xs:p-1 flex w-full flex-col items-center gap-2 rounded-md border border-gray-700 bg-[#1010308e] p-2">
+      <div className="flex w-full gap-2">
+        <span className="flex h-6 w-8 items-center justify-center rounded-lg bg-[#7aec2e25]">
+          <FcPaid className="text-xl" />
         </span>
         <h1 className="text-[#d67d54]">PURSHASING</h1>
-        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
+        <span className="ml-auto pr-1 text-xs text-[#9b9090]">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
+      <p className="w-full text-sm text-[#bbc6d1] sm:text-xs">
         congratulation! for buying
         <Link
           to={`/marketplace?to=${frame._id}`}
           onClick={() => {
             dispatch(updateThisEntity({ entity: "openNotification", value: false }));
           }}
-          className="text-sm text-[#696cf3] mx-1 underline sm:text-xs"
+          className="mx-1 text-sm text-[#696cf3] underline sm:text-xs"
         >
           {frame.title}
         </Link>
         For
-        <span className="text-sm text-[#696cf3] mx-1 font-bold sm:text-xs">{frame.price}</span>
+        <span className="mx-1 text-sm font-bold text-[#696cf3] sm:text-xs">{frame.price}</span>
         points
       </p>
       <Link
@@ -41,7 +41,7 @@ const BuyFrameNotify = ({ createdAt, frame }: PropType) => {
         onClick={() => {
           dispatch(updateThisEntity({ entity: "openNotification", value: false }));
         }}
-        className="text-sm bg-[#3d4675ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
+        className="xs:py-[3px] ml-auto w-[100px] rounded-md border border-gray-700 bg-[#3d4675ee] py-1 text-center text-sm text-[#eee] underline"
       >
         see that
       </Link>

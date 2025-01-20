@@ -3,11 +3,11 @@ import { GoMention } from "react-icons/go";
 import { updateThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeMentionNotify } from "../../../types/notificationTypes";
+import { IMentionNotify } from "../../../types/notificationTypes";
 
-type PropType = Omit<TypeMentionNotify, "_id" | "type" | "isRead">;
+type IProps = Omit<IMentionNotify, "_id" | "type" | "isRead">;
 
-const MentionNotify = ({ mentionedUser, messageLocation, createdAt }: PropType) => {
+const MentionNotify = ({ mentionedUser, messageLocation, createdAt }: IProps) => {
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const dispatch = useAppDispatch();

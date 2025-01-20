@@ -1,15 +1,15 @@
 import { Socket } from "socket.io-client";
-import { User } from "./userTypes";
+import { IUser } from "./userTypes";
 import { Dispatch, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-import { TypeFormData } from "./othersTypes";
+import { IFormData } from "./othersTypes";
 
-export interface TypePopup {
+export interface IToast {
   type: "ERROR_GENERAL" | "ERROR_LOCK" | "SUCESS" | "LOADING" | null;
   message: string | null;
   time?: number;
 }
 
-export interface TypeMusicInfo {
+export interface IMusicInfo {
   id: string;
   artist: string;
   cover: string;
@@ -17,22 +17,22 @@ export interface TypeMusicInfo {
   musicSrc: string;
 }
 
-export interface TypeInitialState {
+export interface IInitialState {
   currentUserStatus: "pending" | "authenticated" | "unauthenticated";
-  currentUser: User | null;
+  currentUser: IUser | null;
   openNotification: boolean;
   isChatOpen: boolean;
   isSignInMode: boolean;
   openSidebarMobile: boolean;
   smallScreen: boolean;
-  ToastNotify: TypePopup;
-  resizeSidebare: boolean;
+  ToastNotify: IToast;
+  sidebarCollapsed: boolean;
   hiddenLiveStats: boolean;
   openMusicModal: boolean;
   musicIsPlaying: boolean;
   activeMusic: {
     audio: HTMLAudioElement;
-    musicInfo: TypeMusicInfo | null;
+    musicInfo: IMusicInfo | null;
   };
   socket: Socket | null;
   onlineUsers: string[];
@@ -42,21 +42,22 @@ export interface TypeInitialState {
   publicMsgRedPoint: boolean;
 }
 
-export type TypeDispatch = ThunkDispatch<
+export type IDispatch = ThunkDispatch<
   {
-    stateManeger: TypeInitialState;
+    stateManeger: IInitialState;
   },
   undefined,
   UnknownAction
 > &
   Dispatch<UnknownAction>;
 
-export interface TypeRegisterProps {
-  formData: TypeFormData;
-  dispatch: TypeDispatch;
+export interface IRegisterProps {
+  formData: IFormData;
+  dispatch: IDispatch;
   referrerUser?: string | null;
 }
-export interface TypeLoginProps {
-  formData: Omit<TypeFormData, "name" | "confirmPassword" | "profilePicture">;
-  dispatch: TypeDispatch;
+
+export interface ILoginProps {
+  formData: Omit<IFormData, "name" | "confirmPassword" | "profilePicture">;
+  dispatch: IDispatch;
 }

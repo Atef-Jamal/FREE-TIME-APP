@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../context/Hooks";
 import { FaCircleCheck } from "react-icons/fa6";
-import GuessCardApp from "../components/Tasks/GuessCardApp";
-import QuizApp from "../components/Tasks/QuizApp";
+import GuessCardTask from "../components/Tasks/GuessCardTask";
+import QuizTask from "../components/Tasks/QuizTask";
 import Spinner from "../components/Others/Spinner";
 import { BiErrorAlt } from "react-icons/bi";
 import { skipToken, useQuery } from "@tanstack/react-query";
@@ -40,15 +40,15 @@ const Playing = () => {
 
   if (userStatus === "pending" || statusTaskApp === "pending") {
     return (
-      <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
-        <Spinner className="w-20 h-20" />
+      <div className="flex h-full min-h-[800px] items-center justify-center sm:min-h-[490px]">
+        <Spinner className="h-20 w-20" />
       </div>
     );
   }
 
   if (!taskId) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[800px] sm:min-h-[490px]">
+      <div className="flex h-full min-h-[800px] items-center justify-center sm:min-h-[490px]">
         an error occurred
       </div>
     );
@@ -56,8 +56,8 @@ const Playing = () => {
 
   if (isCompletedBefore) {
     return (
-      <div className="flex items-center justify-center gap-2 h-full min-h-[800px] sm:min-h-[490px] opacity-70 text-lg">
-        <div className="px-4 flex flex-col items-center justify-center gap-3">
+      <div className="flex h-full min-h-[800px] items-center justify-center gap-2 text-lg opacity-70 sm:min-h-[490px]">
+        <div className="flex flex-col items-center justify-center gap-3 px-4">
           <FaCircleCheck className="text-xl" />
           <span className="text-center">sorry, you Completed this app Before, Try another app</span>
         </div>
@@ -67,7 +67,7 @@ const Playing = () => {
 
   if (errorUser || errorTaskApp) {
     return (
-      <div className="flex items-center justify-center gap-3 h-full min-h-[800px] sm:min-h-[490px] opacity-70 font-bold px-8 text-center">
+      <div className="flex h-full min-h-[800px] items-center justify-center gap-3 px-8 text-center font-bold opacity-70 sm:min-h-[490px]">
         <BiErrorAlt className="text-2xl" />
         {errorUser?.response?.data.error || errorTaskApp?.response?.data.error}
       </div>
@@ -75,11 +75,11 @@ const Playing = () => {
   }
 
   if (taskApp?.type === "QUIZ_APP" && taskApp.isAvailable === "AVAILABLE") {
-    return <QuizApp taskApp={taskApp} />;
+    return <QuizTask taskApp={taskApp} />;
   }
 
   if (taskApp?.type === "GAME_APP" && taskApp.isAvailable === "AVAILABLE") {
-    return <GuessCardApp taskApp={taskApp} />;
+    return <GuessCardTask taskApp={taskApp} />;
   }
 
   return <></>;

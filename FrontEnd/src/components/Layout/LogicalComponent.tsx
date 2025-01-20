@@ -4,11 +4,10 @@ import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { openModel, setOnlineUsers, setSocet, showPopup, updateThisEntity } from "../../context/StateManeger";
 import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks";
-import { User } from "../../types/userTypes";
-import { TypeCashedPublicChat, TypePublicChatItem } from "../../types/publicChatTypes";
-import { TypeCashedConversations } from "../../types/privateChatTypes";
-import { TypeConversationSocketData } from "../../types/othersTypes";
-import { TypeCashedChat } from "../../components/Chats/PrivateChat/SendMessagePrivateChat";
+import { IUser } from "../../types/userTypes";
+import { ICashedPublicChat, IPublicChatItem } from "../../types/publicChatTypes";
+import { ICashedConversation, ICashedConversations } from "../../types/privateChatTypes";
+import { IConversationReadedSocketData } from "../../types/othersTypes";
 import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessages } from "../../utils";
 import io from "socket.io-client";
 import { debounce } from "../../utils/common";
@@ -17,7 +16,7 @@ import RegisterationForm from "../Navebare/Registration/RegisterationForm";
 // implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering
 // unnecessarily
 
-const HiddenComponent = () => {
+const LogicalComponent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
@@ -61,52 +60,46 @@ const HiddenComponent = () => {
     dispatch(setOnlineUsers(filtered));
   };
 
-  const handleRecieveNewPublicChatMessage = (newMessage: TypePublicChatItem) => {
-    queryClient.setQueryData(
-      ["public-chat-messages"],
-      (previous: TypeCashedPublicChat): TypeCashedPublicChat => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page, index) => {
-            if (index === previous.pages.length - 1) {
-              return {
-                ...page,
-                messages: [...page.messages, newMessage],
-              };
-            }
-            return page;
-          }),
-        };
-      },
-    );
+  const handleRecieveNewPublicChatMessage = (newMessage: IPublicChatItem) => {
+    queryClient.setQueryData(["public-chat-messages"], (previous: ICashedPublicChat): ICashedPublicChat => {
+      return {
+        ...previous,
+        pages: previous.pages.map((page, index) => {
+          if (index === previous.pages.length - 1) {
+            return {
+              ...page,
+              messages: [...page.messages, newMessage],
+            };
+          }
+          return page;
+        }),
+      };
+    });
   };
 
-  const handleUserUpdated = (updatedUser: User) => {
+  const handleUserUpdated = (updatedUser: IUser) => {
     queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
     queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
     queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
-    queryClient.setQueryData(
-      ["conversations"],
-      (previous: TypeCashedConversations): TypeCashedConversations => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              conversations: page.conversations.map((conv) => {
-                if (conv.secondParty._id === updatedUser._id) {
-                  return { ...conv, secondParty: updatedUser };
-                }
-                return conv;
-              }),
-            };
-          }),
-        };
-      },
-    );
+    queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
+      return {
+        ...previous,
+        pages: previous.pages.map((page) => {
+          return {
+            ...page,
+            conversations: page.conversations.map((conv) => {
+              if (conv.secondParty._id === updatedUser._id) {
+                return { ...conv, secondParty: updatedUser };
+              }
+              return conv;
+            }),
+          };
+        }),
+      };
+    });
     queryClient.setQueryData(
       ["conversation-messages", updatedUser._id],
-      (previous: TypeCashedChat): TypeCashedChat | undefined => {
+      (previous: ICashedConversation): ICashedConversation | undefined => {
         if (!previous) return;
         return { ...previous, secondUser: updatedUser };
       },
@@ -114,8 +107,8 @@ const HiddenComponent = () => {
   };
 
   const handleConversationReaded = useCallback(
-    (data: TypeConversationSocketData) => {
-      queryClient.setQueryData(["conversation-messages", data.sender], (previous: TypeCashedChat) => {
+    (data: IConversationReadedSocketData) => {
+      queryClient.setQueryData(["conversation-messages", data.sender], (previous: ICashedConversation) => {
         if (previous) {
           return {
             ...previous,
@@ -222,4 +215,4 @@ const HiddenComponent = () => {
   return <></>;
 };
 
-export default HiddenComponent;
+export default LogicalComponent;

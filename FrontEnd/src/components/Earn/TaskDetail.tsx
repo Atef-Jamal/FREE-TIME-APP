@@ -13,11 +13,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showPopup } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 
-interface TypeProps {
+interface IProps {
   taskId: string;
 }
 
-const TaskDetail = ({ taskId }: TypeProps) => {
+const TaskDetail = ({ taskId }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);

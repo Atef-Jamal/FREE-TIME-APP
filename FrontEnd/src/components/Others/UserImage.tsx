@@ -1,19 +1,19 @@
-import { User } from "../../types/userTypes";
+import { IUser } from "../../types/userTypes";
 
-interface TypeProps {
-  user: User | null;
+interface IProps {
+  user: IUser | null;
 }
 
-const UserImage = ({ user }: TypeProps) => {
+const UserImage = ({ user }: IProps) => {
   if (!user) return;
   return (
-    <div className={`relative w-full h-full rounded-sm `}>
+    <div className={`relative h-full w-full rounded-sm`}>
       {user.activeFrame ? (
-        <img className="absolute top-0 w-full h-full rounded-sm" src={user.activeFrame.image} alt="" />
+        <img className="absolute top-0 h-full w-full rounded-sm" src={user.activeFrame.image} alt="" />
       ) : undefined}
       <img
         className={`absolute transition-all ${
-          user.activeFrame ? "top-[15%] left-[14%] w-[70%] h-[70%] rounded-sm" : "w-full h-full rounded-md "
+          user.activeFrame ? "left-[14%] top-[15%] h-[70%] w-[70%] rounded-sm" : "h-full w-full rounded-md"
         } `}
         src={user.profilePicture}
         alt=""

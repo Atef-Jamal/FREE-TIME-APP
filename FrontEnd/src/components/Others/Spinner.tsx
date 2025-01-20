@@ -1,14 +1,14 @@
-interface TypeProps {
+interface IProps {
   className?: string;
   stop?: boolean;
 }
 
-const Spinner = ({ className, stop }: TypeProps) => {
+const Spinner = ({ className, stop }: IProps) => {
   return (
     <div
-      className={`rounded-full border-2 border-t-transparent border-r-transparent border-b-[#6ccc3f]  border-l-[#6ccc3f] ${
+      className={`rounded-full border-2 border-b-[#6ccc3f] border-l-[#6ccc3f] border-r-transparent border-t-transparent ${
         !stop && "animate-spin"
-      } ${className || "w-10 h-10"}`}
+      } ${className || "h-10 w-10"}`}
     ></div>
   );
 };

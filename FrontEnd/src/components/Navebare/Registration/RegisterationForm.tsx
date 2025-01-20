@@ -10,7 +10,7 @@ import LeftSide from "./LeftSide";
 import UploadImage from "./UploadImage";
 import { handleApiError, validation } from "../../../utils/common";
 import { login, register, signInWithGoogle } from "../../../utils/auth";
-import { TypeFormData } from "../../../types/othersTypes";
+import { IFormData } from "../../../types/othersTypes";
 import { useTranslation } from "react-i18next";
 
 const initialValue = {
@@ -25,7 +25,7 @@ const RegisterationForm = () => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const isSignInMode = useAppSelector((state) => state.stateManeger.isSignInMode);
-  const [formData, setFormData] = useState<TypeFormData>(initialValue);
+  const [formData, setFormData] = useState<IFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
   const [imageIsUploading, setImageIsUploading] = useState(false);
@@ -121,20 +121,20 @@ const RegisterationForm = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-[5] ">
+    <div className="fixed left-0 top-0 z-[5] flex h-screen w-full items-center justify-center">
       <div
         onClick={() => dispatch(resetModel())}
-        className="fixed top-0 left-0 w-full h-full bg-[#000000b0] sm:hidden "
+        className="fixed left-0 top-0 h-full w-full bg-[#000000b0] sm:hidden"
       ></div>
-      <div className="absolute top-16 xl:top-9 sm:top-0 w-[60%] max-w-[1300px] min-w-[650px]  h-[75%] sm:min-w-full sm:max-w-full sm:h-[100dvh] bg-[#222337]  rounded-xl overflow-auto ">
-        <div className="flex justify-between items-center mx-8 my-4 sm:mx-5 sm:my-0 ">
-          <span className="text-white text-2xl font-bold sm:hidden">{t("Welcome")}</span>
+      <div className="absolute top-16 h-[75%] w-[60%] min-w-[650px] max-w-[1300px] overflow-auto rounded-xl bg-[#222337] sm:top-0 sm:h-[100dvh] sm:min-w-full sm:max-w-full xl:top-9">
+        <div className="mx-8 my-4 flex items-center justify-between sm:mx-5 sm:my-0">
+          <span className="text-2xl font-bold text-white sm:hidden">{t("Welcome")}</span>
           <div className="flex gap-5">
             <button
               onClick={() => dispatch(updateThisEntity({ entity: "isSignInMode", value: true }))}
               className={`${
-                isSignInMode ? " border-b-[#fff]  text-[#f8dcdc] " : " text-gray-600"
-              } transition-all sm:text-md font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
+                isSignInMode ? "border-b-[#fff] text-[#f8dcdc]" : "text-gray-600"
+              } sm:text-md xs:py-2 border-b-2 border-b-[#222337] py-3 font-bold tracking-wider transition-all`}
             >
               {t("Sign In")}
             </button>
@@ -144,15 +144,15 @@ const RegisterationForm = () => {
                 dispatch(updateThisEntity({ entity: "isSignInMode", value: false }));
               }}
               className={`${
-                !isSignInMode ? "pacity-25 border-b-[#fff] text-[#f8dcdc] " : "text-gray-600"
-              }  sm:text-md  font-bold tracking-wider border-b-2 border-b-[#222337] py-3 xs:py-2`}
+                !isSignInMode ? "pacity-25 border-b-[#fff] text-[#f8dcdc]" : "text-gray-600"
+              } sm:text-md xs:py-2 border-b-2 border-b-[#222337] py-3 font-bold tracking-wider`}
             >
               {t("Sign Up")}
             </button>
           </div>
           <button
             onClick={() => dispatch(resetModel())}
-            className="w-8 h-6 flex items-center justify-center font-bold bg-[#43a153] rounded-md"
+            className="flex h-6 w-8 items-center justify-center rounded-md bg-[#43a153] font-bold"
           >
             <GrClose />
           </button>
@@ -165,13 +165,13 @@ const RegisterationForm = () => {
               setImageIsUploading={setImageIsUploading}
             />
           </div>
-          <div className="w-[60%] sm:w-full sm:px-4 mt-1">
+          <div className="mt-1 w-[60%] sm:w-full sm:px-4">
             {!isSignInMode && (
-              <div className="hidden sm:flex items-center justify-center">
+              <div className="hidden items-center justify-center sm:flex">
                 <UploadImage setImageIsUploading={setImageIsUploading} setFormData={setFormData} />
               </div>
             )}
-            <form className="flex flex-col gap-4 sm:gap-3 sm:mt-2" autoComplete="off">
+            <form className="flex flex-col gap-4 sm:mt-2 sm:gap-3" autoComplete="off">
               {!isSignInMode && (
                 <Input
                   type="text"
@@ -213,26 +213,26 @@ const RegisterationForm = () => {
                 />
               )}
               {!isSignInMode && (
-                <div className="flex items-center  h-7">
-                  <div className="w-6 h-6">
+                <div className="flex h-7 items-center">
+                  <div className="h-6 w-6">
                     <button
                       type="button"
                       onClick={() => setAgreePrivacy((previous) => !previous)}
                       className={`transition-all ${
                         agreePrivacy
-                          ? "border-b border-r rotate-[32deg] border-yellow-500 w-[12px] h-[25px]"
-                          : "w-[22px] h-[22px] border-gray-400 border"
+                          ? "h-[25px] w-[12px] rotate-[32deg] border-b border-r border-yellow-500"
+                          : "h-[22px] w-[22px] border border-gray-400"
                       }`}
                     ></button>
                   </div>
-                  <p className="text-sm font-[600] sm:text-[10px] text-[#97b4a2] max-w-[85%] ml-4">
+                  <p className="ml-4 max-w-[85%] text-sm font-[600] text-[#97b4a2] sm:text-[10px]">
                     {t("By Signing Up You Are Agreeing of our privacy Policy and Terms of Service")}
                   </p>
                 </div>
               )}
               <button
                 type="submit"
-                className=" disabled:opacity-60 bg-[#05BA6B] text-black py-2 w-[35%] font-[600] rounded-md border-[0.2px] border-white mt-2 sm:w-[90%] sm:mx-auto"
+                className="mt-2 w-[35%] rounded-md border-[0.2px] border-white bg-[#05BA6B] py-2 font-[600] text-black disabled:opacity-60 sm:mx-auto sm:w-[90%]"
                 onClick={handleSubmite}
                 disabled={submiting || imageIsUploading}
               >
@@ -240,25 +240,25 @@ const RegisterationForm = () => {
                   ? `${submiting ? "Submiting" : t("Sign Up")} `
                   : `${submiting ? "Submiting" : t("Sign In")} `}
               </button>
-              <div className="flex w-full mx-auto gap-2 items-center ">
-                <div className="w-[45%] h-[1.5px] bg-gradient-to-l from-blue-300 to-[#201557] "></div>
+              <div className="mx-auto flex w-full items-center gap-2">
+                <div className="h-[1.5px] w-[45%] bg-gradient-to-l from-blue-300 to-[#201557]"></div>
                 <span>OR</span>
-                <div className="w-[45%] h-[1.5px] bg-gradient-to-r from-blue-300 to-[#201557] "></div>
+                <div className="h-[1.5px] w-[45%] bg-gradient-to-r from-blue-300 to-[#201557]"></div>
               </div>
-              <div className="flex gap-4 sm:gap-2 mb-4">
+              <div className="mb-4 flex gap-4 sm:gap-2">
                 <button
                   onClick={handleSignInWithGoogle}
-                  className="flex justify-between items-center bg-[#7474bb52] py-3 sm:py-[6px] px-3 rounded-md w-[49%]"
+                  className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-3 sm:py-[6px]"
                 >
                   <FcGoogle className="text-2xl" />
-                  <span className="text-sm font-[500] ">
+                  <span className="text-sm font-[500]">
                     <span className="sm:hidden">{t("Sign In With")}</span>
                     {t("Google")}
                   </span>
                 </button>
-                <button className="text-xs flex justify-between items-center bg-[#7474bb52] rounded-md w-[49%] py-3 sm:py-[6px] px-3">
+                <button className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-3 text-xs sm:py-[6px]">
                   <GrGithub className="text-2xl" />
-                  <span className="text-sm font-[500] ">
+                  <span className="text-sm font-[500]">
                     <span className="sm:hidden"> {t("Sign In With")} </span> {t("GitHub")}
                   </span>
                 </button>

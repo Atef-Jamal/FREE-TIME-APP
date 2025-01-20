@@ -4,22 +4,22 @@ import React, { useEffect } from "react";
 import { useAppSelector } from "../context/Hooks";
 import { useSearchParams } from "react-router-dom";
 
-type HandleUpdate = (arg: any) => void;
+type IHandleUpdate = (arg: any) => void;
 
-interface TypeSocketHook {
+interface ISocketHook {
   eventsToListen: string[];
-  handlers: HandleUpdate[];
+  handlers: IHandleUpdate[];
   dependencies?: any[];
 }
 
-interface TypeUseScrollToElementHook {
+interface IScrollToElementHook {
   dependencies?: any[];
   scrollPosition?: "center" | "start" | "end" | "nearest";
   key?: string;
   callback?: () => void;
 }
 
-export const useListenToSocketEvents = ({ eventsToListen, handlers, dependencies = [] }: TypeSocketHook) => {
+export const useListenToSocketEvents = ({ eventsToListen, handlers, dependencies = [] }: ISocketHook) => {
   const socket = useAppSelector((state) => state.stateManeger.socket);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const useScrollToElement = ({
   scrollPosition = "center",
   dependencies = [],
   callback,
-}: TypeUseScrollToElementHook) => {
+}: IScrollToElementHook) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get(key);
 

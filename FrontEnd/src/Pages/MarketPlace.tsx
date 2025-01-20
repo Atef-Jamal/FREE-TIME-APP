@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { cn } from "../utils/common";
 
 const MarketPlace = () => {
-  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
 
   const {
     data: frames = [],
@@ -31,7 +31,7 @@ const MarketPlace = () => {
       <div
         className={cn(
           "grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 md:gap-4",
-          resizeSidebare ? "lg:grid-cols-5 xl:grid-cols-6" : "lg:grid-cols-4 xl:grid-cols-5",
+          sidebarCollapsed ? "lg:grid-cols-5 xl:grid-cols-6" : "lg:grid-cols-4 xl:grid-cols-5",
         )}
       >
         {frames.map((item) => {

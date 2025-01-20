@@ -3,14 +3,14 @@ import { setCurrentUser, showPopup } from "../../context/StateManeger";
 import Spinner from "../Others/Spinner";
 import { purshaseFrame } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import { TypeFrame } from "../../types/frameTypes";
+import { IFrame } from "../../types/frameTypes";
 import { useMutation } from "@tanstack/react-query";
 
-interface TypeProps {
-  singleFrame: TypeFrame;
+interface IProps {
+  singleFrame: IFrame;
 }
 
-const FrameItem = ({ singleFrame }: TypeProps) => {
+const FrameItem = ({ singleFrame }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const purshasedByCurrentUser = !!currentUser?.myFrames.find((item) => item._id === singleFrame._id);

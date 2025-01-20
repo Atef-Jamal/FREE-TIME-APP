@@ -1,16 +1,16 @@
 import { useAppSelector } from "../../../../context/Hooks";
-import { User } from "../../../../types/userTypes";
+import { IUser } from "../../../../types/userTypes";
 import { useClickOutside } from "../../../../hooks";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getOnlineUsers } from "../../../../utils";
 
-interface TypeProps {
-  setMentionedUsers: React.Dispatch<React.SetStateAction<User[]>>;
+interface IProps {
+  setMentionedUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
   setOpenMentionList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: TypeProps) => {
+const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
   const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -49,7 +49,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: TypeProps
           if (onlineUsers.includes(a._id) && !onlineUsers.includes(b._id)) return -1;
           return 1;
         })
-        .map((user: User) => {
+        .map((user: IUser) => {
           if (user._id === currentUserId) return;
           return (
             <div

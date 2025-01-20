@@ -15,7 +15,7 @@ import { cn } from "../../utils/common";
 const DailyReward = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
 
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<string | null>(null);
   const [today, setToday] = useState("");
@@ -103,7 +103,7 @@ const DailyReward = () => {
           id={!currentUser ? "daily-reward" : undefined}
           className={cn(
             "grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4",
-            resizeSidebare ? "lg:grid-cols-4" : "lg:grid-cols-3",
+            sidebarCollapsed ? "lg:grid-cols-4" : "lg:grid-cols-3",
           )}
         >
           {currentUserStatus === "pending" &&

@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import Spinner from "../Others/Spinner";
 import { purshaseMusic } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import { TypeMusicDetail } from "../../types/othersTypes";
+import { IMusicDetail } from "../../types/othersTypes";
 import { useMutation } from "@tanstack/react-query";
 import {
   handleAddMusic,
@@ -16,11 +16,11 @@ import {
   updateThisEntity,
 } from "../../context/StateManeger";
 
-interface TypeProps {
-  songDetails: TypeMusicDetail;
+interface IProps {
+  songDetails: IMusicDetail;
 }
 
-const MusicCard = ({ songDetails }: TypeProps) => {
+const MusicCard = ({ songDetails }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
   const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);

@@ -1,7 +1,7 @@
-import { TypeFrame } from "./frameTypes";
-// import { TypeDailyReward } from "./rewardsTypes";
+import { IFrame } from "./frameTypes";
+import { IDailyReward } from "./rewardsTypes";
 
-export interface User {
+export interface IUser {
   _id: string;
   name: string;
   email: string;
@@ -10,26 +10,24 @@ export interface User {
   emailVerified: boolean;
   points: number;
   copouns: string[];
-  activeFrame: TypeFrame | null;
-  myFrames: TypeFrame[];
+  activeFrame: IFrame | null;
+  myFrames: IFrame[];
   mySongs: string[];
   completedTasks: string[];
   week: number;
-  dailyReward: {
-    day: number;
-    availableAt: string;
-    reward: number;
-    isCollected: boolean;
-  }[];
-  usersVisitedMe: {
-    _id: string;
-    createdAt: Date;
-    profilPicture: string;
-    name: string;
-  }[];
+  dailyReward: IDailyReward[];
+  usersVisitedMe: IUser[];
 }
 
-export interface TypeCashedUsers {
+export interface ICashedLiveStatsUsers {
   pageParams: number[];
-  pages: { users: User[]; userHighestPoints: string; hasMore: boolean }[];
+  pages: { users: IUser[]; userHighestPoints: string; hasMore: boolean }[];
+}
+
+export interface IVisitor {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  visiter: IUser;
+  visited: string;
 }

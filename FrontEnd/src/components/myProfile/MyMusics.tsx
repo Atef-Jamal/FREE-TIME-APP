@@ -18,7 +18,7 @@ const MyMusics = () => {
   return (
     <div id="my-musics" className="mt-5 flex w-full flex-col items-center gap-2 rounded-md bg-[#222339] p-2">
       <h1 className="text-center font-bold text-[#a0e965ee]">My Musics</h1>
-      <div className="grid w-full grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid w-full grid-cols-3 gap-1 sm:grid-cols-4 md:grid-cols-5 lg:gap-2 xl:grid-cols-6">
         {musics
           ?.filter((item) => {
             if (currentUser?.mySongs?.includes(item.id.toString())) {

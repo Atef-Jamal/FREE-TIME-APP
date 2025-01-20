@@ -1,17 +1,17 @@
 import { FcBusinessman, FcFrame, FcMusic } from "react-icons/fc";
 import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
-import { User } from "../../types/userTypes";
-import { TypeNotifications } from "../../types/notificationTypes";
+import { IUser } from "../../types/userTypes";
+import { INotifications } from "../../types/notificationTypes";
 import Empty from "../Others/Empty";
 import { verifiedImage } from "../../assets";
 
-interface TypeProps {
-  user: User | null;
-  activities: TypeNotifications[];
+interface IProps {
+  user: IUser | null;
+  activities: INotifications[];
 }
 
-const ActivitiesList = ({ activities, user }: TypeProps) => {
+const ActivitiesList = ({ activities, user }: IProps) => {
   return (
     <div className="flex flex-col gap-2">
       {activities.map((item, index) => {
@@ -65,7 +65,7 @@ const ActivitiesList = ({ activities, user }: TypeProps) => {
             <ActivityItem
               key={item._id}
               index={index}
-              icon={<img src={verifiedImage} alt="" className="w-6 h-6 sm:w-4 sm:h-4 object-cover" />}
+              icon={<img src={verifiedImage} alt="" className="h-6 w-6 object-cover sm:h-4 sm:w-4" />}
               time={item.createdAt}
               message="Verified His Email successfully"
               prize={item.prize}

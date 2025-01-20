@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { calculateTimeLeft } from "../../utils/common";
 
-interface TypeProps {
+interface IProps {
   date: Date;
   handleUpdateNextTimerDay: () => void;
 }
 
-const Timer = ({ date, handleUpdateNextTimerDay }: TypeProps) => {
+const Timer = ({ date, handleUpdateNextTimerDay }: IProps) => {
   const calcTimeLeft = calculateTimeLeft(date);
   const [timeLeft, setTimeLeft] = useState(calcTimeLeft);
 
@@ -24,46 +24,46 @@ const Timer = ({ date, handleUpdateNextTimerDay }: TypeProps) => {
   }, [timeLeft, handleUpdateNextTimerDay]);
 
   return (
-    <span className="flex items-center justify-center h-[30px] overflow-hidden ">
-      <span className="w-9 h-[30px]">
+    <span className="flex h-[30px] items-center justify-center overflow-hidden">
+      <span className="h-[30px] w-9">
         <div
           style={{
             transform: `translatey(${34 * -timeLeft.hours}px)`,
           }}
-          className="w-full transition-all duration-700 ease-out flex flex-col items-center gap-1"
+          className="flex w-full flex-col items-center gap-1 transition-all duration-700 ease-out"
         >
           {[...Array(25).keys()].map((item) => (
-            <span key={item} className="flex items-center justify-center w-full min-h-[30px] text-[#e79349]">
+            <span key={item} className="flex min-h-[30px] w-full items-center justify-center text-[#e79349]">
               {item <= 9 ? "0" + item : item}
             </span>
           ))}
         </div>
       </span>
       <span className="h-full pt-[2px]">:</span>
-      <span className="w-9 h-[30px]">
+      <span className="h-[30px] w-9">
         <div
           style={{
             transform: `translatey(${34 * -timeLeft.minutes}px)`,
           }}
-          className="w-full transition-all duration-700 ease-out flex flex-col items-center gap-1"
+          className="flex w-full flex-col items-center gap-1 transition-all duration-700 ease-out"
         >
           {[...Array(60).keys()].map((item) => (
-            <span key={item} className="flex items-center justify-center w-full min-h-[30px]  text-[#e79349]">
+            <span key={item} className="flex min-h-[30px] w-full items-center justify-center text-[#e79349]">
               {item <= 9 ? "0" + item : item}
             </span>
           ))}
         </div>
       </span>
       <span className="h-full pt-[2px]">:</span>
-      <span className="w-9 h-[30px]">
+      <span className="h-[30px] w-9">
         <div
           style={{
             transform: `translatey(${34 * -timeLeft.seconds}px)`,
           }}
-          className="w-full transition-all duration-700 ease-out flex flex-col items-center gap-1"
+          className="flex w-full flex-col items-center gap-1 transition-all duration-700 ease-out"
         >
           {[...Array(60).keys()].map((item) => (
-            <span key={item} className="flex items-center justify-center w-full min-h-[30px]  text-[#e79349]">
+            <span key={item} className="flex min-h-[30px] w-full items-center justify-center text-[#e79349]">
               {item <= 9 ? "0" + item : item}
             </span>
           ))}

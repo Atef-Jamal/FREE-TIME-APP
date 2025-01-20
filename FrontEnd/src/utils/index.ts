@@ -1,13 +1,13 @@
 import axios from "axios";
-import { User } from "../types/userTypes";
-import { TypeNotifications } from "../types/notificationTypes";
-import { TypePublicChatItem, TypePublicChatMessage } from "../types/publicChatTypes";
-import { TypeFilterByDevice, TypeFilterByPopularity, TypeReview, TypeTaskApp } from "../types/earnTypes";
-import { TypeMusicDetail, TypeSearchResults, TypeTestimonial } from "../types/othersTypes";
-import { TypeFrame } from "../types/frameTypes";
-import { TypeConversation, TypePrivateMessage } from "../types/privateChatTypes";
+import { IUser } from "../types/userTypes";
+import { INotifications } from "../types/notificationTypes";
+import { IPublicChatItem, IPublicChatMessage } from "../types/publicChatTypes";
+import { IFilterByDevice, IFilterByPopularity, IReview, ITask } from "../types/earnTypes";
+import { IMusicDetail, ISearchResults, ITestimonial } from "../types/othersTypes";
+import { IFrame } from "../types/frameTypes";
+import { IConversation, IPrivateMessage } from "../types/privateChatTypes";
 
-type TypeFieldName = "loves" | "likes" | "dislikes";
+type IPublicMsgFieldName = "loves" | "likes" | "dislikes";
 
 const token = localStorage.getItem("token");
 
@@ -18,7 +18,7 @@ export const makeRequest = axios.create({
   },
 });
 
-export const fetchUserById = async (userId: string): Promise<User> => {
+export const fetchUserById = async (userId: string): Promise<IUser> => {
   const response = await makeRequest.get(`/api/users/${userId}`);
   const data = response.data;
   return data;
@@ -65,7 +65,7 @@ export const getUsers = async ({
 }: {
   pageParam: number;
 }): Promise<{
-  users: User[];
+  users: IUser[];
   userHighestPoints: string | undefined;
   hasMore: boolean;
 }> => {
@@ -74,7 +74,7 @@ export const getUsers = async ({
   return data;
 };
 
-export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promise<TypeSearchResults> => {
+export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promise<ISearchResults> => {
   const deezerUrl = import.meta.env.VITE_DEEZER_MUSICS_URL;
   const musicOptions = {
     method: "GET",
@@ -85,10 +85,8 @@ export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promis
   };
   const musicResponse = await fetch(deezerUrl, musicOptions);
   const musics = await musicResponse.json();
-  const res = musics?.data?.filter((item: TypeMusicDetail) =>
-    item.title.toLocaleLowerCase().includes(searchQ),
-  );
-  const mappedMusics = res?.map((item: TypeMusicDetail) => ({
+  const res = musics?.data?.filter((item: IMusicDetail) => item.title.toLocaleLowerCase().includes(searchQ));
+  const mappedMusics = res?.map((item: IMusicDetail) => ({
     _id: item.id.toString(),
     description: item.title,
     image: item.album.cover,
@@ -103,7 +101,7 @@ export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promis
   return results;
 };
 
-export const getOnlineUsers = async (): Promise<User[]> => {
+export const getOnlineUsers = async (): Promise<IUser[]> => {
   const response = await makeRequest.get(`/api/users/onlines`);
   const data = response.data;
   return data;
@@ -112,13 +110,13 @@ export const getLeaderboardUsers = async ({
   pageParam,
 }: {
   pageParam: number;
-}): Promise<{ users: User[]; allDataLength: number }> => {
+}): Promise<{ users: IUser[]; allDataLength: number }> => {
   const response = await makeRequest.get(`/api/users/users-leaderboard?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
 
-export const getUserActivities = async (userId: string): Promise<TypeNotifications[]> => {
+export const getUserActivities = async (userId: string): Promise<INotifications[]> => {
   const response = await makeRequest.get(`/api/notifications/${userId}`);
   const data = response.data;
   return data;
@@ -129,7 +127,7 @@ export const userVisited = async (visitedUserId: string): Promise<void> => {
     NOT_IMPORTANT: "NOT_IMPORTANT",
   });
 };
-export const handleDeleteMessage = async (messageId: string): Promise<TypePublicChatMessage> => {
+export const handleDeleteMessage = async (messageId: string): Promise<IPublicChatMessage> => {
   const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
     isDeleted: true,
   });
@@ -141,10 +139,10 @@ export const handleMessageReaction = async ({
   fieldName,
 }: {
   messageId: string;
-  fieldName: TypeFieldName;
-  otherFieldOne: TypeFieldName;
-  otherFieldTow: TypeFieldName;
-}): Promise<TypePublicChatMessage> => {
+  fieldName: IPublicMsgFieldName;
+  otherFieldOne: IPublicMsgFieldName;
+  otherFieldTow: IPublicMsgFieldName;
+}): Promise<IPublicChatMessage> => {
   const response = await makeRequest.patch(`api/publicchat/${messageId}/${fieldName}`, {
     FOR_CONSISTENCY: "FOR_CONSISTENCY",
   });
@@ -158,7 +156,7 @@ export const handleAddReview = async ({
 }: {
   taskId: string;
   comment: string;
-}): Promise<TypeReview> => {
+}): Promise<IReview> => {
   const response = await makeRequest.post(`/api/tasks/${taskId}/review`, {
     comment,
   });
@@ -166,13 +164,13 @@ export const handleAddReview = async ({
   return review;
 };
 
-export const fetchAppDetails = async ({ taskId }: { taskId: string }): Promise<TypeTaskApp> => {
+export const fetchAppDetails = async ({ taskId }: { taskId: string }): Promise<ITask> => {
   const response = await makeRequest.get(`api/tasks/public/${taskId}`);
   const task = response.data;
   return task;
 };
 
-export const fetchTestimonials = async (): Promise<TypeTestimonial[]> => {
+export const fetchTestimonials = async (): Promise<ITestimonial[]> => {
   const response = await makeRequest.get("api/testimonials");
   const testimonials = response.data.reverse();
   return testimonials;
@@ -184,7 +182,7 @@ export const handleSendTestimonial = async ({
 }: {
   comment: string;
   stars: number;
-}): Promise<TypeTestimonial> => {
+}): Promise<ITestimonial> => {
   const response = await makeRequest.post("api/testimonials", {
     content: comment,
     stars,
@@ -193,7 +191,7 @@ export const handleSendTestimonial = async ({
   return newTestimonial;
 };
 
-export const fetchAllFrames = async (): Promise<TypeFrame[]> => {
+export const fetchAllFrames = async (): Promise<IFrame[]> => {
   const response = await makeRequest.get("api/frames");
   const frames = response.data;
   return frames;
@@ -203,7 +201,7 @@ export const purshaseFrame = async ({
   frameId,
 }: {
   frameId: string;
-}): Promise<{ points: number; savedFrame: TypeFrame }> => {
+}): Promise<{ points: number; savedFrame: IFrame }> => {
   const response = await makeRequest.get(`api/frames/${frameId}`);
   const data = response.data;
   return data;
@@ -219,13 +217,13 @@ export const purshaseMusic = async ({
   return data;
 };
 
-export const fetchStatistics = async (): Promise<TypeNotifications[]> => {
+export const fetchStatistics = async (): Promise<INotifications[]> => {
   const response = await makeRequest.get("api/notifications/my-notifications");
   const statistics = response.data;
   return statistics;
 };
 
-export const fetchMusics = async (): Promise<TypeMusicDetail[]> => {
+export const fetchMusics = async (): Promise<IMusicDetail[]> => {
   const url = import.meta.env.VITE_DEEZER_MUSICS_URL;
   const options = {
     method: "GET",
@@ -240,7 +238,7 @@ export const fetchMusics = async (): Promise<TypeMusicDetail[]> => {
   return musics;
 };
 
-export const changeMyPictureFrame = async ({ frameId }: { frameId: string }): Promise<TypeFrame> => {
+export const changeMyPictureFrame = async ({ frameId }: { frameId: string }): Promise<IFrame> => {
   const response = await makeRequest.get(`api/users/select-myphoto-frame/${frameId}`);
   const data = response.data;
   return data;
@@ -256,7 +254,7 @@ export const fetchPublicChatMessages = async ({
 }: {
   pageParam: number;
   limit: number;
-}): Promise<{ messages: TypePublicChatItem[]; hasOlder: boolean }> => {
+}): Promise<{ messages: IPublicChatItem[]; hasOlder: boolean }> => {
   const response = await makeRequest.get(`api/publicchat?pageParam=${pageParam}&limit=${limit}`);
   const data = response.data;
   return data;
@@ -267,8 +265,8 @@ export const sendPublicChatMessage = async ({
   mentionedUsers,
 }: {
   message: string;
-  mentionedUsers: User[];
-}): Promise<TypePublicChatMessage> => {
+  mentionedUsers: IUser[];
+}): Promise<IPublicChatMessage> => {
   const response = await makeRequest.post("api/publicchat", {
     type: "MESSAGE",
     messageText: message,
@@ -278,49 +276,11 @@ export const sendPublicChatMessage = async ({
   return messageData;
 };
 
-// export const fetchAllConversations = async ({
-//   onlineUsers,
-// }: {
-//   onlineUsers: string[];
-// }): Promise<TypeConversation[]> => {
-//   const response = await makeRequest.get(
-//     "api/conversations/all-conversations/allusers"
-//   );
-//   const sorted = response.data.sort(
-//     (a: TypeConversation, b: TypeConversation) => {
-//       if (a.lastMessage?.createdAt && b.lastMessage?.createdAt) {
-//         if (a.lastMessage?.createdAt > b.lastMessage?.createdAt) {
-//           return -1;
-//         }
-//         if (a.lastMessage?.createdAt < b.lastMessage?.createdAt) {
-//           return 1;
-//         } else {
-//           return 0;
-//         }
-//       }
-//       if (
-//         onlineUsers.includes(a.secondParty._id) &&
-//         !onlineUsers.includes(b.secondParty._id)
-//       ) {
-//         return -1;
-//       }
-//       if (
-//         !onlineUsers.includes(a.secondParty._id) &&
-//         onlineUsers.includes(b.secondParty._id)
-//       ) {
-//         return 1;
-//       }
-//       return 0;
-//     }
-//   );
-//   return sorted;
-// };
-
 export const fetchAllConversations = async ({
   pageParam,
 }: {
   pageParam: number;
-}): Promise<{ conversations: TypeConversation[]; hasMore: boolean }> => {
+}): Promise<{ conversations: IConversation[]; hasMore: boolean }> => {
   const response = await makeRequest.get(
     `api/conversations/all-conversations/allusers?pageParam=${pageParam}`,
   );
@@ -334,7 +294,7 @@ export const sendPrivateChatMessage = async ({
 }: {
   secondUserId: string;
   message: string;
-}): Promise<TypePrivateMessage> => {
+}): Promise<IPrivateMessage> => {
   const response = await makeRequest.post(`api/conversations/${secondUserId}`, {
     messageText: message,
   });
@@ -347,8 +307,8 @@ export const fetchPrivateChatMessages = async ({
 }: {
   secondUserId: string;
 }): Promise<{
-  messages: TypePrivateMessage[];
-  secondUser: User | null;
+  messages: IPrivateMessage[];
+  secondUser: IUser | null;
 }> => {
   const response = await makeRequest.get(`api/conversations/${secondUserId}`);
   const messages = response.data.messages;
@@ -362,11 +322,11 @@ export const fetchAllTasks = async ({
   pageParam,
   limitPerPage,
 }: {
-  filterByPopularity: TypeFilterByPopularity;
-  filterByDevice: TypeFilterByDevice;
+  filterByPopularity: IFilterByPopularity;
+  filterByDevice: IFilterByDevice;
   limitPerPage: number;
   pageParam: number;
-}): Promise<{ tasks: TypeTaskApp[]; hasMore: boolean }> => {
+}): Promise<{ tasks: ITask[]; hasMore: boolean }> => {
   const response = await makeRequest.get(
     `api/tasks?filterByPopularity=${filterByPopularity}&&filterByDevice=${filterByDevice}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`,
   );

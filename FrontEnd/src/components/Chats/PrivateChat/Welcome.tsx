@@ -1,24 +1,19 @@
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
-interface TypeProps {
+interface IProps {
   handleOpenSidbare: () => void;
 }
 
-const Welcome = ({ handleOpenSidbare }: TypeProps) => {
+const Welcome = ({ handleOpenSidbare }: IProps) => {
   return (
-    <div className="w-full h-full flex flex-col gap-3 items-center justify-center">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-3">
       <IoChatboxEllipsesOutline className="text-6xl" />
-      <p className="text-2xl text-[#cf9d9d59] font-bold text-center">
-        START YOUR CHAT NOW
-      </p>
-      <p className="text-lg text-[#cf9d9d59] font-bold text-center">
+      <p className="text-center text-2xl font-bold text-[#cf9d9d59]">START YOUR CHAT NOW</p>
+      <p className="text-center text-lg font-bold text-[#cf9d9d59]">
         WITH MORE SECURITY AND PRIVACY AND MUCH MORE
         <br />
-        <button
-          onClick={handleOpenSidbare}
-          className=" text-lg text-[#9063e481] font-bold underline"
-        >
-          Select a User
+        <button onClick={handleOpenSidbare} className="text-lg font-bold text-[#9063e481] underline">
+          Select a IUser
         </button>
       </p>
     </div>

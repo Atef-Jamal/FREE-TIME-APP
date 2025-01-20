@@ -3,18 +3,18 @@ import { DiAndroid } from "react-icons/di";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoDesktop } from "react-icons/io5";
 import { SiApple } from "react-icons/si";
-import { TypeFilterByDevice } from "../../types/earnTypes";
+import { IFilterByDevice } from "../../types/earnTypes";
 import { useClickOutside } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
-interface TypeProps {
-  filterByDevice: TypeFilterByDevice;
+interface IProps {
+  filterByDevice: IFilterByDevice;
   handleCloseFilterByDevice: (open: boolean) => void;
-  activeFilterByDevice: (item: TypeFilterByDevice) => void;
+  activeFilterByDevice: (item: IFilterByDevice) => void;
 }
 
 const FilterByDeviceMenu = memo(
-  ({ handleCloseFilterByDevice, filterByDevice, activeFilterByDevice }: TypeProps) => {
+  ({ handleCloseFilterByDevice, filterByDevice, activeFilterByDevice }: IProps) => {
     const { t } = useTranslation("earn");
     const filterByDeviceRef = useRef<HTMLDivElement | null>(null);
 

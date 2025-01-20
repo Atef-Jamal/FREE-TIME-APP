@@ -7,9 +7,9 @@ import { showPopup } from "../../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import UserImage from "../../../Others/UserImage";
 import { handleMessageReaction } from "../../../../utils";
-import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
+import { IPublicChatMessage } from "../../../../types/publicChatTypes";
 import { useListenToSocketEvents } from "../../../../hooks";
-import { User } from "../../../../types/userTypes";
+import { IUser } from "../../../../types/userTypes";
 import { formateDate, handleApiError } from "../../../../utils/common";
 import { verifiedImage } from "../../../../assets";
 import { BiCircle } from "react-icons/bi";
@@ -17,17 +17,17 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
 
-interface TypeMessageProp {
-  singleMessage: TypePublicChatMessage;
+interface IProps {
+  singleMessage: IPublicChatMessage;
   lastMessageRef?: RefObject<HTMLDivElement | null> | null;
   handleSetMessageIdToDelete: (messageId: string) => void;
 }
 
-const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelete }: TypeMessageProp) => {
+const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelete }: IProps) => {
   const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const socket = useAppSelector((state) => state.stateManeger.socket);
-  const [messageItem, setMessageItem] = useState<TypePublicChatMessage>(singleMessage);
+  const [messageItem, setMessageItem] = useState<IPublicChatMessage>(singleMessage);
   const [date, setDate] = useState(formateDate(messageItem.createdAt));
   const dispatch = useAppDispatch();
 
@@ -44,7 +44,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
         return;
       }
       const previousMessage = messageItem;
-      const updateMessage = (prev: TypePublicChatMessage) => ({
+      const updateMessage = (prev: IPublicChatMessage) => ({
         ...prev,
         [fieldName]: prev[fieldName].includes(currentUserId)
           ? prev[fieldName].filter((item) => item !== currentUserId)
@@ -77,13 +77,13 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     handleSetMessageIdToDelete(messageItem._id);
   };
 
-  const handleUpdateMessage = (updatedMessage: TypePublicChatMessage) => {
+  const handleUpdateMessage = (updatedMessage: IPublicChatMessage) => {
     if (updatedMessage._id === messageItem._id) {
       setMessageItem(updatedMessage);
     }
   };
 
-  const handleUpdateUser = (updatedUser: User) => {
+  const handleUpdateUser = (updatedUser: IUser) => {
     if (messageItem.sender._id === updatedUser._id) {
       setMessageItem((prevMessageItem) => ({
         ...prevMessageItem,
@@ -166,9 +166,9 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
         </div>
         <Link
           to={currentUserId === messageItem.sender._id ? "/myprofile" : `/user/${messageItem.sender._id}`}
-          className={`-mt-1 ml-[6px] max-w-[60%] overflow-hidden md:ml-2`}
+          className={`-mt-[3px] ml-[6px] max-w-[60%] overflow-hidden md:ml-2`}
         >
-          <span className="-mb-[6px] flex items-center text-xs font-bold capitalize text-[#6dca51] md:text-sm">
+          <span className="-mb-[8px] flex items-center text-xs font-[400] capitalize text-[#6dca51] md:text-sm">
             {messageItem.sender?.name}
             {messageItem.sender.emailVerified && (
               <img src={verifiedImage} alt="" className="mx-2 h-[14px] w-[14px] object-cover md:h-4 md:w-4" />

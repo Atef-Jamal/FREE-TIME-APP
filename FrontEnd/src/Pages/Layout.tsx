@@ -4,7 +4,7 @@ import Model from "../components/Others/Model";
 import ToastNotify from "../components/Others/ToastNotify";
 import Navbare from "../components/Navebare/Navbare";
 import ContentBody from "../components/Layout/ContentBody";
-import HiddenComponent from "../components/Layout/HiddenComponent";
+import LogicalComponent from "../components/Layout/LogicalComponent";
 
 const NavebareBottom = lazy(() => import("../components/Navebare/NavebareBottom"));
 
@@ -36,7 +36,7 @@ const Layout = () => {
           }
         />
       )}
-      <HiddenComponent />
+      <LogicalComponent />
     </main>
   );
 };

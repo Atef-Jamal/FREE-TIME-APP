@@ -5,13 +5,13 @@ import { BsCheck2Circle } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 import { ImSpinner3 } from "react-icons/im";
-import { TypeGameApp } from "../../types/earnTypes";
+import { IGameTask } from "../../types/earnTypes";
 
-interface TypeProps {
-  taskApp: TypeGameApp;
+interface IProps {
+  taskApp: IGameTask;
 }
 
-const GuessCardApp = ({ taskApp }: TypeProps) => {
+const GuessCardTask = ({ taskApp }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
@@ -75,7 +75,7 @@ const GuessCardApp = ({ taskApp }: TypeProps) => {
           setCurrentUser({
             ...currentUser,
             completedTasks: [...currentUser.completedTasks, taskApp._id],
-          })
+          }),
         );
         setIsLoading(false);
       } catch (error) {
@@ -91,10 +91,10 @@ const GuessCardApp = ({ taskApp }: TypeProps) => {
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center min-h-[70vh]">
+      <div className="flex h-full min-h-[70vh] items-center justify-center">
         <div className="flex items-center gap-4 sm:gap-2">
-          <ImSpinner3 className="text-4xl sm:text-2xl animate-spin" />
-          <span className="text-[#abbe3eee] text-3xl sm:text-xl font-bold font-serif">
+          <ImSpinner3 className="animate-spin text-4xl sm:text-2xl" />
+          <span className="font-serif text-3xl font-bold text-[#abbe3eee] sm:text-xl">
             Waiting Results...
           </span>
         </div>
@@ -104,41 +104,41 @@ const GuessCardApp = ({ taskApp }: TypeProps) => {
 
   if (error) {
     return (
-      <div className="h-full min-h-[70vh] flex flex-col items-center justify-center gap-3 opacity-70  font-bold px-8 text-center">
+      <div className="flex h-full min-h-[70vh] flex-col items-center justify-center gap-3 px-8 text-center font-bold opacity-70">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-8 gap-3 min-h-[70vh]">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-3 py-8">
       {completed && (
-        <div className="w-[400px] xs:w-[90%] rounded-md h-[150px] bg-[#422c75c5] flex flex-col items-center justify-center gap-1">
-          <BsCheck2Circle className="text-3xl mb-3" />
+        <div className="xs:w-[90%] flex h-[150px] w-[400px] flex-col items-center justify-center gap-1 rounded-md bg-[#422c75c5]">
+          <BsCheck2Circle className="mb-3 text-3xl" />
           <div className="flex items-center justify-center gap-3">
-            <p className="text-gray-400 font-500">
+            <p className="font-500 text-gray-400">
               <span className="font-bold text-[#8ecf58]">Congratulation!</span>
               Successfully Completed
             </p>
           </div>
-          <p className="text-gray-400 font-bold text-sm">Go to your Notifications and claim Reward</p>
+          <p className="text-sm font-bold text-gray-400">Go to your Notifications and claim Reward</p>
         </div>
       )}
       {!completed && (
         <>
-          <div className="w-[500px] sm:w-[400px] xs:w-[90%] flex items-center justify-between ">
-            <span className="ml-1 text-gray-300 text-sm">Easy Level</span>
-            <span className="font-bold text-black bg-[#b8ae56] py-1 px-5 rounded-md">
-              SCORE :<span className="font-bold text-[#2341ca] ml-2">{score}</span>
+          <div className="xs:w-[90%] flex w-[500px] items-center justify-between sm:w-[400px]">
+            <span className="ml-1 text-sm text-gray-300">Easy Level</span>
+            <span className="rounded-md bg-[#b8ae56] px-5 py-1 font-bold text-black">
+              SCORE :<span className="ml-2 font-bold text-[#2341ca]">{score}</span>
             </span>
           </div>
-          <div className="w-[500px] sm:w-[400px] xs:w-[90%] h-[300px] xs:h-[230px] border grid grid-cols-4 gap-2 p-2">
+          <div className="xs:w-[90%] xs:h-[230px] grid h-[300px] w-[500px] grid-cols-4 gap-2 border p-2 sm:w-[400px]">
             {cards.map((item: string, i: number) => {
               return (
                 <div
                   onClick={handleSelect}
                   key={i}
-                  className="card-item rounded-md rotate-180 border border-gray-400 text-gray-400 flex items-center justify-center font-bold text-2xl bg-gray-400"
+                  className="card-item flex rotate-180 items-center justify-center rounded-md border border-gray-400 bg-gray-400 text-2xl font-bold text-gray-400"
                 >
                   {item}
                 </div>
@@ -151,4 +151,4 @@ const GuessCardApp = ({ taskApp }: TypeProps) => {
   );
 };
 
-export default GuessCardApp;
+export default GuessCardTask;

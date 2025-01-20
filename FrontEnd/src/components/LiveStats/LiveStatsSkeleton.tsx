@@ -2,7 +2,6 @@ import Skeleton from "../Others/Skeleton";
 
 const LiveStatsSkeleton = () => {
   return (
-    // <div className="flex h-[40px] flex-nowrap items-center gap-x-1 lg:h-[47px] lg:gap-x-[6px]">
     <>
       {[...Array(20).keys()].map((item) => (
         <div
@@ -17,7 +16,6 @@ const LiveStatsSkeleton = () => {
         </div>
       ))}
     </>
-    // </div>
   );
 };
 

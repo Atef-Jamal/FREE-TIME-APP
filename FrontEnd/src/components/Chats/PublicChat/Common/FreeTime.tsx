@@ -1,15 +1,15 @@
 import { formateDate } from "../../../../utils/common";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../../context/Hooks";
-import { TypePublicChatFreeTime } from "../../../../types/publicChatTypes";
+import { IPublicChatFreeTime } from "../../../../types/publicChatTypes";
 import { verifiedImage } from "../../../../assets";
 
-interface TypeProps {
-  singleMessage: TypePublicChatFreeTime;
+interface IProps {
+  singleMessage: IPublicChatFreeTime;
   lastMessageRef: React.RefObject<HTMLDivElement | null> | null;
 }
 
-const FreeTime = ({ singleMessage, lastMessageRef }: TypeProps) => {
+const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const date = formateDate(singleMessage.createdAt);
   return (

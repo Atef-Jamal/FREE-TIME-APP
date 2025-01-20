@@ -8,7 +8,7 @@ import { IoIosArrowBack, IoMdArrowDropdown } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../context/Hooks";
 import { arrayoffers } from "../helper/data";
-import { TypeFilterByPopularity, TypeFilterByDevice } from "../types/earnTypes";
+import { IFilterByPopularity, IFilterByDevice } from "../types/earnTypes";
 import Spinner from "../components/Others/Spinner";
 import TaskDetail from "../components/Earn/TaskDetail";
 import AppSkeleton from "../components/Earn/TaskSkeleton";
@@ -27,17 +27,15 @@ import { fetchAllTasks } from "../utils";
 import { cn } from "../utils/common";
 
 const Earn = () => {
-  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] = useState(false);
   const limitPerPage = 15;
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [filterByPopularity, setFilterByPopularity] = useState<TypeFilterByPopularity>("ALL");
-  const [filterByDevice, setFilterByDevice] = useState<TypeFilterByDevice>("ALL");
+  const [filterByPopularity, setFilterByPopularity] = useState<IFilterByPopularity>("ALL");
+  const [filterByDevice, setFilterByDevice] = useState<IFilterByDevice>("ALL");
   const [searchParams] = useSearchParams();
-  // const filterByDeviceRef = useRef<HTMLDivElement | null>(null);
-  // const filterByPopularityRef = useRef<HTMLDivElement | null>(null);
 
   const { t } = useTranslation("earn");
 
@@ -88,11 +86,11 @@ const Earn = () => {
     setTranslate("-translate-x-[0%]");
   };
 
-  const activeFilterByPopularity = useCallback((type: TypeFilterByPopularity) => {
+  const activeFilterByPopularity = useCallback((type: IFilterByPopularity) => {
     setFilterByPopularity(type);
   }, []);
 
-  const activeFilterByDevice = useCallback((type: TypeFilterByDevice) => {
+  const activeFilterByDevice = useCallback((type: IFilterByDevice) => {
     setFilterByDevice(type);
   }, []);
 
@@ -192,7 +190,7 @@ const Earn = () => {
             <div
               className={cn(
                 "grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5",
-                resizeSidebare
+                sidebarCollapsed
                   ? "lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-9"
                   : "lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8",
               )}

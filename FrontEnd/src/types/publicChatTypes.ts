@@ -1,34 +1,34 @@
-import { User } from "./userTypes";
+import { IUser } from "./userTypes";
 
-export interface TypePublicChatMessage {
+export interface IPublicChatMessage {
   _id: string;
   type: "MESSAGE";
   createdAt: Date;
   updatedAt: Date;
-  sender: User;
+  sender: IUser;
   message: string;
   isDeleted: boolean;
   likes: string[];
   dislikes: string[];
   loves: string[];
-  mentioned: User[];
+  mentioned: IUser[];
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }
 
-export interface TypePublicChatFreeTime {
+export interface IPublicChatFreeTime {
   _id: string;
   type: "FREETIME";
   typeOfTask: "REFERRER" | "TASK" | "MUSIC" | "FRAME" | "EMAIL-VERIFIED";
-  sender: User;
-  newUserReferred: User;
+  sender: IUser;
+  newUserReferred: IUser;
   musicTitle: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type TypePublicChatItem = TypePublicChatMessage | TypePublicChatFreeTime;
+export type IPublicChatItem = IPublicChatMessage | IPublicChatFreeTime;
 
-export interface TypeCashedPublicChat {
+export interface ICashedPublicChat {
   pageParams: number[];
-  pages: { messages: TypePublicChatItem[]; hasOlder: boolean }[];
+  pages: { messages: IPublicChatItem[]; hasOlder: boolean }[];
 }

@@ -3,16 +3,16 @@ import { AiFillAndroid } from "react-icons/ai";
 import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/Hooks";
-import { TypeTaskApp } from "../../types/earnTypes";
+import { ITask } from "../../types/earnTypes";
 import { useTranslation } from "react-i18next";
 
-interface TypeAppCard {
-  taskDetail: TypeTaskApp;
+interface IProps {
+  taskDetail: ITask;
   index: number;
   setTaskId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const AppCard = ({ taskDetail, index, setTaskId }: TypeAppCard) => {
+const AppCard = ({ taskDetail, index, setTaskId }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
 
   const { t } = useTranslation("earn");

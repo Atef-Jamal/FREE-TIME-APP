@@ -12,19 +12,15 @@ import { showPopup } from "../../../../context/StateManeger";
 import { debounce, handleApiError } from "../../../../utils/common";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useScrollToElement } from "../../../../hooks";
-import { TypePublicChatMessage } from "../../../../types/publicChatTypes";
+import { IPublicChatMessage } from "../../../../types/publicChatTypes";
 import { CgClose } from "react-icons/cg";
 import { ChatModelDeletion } from "./ChatModelDeletion";
-
-export interface TypeMsgModelDeletion {
-  messageId: string;
-}
 
 const PublicChat = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
-  const [oldMessage, setOldMessage] = useState<TypePublicChatMessage | null>(null);
+  const [oldMessage, setOldMessage] = useState<IPublicChatMessage | null>(null);
   const [isLoadingOldMsg, setIsLoadingOldMsg] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -194,10 +190,10 @@ const PublicChat = memo(() => {
   }, [messages, stopScrolling, scrollToLastMessage]);
 
   return (
-    <div className="relative flex h-full flex-col gap-y-1">
+    <div className="relative flex h-full flex-col gap-y-1 pb-1">
       <div
         ref={messageContainerRef}
-        className="relative flex-1 space-y-1 overflow-y-scroll px-1 pb-[2px] max-lg:scrollbar-thin lg:px-2 lg:[&::-webkit-scrollbar-thumb]:bg-[#79b6fc] lg:[&::-webkit-scrollbar-track]:bg-[#5e5d5dee] lg:[&::-webkit-scrollbar]:w-2"
+        className="lg:scrollbar-custom relative flex-1 space-y-1 overflow-y-scroll px-1 pb-[2px] max-lg:scrollbar-thin lg:px-2"
       >
         {messageToDelete && (
           <ChatModelDeletion

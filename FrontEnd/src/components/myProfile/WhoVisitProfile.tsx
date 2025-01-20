@@ -7,20 +7,12 @@ import Spinner from "../Others/Spinner";
 import { Link } from "react-router-dom";
 import { formateDate, handleApiError } from "../../utils/common";
 import Empty from "../Others/Empty";
-import { User } from "../../types/userTypes";
-
-interface TypeVisiter {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  visiter: User;
-  visited: string;
-}
+import { IVisitor } from "../../types/userTypes";
 
 const WhoVisitProfile = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<TypeVisiter[]>([]);
+  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<IVisitor[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
@@ -34,7 +26,7 @@ const WhoVisitProfile = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: "sorry, your points is not Enough",
-        })
+        }),
       );
       setError("sorry, your points is not Enough");
       return;
@@ -51,28 +43,28 @@ const WhoVisitProfile = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     } finally {
       setIsLoading(false);
     }
   };
   return (
-    <div className="w-[70%] sm:w-full mx-auto mt-3 flex flex-col items-center justify-center gap-2 pb-3">
-      <div className="flex items-center gap-y-3 justify-around flex-wrap w-full py-2">
+    <div className="mx-auto mt-3 flex w-[70%] flex-col items-center justify-center gap-2 pb-3 sm:w-full">
+      <div className="flex w-full flex-wrap items-center justify-around gap-y-3 py-2">
         <span className="font-bold tracking-wider text-[#8da4f0ee]">Who visit my profile ?</span>
-        <button onClick={handleShowWhoVisit} className="px-5 py-1 rounded-md bg-[#5aa55e]">
+        <button onClick={handleShowWhoVisit} className="rounded-md bg-[#5aa55e] px-5 py-1">
           Show for 5 points
         </button>
       </div>
       <div
-        className={`transition-all flex flex-col items-center gap-y-1 w-full ${
-          expanded ? "h-auto" : "overflow-hidden h-0"
+        className={`flex w-full flex-col items-center gap-y-1 transition-all ${
+          expanded ? "h-auto" : "h-0 overflow-hidden"
         }`}
       >
-        {isLoading && <Spinner className="w-8 h-8 border-2" />}
+        {isLoading && <Spinner className="h-8 w-8 border-2" />}
         {error && (
-          <div className="flex items-center justify-center py-2 gap-2 text-gray-500">
+          <div className="flex items-center justify-center gap-2 py-2 text-gray-500">
             <BiErrorAlt /> {error}
           </div>
         )}
@@ -82,11 +74,11 @@ const WhoVisitProfile = () => {
             .map((item, i) => (
               <div
                 key={item._id + i}
-                className="w-[70%] xs:w-full flex items-center self-center justify-between"
+                className="xs:w-full flex w-[70%] items-center justify-between self-center"
               >
                 <div className="flex items-center justify-center gap-3">
-                  <div className="w-8 h-8 rounded-full">
-                    <img src={item.visiter.profilePicture} alt="" className="object-contain rounded-full" />
+                  <div className="h-8 w-8 rounded-full">
+                    <img src={item.visiter.profilePicture} alt="" className="rounded-full object-contain" />
                   </div>
                   <Link to={`/user/${item._id}`} className="text-sm text-[#8a84eb] underline">
                     {item.visiter.name}

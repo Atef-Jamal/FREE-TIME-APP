@@ -6,18 +6,18 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchAllConversations } from "../../../utils";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useListenToSocketEvents } from "../../../hooks";
-import { TypePrivateMessage } from "../../../types/privateChatTypes";
+import { IPrivateMessage } from "../../../types/privateChatTypes";
 import { debounce } from "../../../utils/common";
-// import Spinner from "../../Others/Spinner";
 import { MdOutlineMenu } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
+import Spinner from "../../Others/Spinner";
 
-interface TypeProps {
+interface IProps {
   toggleSidbare: () => void;
   openSidbare: boolean;
 }
 
-const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
+const ChatSidbare = memo(({ toggleSidbare, openSidbare }: IProps) => {
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
 
@@ -38,7 +38,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
     return data?.pages.map((page) => page.conversations).flat();
   }, [data?.pages]);
 
-  const handleNotify = (data: TypePrivateMessage) => {
+  const handleNotify = (data: IPrivateMessage) => {
     const isChatWithUserOpen = data.sender._id === activeConversation;
     if (!openSidbare && !isChatWithUserOpen) setRedPoint(true);
   };
@@ -68,7 +68,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
   }, [hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   return (
-    <div className="relative flex h-full flex-col space-y-2 bg-[#131129] p-1 sm:p-2">
+    <div className="relative flex h-full flex-col space-y-2 bg-[#131129] px-1 pt-1 sm:px-2 sm:pt-2">
       <span
         onClick={toggleSidbare}
         className="absolute -right-[45px] top-0 flex h-8 w-11 items-center justify-center rounded-sm bg-[#1f1425] sm:h-[48px] sm:w-11 2xl:hidden"
@@ -84,14 +84,16 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
         <span className="flex-1 border-t border-zinc-600"></span>Peoples
         <span className="flex-1 border-t border-zinc-600"></span>
       </div>
-      <div ref={conversationsListRef} className="flex-1 overflow-y-scroll scrollbar-thin">
+      <div ref={conversationsListRef} className="scrollbar-custom relative flex-1 overflow-y-scroll">
         {error && (
-          <>
-            <div className="mt-2 font-bold text-gray-400">{error.response?.data.error}</div>
-            <button className="rounded-md bg-[#645a5a] px-4 py-1 text-sm font-bold text-[#8fa4bd]">
+          <div className="flex flex-col items-center justify-center">
+            <div className="mt-2 text-center text-xs text-gray-400">
+              an error occurred during somthing have been item integrated alongside
+            </div>
+            <button className="mt-1 rounded-sm bg-[#d1363696] px-4 py-1 text-xs text-[#c2cbd6]">
               Try Again
             </button>
-          </>
+          </div>
         )}
         {status === "pending" && [...Array(15).keys()].map((skeleton) => <PeopleSkeleton key={skeleton} />)}
         {status === "success" &&
@@ -108,14 +110,12 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: TypeProps) => {
             );
           })}
 
-        {isFetchNextPageError && <p className="text-sm text-[#dd2a2a]">an Error occurred!</p>}
-        {/* <div
-          className={`${
-            isFetchingNextPage ? "visible" : "invisible"
-          } flex w-full items-center justify-center bg-[#131129]`}
-        >
-          <Spinner className="h-7 w-7 border-4 sm:h-5 sm:w-5 sm:border-[3px]" />
-        </div> */}
+        {isFetchNextPageError && <p className="text-center text-xs text-[#d83d3d]">an Error occurred!</p>}
+        {isFetchingNextPage && (
+          <div className={"sticky bottom-0 flex h-9 items-center justify-center bg-[#131129]"}>
+            <Spinner className="h-6 w-6 border-[3px]" />
+          </div>
+        )}
       </div>
     </div>
   );

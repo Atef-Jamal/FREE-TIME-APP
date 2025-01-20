@@ -2,17 +2,17 @@ import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
 import Skeleton from "../Others/Skeleton";
 import { empty } from "../../assets";
 import { AxiosError } from "axios";
-import { User } from "../../types/userTypes";
+import { IUser } from "../../types/userTypes";
 
-interface TypeProps {
-  data: { users: User[]; allDataLength: number } | undefined;
+interface IProps {
+  data: { users: IUser[]; allDataLength: number } | undefined;
   status: "error" | "success" | "pending";
   error: AxiosError<{ error: string }, any> | null;
   pageParam: number;
   setPageParam: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const PeopleList = ({ status, data, error, pageParam, setPageParam }: TypeProps) => {
+const PeopleList = ({ status, data, error, pageParam, setPageParam }: IProps) => {
   return (
     <div>
       <div className="flex w-full items-center justify-between rounded-[4px] bg-[#3b2f5cc4]">

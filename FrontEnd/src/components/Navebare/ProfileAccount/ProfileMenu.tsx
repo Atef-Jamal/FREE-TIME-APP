@@ -10,11 +10,11 @@ import { useClickOutside } from "../../../hooks";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase";
 
-interface TypeProps {
+interface IProps {
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileMenu = ({ setOpenProfileMenu }: TypeProps) => {
+const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
   const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -37,53 +37,53 @@ const ProfileMenu = ({ setOpenProfileMenu }: TypeProps) => {
       <Link
         to={"myprofile"}
         onClick={() => setOpenProfileMenu((previos) => !previos)}
-        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full px-4 py-[6px]"
+        className="flex w-full items-center gap-5 px-4 py-[6px] hover:bg-[#3a6186ee] sm:gap-[10px]"
       >
         <IoPersonCircle style={{ fontSize: "18px" }} />
-        <span className=" text-gray-400 font-bold">My profile</span>
+        <span className="font-bold text-gray-400">My profile</span>
       </Link>
       <Link
         to={"affiliates"}
         onClick={() => setOpenProfileMenu((previos) => !previos)}
-        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full py-[6px]  px-4"
+        className="flex w-full items-center gap-5 px-4 py-[6px] hover:bg-[#3a6186ee] sm:gap-[10px]"
       >
         <MdOutlineDiversity3 style={{ fontSize: "18px" }} />
-        <span className=" text-gray-400 font-bold ">Affiliate</span>
+        <span className="font-bold text-gray-400">Affiliate</span>
       </Link>
       <Link
         to={""}
         onClick={() => setOpenProfileMenu((previos) => !previos)}
-        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full py-[6px]  px-4"
+        className="flex w-full items-center gap-5 px-4 py-[6px] hover:bg-[#3a6186ee] sm:gap-[10px]"
       >
         <MdContactSupport style={{ fontSize: "18px" }} />
-        <span className=" text-gray-400 font-bold ">Support</span>
+        <span className="font-bold text-gray-400">Support</span>
       </Link>
       <Link
         to={""}
         onClick={handleLogOut}
-        className="flex items-center hover:bg-[#3a6186ee] gap-5 sm:gap-[10px] w-full py-[6px] px-4 mb-2"
+        className="mb-2 flex w-full items-center gap-5 px-4 py-[6px] hover:bg-[#3a6186ee] sm:gap-[10px]"
       >
         <LuLogOut style={{ fontSize: "18px" }} />
-        <span className=" text-gray-400 font-bold ">Log out</span>
+        <span className="font-bold text-gray-400">Log out</span>
       </Link>
       <hr className="mb-2" />
-      <span className="text-gray-400 font-bold mb-2  w-full flex items-center justify-between px-2">
+      <span className="mb-2 flex w-full items-center justify-between px-2 font-bold text-gray-400">
         Live Stats
         <button
           onClick={handleToggleLiveStats}
           className={`${
             hiddenLiveStats ? "bg-[#201a1a]" : "bg-[#362c2cf6]"
-          } w-12 h-5 p-[1px] rounded-full flex items-center `}
+          } flex h-5 w-12 items-center rounded-full p-[1px]`}
         >
           <span
-            className={`${hiddenLiveStats ? " ml-auto bg-[#53eb53]" : " bg-[#a0b1a0]"} w-6 h-6 rounded-full`}
+            className={`${hiddenLiveStats ? "ml-auto bg-[#53eb53]" : "bg-[#a0b1a0]"} h-6 w-6 rounded-full`}
           ></span>
         </button>
       </span>
-      <span className="text-gray-400 font-bold mb-2 w-full flex items-center justify-between px-2">
+      <span className="mb-2 flex w-full items-center justify-between px-2 font-bold text-gray-400">
         Show USD
-        <button className="w-12 h-5 p-[1px] rounded-full flex items-center bg-[#362c2cf6]">
-          <span className="w-6 h-6 rounded-full bg-[#a0b1a0]"></span>
+        <button className="flex h-5 w-12 items-center rounded-full bg-[#362c2cf6] p-[1px]">
+          <span className="h-6 w-6 rounded-full bg-[#a0b1a0]"></span>
         </button>
       </span>
     </div>

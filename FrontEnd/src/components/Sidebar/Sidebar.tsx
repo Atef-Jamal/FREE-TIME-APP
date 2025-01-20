@@ -5,14 +5,13 @@ import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
 import { lazy, memo, Suspense, useCallback, useEffect } from "react";
 import { useListenToSocketEvents } from "../../hooks";
-import { TypeCashedConversations, TypePrivateMessage } from "../../types/privateChatTypes";
+import { ICashedConversation, ICashedConversations, IPrivateMessage } from "../../types/privateChatTypes";
 import { showPopup, updateSidebarUnReadedMsgCount } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
-import { TypeCashedChat } from "../Chats/PrivateChat/SendMessagePrivateChat";
 import Search from "../Search/Search";
 import SearchBar from "../Search/SearchBar";
 const MusicPlayer = lazy(() => import("../../components/Music/MusicPlayer"));
@@ -21,7 +20,7 @@ const Sidebar = memo(() => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
-  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
   const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const dispatch = useAppDispatch();
@@ -32,11 +31,11 @@ const Sidebar = memo(() => {
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
 
   const handleCollaps = () => {
-    dispatch(updateThisEntity({ entity: "resizeSidebare", value: !resizeSidebare }));
+    dispatch(updateThisEntity({ entity: "sidebarCollapsed", value: !sidebarCollapsed }));
   };
 
   const handleNewPrivateMessage = useCallback(
-    (data: TypePrivateMessage) => {
+    (data: IPrivateMessage) => {
       if (!isPrivateChatPageOpen) {
         dispatch(
           updateSidebarUnReadedMsgCount({
@@ -48,34 +47,34 @@ const Sidebar = memo(() => {
         messageSound.src = messageSoundSrc;
         messageSound.play();
       }
+      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations.map((conv) => {
+                const isConversationWithUserOpen = data.sender._id === activeConversation;
+                if (conv.secondParty._id === data.sender._id) {
+                  return {
+                    ...conv,
+                    lastMessage: data,
+                    unreadedCount: isConversationWithUserOpen ? conv.unreadedCount : conv.unreadedCount + 1,
+                  };
+                }
+                return conv;
+              }),
+            };
+          }),
+        };
+      });
       queryClient.setQueryData(
-        ["conversations"],
-        (previous: TypeCashedConversations): TypeCashedConversations => {
-          return {
-            ...previous,
-            pages: previous.pages.map((page) => {
-              return {
-                ...page,
-                conversations: page.conversations.map((conv) => {
-                  const isConversationWithUserOpen = data.sender._id === activeConversation;
-                  if (conv.secondParty._id === data.sender._id) {
-                    return {
-                      ...conv,
-                      lastMessage: data,
-                      unreadedCount: isConversationWithUserOpen ? conv.unreadedCount : conv.unreadedCount + 1,
-                    };
-                  }
-                  return conv;
-                }),
-              };
-            }),
-          };
+        ["conversation-messages", data.sender._id],
+        (previous: ICashedConversation) => {
+          if (!previous) return;
+          return { ...previous, messages: [...previous.messages, data] };
         },
       );
-      queryClient.setQueryData(["conversation-messages", data.sender._id], (previous: TypeCashedChat) => {
-        if (!previous) return;
-        return { ...previous, messages: [...previous.messages, data] };
-      });
     },
     [queryClient, activeConversation, dispatch, isPrivateChatPageOpen],
   );
@@ -123,10 +122,10 @@ const Sidebar = memo(() => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="flex h-full w-[250px] flex-col gap-y-2 bg-[#29293a] px-2 pt-1 lg:w-full lg:pt-3"
+      className="flex h-full w-[80%] max-w-[400px] flex-col gap-y-2 border-r border-r-gray-500 bg-[#29293a] px-2 pt-1 lg:w-full lg:pt-3"
     >
       <div className={`hidden lg:block`}>
-        <BiMenu onClick={handleCollaps} className={`${resizeSidebare ? "mx-auto" : "ml-auto"} text-2xl`} />
+        <BiMenu onClick={handleCollaps} className={`${sidebarCollapsed ? "mx-auto" : "ml-auto"} text-2xl`} />
       </div>
 
       <div

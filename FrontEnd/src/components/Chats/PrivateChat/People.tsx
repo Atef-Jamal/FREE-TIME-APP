@@ -1,16 +1,16 @@
 import UserImage from "../../Others/UserImage";
 import { cn, formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeConversation } from "../../../types/privateChatTypes";
+import { IConversation } from "../../../types/privateChatTypes";
 import { setActiveConversation } from "../../../context/StateManeger";
 import { memo } from "react";
 
-interface TypeProps {
-  conversation: TypeConversation;
+interface IProps {
+  conversation: IConversation;
   isOnLine: boolean;
   chatWithUserOpen: boolean;
 }
-const People = memo(({ conversation, isOnLine, chatWithUserOpen }: TypeProps) => {
+const People = memo(({ conversation, isOnLine, chatWithUserOpen }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const dispatch = useAppDispatch();
 
@@ -35,7 +35,7 @@ const People = memo(({ conversation, isOnLine, chatWithUserOpen }: TypeProps) =>
 
         <div className="flex w-full flex-col overflow-hidden">
           <span className="flex items-center justify-between">
-            <span className="truncate text-xs font-bold text-[#3c72c4] sm:-mt-1 sm:text-sm">
+            <span className="truncate text-xs text-[#4077c9] sm:-mt-1 sm:text-sm">
               {conversation.secondParty.name}
             </span>
             {isOnLine && (

@@ -3,43 +3,43 @@ import { FcMusic } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { updateThisEntity } from "../../../context/StateManeger";
 import { useAppDispatch } from "../../../context/Hooks";
-import { TypeMusicNotify } from "../../../types/notificationTypes";
+import { IMusicNotify } from "../../../types/notificationTypes";
 
-type PropType = Omit<TypeMusicNotify, "_id" | "isRead" | "type">;
+type IProps = Omit<IMusicNotify, "_id" | "isRead" | "type">;
 
-const BuyMusicNotify = ({ musicTitle, createdAt, price, musicId }: PropType) => {
+const BuyMusicNotify = ({ musicTitle, createdAt, price, musicId }: IProps) => {
   const dispatch = useAppDispatch();
   const date = formateDate(createdAt);
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 xs:gap-1 bg-[#1010308e] rounded-md p-2 xs:p-1 border border-gray-700 ">
-      <div className="flex gap-2 w-full">
-        <span className="w-8 h-6 rounded-lg bg-[#7aec2e25] flex items-center justify-center">
-          <FcMusic className=" text-xl" />
+    <div className="xs:gap-1 xs:p-1 flex w-full flex-col items-center gap-2 rounded-md border border-gray-700 bg-[#1010308e] p-2">
+      <div className="flex w-full gap-2">
+        <span className="flex h-6 w-8 items-center justify-center rounded-lg bg-[#7aec2e25]">
+          <FcMusic className="text-xl" />
         </span>
         <h1 className="text-[#d67d54]">PURSHASING</h1>
-        <span className="text-xs ml-auto text-[#9b9090] pr-1">{date}</span>
+        <span className="ml-auto pr-1 text-xs text-[#9b9090]">{date}</span>
       </div>
-      <p className="text-sm w-full text-[#bbc6d1] sm:text-xs">
+      <p className="w-full text-sm text-[#bbc6d1] sm:text-xs">
         congratulation! For Buying
         <Link
           to={`/musics?to=${musicId}`}
           onClick={() => {
             dispatch(updateThisEntity({ entity: "openNotification", value: false }));
           }}
-          className="text-sm text-[#696cf3] mx-1 underline sm:text-xs"
+          className="mx-1 text-sm text-[#696cf3] underline sm:text-xs"
         >
           {musicTitle}
         </Link>
         For
-        <span className="text-sm text-[#696cf3] mx-1 sm:text-xs">{price}</span> points
+        <span className="mx-1 text-sm text-[#696cf3] sm:text-xs">{price}</span> points
       </p>
       <Link
         to={`/myprofile?to=${musicId}`}
         onClick={() => {
           dispatch(updateThisEntity({ entity: "openNotification", value: false }));
         }}
-        className="text-sm bg-[#414a77ee] w-[100px] py-1 xs:py-[3px] rounded-md border border-gray-700 ml-auto text-center underline text-[#eee]"
+        className="xs:py-[3px] ml-auto w-[100px] rounded-md border border-gray-700 bg-[#414a77ee] py-1 text-center text-sm text-[#eee] underline"
       >
         see that
       </Link>

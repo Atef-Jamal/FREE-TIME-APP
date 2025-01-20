@@ -14,7 +14,7 @@ const PublicChatMobile = () => {
   return (
     <div
       style={{
-        height: hiddenLiveStats ? `calc(100dvh - 118px)` : `calc(100dvh - 158px)`,
+        height: hiddenLiveStats ? `calc(100dvh - 115px)` : `calc(100dvh - 155px)`,
       }}
       className={"bg-[#202233] lg:hidden"}
     >

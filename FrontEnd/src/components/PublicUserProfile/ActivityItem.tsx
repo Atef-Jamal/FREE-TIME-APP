@@ -1,5 +1,6 @@
 import { formateDate } from "../../utils/common";
-interface TypeProps {
+
+interface IProps {
   index: number;
   message: string;
   time: Date;
@@ -7,25 +8,26 @@ interface TypeProps {
   price?: number;
   icon: React.ReactNode;
 }
-const ActivityItem = ({ message, prize, price, index, time, icon }: TypeProps) => {
+
+const ActivityItem = ({ message, prize, price, index, time, icon }: IProps) => {
   const date = formateDate(time);
   return (
     <div
       className={`${
         index % 2 === 0 ? "bg-[#2d4c705d]" : ""
-      } flex items-center gap-1 rounded-md  h-[70px] sm:h-[60px] overflow-hidden`}
+      } flex h-[70px] items-center gap-1 overflow-hidden rounded-md sm:h-[60px]`}
     >
-      <div className="flex items-center justify-center bg-[#0d0f2bc9]  rounded-sm px-3 h-full">{icon}</div>
+      <div className="flex h-full items-center justify-center rounded-sm bg-[#0d0f2bc9] px-3">{icon}</div>
 
-      <p className="flex-1 text-sm h-full flex items-center whitespace-nowrap overflow-scroll scrollbar-none  text-[#9fadddee] px-2 xs:px-0">
+      <p className="xs:px-0 flex h-full flex-1 items-center overflow-scroll whitespace-nowrap px-2 text-sm text-[#9fadddee] scrollbar-none">
         {message}
       </p>
 
-      <div className="text-sm xs:text-xs  h-full flex items-center justify-center px-8 xs:px-2  text-[#9fadddee]">
+      <div className="xs:text-xs xs:px-2 flex h-full items-center justify-center px-8 text-sm text-[#9fadddee]">
         {date}
       </div>
-      <div className="text-xs  font-[600] h-full flex items-center justify-center  text-[#9fadddee] xs:p-1 p-2">
-        <span className="h-[40px] w-[40px] flex items-center justify-center rounded-md bg-[#7fff294f] border">
+      <div className="xs:p-1 flex h-full items-center justify-center p-2 text-xs font-[600] text-[#9fadddee]">
+        <span className="flex h-[40px] w-[40px] items-center justify-center rounded-md border bg-[#7fff294f]">
           {price ? "-" : ""}
           {prize || price}
         </span>

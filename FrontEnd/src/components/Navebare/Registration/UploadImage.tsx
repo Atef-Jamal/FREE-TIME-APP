@@ -1,17 +1,17 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import UploadIcon from "../../../assets/images/upload-icon.png";
-import { TypeFormData } from "../../../types/othersTypes";
+import { IFormData } from "../../../types/othersTypes";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../firebase";
 import { useAppDispatch } from "../../../context/Hooks";
 import { showPopup } from "../../../context/StateManeger";
 
-interface TypeProps {
-  setFormData: React.Dispatch<SetStateAction<TypeFormData>>;
+interface IProps {
+  setFormData: React.Dispatch<SetStateAction<IFormData>>;
   setImageIsUploading: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
+const UploadImage = ({ setFormData, setImageIsUploading }: IProps) => {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [percentage, setPercentage] = useState(0);
@@ -42,7 +42,7 @@ const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
             showPopup({
               type: "ERROR_GENERAL",
               message: "Can't upload Image, May be its bigger than 5 MB",
-            })
+            }),
           );
         },
         async () => {
@@ -53,7 +53,7 @@ const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
           }));
           setPercentage(0);
           setImageIsUploading(false);
-        }
+        },
       );
     }
   };
@@ -68,17 +68,17 @@ const UploadImage = ({ setFormData, setImageIsUploading }: TypeProps) => {
   }, [image]);
 
   return (
-    <div onClick={handleClick} className="relative w-[150px] h-[150px] lg:w-[100px] lg:h-[100px]">
+    <div onClick={handleClick} className="relative h-[150px] w-[150px] lg:h-[100px] lg:w-[100px]">
       {percentage !== 0 && (
-        <div className="absolute w-full top-0 left-0 h-2 bg-white ">
-          <div style={{ width: percentage }} className="bg-red-800 h-[95%] border-y border-l"></div>
+        <div className="absolute left-0 top-0 h-2 w-full bg-white">
+          <div style={{ width: percentage }} className="h-[95%] border-y border-l bg-red-800"></div>
         </div>
       )}
-      <input ref={inputRef} type="file" className="w-full h-full hidden" onChange={handleChange} />
+      <input ref={inputRef} type="file" className="hidden h-full w-full" onChange={handleChange} />
       <img
         src={imagePreview || UploadIcon}
         alt=""
-        className={`object-fill w-full h-full ${imagePreview && "border"}`}
+        className={`h-full w-full object-fill ${imagePreview && "border"}`}
       />
     </div>
   );

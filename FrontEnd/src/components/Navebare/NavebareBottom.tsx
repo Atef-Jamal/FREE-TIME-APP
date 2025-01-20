@@ -9,14 +9,16 @@ import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { useListenToSocketEvents } from "../../hooks";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
+import { FaMusic } from "react-icons/fa6";
 
-interface TypeProps {
+interface IProps {
   setOpenSidbareMobile: Dispatch<SetStateAction<boolean>>;
   openSidbareMobile: boolean;
 }
 
-const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: TypeProps) => {
+const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: IProps) => {
   const publicMsgRedPoint = useAppSelector((state) => state.stateManeger.publicMsgRedPoint);
+  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
@@ -53,6 +55,11 @@ const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: TypeProps) 
         {!openSidbareMobile && <FaList className="text-xl" onClick={handleToggleMobileSidbare} />}
         {privateMsgRedPoint && (
           <span className="absolute left-[30%] top-[10%] h-3 w-3 rounded-full bg-[#f82929]"></span>
+        )}
+        {openMusicModal && (
+          <span className="absolute right-[25%] top-1 animate-pulse">
+            <FaMusic className="text-sm" />
+          </span>
         )}
       </li>
 

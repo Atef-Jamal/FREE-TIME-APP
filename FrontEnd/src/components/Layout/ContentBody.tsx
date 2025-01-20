@@ -8,30 +8,30 @@ import Footer from "../Footer/Footer";
 
 const DisktopChat = lazy(() => import("../Chats/PublicChat/DisktopChat/DisktopChat"));
 
-interface TypeProps {
+interface IProps {
   openSidbareMobile: boolean;
   handleCloseMobileSidebare: (open: boolean) => void;
 }
 
-const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: TypeProps) => {
+const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IProps) => {
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
-  const resizeSidebare = useAppSelector((state) => state.stateManeger.resizeSidebare);
+  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
 
   const sidebarHeigh = smallScreen ? `calc(100vh - 115px)` : `calc(100vh - 55px)`;
 
   const sidebarWidth =
-    !smallScreen && resizeSidebare ? "65px" : !smallScreen && !resizeSidebare ? "250px" : "100%";
+    !smallScreen && sidebarCollapsed ? "65px" : !smallScreen && !sidebarCollapsed ? "250px" : "100%";
 
   const contentWidth =
-    !smallScreen && resizeSidebare
+    !smallScreen && sidebarCollapsed
       ? `calc(100% - 65px)`
-      : !smallScreen && !resizeSidebare
+      : !smallScreen && !sidebarCollapsed
         ? `calc(100% - 250px)`
         : "100%";
 
   const sidebarClassName = cn(
-    "fixed top-[55px] z-[5] flex -translate-x-[100%] flex-col overflow-auto border-r border-r-gray-500 bg-[#0a0202bb] scrollbar-thin lg:sticky lg:translate-x-0 lg:transition-all",
+    "fixed top-[55px] z-[5] flex -translate-x-[100%] flex-col overflow-auto  bg-[#0a0202bb] scrollbar-thin lg:sticky lg:translate-x-0 lg:transition-all",
     openSidbareMobile && "translate-x-[0%]",
   );
 
@@ -48,7 +48,7 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: Type
       >
         {!hiddenLiveStats && <Suspense children={<LiveStats />} />}
         <div
-          style={{ minHeight: smallScreen ? `calc(100dvh - 158px)` : `calc(100dvh - 102px)` }}
+          style={{ minHeight: smallScreen ? `calc(100dvh - 155px)` : `calc(100dvh - 102px)` }}
           className="flex-1"
         >
           <Outlet />

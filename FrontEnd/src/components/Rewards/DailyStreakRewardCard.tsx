@@ -8,7 +8,7 @@ import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
 import { useTranslation } from "react-i18next";
 
-interface TypeProps {
+interface IProps {
   dayInfo: {
     day: number;
     availableAt: string;
@@ -19,7 +19,7 @@ interface TypeProps {
   handleUpdateNextTimerDay: () => void;
 }
 
-const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateNextTimerDay }: TypeProps) => {
+const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateNextTimerDay }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const [isLoading, setIsLoading] = useState(false);

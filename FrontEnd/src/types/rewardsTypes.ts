@@ -1,4 +1,4 @@
-export interface TypeBounusCode {
+export interface IBounusCode {
   _id: string;
   code: string;
   prize: number;
@@ -7,8 +7,9 @@ export interface TypeBounusCode {
   updatedAt: Date;
 }
 
-export interface TypeDailyReward {
+export interface IDailyReward {
   day: number;
-  isCollected: boolean;
+  availableAt: string;
   reward: number;
+  isCollected: boolean;
 }

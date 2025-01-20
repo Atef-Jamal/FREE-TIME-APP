@@ -9,14 +9,14 @@ import { dollarInHand } from "../assets";
 import Spinner from "../components/Others/Spinner";
 import Ladder from "../components/Rewards/Ladder";
 import DailyReward from "../components/Rewards/DailyReward";
-import { TypeBounusCode } from "../types/rewardsTypes";
+import { IBounusCode } from "../types/rewardsTypes";
 import { useScrollToElement } from "../hooks";
 import { useTranslation } from "react-i18next";
 
 const Rewards = () => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const [loading, setLoading] = useState<boolean>(false);
-  const [bonusCode, setBonusCode] = useState<TypeBounusCode | null>(null);
+  const [bonusCode, setBonusCode] = useState<IBounusCode | null>(null);
   const { t } = useTranslation("rewards");
   const dispatch = useAppDispatch();
 

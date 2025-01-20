@@ -2,26 +2,26 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { makeRequest } from ".";
 import { auth } from "../firebase";
 import { showPopup } from "../context/StateManeger";
-import { TypeDispatch, TypeLoginProps, TypeRegisterProps } from "../types/reduxTypes";
+import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
 
-export const register = async ({ formData, dispatch, referrerUser }: TypeRegisterProps) => {
+export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {
   dispatch(
     showPopup({
       message: "Registering....",
       type: "LOADING",
-    })
+    }),
   );
   const query = referrerUser ? `?referrerUser=${referrerUser}` : "";
   const response = await makeRequest.post(`api/auth/register${query}`, formData);
   return response;
 };
 
-export const login = async ({ formData, dispatch }: TypeLoginProps) => {
+export const login = async ({ formData, dispatch }: ILoginProps) => {
   dispatch(
     showPopup({
       message: "Logging In....",
       type: "LOADING",
-    })
+    }),
   );
   const { email, password } = formData;
   const response = await makeRequest.post(`api/auth/login`, {
@@ -31,14 +31,14 @@ export const login = async ({ formData, dispatch }: TypeLoginProps) => {
   return response;
 };
 
-export const signInWithGoogle = async ({ dispatch }: { dispatch: TypeDispatch }) => {
+export const signInWithGoogle = async ({ dispatch }: { dispatch: IDispatch }) => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   dispatch(
     showPopup({
       message: "signing in....",
       type: "LOADING",
-    })
+    }),
   );
   const loginUser = await makeRequest.post(`api/auth/login-with-google`, {
     name: result.user.displayName,

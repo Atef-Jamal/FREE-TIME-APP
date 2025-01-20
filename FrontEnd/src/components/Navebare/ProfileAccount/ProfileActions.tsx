@@ -10,7 +10,7 @@ import ApplyCoupon from "../../Others/ApplyCoupon";
 import UserImage from "../../Others/UserImage";
 import ProfileMenu from "./ProfileMenu";
 import NotificationMenu from "../Notifications/NotificationMenu";
-import { TypeNotifications } from "../../../types/notificationTypes";
+import { INotifications } from "../../../types/notificationTypes";
 import { useListenToSocketEvents } from "../../../hooks";
 import { FaPlus } from "react-icons/fa6";
 
@@ -18,7 +18,7 @@ const ProfileActions = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const openNotification = useAppSelector((state) => state.stateManeger.openNotification);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
-  const [notifications, setNotifications] = useState<TypeNotifications[]>([]);
+  const [notifications, setNotifications] = useState<INotifications[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ const ProfileActions = () => {
 
   const numUnReaded = notifications.filter((element) => element.isRead === false).length;
 
-  const handleAddNewNotification = (data: TypeNotifications) => {
+  const handleAddNewNotification = (data: INotifications) => {
     setNotifications((prev) => {
       const exists = prev.find((notify) => notify._id === data._id);
       if (exists) {
@@ -98,7 +98,7 @@ const ProfileActions = () => {
         </span>
         <BsArrowDown className="text-sm sm:text-base" />
         {openProfileMenu && (
-          <div className="absolute left-0 top-[105%] z-[100] w-[210px] rounded-lg bg-[#32324c] sm:w-[280px]">
+          <div className="absolute left-0 top-[105%] z-[100] w-[205px] rounded-lg bg-[#32324c] sm:w-[270px]">
             <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
           </div>
         )}

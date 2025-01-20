@@ -1,6 +1,6 @@
 import "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { User } from "./userTypes";
+import { IUser } from "./userTypes";
 
 declare module "@tanstack/react-query" {
   interface Register {
@@ -8,7 +8,7 @@ declare module "@tanstack/react-query" {
   }
 }
 
-export interface TypeFormData {
+export interface IFormData {
   name: string;
   email: string;
   password: string;
@@ -16,7 +16,7 @@ export interface TypeFormData {
   profilePicture: string;
 }
 
-export interface TypeSearchItem {
+export interface ISearchItem {
   _id: string;
   title: string;
   link: string;
@@ -24,28 +24,28 @@ export interface TypeSearchItem {
   image: string;
 }
 
-export interface TypeSearchResults {
-  features: TypeSearchItem[];
-  users: TypeSearchItem[];
-  apps: TypeSearchItem[];
-  frames: TypeSearchItem[];
-  musics: TypeSearchItem[];
+export interface ISearchResults {
+  features: ISearchItem[];
+  users: ISearchItem[];
+  apps: ISearchItem[];
+  frames: ISearchItem[];
+  musics: ISearchItem[];
 }
 
-export interface TypeConversationSocketData {
+export interface IConversationReadedSocketData {
   reciever: string;
   sender: string;
 }
 
-export interface TypeTestimonial {
+export interface ITestimonial {
   _id: string;
-  user: User;
+  user: IUser;
   content: string;
   stars: number;
   createdAt: Date;
 }
 
-export interface TypeMusicDetail {
+export interface IMusicDetail {
   id: number;
   title: string;
   artist: { name: string };

@@ -8,12 +8,12 @@ import { io } from "../app";
 import AppsReview from "../models/appsReview";
 import { onLineUsers } from "../socketIo/socketIo";
 
-type TypeFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
-type TypeFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
+type IFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
+type IFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
 
 export const getAllTasks = async (req: Request, res: Response) => {
-  const filterByPopularity = (req.query.filterByPopularity as TypeFilterByPopularity) || "ALL";
-  const filterByDevice = (req.query.filterByDevice as TypeFilterByDevice) || "ALL";
+  const filterByPopularity = (req.query.filterByPopularity as IFilterByPopularity) || "ALL";
+  const filterByDevice = (req.query.filterByDevice as IFilterByDevice) || "ALL";
   const pageParam = parseInt(req.query.pageParam as string) || 1;
   const limitedPerPage = parseInt(req.query.limitedPerPage as string) || 20;
   const skip = (pageParam - 1) * limitedPerPage;
@@ -23,7 +23,7 @@ export const getAllTasks = async (req: Request, res: Response) => {
       completedBy?: any;
       prize?: any;
       rating?: any;
-      devices: TypeFilterByDevice;
+      devices: IFilterByDevice;
     } = {
       devices: filterByDevice,
     };

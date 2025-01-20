@@ -55,16 +55,16 @@ const PrivateChat = () => {
   const height = {
     height: hiddenLiveStats
       ? smallScreen
-        ? `calc(100dvh - 118px)`
+        ? `calc(100dvh - 115px)`
         : "calc(100dvh - 55px)"
       : smallScreen
-        ? `calc(100dvh - 158px)`
+        ? `calc(100dvh - 155px)`
         : "calc(100dvh - 102px)",
   };
 
   return (
     <div style={height} className="bg-[#202338]">
-      <div className="relative mx-auto max-w-[1400px] overflow-hidden 2xl:flex 2xl:gap-x-4">
+      <div className="relative mx-auto h-full max-w-[1400px] overflow-hidden 2xl:flex 2xl:gap-x-4">
         <div
           className={cn(
             "absolute left-0 top-0 z-[1] h-full w-[80%] max-w-[450px] translate-x-[0%] transition-all 2xl:static",

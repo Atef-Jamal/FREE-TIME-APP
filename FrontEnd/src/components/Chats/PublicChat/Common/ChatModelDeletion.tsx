@@ -5,16 +5,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { showPopup } from "../../../../context/StateManeger";
 import { handleApiError } from "../../../../utils/common";
-import { TypeCashedPublicChat } from "../../../../types/publicChatTypes";
+import { ICashedPublicChat } from "../../../../types/publicChatTypes";
 import { v4 as uuidV4 } from "uuid";
 
-interface TypeProps {
+interface IProps {
   messageToDelete: string;
   setMessageToDelete: Dispatch<SetStateAction<string | null>>;
   height: number | undefined;
 }
 
-export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height }: TypeProps) => {
+export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height }: IProps) => {
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -25,7 +25,7 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
       socket?.emit("interact-with-public-message", deletedMessage);
       queryClient.setQueryData(
         ["public-chat-messages"],
-        (previous: TypeCashedPublicChat): TypeCashedPublicChat | undefined => {
+        (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
           if (!previous) return;
           return {
             ...previous,
@@ -41,7 +41,7 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
               };
             }),
           };
-        }
+        },
       );
     },
     onError: (error) => {
@@ -49,7 +49,7 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
     onSettled: async () => {
@@ -63,13 +63,13 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
       style={{
         height,
       }}
-      className="absolute w-full top-0 z-[1] bg-[#03020ad2]"
+      className="absolute top-0 z-[1] w-full bg-[#03020ad2]"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="sticky top-[35%] border border-[#645252] bg-[#242222] rounded-lg mx-2 p-4"
+        className="sticky top-[35%] mx-2 rounded-lg border border-[#645252] bg-[#242222] p-4"
       >
-        <p className="text-sm text-[#87abc9] font-bold text-center mb-6">
+        <p className="mb-6 text-center text-sm font-bold text-[#87abc9]">
           Are your sure to delete your message ?
         </p>
 
@@ -79,14 +79,14 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
             onClick={() => {
               mutation.mutate(messageToDelete);
             }}
-            className="bg-[#2d773f] rounded-lg py-1 px-8"
+            className="rounded-lg bg-[#2d773f] px-8 py-1"
           >
-            {mutation.status === "pending" ? <Spinner className="w-5 h-5" /> : "Yes"}
+            {mutation.status === "pending" ? <Spinner className="h-5 w-5" /> : "Yes"}
           </button>
           <button
             onClick={() => setMessageToDelete(null)}
             disabled={mutation.status === "pending"}
-            className="bg-[#0f0e29] rounded-lg py-1 px-9"
+            className="rounded-lg bg-[#0f0e29] px-9 py-1"
           >
             No
           </button>

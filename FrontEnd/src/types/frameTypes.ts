@@ -1,4 +1,4 @@
-export interface TypeFrame {
+export interface IFrame {
   _id: string;
   title: string;
   image: string;

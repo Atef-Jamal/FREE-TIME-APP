@@ -2,18 +2,13 @@ import { Link, useLocation } from "react-router-dom";
 import { updateThisEntity } from "../../../context/StateManeger";
 import { formateDate } from "../../../utils/common";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
-import { TypeInteractWithMessageNotify } from "../../../types/notificationTypes";
+import { IInteractWithMessageNotify } from "../../../types/notificationTypes";
 import { FcLike } from "react-icons/fc";
 import { AiTwotoneDislike, AiTwotoneLike } from "react-icons/ai";
 
-type PropType = Omit<TypeInteractWithMessageNotify, "_id" | "type" | "isRead">;
+type IProps = Omit<IInteractWithMessageNotify, "_id" | "type" | "isRead">;
 
-const MessageReactionNotify = ({
-  interactedUser,
-  typeOfInteraction,
-  messageLocation,
-  createdAt,
-}: PropType) => {
+const MessageReactionNotify = ({ interactedUser, typeOfInteraction, messageLocation, createdAt }: IProps) => {
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const dispatch = useAppDispatch();

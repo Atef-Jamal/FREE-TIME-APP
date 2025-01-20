@@ -4,19 +4,15 @@ import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { showPopup } from "../../../context/StateManeger";
 import { sendPrivateChatMessage } from "../../../utils";
 import { handleApiError } from "../../../utils/common";
-import { TypeCashedConversations, TypePrivateMessage } from "../../../types/privateChatTypes";
+import { ICashedConversation, ICashedConversations } from "../../../types/privateChatTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "../../../types/userTypes";
 import { v4 as uuId } from "uuid";
 
-interface TypeProps {
+interface IProps {
   id: string;
 }
-export interface TypeCashedChat {
-  secondUser: User;
-  messages: TypePrivateMessage[];
-}
-const SendMessagePrivateChat = ({ id }: TypeProps) => {
+
+const SendMessagePrivateChat = ({ id }: IProps) => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const socket = useAppSelector((state) => state.stateManeger.socket);
   const [message, setMessage] = useState<string>("");
@@ -48,7 +44,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
         isSended: "PENDING",
       };
 
-      queryClient.setQueryData(["conversation-messages", id], (previous: TypeCashedChat) => {
+      queryClient.setQueryData(["conversation-messages", id], (previous: ICashedConversation) => {
         return {
           ...previous,
           messages: [...previous.messages, optimisticMsg],
@@ -60,7 +56,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
       return { uniqeIdForRollback };
     },
     onSuccess: (data, _, context) => {
-      queryClient.setQueryData(["conversation-messages", id], (old: TypeCashedChat) => {
+      queryClient.setQueryData(["conversation-messages", id], (old: ICashedConversation) => {
         if (old) {
           return {
             ...old,
@@ -74,30 +70,27 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
           };
         }
       });
-      queryClient.setQueryData(
-        ["conversations"],
-        (previous: TypeCashedConversations): TypeCashedConversations => {
-          return {
-            ...previous,
-            pages: previous.pages.map((page) => {
-              return {
-                ...page,
-                conversations: page.conversations.map((conv) => {
-                  if (conv.secondParty._id === id) {
-                    return { ...conv, lastMessage: data };
-                  }
-                  return conv;
-                }),
-              };
-            }),
-          };
-        },
-      );
+      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations.map((conv) => {
+                if (conv.secondParty._id === id) {
+                  return { ...conv, lastMessage: data };
+                }
+                return conv;
+              }),
+            };
+          }),
+        };
+      });
       socket?.emit("private-message", { to: id, data: data });
     },
     onError: (error, _, context) => {
       if (context)
-        queryClient.setQueryData(["conversation-messages", id], (old: TypeCashedChat) => {
+        queryClient.setQueryData(["conversation-messages", id], (old: ICashedConversation) => {
           if (old) {
             return {
               ...old,
@@ -141,7 +134,7 @@ const SendMessagePrivateChat = ({ id }: TypeProps) => {
         onChange={handleChange}
         value={message}
         rows={1}
-        className="max-h-[300px] min-h-[32px] flex-1 resize-none overflow-scroll rounded-sm bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm"
+        className="max-h-[250px] min-h-[32px] flex-1 resize-none overflow-scroll rounded-sm bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm"
         placeholder="Enter a message"
       />
       <button

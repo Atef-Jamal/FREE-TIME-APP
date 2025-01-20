@@ -1,13 +1,13 @@
 import { IoStar } from "react-icons/io5";
 
-interface TypeOfferPartener {
+interface IPartenerCard {
   image: string;
 }
 
-const ParnterCard = ({ image }: TypeOfferPartener) => {
+const ParnterCard = ({ image }: IPartenerCard) => {
   return (
-    <div className="w-[150px] flex flex-col gap-2 items-center justify-center bg-[#40364d85] rounded-md p-2">
-      <img alt={""} src={image} className="w-full h-[50px] object-contain object-center" />
+    <div className="flex w-[150px] flex-col items-center justify-center gap-2 rounded-md bg-[#40364d85] p-2">
+      <img alt={""} src={image} className="h-[50px] w-full object-contain object-center" />
       <div className="flex items-center justify-center">
         <IoStar />
         <IoStar />

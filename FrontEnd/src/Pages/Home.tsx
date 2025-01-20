@@ -14,13 +14,14 @@ import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TypeTestimonial } from "../types/othersTypes";
+import { ITestimonial } from "../types/othersTypes";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../assets";
 import { FaStar } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
 import Input from "../components/Navebare/Registration/Input";
 import { login, signInWithGoogle } from "../utils/auth";
+import signuporfree from "../assets/images/signuporfree.png";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -96,7 +97,7 @@ const Home = () => {
     },
     onSuccess: (newTestimonial) => {
       setComment("");
-      queryClient.setQueryData(["testimonials"], (old: TypeTestimonial[]) => {
+      queryClient.setQueryData(["testimonials"], (old: ITestimonial[]) => {
         return [newTestimonial, ...old];
       });
     },
@@ -161,13 +162,15 @@ const Home = () => {
           </div>
 
           {!token && (
-            <div className="flex w-full flex-col gap-2 rounded-md border border-gray-600 bg-[#33334c] p-2 md:w-[48%] md:p-4">
-              <div className="mb-4 text-center sm:rounded-md sm:bg-[#18193fb4] sm:py-3">
-                <h1 className="mb-2 text-2xl font-bold tracking-wider text-white">{t("Sign Up For Free")}</h1>
+            <div className="flex w-full flex-col gap-y-2 rounded-md border border-gray-600 bg-[#33334c] p-2 md:w-[48%] md:p-4">
+              <div className="rounded-md bg-[#18193fb4] py-3 text-center">
+                <h1 className="text-2xl font-bold tracking-wider text-white">{t("Sign Up For Free")}</h1>
                 <p className="text-sm text-[#a6ada0]">{t("and win up to $250 in the free time")}</p>
               </div>
-              <div className="sing-up-free mb-4 h-12 rounded-md bg-blue-900"></div>
-              <div className="flex flex-col items-center gap-1">
+              <div className="h-16 overflow-hidden rounded-md">
+                <img src={signuporfree} alt="" className="h-full w-full object-fill object-center" />
+              </div>
+              <div className="flex flex-col items-center gap-y-2">
                 <button
                   onClick={handleSignInWithGoogle}
                   className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs"
@@ -179,12 +182,12 @@ const Home = () => {
                   <VscGithub />
                 </button>
               </div>
-              <div className="mx-auto my-1 flex w-[90%] items-center gap-2">
-                <div className="h-[1px] w-[45%] bg-gradient-to-l from-blue-300 to-[#2b2350]"></div>
+              <div className="flex items-center gap-x-2">
+                <div className="h-[2px] flex-1 bg-gradient-to-l from-blue-300 to-[#322f44]"></div>
                 <span>{t("OR")}</span>
-                <div className="h-[1px] w-[45%] bg-gradient-to-r from-blue-300 to-[#342872]"></div>
+                <div className="h-[2px] flex-1 bg-gradient-to-r from-blue-300 to-[#322f44]"></div>
               </div>
-              <form className="flex flex-col gap-2">
+              <form className="flex flex-col gap-y-2">
                 <Input
                   label={t("Email")}
                   id={"hom-email"}
@@ -203,11 +206,11 @@ const Home = () => {
                   type={"password"}
                   name={"password"}
                 />
-                <div className="mt-8 text-center sm:mt-4">
+                <div className="mt-4 text-center md:mt-6">
                   <button
                     type="submit"
                     onClick={handlaSignIn}
-                    className="w-[45%] rounded-md border-[0.2px] border-white bg-[#05BA6B] py-2 font-[600] text-black"
+                    className="w-full rounded-md border-[0.2px] border-white bg-[#05BA6B] py-2 font-[600] text-black"
                   >
                     {t("Sign In")}
                   </button>

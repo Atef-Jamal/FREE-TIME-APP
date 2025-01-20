@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { TypeInitialState, TypeMusicInfo, TypePopup } from "../types/reduxTypes";
-import { User } from "../types/userTypes";
+import { IInitialState, IMusicInfo, IToast } from "../types/reduxTypes";
+import { IUser } from "../types/userTypes";
 
-const initialState: TypeInitialState = {
+const initialState: IInitialState = {
   currentUserStatus: "pending",
   currentUser: null,
   openNotification: false,
@@ -15,7 +15,7 @@ const initialState: TypeInitialState = {
   isSignInMode: false,
   smallScreen: window.innerWidth < 1024,
   openSidebarMobile: false,
-  resizeSidebare: window.innerWidth < 1400 ? true : false,
+  sidebarCollapsed: window.innerWidth < 1400 ? true : false,
   hiddenLiveStats: false,
   openMusicModal: false,
   musicIsPlaying: false,
@@ -31,7 +31,7 @@ const initialState: TypeInitialState = {
   publicMsgRedPoint: false,
 };
 
-export interface TypeTogglActionPayload {
+interface ITogglActionPayload {
   entity:
     | "openNotification"
     | "isSignInMode"
@@ -39,13 +39,13 @@ export interface TypeTogglActionPayload {
     | "hiddenLiveStats"
     | "isChatOpen"
     | "openSidebarMobile"
-    | "resizeSidebare"
+    | "sidebarCollapsed"
     | "openMusicModal"
     | "musicIsPlaying";
   value: boolean;
 }
 
-interface TypeSidbareUnreadedMsgs {
+interface ISidbareUnreadedMsgs {
   type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ONE" | "REMOVE-ALL";
   userId?: string | string[];
 }
@@ -57,14 +57,14 @@ const StateManegerSlice = createSlice({
     updateCurrentUserStatus(state, action: PayloadAction<typeof state.currentUserStatus>) {
       state.currentUserStatus = action.payload;
     },
-    setCurrentUser(state, action: PayloadAction<User>) {
+    setCurrentUser(state, action: PayloadAction<IUser>) {
       state.currentUser = action.payload;
     },
-    updateThisEntity(state, action: PayloadAction<TypeTogglActionPayload>) {
+    updateThisEntity(state, action: PayloadAction<ITogglActionPayload>) {
       const { entity, value } = action.payload;
       state[entity] = value;
     },
-    showPopup(state, action: PayloadAction<TypePopup>) {
+    showPopup(state, action: PayloadAction<IToast>) {
       state.ToastNotify.message = action.payload.message;
       state.ToastNotify.type = action.payload.type;
     },
@@ -80,7 +80,7 @@ const StateManegerSlice = createSlice({
       state.ToastNotify.type = null;
       state.ToastNotify.message = null;
     },
-    handleAddMusic(state, action: PayloadAction<TypeMusicInfo>) {
+    handleAddMusic(state, action: PayloadAction<IMusicInfo>) {
       state.activeMusic.audio.src = action.payload.musicSrc;
       state.activeMusic.musicInfo = action.payload;
       state.activeMusic.audio.play();
@@ -109,7 +109,7 @@ const StateManegerSlice = createSlice({
     setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
       state.publicMsgRedPoint = action.payload;
     },
-    updateSidebarUnReadedMsgCount(state, action: PayloadAction<TypeSidbareUnreadedMsgs>) {
+    updateSidebarUnReadedMsgCount(state, action: PayloadAction<ISidbareUnreadedMsgs>) {
       const { type, userId } = action.payload;
       if (type === "ADD-ALL") {
         state.allUnReadedMesseges = userId as string[];

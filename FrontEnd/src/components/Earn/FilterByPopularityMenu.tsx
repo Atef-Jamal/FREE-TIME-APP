@@ -3,18 +3,18 @@ import { CgClose } from "react-icons/cg";
 import { FaHeart, FaStar } from "react-icons/fa6";
 import { SiFirewalla } from "react-icons/si";
 import { VscExpandAll } from "react-icons/vsc";
-import { TypeFilterByPopularity } from "../../types/earnTypes";
+import { IFilterByPopularity } from "../../types/earnTypes";
 import { useClickOutside } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
-interface TypeProps {
-  filterByPopularity: TypeFilterByPopularity;
+interface IProps {
+  filterByPopularity: IFilterByPopularity;
   handleCloseFilterByPopularityMenu: (open: boolean) => void;
-  activeFilterByPopularity: (item: TypeFilterByPopularity) => void;
+  activeFilterByPopularity: (item: IFilterByPopularity) => void;
 }
 
 const FilterByPopularityMenu = memo(
-  ({ filterByPopularity, handleCloseFilterByPopularityMenu, activeFilterByPopularity }: TypeProps) => {
+  ({ filterByPopularity, handleCloseFilterByPopularityMenu, activeFilterByPopularity }: IProps) => {
     const { t } = useTranslation("earn");
     const filterByPopularityRef = useRef<HTMLDivElement | null>(null);
 
