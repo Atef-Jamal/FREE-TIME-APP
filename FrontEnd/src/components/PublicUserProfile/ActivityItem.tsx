@@ -1,4 +1,4 @@
-import { formateDate } from "../../utils/common";
+import { cn, formateDate } from "../../utils/common";
 
 interface IProps {
   index: number;
@@ -13,23 +13,26 @@ const ActivityItem = ({ message, prize, price, index, time, icon }: IProps) => {
   const date = formateDate(time);
   return (
     <div
-      className={`${
-        index % 2 === 0 ? "bg-[#2d4c705d]" : ""
-      } flex h-[70px] items-center gap-1 overflow-hidden rounded-md sm:h-[60px]`}
+      className={cn(
+        "flex h-[45px] items-center gap-1 overflow-hidden rounded-md lg:h-[50px]",
+        index % 2 === 0 && "bg-[#2d4c705d]",
+      )}
     >
-      <div className="flex h-full items-center justify-center rounded-sm bg-[#0d0f2bc9] px-3">{icon}</div>
+      <div className="flex h-full items-center justify-center rounded-sm bg-[#0d0f2bc9] px-1 md:px-3">
+        {icon}
+      </div>
 
-      <p className="xs:px-0 flex h-full flex-1 items-center overflow-scroll whitespace-nowrap px-2 text-sm text-[#9fadddee] scrollbar-none">
+      <p className="flex h-full flex-1 items-center overflow-scroll whitespace-nowrap px-1 text-sm text-[#9fadddee] scrollbar-none md:px-2">
         {message}
       </p>
 
-      <div className="xs:text-xs xs:px-2 flex h-full items-center justify-center px-8 text-sm text-[#9fadddee]">
+      <div className="flex h-full items-center justify-center px-1 text-xs text-[#7e7f83ee] md:w-[10%]">
         {date}
       </div>
-      <div className="xs:p-1 flex h-full items-center justify-center p-2 text-xs font-[600] text-[#9fadddee]">
-        <span className="flex h-[40px] w-[40px] items-center justify-center rounded-md border bg-[#7fff294f]">
-          {price ? "-" : ""}
-          {prize || price}
+      <div className="flex h-full items-center justify-center p-1 text-xs font-[600] text-[#9fadddee] md:w-[10%] md:p-2">
+        <span className="flex h-[30px] w-[35px] items-center justify-center rounded-md border border-gray-400 bg-[#ff1f1f80] md:w-[45px]">
+          {price ? "- " : prize ? "+ " : ""}
+          {price ? price : prize}
         </span>
       </div>
     </div>

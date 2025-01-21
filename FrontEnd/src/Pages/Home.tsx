@@ -221,14 +221,28 @@ const Home = () => {
         </div>
 
         <div className="mx-auto grid grid-cols-4 gap-1 overflow-scroll scrollbar-none sm:gap-2">
-          <span className="border bg-[#F7931A] py-1 text-center text-xs font-bold sm:text-sm">Bitcoin</span>
-          <span className="border bg-[#3C3C3D] py-1 text-center text-xs font-bold sm:text-sm">Ethereum</span>
-          <span className="border bg-[#A6A9AA] py-1 text-center text-xs font-bold sm:text-sm">Litecoin</span>
-          <span className="border bg-[#00457C] py-1 text-center text-xs font-bold sm:text-sm">PayPal</span>
-          <span className="border bg-[#232F3E] py-1 text-center text-xs font-bold sm:text-sm">Amazon</span>
-          <span className="border bg-[#000000] py-1 text-center text-xs font-bold sm:text-sm">Steam</span>
-          <span className="border bg-[#000000] py-1 text-center text-xs font-bold sm:text-sm">Apple</span>
-          <span className="border bg-[#48AEE4] py-1 text-center text-xs font-bold sm:text-sm">
+          <span className="rounded-sm bg-[#f89723] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
+            Bitcoin
+          </span>
+          <span className="rounded-sm bg-[#35a596] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
+            Ethereum
+          </span>
+          <span className="rounded-sm bg-[#11fd30] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
+            Zalando
+          </span>
+          <span className="rounded-sm bg-[#2187c7] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
+            PayPal
+          </span>
+          <span className="rounded-sm bg-[#11171e] py-1 text-center text-xs font-bold sm:text-sm md:rounded-md">
+            Amazon
+          </span>
+          <span className="rounded-sm bg-[#bab4df] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
+            Steam
+          </span>
+          <span className="rounded-sm bg-[#b753c7] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
+            Apple
+          </span>
+          <span className="rounded-sm bg-[#ffffff] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
             Google Play
           </span>
         </div>

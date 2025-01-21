@@ -11,11 +11,13 @@ import {
   updateThisEntity,
 } from "../../context/StateManeger";
 import { MdClose } from "react-icons/md";
+import { cn } from "../../utils/common";
 
 const MusicPlayer = memo(() => {
   const [trackValue, setTrackValue] = useState(0);
   const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
   const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
+  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
   const dispatch = useAppDispatch();
 
   const formatTime = (timeInSeconds: number) => {
@@ -23,6 +25,11 @@ const MusicPlayer = memo(() => {
     const seconds = Math.floor(timeInSeconds % 60);
     const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     return formattedTime;
+  };
+
+  const handlePlayPauseMusic = () => {
+    if (musicIsPlaying) dispatch(handlePauseMusic());
+    if (!musicIsPlaying) dispatch(handlePlayMusic());
   };
 
   useEffect(() => {
@@ -47,15 +54,22 @@ const MusicPlayer = memo(() => {
   }, [activeMusic.audio, dispatch]);
 
   return (
-    <div className="flex h-20 items-center gap-x-3 bg-[#3d3e4b] px-1 lg:ml-4 lg:h-full lg:w-[300px]">
-      <span
-        className={`transition-all ${
-          musicIsPlaying ? "animate-spin" : ""
-        } h-10 w-10 rounded-full border-2 border-b-[#192461] border-l-[#ffae45] border-r-[#cef03a] border-t-[#222770]`}
+    <div className="flex h-20 items-center justify-center gap-x-3 rounded-md bg-[#3d3e4b] px-1">
+      <button
+        onClick={handlePlayPauseMusic}
+        className={cn(
+          "h-10 w-10 rounded-full border-2 border-b-[#192461] border-l-[#ffae45] border-r-[#cef03a] border-t-[#222770] transition-all",
+          musicIsPlaying && "animate-spin",
+        )}
       >
         <img src={activeMusic.musicInfo?.cover} alt="" className="h-full w-full rounded-full" />
-      </span>
-      <div className="flex h-full flex-1 flex-col justify-center gap-y-3 overflow-hidden lg:gap-y-[3px]">
+      </button>
+      <div
+        className={cn(
+          "flex h-full flex-1 flex-col justify-center gap-y-3 overflow-hidden",
+          sidebarCollapsed && "lg:hidden",
+        )}
+      >
         <div className="flex items-center justify-between">
           <span className="truncate text-xs text-[#abcdff]">
             {activeMusic.musicInfo?.title || "----"} | {activeMusic.musicInfo?.artist || "----"}
@@ -71,22 +85,16 @@ const MusicPlayer = memo(() => {
           </span>
         </div>
         <div className="flex items-center">
-          <span className="mr-5 lg:mr-10">
+          <button className="mr-5">
             <IoPlaySkipBackSharp size={13} />
-          </span>
-          {musicIsPlaying && (
-            <span className="mr-5 lg:mr-10" onClick={() => dispatch(handlePauseMusic())}>
-              <IoMdPause size={13} />
-            </span>
-          )}
-          {!musicIsPlaying && (
-            <span className="mr-5 lg:mr-10" onClick={() => dispatch(handlePlayMusic())}>
-              <IoMdPlay size={13} />
-            </span>
-          )}
-          <span className="">
+          </button>
+          <button className="mr-5" onClick={handlePlayPauseMusic}>
+            {musicIsPlaying && <IoMdPause size={13} />}
+            {!musicIsPlaying && <IoMdPlay size={13} />}
+          </button>
+          <button>
             <IoPlaySkipForward size={13} />
-          </span>
+          </button>
           {!!activeMusic.audio.duration && (
             <span className="ml-auto text-xs text-gray-300">{formatTime(activeMusic.audio.duration)}</span>
           )}

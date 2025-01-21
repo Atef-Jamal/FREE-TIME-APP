@@ -10,7 +10,7 @@ const RegisterButtons = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation("navbar");
   return (
-    <div className="flex h-10 items-center gap-x-1 sm:gap-x-2 lg:h-11">
+    <div className="flex h-full items-center gap-x-1 sm:gap-x-2">
       <button
         className="flex h-full items-center gap-x-3 rounded-md border border-gray-500 bg-[#3b3b7eef] px-6 text-sm font-bold tracking-wide text-white"
         onClick={() => {

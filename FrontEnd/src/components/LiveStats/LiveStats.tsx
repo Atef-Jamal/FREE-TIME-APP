@@ -1,4 +1,4 @@
-import { memo, Suspense, useEffect, useState } from "react";
+import { memo, Suspense, useEffect, useMemo, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { useAppSelector } from "../../context/Hooks";
@@ -63,6 +63,12 @@ const LiveStats = memo(() => {
     return () => clearTimeout(timeOut);
   }, [onlineUsers, queryClient]);
 
+  const memomizedUsersList = useMemo(() => {
+    return users?.map((user) => (
+      <LiveStatsItem key={user._id} user={user} userHieghestPoints={userHieghestPoints} />
+    ));
+  }, [users, userHieghestPoints]);
+
   return (
     <div
       className={
@@ -72,7 +78,7 @@ const LiveStats = memo(() => {
       <div className="sticky left-0 z-[1] flex h-full items-center justify-center bg-[#1a1a25] px-1">
         <div
           onClick={() => setOpenLangMenu(!openLangMenu)}
-          className="flex h-[31px] items-center gap-x-2 rounded-md bg-[#33334d] px-1 lg:h-[35px]"
+          className="flex h-[35px] items-center gap-x-2 rounded-md bg-[#33334d] px-1 lg:h-[38px]"
         >
           <MdLanguage />
           <IoIosArrowDown />
@@ -89,9 +95,7 @@ const LiveStats = memo(() => {
           </div>
         )}
 
-        {users?.map((user) => (
-          <LiveStatsItem key={user._id} user={user} userHieghestPoints={userHieghestPoints} />
-        ))}
+        {memomizedUsersList}
 
         {isFetchNextPageError && (
           <button className="h-[31px] text-nowrap rounded-sm px-4 text-sm text-red-400 lg:h-[38px] lg:text-base">

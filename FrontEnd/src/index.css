@@ -122,27 +122,6 @@ body {
   background-repeat: no-repeat;
 }
 
-.sign__up__bonus::before {
-  content: "";
-  position: absolute;
-  top: -5%;
-  left: -12%;
-  background-color: #222337;
-  height: 70px;
-  width: 80px;
-  rotate: 70deg;
-}
-.sign__up__bonus::after {
-  content: "";
-  position: absolute;
-  top: -5%;
-  right: -12%;
-  background-color: #222337;
-  height: 70px;
-  width: 80px;
-  rotate: -70deg;
-}
-
 .activeElement {
   border: 1px solid #ffffff;
   animation: activeElementAnimation 1100ms infinite linear;

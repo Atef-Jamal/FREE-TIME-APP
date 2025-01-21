@@ -1,4 +1,5 @@
 import { ISearchItem } from "../../types/othersTypes";
+import { cn } from "../../utils/common";
 
 interface IProps {
   searchElement: ISearchItem;
@@ -12,9 +13,10 @@ const ResultText = ({ searchElement, searchQuery }: IProps) => {
     return (
       <span
         key={i}
-        className={`${
-          isMatched ? "bg-[#3d9eee71] text-[#58e634]" : "text-[#afaaaa]"
-        } font-bold tracking-wider sm:text-sm`}
+        className={cn(
+          "text-sm font-bold tracking-wider",
+          isMatched ? "bg-[#3d9eee71] text-[#58e634]" : "text-[#afaaaa]",
+        )}
       >
         {slice}
       </span>

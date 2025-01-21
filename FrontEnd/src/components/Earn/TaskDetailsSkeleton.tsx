@@ -3,12 +3,12 @@ import Skeleton from "../Others/Skeleton";
 const AppDetailsSkeleton = () => {
   return (
     <>
-      <Skeleton className="w-[40%] rounded-md h-5 mb-4" />
-      <Skeleton className="w-full h-[300px] rounded-lg mb-4" />
-      <Skeleton className="w-full rounded-md h-4 mb-3" />
-      <Skeleton className="w-full rounded-md h-6 mb-3" />
-      <Skeleton className="w-full rounded-md h-4 mb-3" />
-      <Skeleton className="w-full rounded-md h-10 mb-3" />
+      <Skeleton className="mb-4 h-5 w-[40%]" />
+      <Skeleton className="mb-4 h-[300px] w-full rounded-lg" />
+      <Skeleton className="mb-3 h-4 w-full" />
+      <Skeleton className="mb-3 h-6 w-full" />
+      <Skeleton className="mb-3 h-4 w-full" />
+      <Skeleton className="mb-3 h-10 w-full" />
     </>
   );
 };

@@ -93,37 +93,37 @@ export const sidebareItems = [
 ];
 
 export const withdrawCash = [
-  { bgColor: "bg-[#2187c7]", image: paypalShopLogo },
-  { bgColor: "bg-[#f89723]", image: bitcoinShopLogo },
-  { bgColor: "bg-[#11171e]", image: amazonShopLogo },
-  { bgColor: "bg-[#b753c7]", image: appleShopLogo },
-  { bgColor: "bg-[#ffffff]", image: googleplayShopLogo },
-  { bgColor: "bg-[#2187c7]", image: fortniteShopLogo },
-  { bgColor: "bg-[#0b1015]", image: blizzardShopLogo },
-  { bgColor: "bg-[#ffffff]", image: netflixShopLogo },
+  { bgColor: "#2187c7", image: paypalShopLogo },
+  { bgColor: "#f89723", image: bitcoinShopLogo },
+  { bgColor: "#11171e", image: amazonShopLogo },
+  { bgColor: "#b753c7", image: appleShopLogo },
+  { bgColor: "#ffffff", image: googleplayShopLogo },
+  { bgColor: "#2187c7", image: fortniteShopLogo },
+  { bgColor: "#0b1015", image: blizzardShopLogo },
+  { bgColor: "#ffffff", image: netflixShopLogo },
 ];
 
 export const withdrawGiftCards = [
-  { bgColor: "bg-[#416d2d]", image: lolShopLogo },
-  { bgColor: "bg-[#ff000a]", image: nintendoShopLogo },
-  { bgColor: "bg-[#4042bb]", image: playstationShopLogo },
-  { bgColor: "bg-[#0b5555]", image: faucet },
-  { bgColor: "bg-[#2dab3d]", image: xboxliveShopLogo },
-  { bgColor: "bg-[#ff4655]", image: valorantShopBg },
-  { bgColor: "bg-[#11fd30]", image: zalandoShopLogo },
-  { bgColor: "bg-[#ffffff]", image: visaShopLogo },
-  { bgColor: "bg-[#691919]", image: doorDashShopLogo },
-  { bgColor: "bg-[#bab4df]", image: steamShopLogo },
-  { bgColor: "bg-[#640f59]", image: robloxShopLogo },
-  { bgColor: "bg-[#1601015d]", image: ubereatsShopLogo },
-  { bgColor: "bg-[#2ea57d]", image: justEatShopLogo },
+  { bgColor: "#416d2d", image: lolShopLogo },
+  { bgColor: "#ff000a", image: nintendoShopLogo },
+  { bgColor: "#4042bb", image: playstationShopLogo },
+  { bgColor: "#0b5555", image: faucet },
+  { bgColor: "#2dab3d", image: xboxliveShopLogo },
+  { bgColor: "#ff4655", image: valorantShopBg },
+  { bgColor: "#11fd30", image: zalandoShopLogo },
+  { bgColor: "#ffffff", image: visaShopLogo },
+  { bgColor: "#691919", image: doorDashShopLogo },
+  { bgColor: "#bab4df", image: steamShopLogo },
+  { bgColor: "#640f59", image: robloxShopLogo },
+  { bgColor: "#1601015d", image: ubereatsShopLogo },
+  { bgColor: "#2ea57d", image: justEatShopLogo },
 ];
 
 export const withdrawSkins = [
-  { bgColor: "bg-[#35a596]", image: ethereumShopLogo },
-  { bgColor: "bg-[#5d9926]", image: dogecoinShopLogo },
-  { bgColor: "bg-[#4042bb]", image: csgoShopLogo },
-  { bgColor: "bg-[#662b04]", image: achShopLogo },
+  { bgColor: "#35a596", image: ethereumShopLogo },
+  { bgColor: "#5d9926", image: dogecoinShopLogo },
+  { bgColor: "#4042bb", image: csgoShopLogo },
+  { bgColor: "#662b04", image: achShopLogo },
 ];
 
 export const arrayoffers = [

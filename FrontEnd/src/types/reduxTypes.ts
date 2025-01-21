@@ -20,7 +20,6 @@ export interface IMusicInfo {
 export interface IInitialState {
   currentUserStatus: "pending" | "authenticated" | "unauthenticated";
   currentUser: IUser | null;
-  openNotification: boolean;
   isChatOpen: boolean;
   isSignInMode: boolean;
   openSidebarMobile: boolean;

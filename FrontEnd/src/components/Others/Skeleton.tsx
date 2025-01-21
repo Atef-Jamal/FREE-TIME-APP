@@ -1,9 +1,9 @@
+import { cn } from "../../utils/common";
+
 const Skeleton = ({ className }: { className: string }) => {
   return (
     <div
-      className={`relative skeleton-box overflow-hidden bg-[#3f4055] animate-pulse ${
-        className || "rounded-md"
-      }`}
+      className={cn("skeleton-box relative animate-pulse overflow-hidden rounded-md bg-[#3f4055]", className)}
     ></div>
   );
 };

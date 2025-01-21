@@ -31,7 +31,7 @@ const Input = ({ label, id, name, type, value, placeholder, onChange }: IInput) 
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`w-full rounded-md bg-[#0d0d22b9] px-4 py-2 text-[#7295f7] outline-none placeholder:opacity-50 sm:text-sm`}
+          className={`w-full rounded-md bg-[#0d0d22b9] px-4 py-2 text-sm text-[#7295f7] outline-none placeholder:opacity-50`}
         />
         {name === "password" && (
           <button type="button" onClick={handleShowPassword} className="absolute right-2 top-[6px]">

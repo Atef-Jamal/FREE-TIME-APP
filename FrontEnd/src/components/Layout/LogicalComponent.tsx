@@ -12,9 +12,12 @@ import { fetchAllConversations, fetchPrivateChatMessages, fetchPublicChatMessage
 import io from "socket.io-client";
 import { debounce } from "../../utils/common";
 import RegisterationForm from "../Navebare/Registration/RegisterationForm";
+import { makeRequest } from "../../utils";
+import { handleApiError } from "../../utils/common";
+import { setCurrentUser, updateCurrentUserStatus } from "../../context/StateManeger";
 
-// implementing some Logics her better than inside the Layout component, this prevent entire Layout from Re-Rendering
-// unnecessarily
+// implementing some global Logics her better than inside the Layout component,
+// this prevent entire Layout from Re-Rendering unnecessarily
 
 const LogicalComponent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,6 +27,8 @@ const LogicalComponent = () => {
   const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+
+  const token = localStorage.getItem("token");
 
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
@@ -55,56 +60,65 @@ const LogicalComponent = () => {
     staleTime: 60 * 60 * 1000,
   });
 
-  const handleUpdateOnlineUsers = (data: string[]) => {
-    const filtered = data.filter((userId) => userId !== "undefined");
-    dispatch(setOnlineUsers(filtered));
-  };
+  const handleUpdateOnlineUsers = useCallback(
+    (data: string[]) => {
+      const filtered = data.filter((userId) => userId !== "undefined");
+      dispatch(setOnlineUsers(filtered));
+    },
+    [dispatch],
+  );
 
-  const handleRecieveNewPublicChatMessage = (newMessage: IPublicChatItem) => {
-    queryClient.setQueryData(["public-chat-messages"], (previous: ICashedPublicChat): ICashedPublicChat => {
-      return {
-        ...previous,
-        pages: previous.pages.map((page, index) => {
-          if (index === previous.pages.length - 1) {
+  const handleRecieveNewPublicChatMessage = useCallback(
+    (newMessage: IPublicChatItem) => {
+      queryClient.setQueryData(["public-chat-messages"], (previous: ICashedPublicChat): ICashedPublicChat => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page, index) => {
+            if (index === previous.pages.length - 1) {
+              return {
+                ...page,
+                messages: [...page.messages, newMessage],
+              };
+            }
+            return page;
+          }),
+        };
+      });
+    },
+    [queryClient],
+  );
+
+  const handleUserUpdated = useCallback(
+    (updatedUser: IUser) => {
+      queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
+      queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
+      queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
+      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
             return {
               ...page,
-              messages: [...page.messages, newMessage],
+              conversations: page.conversations.map((conv) => {
+                if (conv.secondParty._id === updatedUser._id) {
+                  return { ...conv, secondParty: updatedUser };
+                }
+                return conv;
+              }),
             };
-          }
-          return page;
-        }),
-      };
-    });
-  };
-
-  const handleUserUpdated = (updatedUser: IUser) => {
-    queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
-    queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
-    queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
-    queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            conversations: page.conversations.map((conv) => {
-              if (conv.secondParty._id === updatedUser._id) {
-                return { ...conv, secondParty: updatedUser };
-              }
-              return conv;
-            }),
-          };
-        }),
-      };
-    });
-    queryClient.setQueryData(
-      ["conversation-messages", updatedUser._id],
-      (previous: ICashedConversation): ICashedConversation | undefined => {
-        if (!previous) return;
-        return { ...previous, secondUser: updatedUser };
-      },
-    );
-  };
+          }),
+        };
+      });
+      queryClient.setQueryData(
+        ["conversation-messages", updatedUser._id],
+        (previous: ICashedConversation): ICashedConversation | undefined => {
+          if (!previous) return;
+          return { ...previous, secondUser: updatedUser };
+        },
+      );
+    },
+    [queryClient],
+  );
 
   const handleConversationReaded = useCallback(
     (data: IConversationReadedSocketData) => {
@@ -122,6 +136,29 @@ const LogicalComponent = () => {
     },
     [queryClient],
   );
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        if (token) {
+          const response = await makeRequest.get("api/auth/currentuser");
+          dispatch(setCurrentUser(response.data));
+          dispatch(updateCurrentUserStatus("authenticated"));
+        } else {
+          dispatch(updateCurrentUserStatus("unauthenticated"));
+        }
+      } catch (error) {
+        dispatch(updateCurrentUserStatus("unauthenticated"));
+        dispatch(
+          showPopup({
+            type: "ERROR_GENERAL",
+            message: handleApiError(error),
+          }),
+        );
+      }
+    };
+    getCurrentUser();
+  }, [token, dispatch]);
 
   useListenToSocketEvents({
     eventsToListen: ["online-users", "public-message", "user-updated", "conversation-readed"],
@@ -188,19 +225,11 @@ const LogicalComponent = () => {
     const handleNetworkOnline = () => {
       dispatch(showPopup({ message: "Back online", type: "SUCESS" }));
     };
+
     const handleNetworkOffline = () => {
       dispatch(showPopup({ message: "No internet connection", type: "ERROR_GENERAL" }));
     };
 
-    window.addEventListener("online", handleNetworkOnline);
-    window.addEventListener("offline", handleNetworkOffline);
-    return () => {
-      window.removeEventListener("online", handleNetworkOnline);
-      window.removeEventListener("offline", handleNetworkOffline);
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
         dispatch(updateThisEntity({ entity: "smallScreen", value: true }));
@@ -208,10 +237,19 @@ const LogicalComponent = () => {
         dispatch(updateThisEntity({ entity: "smallScreen", value: false }));
       }
     };
+
     const debouncedResize = debounce(handleResize, 100, timeOutRef);
+
+    window.addEventListener("online", handleNetworkOnline);
+    window.addEventListener("offline", handleNetworkOffline);
     window.addEventListener("resize", debouncedResize);
-    return () => window.removeEventListener("resize", debouncedResize);
+    return () => {
+      window.removeEventListener("online", handleNetworkOnline);
+      window.removeEventListener("offline", handleNetworkOffline);
+      window.removeEventListener("resize", debouncedResize);
+    };
   }, [dispatch]);
+
   return <></>;
 };
 

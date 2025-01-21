@@ -32,7 +32,7 @@ const PeopleList = ({ status, data, error, pageParam, setPageParam }: IProps) =>
       {status === "pending" && (
         <>
           {[...Array(20).keys()].map((item) => (
-            <Skeleton key={item} className="my-2 h-[40px] w-full rounded-md" />
+            <Skeleton key={item} className="my-2 h-[40px]" />
           ))}
         </>
       )}

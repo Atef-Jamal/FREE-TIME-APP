@@ -1,10 +1,10 @@
 import { lazy, Suspense, useCallback, useState } from "react";
 import { useAppSelector } from "../context/Hooks";
 import Model from "../components/Others/Model";
-import ToastNotify from "../components/Others/ToastNotify";
 import Navbare from "../components/Navebare/Navbare";
 import ContentBody from "../components/Layout/ContentBody";
 import LogicalComponent from "../components/Layout/LogicalComponent";
+import ToastNotify from "../components/Others/ToastNotify";
 
 const NavebareBottom = lazy(() => import("../components/Navebare/NavebareBottom"));
 

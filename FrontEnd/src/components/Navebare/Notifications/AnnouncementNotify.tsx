@@ -8,15 +8,15 @@ const AnnouncementNotify = ({ announceContent, createdAt }: IProps) => {
   const date = formateDate(createdAt);
 
   return (
-    <div className="xs:gap-1 xs:py-1 flex w-full flex-col items-center gap-2 rounded-md border border-gray-700 bg-[#1010308e] p-2">
-      <div className="flex w-full gap-2">
-        <span className="flex h-6 w-8 items-center justify-center rounded-lg bg-[#7aec2e25]">
+    <div className="flex flex-col gap-y-1 rounded-md border border-gray-700 bg-[#1010308e] py-1 sm:gap-y-2 sm:p-2">
+      <div className="flex items-center gap-x-2">
+        <span className="flex h-6 w-8 items-center justify-center rounded-[4px] bg-[#7aec2e25]">
           <GrAnnounce className="text-xl" />
         </span>
         <h1 className="text-[#d67d54]">ANNOUNCEMENT</h1>
-        <span className="ml-auto pr-1 text-xs text-[#9b9090]">{date}</span>
+        <span className="ml-auto text-sm text-[#928888]">{date}</span>
       </div>
-      <p className="w-full text-sm text-[#bbc6d1] sm:text-xs">{announceContent}</p>
+      <p className="w-full text-xs text-[#bbc6d1] sm:text-sm">{announceContent}</p>
     </div>
   );
 };

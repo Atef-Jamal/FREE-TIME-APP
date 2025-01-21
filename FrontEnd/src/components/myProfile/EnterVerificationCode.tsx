@@ -73,7 +73,7 @@ const EnterVerificationCode = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     },
   });
@@ -91,14 +91,14 @@ const EnterVerificationCode = () => {
         showPopup({
           message: "Resended successfully, check your email box",
           type: "SUCESS",
-        })
+        }),
       );
     } catch (error) {
       dispatch(
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     } finally {
       setResending(false);
@@ -111,53 +111,56 @@ const EnterVerificationCode = () => {
 
   if (successfullyVerified) {
     return (
-      <div className="w-full xs:w-[95%] sm:text-sm mx-2 h-[70px] p-4 flex items-center justify-center text-xl text-[#a7f1b7] bg-[#433175] text-center rounded-lg">
+      <div className="mx-2 flex h-[70px] w-[95%] max-w-[600px] items-center justify-center rounded-lg bg-[#433175] p-4 text-center text-sm text-[#a7f1b7] md:text-xl">
         successfully verified go to your notifications and collect the Reward
       </div>
     );
   }
 
   return (
-    <div className="w-[500px] xs:w-[350px] p-4 bg-[#213743] rounded-md">
-      <p className=" text-[#64e0a2] mx-2 font-bold">
+    <div className="w-[95%] max-w-[500px] rounded-md bg-[#213743] p-2 md:p-4">
+      <p className="mx-2 text-sm text-[#64e0a2] md:text-base">
         Your Verification code has been sent successfully, check your Email
       </p>
-      <div className="flex items-center justify-center gap-4 mt-3 ">
+      <div className="mt-3 flex items-center justify-center gap-3">
         <input
           type="text"
           value={first}
           ref={firstInput}
           onChange={handleChangeFirstInput}
-          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
+          className="h-[30px] w-[40px] rounded-sm bg-[#292525] p-[3px] text-center text-white outline-none"
         />
         <input
           type="text"
           value={second}
           ref={secondInput}
           onChange={handleChangeSecondInput}
-          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
+          className="h-[30px] w-[40px] rounded-sm bg-[#292525] p-[3px] text-center text-white outline-none"
         />
         <input
           type="text"
           value={third}
           ref={thirdInput}
           onChange={handleChangeThirdInput}
-          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
+          className="h-[30px] w-[40px] rounded-sm bg-[#292525] p-[3px] text-center text-white outline-none"
         />
         <input
           type="text"
           value={fourt}
           ref={fourtInput}
           onChange={handleChangeFourtInput}
-          className="w-[40px] h-[40px] outline-none bg-[#292525] text-white p-[3px] rounded-sm text-center"
+          className="h-[30px] w-[40px] rounded-sm bg-[#292525] p-[3px] text-center text-white outline-none"
         />
-        <button onClick={handleVerify} className="bg-[#59e97dee] text-[#25223f] py-2 px-4 font-bold">
+        <button
+          onClick={handleVerify}
+          className="ml-auto bg-[#59e97dee] px-4 py-1 text-sm font-bold text-[#25223f]"
+        >
           Verify
         </button>
       </div>
-      <p className="text-sm font-bold text-[#cec1c1ee] flex items-center gap-4 mt-4">
+      <p className="mt-4 flex items-center gap-4 text-sm text-[#cec1c1ee]">
         Don't have Code
-        <button onClick={handleResend} className="underline font-bold text-[#7bc44b]">
+        <button onClick={handleResend} className="text-sm font-bold text-[#7bc44b] underline">
           {reSending ? "Resending..." : "Resend"}
         </button>
       </p>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { setCurrentUser, showPopup } from "../../../context/StateManeger";
+import { resetModel, setCurrentUser, showPopup } from "../../../context/StateManeger";
 import { FcConferenceCall } from "react-icons/fc";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { Link } from "react-router-dom";
@@ -49,23 +49,27 @@ const ReferrerNotify = ({ createdAt, _id, prize, isCollected, referredUser }: IP
   const date = formateDate(createdAt);
 
   return (
-    <div className="xs:gap-1 xs:p-1 flex w-full flex-col items-center gap-2 rounded-md border border-gray-700 bg-[#1010308e] p-2">
-      <div className="flex w-full gap-2">
-        <span className="flex h-6 w-8 items-center justify-center rounded-lg bg-[#7aec2e25]">
+    <div className="flex flex-col gap-y-1 rounded-md border border-gray-700 bg-[#1010308e] p-1 sm:gap-y-2 sm:p-2">
+      <div className="flex items-center gap-x-2">
+        <span className="flex h-6 w-8 items-center justify-center rounded-[4px] bg-[#7aec2e25]">
           <FcConferenceCall className="text-xl" />
         </span>
         <h1 className="text-[#d67d54]">REFERRER</h1>
-        <span className="ml-auto pr-1 text-xs text-[#9b9090]">{date}</span>
+        <span className="ml-auto text-xs text-[#928888]">{date}</span>
       </div>
-      <p className="w-full text-sm text-[#bbc6d1] sm:text-xs">
+      <p className="w-full text-xs text-[#bbc6d1] sm:text-sm">
         successfully Reffered Your Friend
-        <Link to={`/user/${referredUser._id}`} className="mx-1 text-sm text-[#696cf3] underline">
+        <Link
+          onClick={() => dispatch(resetModel())}
+          to={`/user/${referredUser._id}`}
+          className="mx-1 text-xs text-[#696cf3] underline sm:text-sm"
+        >
           {referredUser.name}
         </Link>
         and Get {prize} points as a Reward
       </p>
       {isRewardCollected && (
-        <button className="xs:py-[3px] ml-auto w-[100px] rounded-md border border-gray-700 bg-[#1a1e33ee] py-1 text-sm">
+        <button className="ml-auto w-[100px] rounded-[4px] border border-gray-700 bg-[#1a1e33ee] py-0.5 text-sm sm:py-1">
           collected
         </button>
       )}
@@ -73,7 +77,7 @@ const ReferrerNotify = ({ createdAt, _id, prize, isCollected, referredUser }: IP
         <button
           onClick={collect}
           disabled={isLoading}
-          className="xs:py-[3px] ml-auto w-[100px] rounded-md border border-gray-700 bg-[#01D676] py-1 text-sm text-white"
+          className="ml-auto w-[100px] rounded-[4px] border border-gray-700 bg-[#01D676] py-0.5 text-sm text-white sm:py-1"
         >
           {isLoading ? (
             <Spinner className="mx-auto h-5 w-5 border-b-[#291a3b] border-l-[#291a3b]" />

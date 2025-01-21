@@ -8,7 +8,7 @@ import bonusImage from "../../assets/images/Bonus-Code.png";
 import { FaHandsHelping } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { applyCode } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { cn, handleApiError } from "../../utils/common";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import { useMutation } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ const ApplyCoupon = () => {
         showPopup({
           message: "successfully applied",
           type: "SUCESS",
-        })
+        }),
       );
     },
     onError: (error) => {
@@ -38,7 +38,7 @@ const ApplyCoupon = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     },
   });
@@ -50,7 +50,7 @@ const ApplyCoupon = () => {
         showPopup({
           message: "Enter the code",
           type: "ERROR_GENERAL",
-        })
+        }),
       );
       return;
     }
@@ -58,91 +58,88 @@ const ApplyCoupon = () => {
   };
 
   return (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      className="overflow-hidden h-[250px] xs:h-[190px] rounded-lg w-[600px] sm:w-[490px] xs:w-[90%] border border-gray-500 mx-auto relative"
-    >
+    <div className="relative mx-auto h-[190px] w-[90%] overflow-hidden rounded-lg border border-gray-500 sm:w-[490px] lg:h-[250px] lg:w-[600px]">
       <span
         onClick={() => dispatch(resetModel())}
-        className="absolute top-0 right-0 text-4xl sm:text-2xl z-[1]  p-1"
+        className="absolute right-0 top-0 z-[1] p-1 text-2xl lg:text-4xl"
       >
         <IoClose />
       </span>
       <div
-        className={`${
-          openHelp ? "-translate-y-[0px]" : "-translate-y-[260px] xs:-translate-y-[200px]"
-        } transition-all duration-500 ease-in flex flex-col gap-2 bg-[#1a0a0aee]`}
+        className={cn(
+          "flex flex-col gap-2 bg-[#1a0a0aee] transition-all duration-500 ease-in",
+          openHelp ? "-translate-y-[0px]" : "-translate-y-[200px] lg:-translate-y-[260px]",
+        )}
       >
-        <div className=" bg-[#2e3052] p-4 xs:p-2 h-[250px] xs:h-[190px]">
+        <div className="h-[190px] bg-[#2e3052] p-1 lg:h-[250px] lg:p-4">
           <p className="flex items-center gap-2">
-            <span className="xs:p-1 p-2 bg-[#f059597a] rounded-lg ">
+            <span className="rounded-lg bg-[#f059597a] p-1 lg:p-2">
               <FaHandsHelping />
             </span>
-            <span className=" text-[#8ee06d] font-bold text-lg xs:text-sm">
-              can get copoun code throughout :
-            </span>
+            <span className="text-sm font-bold text-[#8ee06d]">can get copoun code throughout :</span>
           </p>
-          <ul className="mt-1 ml-6 xs:ml-2  h-[65%]">
-            <li className="flex gap-2 sm:gap-1">
-              <span className="w-3 h-3 bg-[#469636] mt-1"></span>
-              <span className=" text-lg text-gray-400 xs:text-sm">
-                go to Reward Page click on Bonus code Button
+          <ul className="ml-2 mt-1 h-[65%] md:ml-6">
+            <li className="flex items-center gap-1 md:gap-2">
+              <span className="h-3 w-3 rounded-full bg-[#469636]"></span>
+              <p className="text-sm text-gray-400 md:text-base">
+                Bonus code in Reward page click
                 <button
                   onClick={() => {
                     dispatch(resetModel());
                     navigate("/rewards?to=bonus-code");
                   }}
-                  className="ml-1 underline text-[#aa7ee4]"
+                  className="ml-1 text-[#aa7ee4] underline"
                 >
                   Here
                 </button>
-              </span>
+              </p>
             </li>
           </ul>
           <button
             onClick={() => setOpenHelp((prev) => !prev)}
-            className="flex items-center justify-center gap-1 text-gray-300 px-3 bg-[#c921218f] rounded-md py-1 mt-1"
+            className="mt-1 flex w-full items-center justify-center gap-1 rounded-sm bg-[#443f3f] px-3 py-1 text-gray-300"
           >
             <CgPushDown className="" /> Go Back
           </button>
         </div>
-        <div className="p-5 xs:p-2 bg-[#2e3052] rounded-lg flex flex-col items-center gap-4 xs:gap-2 overflow-x-scroll  scrollbar-none h-[250px] xs:h-[190px] ">
+        <div className="flex h-[190px] flex-col items-center gap-2 overflow-x-auto rounded-lg bg-[#2e3052] p-2 scrollbar-none md:gap-4 lg:h-[250px] lg:p-5">
           <button
             style={{ fontFamily: "monospace" }}
             onClick={() => setOpenHelp((prev) => !prev)}
-            className="self-start text-[#cfdbee] font-bold underline text-xl xs:text-[16px] flex items-center gap-2"
+            className="flex items-center gap-2 self-start text-base font-bold text-[#cfdbee] underline sm:text-lg lg:text-xl"
           >
-            <span className="w-5 h-5 rounded-full bg-[#34ee4333] flex items-center justify-center">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#34ee4333]">
               <FaRegArrowAltCircleUp />
             </span>
             How can I get Bonus Code ?
           </button>
-          <span
-            className={`transition-all flex items-center justify-center ${
-              mutation.isError || mutation.isPending ? "h-5" : "h-0 overflow-hidden"
-            } w-full`}
+          <div
+            className={cn(
+              "flex items-center justify-center transition-all",
+              mutation.isError || mutation.isPending ? "h-5" : "h-0 overflow-hidden",
+            )}
           >
             {mutation.isPending && (
-              <Spinner className="w-5 h-5 mx-auto border-b-[#ace769] border-l-[#ace769]" />
+              <Spinner className="mx-auto h-5 w-5 border-b-[#ace769] border-l-[#ace769]" />
             )}
             {mutation.error && (
-              <span className="w-full flex items-center gap-2 text-red-400 text-sm pl-1">
-                <FaExclamationCircle className="opacity-60 text-sm" /> {mutation.error.response?.data.error}
+              <span className="flex w-full items-center gap-2 pl-1 text-sm text-red-400">
+                <FaExclamationCircle className="text-sm opacity-60" /> {mutation.error.response?.data.error}
               </span>
             )}
-          </span>
-          <div className="flex items-center justify-between xs:justify-center xs:flex-wrap w-full xs:gap-1">
+          </div>
+          <div className="flex w-full flex-col items-start gap-1 sm:flex-row">
             <input
               type="text"
               value={code}
               placeholder="Enter Bonus Code"
               onChange={(e) => setCode(e.target.value)}
-              className="w-[250px] xs:w-[190px] bg-[#3d1111] p-2 xs:p-1 tracking-widest text-[#5b9dff] rounded-sm border border-gray-700 placeholder:text-gray-500 xs:placeholder:text-sm outline-none focus:border-gray-500"
+              className="w-full flex-1 rounded-sm border border-gray-700 bg-[#3d1111] p-1 text-sm tracking-wider text-[#5b9dff] outline-none placeholder:text-sm placeholder:text-gray-500 focus:border-gray-500 md:p-2 md:text-base"
             />
-            <div className="flex items-center gap-2 xs:gap-1 ml-1 ">
+            <div className="flex items-center gap-1 md:gap-2">
               <button
                 onClick={applyHandler}
-                className="rounded-md px-5 py-2 xs:py-1 bg-[#01D676] xs:text-sm text-black font-bold border border-gray-600"
+                className="rounded-sm border border-gray-600 bg-[#01D676] px-5 py-1 text-sm font-bold text-black md:py-2 md:text-base"
               >
                 APPLY
               </button>
@@ -150,14 +147,14 @@ const ApplyCoupon = () => {
                 onClick={() => {
                   dispatch(resetModel());
                 }}
-                className=" rounded-md px-4 py-2 xs:py-1 bg-[#01D676] xs:text-sm text-black font-bold border border-gray-600"
+                className="rounded-sm border border-gray-600 bg-[#01D676] px-4 py-1 text-sm font-bold text-black md:py-2 md:text-base"
               >
                 CANCEL
               </button>
             </div>
           </div>
-          <div className="w-full h-[100px] overflow-hidden rounded-lg">
-            <img alt="" src={bonusImage} className="w-full h-full object-cover" />
+          <div className="h-[100px] w-full overflow-hidden rounded-lg">
+            <img alt="" src={bonusImage} className="h-full w-full object-cover" />
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@ export const fetchUserById = async (userId: string): Promise<IUser> => {
 };
 
 export const sendVerificationCode = async (): Promise<void> => {
-  await makeRequest.get(`api/auth/send-verification-email-code`);
+  await makeRequest.get("api/auth/send-verification-email-code");
 };
 
 export const applyCode = async ({ code }: { code: string }): Promise<{ points: number }> => {
@@ -217,10 +217,10 @@ export const purshaseMusic = async ({
   return data;
 };
 
-export const fetchStatistics = async (): Promise<INotifications[]> => {
+export const fetchMyNotifications = async (): Promise<INotifications[]> => {
   const response = await makeRequest.get("api/notifications/my-notifications");
-  const statistics = response.data;
-  return statistics;
+  const notifications = response.data;
+  return notifications;
 };
 
 export const fetchMusics = async (): Promise<IMusicDetail[]> => {

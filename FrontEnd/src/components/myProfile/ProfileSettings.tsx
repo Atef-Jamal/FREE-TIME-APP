@@ -21,12 +21,15 @@ const ProfileSettings = () => {
   const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     setNewName(e.target.value);
   };
+
   const handleChangeOldPassword = (e: ChangeEvent<HTMLInputElement>) => {
     setOldPass(e.target.value);
   };
+
   const handleChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
     setNewPass(e.target.value);
   };
+
   const nameMutation = useMutation({
     mutationFn: changeUserName,
     onSuccess: (data) => {
@@ -35,7 +38,7 @@ const ProfileSettings = () => {
         showPopup({
           message: "Name changed successfully",
           type: "SUCESS",
-        })
+        }),
       );
       socket?.emit("user-updated", {
         ...currentUser,
@@ -47,10 +50,11 @@ const ProfileSettings = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     },
   });
+
   const passwordMutation = useMutation({
     mutationFn: changeUserPassword,
     onSuccess: () => {
@@ -58,7 +62,7 @@ const ProfileSettings = () => {
         showPopup({
           message: "Password changed successfully",
           type: "SUCESS",
-        })
+        }),
       );
     },
     onError: (error) => {
@@ -66,7 +70,7 @@ const ProfileSettings = () => {
         showPopup({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
-        })
+        }),
       );
     },
   });
@@ -76,6 +80,7 @@ const ProfileSettings = () => {
     if (currentUser.name === newName) return;
     nameMutation.mutate({ newName });
   };
+
   const changePasswordHandler = () => {
     if (!currentUser || !newPass) return;
     if (newPass.trim().length < 6) {
@@ -83,7 +88,7 @@ const ProfileSettings = () => {
         showPopup({
           message: "Password must be at least 6 characters",
           type: "ERROR_GENERAL",
-        })
+        }),
       );
       return;
     }
@@ -96,22 +101,22 @@ const ProfileSettings = () => {
 
   return (
     <div
-      className={`transition-all p-6 sm:p-4 xs:px-2 bg-[#213743] flex  flex-col  gap-4 sm:gap-2 rounded-lg relative`}
+      className={`relative flex w-[90%] max-w-[500px] flex-col gap-2 rounded-lg bg-[#213743] p-3 transition-all md:gap-4 lg:p-6`}
     >
-      <h1 className="text-yellow-500 mx-auto text-2xl font-bold">
+      <h1 className="mx-auto text-2xl font-bold text-yellow-500">
         Settings
         <span
           onClick={() => dispatch(resetModel())}
-          className="absolute top-0 right-0 text-4xl sm:text-2xl z-[1]  p-1"
+          className="absolute right-0 top-0 z-[1] p-1 text-2xl md:text-4xl"
         >
           <IoClose />
         </span>
       </h1>
-      <div className="flex flex-col gap-2 sm:gap-1">
-        <label htmlFor="name" className="font-bold  text-gray-300 w-[120px]">
+      <div className="flex flex-col gap-1 sm:gap-2">
+        <label htmlFor="name" className="w-[120px] font-bold text-gray-300">
           Name
         </label>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <input
             type="text"
             onChange={handleChangeName}
@@ -119,21 +124,21 @@ const ProfileSettings = () => {
             name="name"
             id="name"
             autoComplete="off"
-            className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
+            className="flex-1 rounded-md bg-[#1f1f24] px-2 py-[5px] text-gray-400 outline-none"
           />
           <button
             onClick={changeNameHandler}
-            className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
+            className="h-[30px] w-[95px] rounded-sm bg-[#47f76d] font-[700] text-black"
           >
-            {nameMutation.isPending ? <Spinner className="w-4 h-4 mx-auto" /> : "save"}
+            {nameMutation.isPending ? <Spinner className="mx-auto h-4 w-4" /> : "save"}
           </button>
         </div>
       </div>
-      <div className="flex flex-col gap-2 sm:gap-1">
-        <label htmlFor="email" className=" font-bold text-gray-300  w-[120px]">
+      <div className="flex flex-col gap-1 sm:gap-2">
+        <label htmlFor="email" className="w-[120px] font-bold text-gray-300">
           Email
         </label>
-        <div className="flex items-center gap-4 ">
+        <div className="flex items-center gap-2">
           <input
             type="text"
             readOnly={true}
@@ -141,25 +146,25 @@ const ProfileSettings = () => {
             name="email"
             id="email"
             autoComplete="off"
-            className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400"
+            className="flex-1 rounded-md bg-[#1f1f24] px-2 py-[5px] text-gray-400 outline-none"
           />
           {currentUser?.emailVerified ? (
-            <button className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm">
+            <button className="h-[30px] w-[95px] rounded-sm bg-[#47f76d] font-[700] text-black">
               Verified
             </button>
           ) : (
             <button
               onClick={() => setOpenEnterCode(true)}
-              className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
+              className="h-[30px] w-[95px] rounded-sm bg-[#47f76d] font-[700] text-black"
             >
               Verifiy
             </button>
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-4 sm:gap-1">
-        <div className="flex flex-col gap-2 sm:gap-1">
-          <label htmlFor="oldpass" className="font-bold text-gray-300 w-[120px]">
+      <div className="flex flex-col gap-1 md:gap-4">
+        <div className="flex flex-col gap-1 md:gap-2">
+          <label htmlFor="oldpass" className="w-[120px] font-bold text-gray-300">
             old Password
           </label>
           <input
@@ -170,14 +175,14 @@ const ProfileSettings = () => {
             name="oldpass"
             id="oldpass"
             autoComplete="off"
-            className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
+            className="w-[200px] rounded-md bg-[#1f1f24] px-2 py-[5px] text-gray-400 outline-none placeholder:text-gray-500"
           />
         </div>
         <div className="flex flex-col gap-2 sm:gap-1">
-          <label htmlFor="newpass" className="font-bold text-gray-300 w-[120px]">
+          <label htmlFor="newpass" className="w-[120px] font-bold text-gray-300">
             New Password
           </label>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <input
               type="password"
               onChange={handleChangeNewPassword}
@@ -186,13 +191,13 @@ const ProfileSettings = () => {
               name="newpass"
               id="newpass"
               autoComplete="off"
-              className="outline-none bg-[#1f1f24] w-[200px] px-2 py-[5px] rounded-md text-gray-400 placeholder:text-gray-500"
+              className="flex-1 rounded-md bg-[#1f1f24] px-2 py-[5px] text-gray-400 outline-none placeholder:text-gray-500"
             />
             <button
               onClick={changePasswordHandler}
-              className="w-[95px] h-[30px] bg-[#47f76d] text-black font-[700] rounded-sm "
+              className="h-[30px] w-[95px] rounded-sm bg-[#47f76d] font-[700] text-black"
             >
-              {passwordMutation.isPending ? <Spinner className="w-5 h-5 mx-auto" /> : "save"}
+              {passwordMutation.isPending ? <Spinner className="mx-auto h-5 w-5" /> : "save"}
             </button>
           </div>
         </div>

@@ -68,7 +68,7 @@ const UploadImage = ({ setFormData, setImageIsUploading }: IProps) => {
   }, [image]);
 
   return (
-    <div onClick={handleClick} className="relative h-[150px] w-[150px] lg:h-[100px] lg:w-[100px]">
+    <div onClick={handleClick} className="relative h-[100px] w-[100px] lg:h-[110px] lg:w-[110px]">
       {percentage !== 0 && (
         <div className="absolute left-0 top-0 h-2 w-full bg-white">
           <div style={{ width: percentage }} className="h-[95%] border-y border-l bg-red-800"></div>

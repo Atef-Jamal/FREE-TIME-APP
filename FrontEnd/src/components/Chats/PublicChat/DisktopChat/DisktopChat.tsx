@@ -51,7 +51,7 @@ const DisktopChat = memo(() => {
           dispatch(updateThisEntity({ entity: "isChatOpen", value: !isChatOpen }));
           localStorage.setItem("isDesktopChatOpen", isChatOpen ? "" : "open");
         }}
-        className="absolute -left-[42px] top-[7%] flex h-10 w-10 cursor-pointer items-center justify-center rounded-sm bg-[#513d80f8]"
+        className="absolute -left-[42px] top-[47px] flex h-10 w-10 cursor-pointer items-center justify-center rounded-sm bg-[#513d80f8]"
       >
         {publicMsgRedPoint && <span className="absolute left-3 top-2 h-4 w-4 rounded-full bg-red-500"></span>}
         <BsChatLeftText className="text-3xl" />

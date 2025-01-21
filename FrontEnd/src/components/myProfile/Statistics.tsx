@@ -3,15 +3,16 @@ import { FaUsers } from "react-icons/fa";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { useAppSelector } from "../../context/Hooks";
 import { BiTask } from "react-icons/bi";
-import { fetchStatistics } from "../../utils";
+import { fetchMyNotifications } from "../../utils";
 import { skipToken, useQuery } from "@tanstack/react-query";
 
 const Statistics = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
 
   const { data: statistics = [], error } = useQuery({
-    queryKey: ["statistics"],
-    queryFn: currentUser?._id ? fetchStatistics : skipToken,
+    queryKey: ["notifications"],
+    queryFn: currentUser?._id ? fetchMyNotifications : skipToken,
+    staleTime: 1000 * 60 * 60,
   });
 
   const numReferredUsers = statistics.filter((item) => item.type === "REFERRER").length;

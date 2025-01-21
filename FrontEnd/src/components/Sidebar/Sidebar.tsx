@@ -1,12 +1,16 @@
 import { BiMenu } from "react-icons/bi";
-import { openModel, updateThisEntity } from "../../context/StateManeger";
+import { ICashedConversation, ICashedConversations, IPrivateMessage } from "../../types/privateChatTypes";
+import {
+  openModel,
+  updateThisEntity,
+  showPopup,
+  updateSidebarUnReadedMsgCount,
+} from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
 import { lazy, memo, Suspense, useCallback, useEffect } from "react";
 import { useListenToSocketEvents } from "../../hooks";
-import { ICashedConversation, ICashedConversations, IPrivateMessage } from "../../types/privateChatTypes";
-import { showPopup, updateSidebarUnReadedMsgCount } from "../../context/StateManeger";
 import { handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
@@ -14,19 +18,20 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import Search from "../Search/Search";
 import SearchBar from "../Search/SearchBar";
+
 const MusicPlayer = lazy(() => import("../../components/Music/MusicPlayer"));
 
 const Sidebar = memo(() => {
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
   const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
+  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
   const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
-  const dispatch = useAppDispatch();
-  const queryClient = useQueryClient();
-  const location = useLocation();
   const { t } = useTranslation("sidebar");
+  const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
 
@@ -135,7 +140,7 @@ const Sidebar = memo(() => {
         <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
 
-      {openMusicModal && smallScreen && <Suspense children={<MusicPlayer />} />}
+      {openMusicModal && <Suspense children={<MusicPlayer />} />}
 
       <ul className="flex w-full flex-col gap-1">
         {sidebareItems.map((item, index) => {

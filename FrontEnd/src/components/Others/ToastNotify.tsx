@@ -12,6 +12,7 @@ const ToastNotify = memo(() => {
   const { type, message } = ToastNotify;
 
   const dispatch = useAppDispatch();
+  const textNoWrap = message && message.length <= 45 ? "text-nowrap" : "";
 
   useEffect(() => {
     if (!message) return;
@@ -27,12 +28,10 @@ const ToastNotify = memo(() => {
 
   return (
     <div
-      // className={`absolute top-1 z-[50] md:top-3 ${
-      //   message ? "translate-y-0 border border-[#e0d975] p-2" : "-translate-y-[150%] p-0"
-      // } xs:gap-2 flex w-fit items-center gap-3 rounded-lg bg-[#776ae7f8] transition duration-200 ease-linear`}
       className={cn(
-        "absolute left-[50%] top-2 z-[50] min-w-fit max-w-[90%] -translate-x-[50%] items-center justify-center gap-x-2 rounded-lg border border-[#e0d975] bg-[#776ae7f8] px-2 py-1 transition duration-200 ease-linear md:top-4 md:px-4 md:py-2",
+        "fixed left-[50%] top-2 z-[100] mx-2 -translate-x-[50%] items-center justify-center gap-x-2 rounded-md border border-[#e0d975] bg-[#776ae7f8] px-2 py-1 transition duration-200 ease-linear md:py-2",
         message ? "flex" : "hidden",
+        !textNoWrap && "mx-auto w-[95%] sm:w-auto",
       )}
     >
       <span className="text-xl">
@@ -41,7 +40,7 @@ const ToastNotify = memo(() => {
         {type === "LOADING" && <Spinner className="h-6 w-6 border-[4px]" />}
         {type === "SUCESS" && <FaRegCheckCircle />}
       </span>
-      <p className="text-xs md:text-sm">{message}</p>
+      <p className={cn("text-xs md:text-sm", textNoWrap)}>{message}</p>
     </div>
   );
 });

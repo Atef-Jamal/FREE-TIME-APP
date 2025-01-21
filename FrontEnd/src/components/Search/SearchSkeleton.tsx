@@ -2,76 +2,76 @@ import Skeleton from "../Others/Skeleton";
 
 const SearchSkeleton = () => {
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-1 xs:gap-0 p-3 xs:p-1">
-      <Skeleton className="w-[50%] h-6 xs:h-4" />
+    <div className="flex w-full flex-col items-center justify-center gap-1 p-1 lg:p-3">
+      <Skeleton className="h-4 w-[50%] md:h-6" />
       <div className="w-full">
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[20%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[40%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[20%] rounded-sm" />
+            <Skeleton className="h-2 w-[40%] rounded-sm" />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[15%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[50%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[15%] rounded-sm" />
+            <Skeleton className="h-2 w-[50%] rounded-sm" />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[40%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[20%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[40%] rounded-sm" />
+            <Skeleton className="h-2 w-[20%] rounded-sm" />
           </div>
         </div>
       </div>
-      <Skeleton className="w-[50%] h-6 xs:h-4" />
+      <Skeleton className="h-4 w-[50%] md:h-6" />
       <div className="w-full">
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[30%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[45%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[30%] rounded-sm" />
+            <Skeleton className="h-2 w-[45%] rounded-sm" />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[20%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[40%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[20%] rounded-sm" />
+            <Skeleton className="h-2 w-[40%] rounded-sm" />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[28%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[25%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[28%] rounded-sm" />
+            <Skeleton className="h-2 w-[25%] rounded-sm" />
           </div>
         </div>
       </div>
-      <Skeleton className="w-[50%] h-6 xs:h-4" />
+      <Skeleton className="h-4 w-[50%] md:h-6" />
       <div className="w-full">
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[25%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[35%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[25%] rounded-sm" />
+            <Skeleton className="h-2 w-[35%] rounded-sm" />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-3 sm:gap-2">
+          <Skeleton className="h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[15%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[30%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[15%] rounded-sm" />
+            <Skeleton className="h-2 w-[30%] rounded-sm" />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 sm:gap-2 mb-1">
-          <Skeleton className="w-8 h-8 sm:w-7 sm:h-6 mx-auto rounded-full" />
+        <div className="mb-1 flex w-full items-center gap-2 md:gap-3">
+          <Skeleton className="mx-auto h-6 w-7 rounded-full md:h-8 md:w-9" />
           <div className="w-full">
-            <Skeleton className="w-[20%] h-2 rounded-sm mb-1" />
-            <Skeleton className="w-[40%] h-2 rounded-sm" />
+            <Skeleton className="mb-1 h-2 w-[20%] rounded-sm" />
+            <Skeleton className="h-2 w-[40%] rounded-sm" />
           </div>
         </div>
       </div>

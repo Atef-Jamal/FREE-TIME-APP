@@ -49,34 +49,34 @@ const Search = () => {
   };
 
   return (
-    <div className="border border-gray-600 w-[800px] sm:w-[80%] xs:w-[95%] max-h-[90%] sm:max-h-[79%] overflow-auto sm:scrollbar-thin absolute top-20 sm:top-[57px] translate-x-[-50%]  bg-[#19181b] rounded-lg">
-      <div className="sticky z-[100] top-0 p-2  bg-[#362b53] flex">
-        <div className="w-full border border-gray-700 rounded-md">
+    <div className="scrollbar-custom mb-auto mt-10 max-h-[90%] w-[95%] overflow-y-auto rounded-md border border-gray-400 bg-[#19181b] md:w-[80%] lg:mt-14 lg:w-[70%] lg:max-w-[900px] lg:rounded-lg">
+      <div className="sticky top-0 z-[1] flex items-center bg-[#362b53] p-2">
+        <div className="w-full overflow-hidden rounded-sm border border-gray-700 md:rounded-md">
           <input
             type="text"
             onChange={handleChange}
             autoFocus
             placeholder="Search For EveryThing"
-            className="outline-none rounded-md bg-[#2c2626] placeholder:opacity-40 sm:placeholder:text-base text-[#7893ec] sm:text-base text-lg py-2 px-4 sm:px-2 w-full"
+            className="w-full bg-[#2c2626] px-2 py-1 text-sm text-[#7893ec] outline-none placeholder:opacity-50 md:px-4 md:py-2 lg:text-base lg:placeholder:text-base"
           />
         </div>
         <button
           onClick={() => dispatch(resetModel())}
-          className="w-10 h-11 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center ml-1"
+          className="ml-1 flex h-7 w-7 items-center justify-center rounded-lg lg:h-11 lg:w-10"
         >
-          <CgClose className="text-2xl sm:text-lg" />
+          <CgClose className="text-2xl" />
         </button>
       </div>
       <div className="border-gray-600">
         {error && (
           <>
-            <p className="text-lg sm:text-base text-[#bd672e] text-center py-4">
+            <p className="py-4 text-center text-base text-[#bd672e] lg:text-lg">
               {error.response?.data.error}
             </p>
-            <div className="flex mb-4">
+            <div className="mb-4 flex">
               <button
                 onClick={() => refetch()}
-                className="text-sm font-bold bg-[#51a549] text-[#1c1f2c] text-center py-1 px-4 rounded-md mx-auto"
+                className="mx-auto rounded-md bg-[#51a549] px-4 py-1 text-center text-sm font-bold text-[#1c1f2c]"
               >
                 Try Again
               </button>
@@ -87,92 +87,69 @@ const Search = () => {
 
         {!results && !isFetching && !error && (
           <div className="flex flex-col items-center justify-center gap-3 py-10">
-            <div className="text-center text-gray-500 font-bold">Start Searching</div>
+            <div className="text-center font-bold text-gray-500">Start Searching</div>
           </div>
         )}
 
         {results && (
           <div className="p-2">
-            <p className="sm:text-sm text-gray-400 mb-1">
-              <span className="sm:text-sm  text-[#8be64e] mx-1 ">{resultsCounts}</span>
+            <p className="mb-1 text-sm text-gray-400">
+              <span className="mx-1 text-[#8be64e]">{resultsCounts}</span>
               Results Found
             </p>
 
             {resultsCounts === 0 && (
               <div className="my-10 flex flex-col items-center justify-center gap-4">
-                <img src={empty} className="w-16 h-16 sm:w-12 sm:h-12 object-cover" />
-                <p className="font-bold sm:font-medium text-center text-[#bbb9b9]">
-                  No Results Match your search text
-                </p>
+                <img src={empty} className="h-12 w-12 object-cover opacity-50 lg:h-16 lg:w-16" />
+                <p className="text-center text-gray-400 lg:font-bold">No Results Match your search text</p>
               </div>
             )}
 
             {results.features.length > 0 && (
               <>
-                <h1 className="bg-[#504040] text-[#74b7d1] font-bold text-center border border-gray-700 mb-1">
+                <h1 className="mb-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Feartures
                 </h1>
-                <ResultElement
-                  type="FEATURES"
-                  results={results.features}
-                  searchTerm={searchQ}
-                  emptyText={"No Features Found"}
-                />
+                <ResultElement type="FEATURES" results={results.features} searchTerm={searchQ} />
               </>
             )}
 
             {results.users.length > 0 && (
               <>
-                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
+                <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   People
                 </h1>
                 <ResultElement
                   type="USERS"
                   results={results.users.filter((usr) => usr._id !== currentUser?._id)}
                   searchTerm={searchQ}
-                  emptyText={"No People Found"}
                 />
               </>
             )}
 
             {results.apps.length > 0 && (
               <>
-                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
+                <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Apps
                 </h1>
-                <ResultElement
-                  type="APPS"
-                  results={results.apps}
-                  searchTerm={searchQ}
-                  emptyText={"No offers, apps Found"}
-                />
+                <ResultElement type="APPS" results={results.apps} searchTerm={searchQ} />
               </>
             )}
 
             {results.frames.length > 0 && (
               <>
-                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
+                <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Frames
                 </h1>
-                <ResultElement
-                  type="FRAMES"
-                  results={results.frames}
-                  searchTerm={searchQ}
-                  emptyText={"No Frames Found"}
-                />
+                <ResultElement type="FRAMES" results={results.frames} searchTerm={searchQ} />
               </>
             )}
             {results.musics.length > 0 && (
               <>
-                <h1 className="bg-[#504040] text-[#74b7d1]  font-bold text-center border border-gray-700 my-1">
+                <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Musics
                 </h1>
-                <ResultElement
-                  type="MUSICS"
-                  results={results.musics}
-                  searchTerm={searchQ}
-                  emptyText={"No Musics Found"}
-                />
+                <ResultElement type="MUSICS" results={results.musics} searchTerm={searchQ} />
               </>
             )}
           </div>

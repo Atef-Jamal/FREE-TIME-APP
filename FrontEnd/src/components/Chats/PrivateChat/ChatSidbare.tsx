@@ -95,7 +95,7 @@ const ChatSidbare = memo(({ toggleSidbare, openSidbare }: IProps) => {
             </button>
           </div>
         )}
-        {status === "pending" && [...Array(15).keys()].map((skeleton) => <PeopleSkeleton key={skeleton} />)}
+        {status === "pending" && [...Array(10).keys()].map((skeleton) => <PeopleSkeleton key={skeleton} />)}
         {status === "success" &&
           conversations?.map((conversation) => {
             const isOnLine = onlineUsers.includes(conversation.secondParty._id);

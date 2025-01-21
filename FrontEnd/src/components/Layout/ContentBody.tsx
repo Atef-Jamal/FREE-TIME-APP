@@ -38,7 +38,7 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
   return (
     <section className="flex">
       <div style={{ height: sidebarHeigh, width: sidebarWidth }} className={sidebarClassName}>
-        <div onClick={() => handleCloseMobileSidebare(false)} className={"h-full w-full"}>
+        <div onClick={() => handleCloseMobileSidebare(false)} className={"h-full w-full backdrop-blur-sm"}>
           <Sidebar />
         </div>
       </div>

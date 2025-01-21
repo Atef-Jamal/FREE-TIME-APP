@@ -6,7 +6,7 @@ import { IUser } from "../types/userTypes";
 const initialState: IInitialState = {
   currentUserStatus: "pending",
   currentUser: null,
-  openNotification: false,
+
   ToastNotify: {
     type: null,
     message: "",
@@ -33,7 +33,6 @@ const initialState: IInitialState = {
 
 interface ITogglActionPayload {
   entity:
-    | "openNotification"
     | "isSignInMode"
     | "smallScreen"
     | "hiddenLiveStats"

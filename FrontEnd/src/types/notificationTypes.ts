@@ -87,3 +87,5 @@ export type INotifications =
   | IGuessCardTaskNotify
   | IMusicNotify
   | IInteractWithMessageNotify;
+
+export type ICashedNotificaions = INotifications[];

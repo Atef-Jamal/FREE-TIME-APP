@@ -56,112 +56,112 @@ const PublicUserProfile = () => {
   const numberOfReferredUser = activities?.filter((item) => item.type === "REFERRER").length;
 
   useEffect(() => {
-    if (currentUserStatus === "authenticated" && id && id != currentUserId) {
+    if (currentUserStatus === "authenticated" && id && id !== currentUserId) {
       mutate(id);
     }
   }, [id, currentUserStatus, currentUserId, mutate]);
 
+  if (status === "pending") {
+    return <PublicUserProfileSkeleton />;
+  }
+
   if (error) {
-    return <div className="w-full h-full flex items-center justify-center">{error.response?.data.error}</div>;
+    return <div className="flex h-full w-full items-center justify-center text-red-400">an error occuur</div>;
   }
 
   if (id === currentUserId) {
     return <Navigate to={"/myprofile"} />;
   }
 
-  if (status === "pending") {
-    return <PublicUserProfileSkeleton />;
-  }
-
   if (!user) {
-    return <div className="border w-full h-full text-center">an error occurred</div>;
+    return (
+      <div className="flex h-full w-full items-center justify-center border text-gray-300">
+        User Not Found
+      </div>
+    );
   }
 
   return (
-    <div className="bg-transparent flex items-center justify-center ">
-      <div className="w-[80%] flex flex-col gap-4 pb-12 pt-6 lg:w-[95%]">
-        <h1 className="text-2xl font-bold text-[#86f38c] ">Profile</h1>
-        <div className="flex gap-4 items-center sm:flex-col">
-          <div className=" flex items-center justify-evenly w-full bg-[#1d1d2e] rounded-lg h-[200px]">
-            <div className="w-[110px] h-[90px] lg:w-[100px] lg:h-[80px] sm:w-[90px] sm:h-[80px]">
+    <div className="bg-transparent py-5 lg:pt-8">
+      <div className="mx-auto w-[95%] space-y-5 lg:space-y-10">
+        <h1 className="text-2xl font-bold text-[#86f38c]">Profile</h1>
+        <div className="flex flex-col gap-x-[2%] gap-y-4 md:flex-row">
+          <div className="flex items-center justify-evenly rounded-lg bg-[#191929] py-5 md:w-[49%]">
+            <div className="h-[80px] w-[90px] md:h-[80px] md:w-[100px] lg:h-[90px] lg:w-[110px]">
               <UserImage user={user} />
             </div>
-            <div className="flex flex-col justify-center gap-1 mt-2">
-              <span className="text-xl font-bold text-[#3cc543]">{user.name}</span>
+            <div className="space-y-2">
+              <p className="text-xl font-bold text-[#3cc543]">{user.name}</p>
               <div className="flex items-center gap-2 text-[#e7bbbb]">
                 <span className="text-[#50fd39ee]">{user.points}</span> Points
               </div>
               {user?.emailVerified && (
                 <div className="flex items-center gap-4">
-                  <img src={verifiedImage} alt="" className="w-8 h-8 object-cover" />
+                  <img src={verifiedImage} alt="" className="h-8 w-8 object-cover" />
                   <span className="text-gray-400">Verified</span>
                 </div>
               )}
               <p className="text-sm text-[#b19e9eee]">Joined About {formateDate(user.createdAt)}</p>
             </div>
           </div>
-          <div className="w-full bg-[#1d1d2e] rounded-lg h-[200px] sm:h-auto flex flex-col p-5 sm:px-2 sm:py-5 lg:p-3 gap-3">
-            <h1 className="font-bold text-xl text-[#32e47c] ">Statistics</h1>
-            <div className="flex flex-wrap justify-between mx-6 sm:mx-0 lg:mx-1 ">
-              <div className="flex items-center gap-2 w-[49%] sm:w-[49%]">
-                <div className="w-10 h-10 lg:w-9 lg:h-9 sm:w-8 sm:h-8  rounded-lg bg-[#be914cb7] flex items-center justify-center">
-                  <BiTask className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
+          <div className="rounded-lg bg-[#191929] px-1 py-2 sm:px-3 md:w-[49%]">
+            <h1 className="mb-3 text-xl font-bold text-[#32e47c]">Statistics</h1>
+            <div className="grid grid-cols-2 gap-y-3 max-[359px]:grid-cols-1">
+              <div className="flex items-center gap-x-1 sm:gap-x-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#be914cb7]">
+                  <BiTask className="h-[70%] w-[70%]" />
                 </div>
-                <div className="flex flex-col ">
-                  <span className="font-bold text-gray-300">{numberOfCompletedTasks}</span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">completed offers</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 w-[49%] sm:w-[49%]">
-                <div className="w-10 h-10 lg:w-9 lg:h-9 sm:w-8 sm:h-8 rounded-lg bg-[#be914cb7] flex items-center justify-center">
-                  <BsFillClockFill className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
-                </div>
-                <div className="flex flex-col ">
-                  <span className="font-bold text-gray-300">{user.points}</span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">
-                    Earnings last 30 days
-                  </span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-gray-300">{numberOfCompletedTasks}</span>
+                  <span className="text-xs text-[#b1b07f]">completed offers</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2  w-[49%] sm:w-[49%]  mt-4">
-                <div className="w-10 h-10 lg:w-9 lg:h-9 sm:w-8 sm:h-8 rounded-lg bg-[#be914cb7] flex items-center justify-center">
-                  <MdAutoAwesomeMosaic className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
+              <div className="flex items-center gap-x-1 sm:gap-x-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#be914cb7]">
+                  <BsFillClockFill className="h-[70%] w-[70%]" />
                 </div>
-                <div className="flex flex-col  ">
-                  <span className="font-bold text-gray-300">{user.points}</span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Total Earnings</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-gray-300">{user.points}</span>
+                  <span className="text-xs text-[#b1b07f]">Earnings last 30 days</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 w-[49%] sm:w-[49%] mt-4 ">
-                <div className="w-10 h-10 lg:w-9 lg:h-9 sm:w-8 sm:h-8 rounded-lg bg-[#be914cb7] flex items-center justify-center">
-                  <FaUsers className="w-8 h-8 lg:w-6 lg:h-6 sm:w-[20px] sm:h-[20px] " />
+              <div className="flex items-center gap-x-1 sm:gap-x-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#be914cb7]">
+                  <MdAutoAwesomeMosaic className="h-[70%] w-[70%]" />
                 </div>
-                <div className="flex flex-col ">
-                  <span className="font-bold text-gray-300">{numberOfReferredUser}</span>
-                  <span className="text-sm sm:text-[11px] lg:text-xs text-[#b1b07f]">Users Referred</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-gray-300">{user.points}</span>
+                  <span className="text-xs text-[#b1b07f]">Total Earnings</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-x-1 sm:gap-x-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#be914cb7]">
+                  <FaUsers className="h-[70%] w-[70%]" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-gray-300">{numberOfReferredUser}</span>
+                  <span className="text-xs text-[#b1b07f]">Users Referred</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         {user && (
-          <div className="-4 py-1">
-            <Link
-              to={`/privatechat?chat-with=${user._id}`}
-              className="py-[6px] px-8 bg-[#bbb55c] text-[#3a1f1f] rounded-md font-bold"
-            >
-              Chat with {user.name}
-            </Link>
-          </div>
+          <Link
+            to={`/privatechat?chat-with=${user._id}`}
+            className="block w-fit rounded-md bg-[#bbb55c] px-5 py-1 font-bold text-[#3a1f1f]"
+          >
+            Chat with {user.name}
+          </Link>
         )}
-        <h1 className="flex items-center gap-2 font-bold text-lg tracking-wide text-[#4de43a] px-1 mt-6">
-          <GiProgression className="xs:text-sm text-lg" /> Activities
+        <h1 className="flex items-center gap-2 px-1 font-bold tracking-wide text-[#4de43a] md:text-lg">
+          <GiProgression className="text-lg" /> Activities
         </h1>
-        <div className="w-full mb-2 ">
-          <div className="flex items-center justify-between p-[6px] h-[40px] border-b mb-2">
-            <span className=" text-gray-300  font-bold flex-1">Offer</span>
-            <span className=" text-gray-300 text-center font-bold px-8 xs:px-2 xs:text-sm">Time</span>
-            <span className=" text-gray-300 text-center font-bold px-8 xs:px-2 xs:text-sm">Points</span>
+        <div className="w-full">
+          <div className="mb-2 flex h-[40px] items-center justify-between border-b p-1 text-sm lg:text-base">
+            <span className="flex-1 font-bold text-gray-300">Offer</span>
+            <span className="px-2 text-center font-bold text-gray-300 md:w-[10%]">Time</span>
+            <span className="px-2 text-center font-bold text-gray-300 md:w-[10%]">Points</span>
           </div>
           <ActivitiesList activities={fitleredActivities} user={user} />
         </div>

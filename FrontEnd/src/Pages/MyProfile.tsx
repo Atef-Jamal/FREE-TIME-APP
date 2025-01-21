@@ -72,7 +72,7 @@ const MyProfile = () => {
           </button>
         </div>
         <div className="flex w-full flex-col items-center justify-between gap-4 lg:flex-row">
-          <div className="flex h-[140px] w-[98%] flex-col items-center justify-evenly rounded-lg bg-[#222339] lg:h-[180px] lg:w-[49%]">
+          <div className="flex h-[140px] w-[98%] flex-col items-center justify-evenly overflow-hidden rounded-lg bg-[#222339] lg:h-[180px] lg:w-[49%]">
             <div className="flex w-full items-center justify-evenly">
               <div className="h-[90px] w-[110px] sm:h-[90px] sm:w-[90px]">
                 <UserImage user={currentUser} />
@@ -183,7 +183,7 @@ const MyProfile = () => {
           <BsFillExclamationOctagonFill />
           <p className="text-gray-400">These are our top affiliate earners.</p>
         </div>
-        <div className="mt-20 flex justify-center gap-10 sm:gap-3">
+        <div className="mt-20 flex justify-center gap-3 overflow-hidden md:gap-10">
           <div className="relative">
             <img alt={""} src={rank2Desktop} className="h-48 w-52 lg:h-60" />
             <span className="absolute bottom-[25%] left-[33%] text-lg font-bold text-gray-200">$53.052</span>

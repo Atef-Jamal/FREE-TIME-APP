@@ -23,7 +23,7 @@ const VerifyEmailBox = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        })
+        }),
       );
     },
   });
@@ -35,7 +35,7 @@ const VerifyEmailBox = () => {
         showPopup({
           type: "ERROR_GENERAL",
           message: "sorry, Email already verified",
-        })
+        }),
       );
       return;
     }
@@ -47,21 +47,21 @@ const VerifyEmailBox = () => {
   }
 
   return (
-    <div className="w-full h-[110px] p-4 flex flex-col  gap-3 bg-[#213743] rounded-md ">
+    <div className="flex h-[100px] w-[90%] max-w-[500px] flex-col gap-3 rounded-md bg-[#213743] p-2 md:p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-[#7bbe67] font-bold ">Send Verification Code To</h1>
-        <button onClick={() => dispatch(resetModel())} className="text-xl rounded-lg">
+        <h1 className="font-bold text-[#7bbe67]">Send Verification Code To</h1>
+        <button onClick={() => dispatch(resetModel())} className="rounded-lg text-xl">
           <CgClose />
         </button>
       </div>
-      <div className="flex items-center gap-5 w-full">
-        <p className="text-[#c2a5a5] text-lg underline">{currentUser?.email}</p>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-lg text-[#c2a5a5] underline">{currentUser?.email}</p>
         <button
           onClick={sendVerificationCodHandler}
-          className="bg-[#93e672] w-[140px] sm:w-[80px]  text-blue-950 py-1 rounded-md flex items-center justify-center border border-[#9b4848]"
+          className="flex items-center justify-center rounded-md border border-[#9b4848] bg-[#93e672] px-4 py-1 text-blue-950 sm:w-[80px]"
         >
           {mutation.isPending ? (
-            <Spinner className="w-5 h-5 mx-auto border-b-[#291a3b] border-l-[#291a3b]" />
+            <Spinner className="mx-auto h-5 w-5 border-b-[#291a3b] border-l-[#291a3b]" />
           ) : (
             "Send"
           )}
