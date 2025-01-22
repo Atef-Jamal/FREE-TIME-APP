@@ -49,8 +49,8 @@ const NotificationMenu = ({ notifications, isLoading, error }: IProps) => {
   }, [dispatch, queryClient]);
 
   useEffect(() => {
-    const isThereNotificationUnReaded = notifications?.some((item) => item.isRead === false);
-    if (isThereNotificationUnReaded) {
+    const isUnReaded = notifications?.some((item) => item.isRead === false);
+    if (isUnReaded) {
       markNotificationasRead();
     }
   }, [currentUserStatus, markNotificationasRead, notifications]);

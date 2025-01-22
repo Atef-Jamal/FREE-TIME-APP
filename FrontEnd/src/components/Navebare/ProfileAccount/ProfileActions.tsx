@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import { openModel } from "../../../context/StateManeger";
 import { fetchMyNotifications } from "../../../utils";
@@ -89,10 +89,15 @@ const ProfileActions = () => {
             openModel({
               status: true,
               children: (
-                <NotificationMenu
-                  notifications={notifications}
-                  isLoading={status === "pending"}
-                  error={error?.response?.data.error}
+                <Suspense
+                  fallback={<></>}
+                  children={
+                    <NotificationMenu
+                      notifications={notifications}
+                      isLoading={status === "pending"}
+                      error={error?.response?.data.error}
+                    />
+                  }
                 />
               ),
             }),

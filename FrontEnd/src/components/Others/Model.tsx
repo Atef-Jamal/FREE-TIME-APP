@@ -4,11 +4,11 @@ import { useAppDispatch } from "../../context/Hooks";
 
 const Model = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
-
+  const closeModel = () => dispatch(resetModel());
   return (
     <div className="fixed z-[11] flex h-[100dvh] w-[100dvw] items-center justify-center">
       <div
-        onClick={() => dispatch(resetModel())}
+        onClick={closeModel}
         className="absolute z-[-1] h-full w-full backdrop-blur-sm backdrop-brightness-[0.6]"
       ></div>
       <Suspense
