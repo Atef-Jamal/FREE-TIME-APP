@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { IInitialState, IMusicInfo, IToast } from "../types/reduxTypes";
+import { IInitialState, IModal, IMusicInfo, IToast } from "../types/reduxTypes";
 import { IUser } from "../types/userTypes";
 
 const initialState: IInitialState = {
   currentUserStatus: "pending",
   currentUser: null,
-
   ToastNotify: {
     type: null,
     message: "",
@@ -27,7 +26,7 @@ const initialState: IInitialState = {
   onlineUsers: [],
   allUnReadedMesseges: [],
   activeConversation: localStorage.getItem("active-converstaion") || null,
-  model: { status: false, children: null },
+  modal: { children: null },
   publicMsgRedPoint: false,
 };
 
@@ -67,13 +66,11 @@ const StateManegerSlice = createSlice({
       state.ToastNotify.message = action.payload.message;
       state.ToastNotify.type = action.payload.type;
     },
-    openModel(state, action: PayloadAction<{ status: boolean; children: React.ReactNode }>) {
-      state.model.status = true;
-      state.model.children = action.payload.children;
+    showModal(state, action: PayloadAction<IModal>) {
+      state.modal.children = action.payload.children;
     },
     resetModel(state) {
-      state.model.status = false;
-      state.model.children = null;
+      state.modal.children = null;
     },
     resetPopup(state) {
       state.ToastNotify.type = null;
@@ -142,7 +139,7 @@ export const {
   setOnlineUsers,
   updateSidebarUnReadedMsgCount,
   setActiveConversation,
-  openModel,
+  showModal,
   resetModel,
   updateThisEntity,
   setPublicMsgRedPoint,

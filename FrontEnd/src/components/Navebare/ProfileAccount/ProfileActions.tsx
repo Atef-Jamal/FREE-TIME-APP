@@ -1,6 +1,6 @@
-import { lazy, Suspense, useState } from "react";
+import { useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
-import { openModel } from "../../../context/StateManeger";
+import { showModal } from "../../../context/StateManeger";
 import { fetchMyNotifications } from "../../../utils";
 import notificationSoundSrc from "../../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
@@ -13,7 +13,7 @@ import { useListenToSocketEvents } from "../../../hooks";
 import { FaPlus } from "react-icons/fa6";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const NotificationMenu = lazy(() => import("../Notifications/NotificationMenu"));
+import NotificationMenu from "../Notifications/NotificationMenu";
 
 const ProfileActions = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
@@ -58,7 +58,7 @@ const ProfileActions = () => {
       <div className="flex h-full items-center overflow-scroll rounded-md bg-[#000000] scrollbar-none">
         <button
           onClick={() => {
-            dispatch(openModel({ status: true, children: <ApplyCoupon /> }));
+            dispatch(showModal({ children: <ApplyCoupon /> }));
           }}
           className="px-2"
         >
@@ -86,18 +86,12 @@ const ProfileActions = () => {
       <div
         onClick={() => {
           dispatch(
-            openModel({
-              status: true,
+            showModal({
               children: (
-                <Suspense
-                  fallback={<></>}
-                  children={
-                    <NotificationMenu
-                      notifications={notifications}
-                      isLoading={status === "pending"}
-                      error={error?.response?.data.error}
-                    />
-                  }
+                <NotificationMenu
+                  notifications={notifications}
+                  isLoading={status === "pending"}
+                  error={error?.response?.data.error}
                 />
               ),
             }),

@@ -9,7 +9,6 @@ import ToastNotify from "../components/Others/ToastNotify";
 const NavebareBottom = lazy(() => import("../components/Navebare/NavebareBottom"));
 
 const Layout = () => {
-  const model = useAppSelector((state) => state.stateManeger.model);
   const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
 
@@ -19,7 +18,7 @@ const Layout = () => {
 
   return (
     <main>
-      {model.status && <Model children={model.children} />}
+      <Model />
       <ToastNotify />
       <Navbare />
       <ContentBody

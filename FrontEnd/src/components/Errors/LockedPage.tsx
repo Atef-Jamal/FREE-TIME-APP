@@ -1,6 +1,6 @@
 import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { openModel, updateThisEntity } from "../../context/StateManeger";
+import { showModal, updateThisEntity } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
 import RegisterationForm from "../Navebare/Registration/RegisterationForm";
 
@@ -19,12 +19,7 @@ const LockedPage = () => {
           <button
             onClick={() => {
               dispatch(updateThisEntity({ entity: "isSignInMode", value: true }));
-              dispatch(
-                openModel({
-                  status: true,
-                  children: <RegisterationForm />,
-                }),
-              );
+              dispatch(showModal({ children: <RegisterationForm /> }));
             }}
             className="mb-2 w-full rounded-lg bg-[#1a4b68] py-1 text-lg font-bold text-[#95aeb9] md:py-2 lg:text-2xl"
           >

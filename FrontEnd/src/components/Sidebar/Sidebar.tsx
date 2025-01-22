@@ -1,7 +1,7 @@
 import { BiMenu } from "react-icons/bi";
 import { ICashedConversation, ICashedConversations, IPrivateMessage } from "../../types/privateChatTypes";
 import {
-  openModel,
+  showModal,
   updateThisEntity,
   showPopup,
   updateSidebarUnReadedMsgCount,
@@ -133,10 +133,7 @@ const Sidebar = memo(() => {
         <BiMenu onClick={handleCollaps} className={`${sidebarCollapsed ? "mx-auto" : "ml-auto"} text-2xl`} />
       </div>
 
-      <div
-        onClick={() => dispatch(openModel({ status: true, children: <Search /> }))}
-        className="h-10 lg:hidden"
-      >
+      <div onClick={() => dispatch(showModal({ children: <Search /> }))} className="h-10 lg:hidden">
         <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
 

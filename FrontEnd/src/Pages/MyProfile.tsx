@@ -4,7 +4,7 @@ import { RiNumbersFill } from "react-icons/ri";
 import { RiFileCopyLine } from "react-icons/ri";
 import { FcOk } from "react-icons/fc";
 import { BsFillExclamationOctagonFill } from "react-icons/bs";
-import { openModel, showPopup } from "../context/StateManeger";
+import { showModal, showPopup } from "../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import ProfileSettings from "../components/myProfile/ProfileSettings";
 import UserImage from "../components/Others/UserImage";
@@ -43,8 +43,7 @@ const MyProfile = () => {
 
   const handleOpenSetting = useCallback(() => {
     dispatch(
-      openModel({
-        status: true,
+      showModal({
         children: <ProfileSettings />,
       }),
     );

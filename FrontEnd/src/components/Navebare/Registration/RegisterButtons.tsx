@@ -1,5 +1,5 @@
 import { ImKey2 } from "react-icons/im";
-import { openModel, updateThisEntity } from "../../../context/StateManeger";
+import { showModal, updateThisEntity } from "../../../context/StateManeger";
 import { BsFillPersonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import { useTranslation } from "react-i18next";
@@ -16,8 +16,7 @@ const RegisterButtons = () => {
         onClick={() => {
           if (!isSignInMode) dispatch(updateThisEntity({ entity: "isSignInMode", value: true }));
           dispatch(
-            openModel({
-              status: true,
+            showModal({
               children: <RegisterationForm />,
             }),
           );
@@ -30,8 +29,7 @@ const RegisterButtons = () => {
         onClick={() => {
           if (isSignInMode) dispatch(updateThisEntity({ entity: "isSignInMode", value: false }));
           dispatch(
-            openModel({
-              status: true,
+            showModal({
               children: <RegisterationForm />,
             }),
           );

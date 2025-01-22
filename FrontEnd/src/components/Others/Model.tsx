@@ -1,10 +1,15 @@
-import { ReactNode, Suspense } from "react";
+import { Suspense } from "react";
 import { resetModel } from "../../context/StateManeger";
-import { useAppDispatch } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
-const Model = ({ children }: { children: ReactNode }) => {
+const Model = () => {
+  const modal = useAppSelector((state) => state.stateManeger.modal);
   const dispatch = useAppDispatch();
+
   const closeModel = () => dispatch(resetModel());
+
+  if (!modal.children) return;
+
   return (
     <div className="fixed z-[11] flex h-[100dvh] w-[100dvw] items-center justify-center">
       <div
@@ -17,7 +22,7 @@ const Model = ({ children }: { children: ReactNode }) => {
             <span className="h-10 w-10 animate-spin rounded-full border-4 border-b-transparent border-l-yellow-500 border-r-transparent border-t-yellow-500"></span>
           </div>
         }
-        children={children}
+        children={modal.children}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { openModel, setOnlineUsers, setSocet, showPopup, updateThisEntity } from "../../context/StateManeger";
+import { showModal, setOnlineUsers, setSocet, showPopup, updateThisEntity } from "../../context/StateManeger";
 import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks";
 import { IUser } from "../../types/userTypes";
@@ -186,8 +186,7 @@ const LogicalComponent = () => {
   useEffect(() => {
     if (refQuery && currentUserStatus === "unauthenticated") {
       dispatch(
-        openModel({
-          status: true,
+        showModal({
           children: <RegisterationForm />,
         }),
       );

@@ -17,6 +17,10 @@ export interface IMusicInfo {
   musicSrc: string;
 }
 
+export interface IModal {
+  children: React.ReactNode;
+}
+
 export interface IInitialState {
   currentUserStatus: "pending" | "authenticated" | "unauthenticated";
   currentUser: IUser | null;
@@ -37,7 +41,7 @@ export interface IInitialState {
   onlineUsers: string[];
   allUnReadedMesseges: string[];
   activeConversation: string | null;
-  model: { status: boolean; children: React.ReactNode };
+  modal: IModal;
   publicMsgRedPoint: boolean;
 }
 
