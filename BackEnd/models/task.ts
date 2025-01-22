@@ -33,20 +33,22 @@ const taskSchema = new mongoose.Schema(
       enum: ["DESKTOP", "ANDROID", "MAC", "ALL"],
       default: "ALL",
     },
-    completedBy: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
+    completedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     rating: {
       type: Number,
       default: 5,
     },
-    reviews: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "AppsReview",
-      default: [],
-    },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "AppsReview",
+      },
+    ],
     quizes: {
       type: [
         {

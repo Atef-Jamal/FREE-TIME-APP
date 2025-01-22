@@ -26,8 +26,8 @@ const conversationSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    lastMessage: { type: messageSchema },
-    messages: { type: [messageSchema], default: [] },
+    lastMessage: { type: messageSchema, default: null },
+    messages: [messageSchema],
   },
   {
     timestamps: true,

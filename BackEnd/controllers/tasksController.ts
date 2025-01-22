@@ -2,11 +2,12 @@
 import { Request, Response } from "express";
 import Task from "../models/task";
 import User from "../models/user";
-import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { io } from "../app";
 import AppsReview from "../models/appsReview";
 import { onLineUsers } from "../socketIo/socketIo";
+import QuizeApp from "../models/notifications/quizeApp";
+import GuessCard from "../models/notifications/guessCard";
 
 type IFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
 type IFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
@@ -131,10 +132,10 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     task.completedBy.push(currentUserId);
     const savedTask = await task.save();
     await User.findByIdAndUpdate(currentUserId, { $push: { completedTasks: quizappId } }, { new: true });
-    const createNotification = new Notification({
+    const createNotification = new QuizeApp({
+      type: "QUIZ-APP",
       belongsTo: currentUserId,
       isCollected: false,
-      type: "QUIZ-APP",
       prize: savedTask.prize,
     });
     const createPublicMessage = new PublicMessage({
@@ -164,6 +165,7 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     if (!task) {
       return res.status(404).json({ error: "Game Not Found" });
     }
+
     if (task.isAvailable === "UNAVAILABLE") {
       return res.status(404).json({ error: "sorry, this app is not available" });
     }
@@ -183,22 +185,21 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     task.completedBy.push(user._id);
     user.completedTasks.push(task._id);
 
-    const createNotification = new Notification({
-      belongsTo: user._id,
+    const createNotification = new GuessCard({
       type: "GUESS-CARD",
+      belongsTo: user._id,
       isCollected: false,
-      prize: 48,
+      prize: task.prize,
     });
     const savedNotification = await createNotification.save();
     const createPublicMessage = new PublicMessage({
-      sender: user._id,
       type: "FREETIME",
+      sender: user._id,
       typeOfTask: "TASK",
     });
     const savePublicMessage = await createPublicMessage.save();
     const populatedPublicMessage = await savePublicMessage.populate("sender", "-password");
     io.to(onLineUsers[user._id.toString()]).emit("new-notification", savedNotification);
-
     io.emit("public-message", populatedPublicMessage);
     await user.save();
     await task.save();

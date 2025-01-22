@@ -2,7 +2,6 @@ import express from "express";
 import protectedRoute from "../middleware";
 import {
   getNotifications,
-  createNotification,
   markAsReaded,
   getUserActivities,
   collectReward,
@@ -11,8 +10,7 @@ const router = express.Router();
 
 router.get("/my-notifications", protectedRoute, getNotifications);
 router.get("/:id", getUserActivities);
-router.post("/", protectedRoute, createNotification);
 router.patch("/", protectedRoute, markAsReaded);
-router.patch("/collect/:id", protectedRoute, collectReward);
+router.patch("/collect/:id/:modelName", protectedRoute, collectReward);
 
 export default router;

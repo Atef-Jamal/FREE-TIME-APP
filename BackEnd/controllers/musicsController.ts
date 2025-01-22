@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 import { io } from "../app";
-import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import { onLineUsers } from "../socketIo/socketIo";
+import Music from "../models/notifications/music";
 
 export const buyMusic = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
@@ -29,7 +29,7 @@ export const buyMusic = async (req: Request, res: Response) => {
     user.points = user.points - 10;
     user.mySongs.push(songId);
 
-    const createNotification = new Notification({
+    const createNotification = new Music({
       belongsTo: currentUserId,
       type: "MUSIC",
       price: 10,

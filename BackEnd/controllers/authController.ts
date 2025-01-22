@@ -3,11 +3,12 @@ import bcrypt from "bcryptjs";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
 import { io } from "../app";
-import Notification from "../models/notification";
 import PublicMessage from "../models/publicMessage";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { onLineUsers } from "../socketIo/socketIo";
+import Referrer from "../models/notifications/referrer";
+import EmailVerfication from "../models/notifications/emailVerfication";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword, profilePicture } = req.body;
@@ -48,9 +49,9 @@ export const register = async (req: Request, res: Response) => {
     if (referrerUser) {
       const existedUser = await User.findById(referrerUser);
       if (existedUser) {
-        const createNotification = new Notification({
-          belongsTo: referrerUser,
+        const createNotification = new Referrer({
           type: "REFERRER",
+          belongsTo: referrerUser,
           isCollected: false,
           referredUser: savedUser._id,
           prize: 100,
@@ -72,7 +73,6 @@ export const register = async (req: Request, res: Response) => {
         io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", savedNotification);
       }
     }
-    io.emit("new-user-joined", savedUser);
     return res.status(201).json({ ...savedUser, token });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again Later" });
@@ -216,9 +216,10 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     user.emailVerified = true;
     const savedUser = await user.save();
 
-    const createNotification = new Notification({
-      belongsTo: currentUserId,
+    const createNotification = new EmailVerfication({
       type: "EMAIL-VERIFIED",
+      belongsTo: currentUserId,
+      isCollected: false,
       prize: 100,
     });
     const savedNotification = await createNotification.save();

@@ -7,7 +7,7 @@ const profileVisitsSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    visiter: {
+    visitor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,

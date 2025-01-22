@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useRef,
   useState,
-  useEffect,
   Dispatch,
   SetStateAction,
 } from "react";
@@ -36,7 +35,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [mentionedUsers, setMentionedUsers] = useState<IUser[]>([]);
+  const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
   const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -58,7 +57,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
         likes: [],
         dislikes: [],
         isDeleted: false,
-        mentioned: mentionedUsers,
+        mentionedUsers: mentionedUsers,
         createdAt: new Date(new Date().toLocaleString("en-US")),
         updatedAt: new Date(new Date().toLocaleString("en-US")),
         isSended: "PENDING",
@@ -111,8 +110,8 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
         },
       );
       socket?.emit("public-message", data);
-      if (mentionedUsers.length > 0) {
-        setMentionedUsers([]);
+      if (mentionedUsers.size > 0) {
+        setMentionedUsers(new Set());
       }
     },
     onError: (error, _, context) => {
@@ -126,7 +125,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
           likes: [],
           dislikes: [],
           isDeleted: false,
-          mentioned: mentionedUsers,
+          mentionedUsers: mentionedUsers,
           createdAt: new Date(new Date().toLocaleString("en-US")),
           updatedAt: new Date(new Date().toLocaleString("en-US")),
           isSended: "FAILED",
@@ -183,7 +182,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     });
     if (stopScrolling) setStopScrolling(false);
 
-    mutation.mutate({ message, mentionedUsers });
+    mutation.mutate({ message, mentionedUsers: [...mentionedUsers].map((i) => i._id) });
   };
 
   const handleInputChange = useCallback(
@@ -241,84 +240,76 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     handlers: [handleTyping, handleStopTyping],
   });
 
-  useEffect(() => {
-    return () => {
-      socket?.emit("stop-typing-public-message");
-    };
-  }, [socket]);
-
   return (
-    <div className="relative">
-      {currentUserStatus !== "authenticated" && (
-        <div className="absolute z-[1] flex h-full w-full items-center justify-center gap-x-3">
-          <FcLock className="text-2xl" />
-          <span className="">Register To Unlock</span>
+    <div className={cn("relative flex flex-col")}>
+      {openMentionList && (
+        <div className="absolute -top-[152px] left-0 h-[150px] w-full border border-gray-500">
+          <MentionListOfUsers setMentionedUsers={setMentionedUsers} setOpenMentionList={setOpenMentionList} />
         </div>
       )}
 
-      <div className={cn("relative flex flex-col", currentUserStatus !== "authenticated" && "blur-[2.5px]")}>
-        {openMentionList && (
-          <div className="absolute -top-[152px] left-0 h-[150px] w-full border border-gray-500">
-            <MentionListOfUsers
-              setMentionedUsers={setMentionedUsers}
-              setOpenMentionList={setOpenMentionList}
-            />
+      <div className="flex items-center gap-x-1 bg-[#302d2dee] p-[2px] lg:px-2">
+        <span className="flex items-center justify-center text-xs text-[#a5a760]">
+          <RiBaseStationLine className="text-lg" />
+          <span className="mx-1 text-[#83db5a]">{onlineUsers.length}</span>
+          Onlines
+        </span>
+
+        {somoneTyping && <p className="text-xs">somone is typing...</p>}
+
+        <div className="flex flex-1 items-center gap-x-1 overflow-x-auto scrollbar-thin">
+          {[...mentionedUsers].map((user) => (
+            <div
+              key={user._id}
+              onClick={() =>
+                setMentionedUsers(
+                  (prev) => new Set([...prev].filter((prevUser) => prevUser._id !== user._id)),
+                )
+              }
+              className="flex items-center justify-center gap-x-2 rounded-sm bg-[#201d42] px-1 py-[2px]"
+            >
+              <span className="text-[10px]">{user.name}</span>
+              <span className="text-[10px]">x</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <form className={"relative flex items-center justify-center"}>
+        {currentUserStatus !== "authenticated" && (
+          <div className="absolute z-[1] flex h-full w-full items-center justify-center gap-x-3 backdrop-blur-[2.5px] backdrop-brightness-[0.7]">
+            <FcLock className="text-2xl" />
+            <span className="">Register To Unlock</span>
           </div>
         )}
+        <textarea
+          ref={inputRef}
+          onChange={handleInputChange}
+          readOnly={!currentUser}
+          value={message}
+          placeholder={!currentUser ? "Register First " : "Type here.."}
+          rows={1}
+          className={
+            "max-h-[250px] min-h-[35px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm lg:text-base"
+          }
+        />
 
-        <div className="flex items-center gap-x-1 bg-[#302d2dee] p-[2px] lg:px-2">
-          <span className="flex items-center justify-center text-xs text-[#a5a760]">
-            <RiBaseStationLine className="text-lg" />
-            <span className="mx-1 text-[#83db5a]">{onlineUsers.length}</span>
-            Onlines
-          </span>
+        <span
+          onClick={handleOpenMentionList}
+          className="flex h-[35px] w-[45px] items-center justify-center bg-[#542ba06e] text-lg font-bold text-gray-400 md:h-[36px] lg:h-[40px]"
+        >
+          @
+        </span>
 
-          {somoneTyping && <p className="text-xs">somone is typing...</p>}
-
-          <div className="flex flex-1 items-center gap-x-1 overflow-x-auto scrollbar-thin">
-            {mentionedUsers.map((user) => (
-              <div
-                key={user._id}
-                onClick={() => setMentionedUsers([])}
-                className="flex items-center justify-center gap-x-2 rounded-sm bg-[#201d42] px-1 py-[2px]"
-              >
-                <span className="text-[10px]">{user.name}</span>
-                <span className="text-[10px]">x</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <form className={"flex w-full items-end justify-center gap-x-1"}>
-          <textarea
-            ref={inputRef}
-            onChange={handleInputChange}
-            readOnly={!currentUser}
-            value={message}
-            placeholder={!currentUser ? "Register First " : "Type here.."}
-            rows={1}
-            className={
-              "max-h-[250px] min-h-[35px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] outline-none scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 md:text-sm lg:text-base"
-            }
-          />
-
-          <span
-            onClick={handleOpenMentionList}
-            className="flex h-[35px] w-[45px] items-center justify-center bg-[#542ba06e] text-lg font-bold text-gray-400 md:h-[36px] lg:h-[40px]"
-          >
-            @
-          </span>
-
-          <button
-            type="submit"
-            className="flex h-[35px] w-[55px] items-center justify-center bg-[#217ebbf3] md:h-[36px] lg:h-[40px]"
-            onClick={sendMessageHandler}
-            disabled={!currentUser || mutation.isPending}
-          >
-            <MdSend className="text-xl" />
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          className="flex h-[35px] w-[55px] items-center justify-center bg-[#217ebbf3] md:h-[36px] lg:h-[40px]"
+          onClick={sendMessageHandler}
+          disabled={!currentUser || mutation.isPending}
+        >
+          <MdSend className="text-xl" />
+        </button>
+      </form>
     </div>
   );
 };

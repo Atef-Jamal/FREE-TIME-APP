@@ -6,10 +6,10 @@ const Model = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="fixed z-[11] flex h-screen w-screen items-center justify-center">
+    <div className="fixed z-[11] flex h-[100dvh] w-[100dvw] items-center justify-center">
       <div
         onClick={() => dispatch(resetModel())}
-        className="absolute z-[-1] h-full w-full bg-[#0b0b119c] backdrop-blur-sm"
+        className="absolute z-[-1] h-full w-full backdrop-blur-sm backdrop-brightness-[0.6]"
       ></div>
       <Suspense
         fallback={

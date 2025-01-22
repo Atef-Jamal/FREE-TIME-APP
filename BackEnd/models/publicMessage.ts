@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const PublicMessageSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      enum: ["MESSAGE", "FREETIME"],
+      required: true,
+    },
     sender: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
@@ -15,11 +20,6 @@ const PublicMessageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    type: {
-      type: String,
-      enum: ["MESSAGE", "FREETIME"],
-      required: true,
-    },
     newUserReferred: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -31,22 +31,26 @@ const PublicMessageSchema = new mongoose.Schema(
       type: String,
       enum: ["REFERRER", "TASK", "MUSIC", "FRAME", "EMAIL-VERIFIED"],
     },
-    likes: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
-    dislikes: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
-    loves: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
-    mentioned: [
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    dislikes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    loves: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
+    mentionedUsers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

@@ -28,6 +28,6 @@ export interface IVisitor {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
-  visiter: IUser;
+  visitor: IUser;
   visited: string;
 }

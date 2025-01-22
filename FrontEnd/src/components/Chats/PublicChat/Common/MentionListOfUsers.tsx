@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getOnlineUsers } from "../../../../utils";
 
 interface IProps {
-  setMentionedUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
+  setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
   setOpenMentionList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -54,7 +54,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
           return (
             <div
               key={user._id}
-              onClick={() => setMentionedUsers((prev) => [...prev, user])}
+              onClick={() => setMentionedUsers((prev) => new Set(prev.add(user)))}
               className="flex w-full items-center justify-between rounded-sm bg-[#475aa02c] px-3 py-2 hover:bg-[#475aa06b]"
             >
               <p className="text-xs font-bold tracking-wide text-blue-700">@{user.name}</p>

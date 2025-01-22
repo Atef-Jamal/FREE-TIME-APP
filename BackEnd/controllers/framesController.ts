@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import Frame from "../models/frame";
 import User from "../models/user";
-import Notification from "../models/notification";
 import { io } from "../app";
 import PublicMessage from "../models/publicMessage";
 import { onLineUsers } from "../socketIo/socketIo";
+import BuyFrame from "../models/notifications/buyFrame";
 
 export const getAllFrames = async (_: Request, res: Response) => {
   try {
@@ -49,10 +49,11 @@ export const buyFrame = async (req: Request, res: Response) => {
     getFrame.purshasedBy.push(_id);
     const savedFrame = await getFrame.save();
 
-    const createNotification = new Notification({
-      belongsTo: _id,
+    const createNotification = new BuyFrame({
       type: "BUY-FRAME",
+      belongsTo: _id,
       frame: getFrame._id,
+      price: getFrame.price,
     });
 
     const saveNotification = await createNotification.save();

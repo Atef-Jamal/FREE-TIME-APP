@@ -78,10 +78,10 @@ const WhoVisitProfile = () => {
               >
                 <div className="flex items-center justify-center gap-3">
                   <div className="h-8 w-8 rounded-full">
-                    <img src={item.visiter.profilePicture} alt="" className="rounded-full object-contain" />
+                    <img src={item.visitor.profilePicture} alt="" className="rounded-full object-contain" />
                   </div>
                   <Link to={`/user/${item._id}`} className="text-sm text-[#8a84eb] underline">
-                    {item.visiter.name}
+                    {item.visitor.name}
                   </Link>
                 </div>
                 <span className="text-[#b38b8b] sm:text-sm">{formateDate(item.createdAt)}</span>

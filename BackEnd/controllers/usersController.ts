@@ -104,7 +104,7 @@ export const userVisited = async (req: Request, res: Response) => {
     }
     const newVisit = new ProfileVisits({
       visited: userVisitedId,
-      visiter: currentUserId,
+      visitor: currentUserId,
     });
 
     await newVisit.save();
@@ -167,13 +167,13 @@ export const getWhoVisitMe = async (req: Request, res: Response) => {
 
     user.points = user.points - 5;
 
-    const visiters = await ProfileVisits.find({
+    const visitors = await ProfileVisits.find({
       visited: currentUserId,
-    }).populate("visiter", "_id name profilePicture activeFrame");
+    }).populate("visitor", "_id name profilePicture activeFrame");
 
     const savedUser = await user.save();
 
-    return res.status(200).json({ users: visiters, points: savedUser.points });
+    return res.status(200).json({ users: visitors, points: savedUser.points });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
   }

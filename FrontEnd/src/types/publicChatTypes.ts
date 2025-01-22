@@ -11,7 +11,7 @@ export interface IPublicChatMessage {
   likes: string[];
   dislikes: string[];
   loves: string[];
-  mentioned: IUser[];
+  mentionedUsers: Set<IUser>;
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }
 

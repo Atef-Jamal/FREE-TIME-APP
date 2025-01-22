@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import { openModel } from "../../../context/StateManeger";
 import { fetchMyNotifications } from "../../../utils";
@@ -8,11 +8,12 @@ import { IoMdNotifications } from "react-icons/io";
 import ApplyCoupon from "../../Others/ApplyCoupon";
 import UserImage from "../../Others/UserImage";
 import ProfileMenu from "./ProfileMenu";
-import NotificationMenu from "../Notifications/NotificationMenu";
 import { ICashedNotificaions, INotifications } from "../../../types/notificationTypes";
 import { useListenToSocketEvents } from "../../../hooks";
 import { FaPlus } from "react-icons/fa6";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
+
+const NotificationMenu = lazy(() => import("../Notifications/NotificationMenu"));
 
 const ProfileActions = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);

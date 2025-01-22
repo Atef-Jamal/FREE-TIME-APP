@@ -3,6 +3,7 @@ import { RefObject } from "react";
 import { makeRequest } from "../utils";
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { INotificationModelName } from "../types/notificationTypes";
 
 export const validation = (values: string[], signIn: boolean, agreePrivacy?: boolean) => {
   let result = `Must Be Exist-`;
@@ -75,7 +76,6 @@ export function calculateTimeLeft(startDate: Date) {
   return { days, hours, minutes, seconds };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const handleApiError = (error: any) => {
   let errorMessage = "";
   if (error?.response.data?.error && typeof error.response.data.error === "string") {
@@ -86,8 +86,8 @@ export const handleApiError = (error: any) => {
   return errorMessage;
 };
 
-export const collectReward = async (notificationId: string) => {
-  const response = await makeRequest.patch(`api/notifications/collect/${notificationId}`, {
+export const collectReward = async (notificationId: string, modelName: INotificationModelName) => {
+  const response = await makeRequest.patch(`api/notifications/collect/${notificationId}/${modelName}`, {
     FOR_CONSISTENCY: "FOR_CONSISTENCY",
   });
   return response.data;

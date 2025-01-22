@@ -187,14 +187,16 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
       {!messageItem.isDeleted ? (
         <div className="pl-[3px]">
           <p className="w-full break-words p-[2px] text-sm text-[#97b5f7]">
-            {messageItem.mentioned.map((user) => (
+            {[...messageItem.mentionedUsers].map((user) => (
               <Link
+                key={user._id}
                 to={`/user/${user._id}`}
                 className="mr-2 text-[10.5px] font-extrabold text-blue-700 sm:text-xs"
               >
-                @{user.name}
+                @{user.name}{" "}
               </Link>
             ))}
+
             {messageItem.message}
           </p>
           <div className="ml-auto flex w-full items-center justify-end gap-x-3">

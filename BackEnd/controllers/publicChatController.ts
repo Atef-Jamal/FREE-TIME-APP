@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import PublicMessage from "../models/publicMessage";
-import Notification from "../models/notification";
 import { io } from "../app";
 import { onLineUsers } from "../socketIo/socketIo";
+import Mention from "../models/notifications/mention";
+import MessageInteraction from "../models/notifications/messageInteraction";
 
 export const getAllPublicMessages = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
@@ -16,7 +18,7 @@ export const getAllPublicMessages = async (req: Request, res: Response) => {
       .limit(limit)
       .populate([
         { path: "sender", select: "-password" },
-        { path: "mentioned", select: "-password" },
+        { path: "mentionedUsers", select: "-password" },
         { path: "newUserReferred", select: "-password" },
       ]);
 
@@ -37,33 +39,32 @@ export const createPublicMessage = async (req: Request, res: Response) => {
     const message = new PublicMessage({
       sender: currentUserId,
       message: messageText,
-      mentioned: mentionedUsers,
+      mentionedUsers: mentionedUsers,
       type,
     });
 
     const saveMessage = await message.save();
     const savedMessage = await saveMessage.populate([
       { path: "sender", select: "-password" },
-      { path: "mentioned", select: "-password" },
+      { path: "mentionedUsers", select: "-password" },
       { path: "newUserReferred", select: "-password" },
     ]);
 
     if (mentionedUsers.length > 0) {
       const newNotifications: any[] = [];
-
-      mentionedUsers.forEach((user: any) => {
-        const newNotification = new Notification({
-          belongsTo: user._id,
+      mentionedUsers.forEach((userId: any) => {
+        const newNotification = new Mention({
           type: "MENTION",
+          belongsTo: userId,
           mentionedUser: currentUserId,
           messageLocation: saveMessage._id,
         });
         newNotifications.push(newNotification);
       });
 
-      const saveNotifications = await Notification.insertMany(newNotifications);
+      const saveNotifications = await Mention.insertMany(newNotifications);
       const ids = saveNotifications.map((item) => item._id);
-      const getCreatedNotifications = await Notification.find({ _id: { $in: ids } }).populate(
+      const getCreatedNotifications = await Mention.find({ _id: { $in: ids } }).populate(
         "mentionedUser",
         "-password",
       );
@@ -99,7 +100,7 @@ export const getSingleMessage = async (req: Request, res: Response) => {
   try {
     const message = await PublicMessage.findById(messageId).populate([
       { path: "sender", select: "-password" },
-      { path: "mentioned", select: "-password" },
+      { path: "mentionedUsers", select: "-password" },
     ]);
     if (!message) {
       return res.status(404).json({ error: "Message Not Found" });
@@ -134,11 +135,10 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
       message[fieldName].splice(index, 1);
     } else {
       message[fieldName].push(currentUserId);
-      const interactedWithMessageBefore = await Notification.findOne({
+      const interactedWithMessageBefore = await MessageInteraction.findOne({
         belongsTo: message.sender._id,
         interactedUser: currentUserId,
         messageLocation: message._id,
-        // typeOfInteraction: fieldName,
       });
 
       if (interactedWithMessageBefore && interactedWithMessageBefore.typeOfInteraction !== fieldName) {
@@ -156,12 +156,12 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
       }
 
       if (!interactedWithMessageBefore && message.sender._id.toString() !== currentUserId.toString()) {
-        const createNotification = new Notification({
+        const createNotification = new MessageInteraction({
           type: "INTERACT-WITH-MESSAGE",
           belongsTo: message.sender._id,
+          interactedUser: currentUserId,
           messageLocation: message._id,
           typeOfInteraction: fieldName,
-          interactedUser: currentUserId,
         });
 
         const savedNotification = await (
@@ -188,7 +188,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
     const saveMessage = await message.save();
     const savedMessage = await saveMessage.populate([
       { path: "sender", select: "-password" },
-      { path: "mentioned", select: "-password" },
+      { path: "mentionedUsers", select: "-password" },
     ]);
 
     return res.status(200).json(savedMessage);

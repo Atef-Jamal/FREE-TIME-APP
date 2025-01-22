@@ -265,12 +265,12 @@ export const sendPublicChatMessage = async ({
   mentionedUsers,
 }: {
   message: string;
-  mentionedUsers: IUser[];
+  mentionedUsers: string[];
 }): Promise<IPublicChatMessage> => {
   const response = await makeRequest.post("api/publicchat", {
     type: "MESSAGE",
     messageText: message,
-    mentioned: mentionedUsers,
+    mentionedUsers: mentionedUsers,
   });
   const messageData = response.data;
   return messageData;

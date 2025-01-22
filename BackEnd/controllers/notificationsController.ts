@@ -1,16 +1,36 @@
 import { Request, Response } from "express";
-import Notification from "../models/notification";
 import User from "../models/user";
+import Referrer from "../models/notifications/referrer";
+import Mention from "../models/notifications/mention";
+import QuizeApp from "../models/notifications/quizeApp";
+import GuessCard from "../models/notifications/guessCard";
+import EmailVerfication from "../models/notifications/emailVerfication";
+import Music from "../models/notifications/music";
+import Announcement from "../models/notifications/announcement";
+import MessageInteraction from "../models/notifications/messageInteraction";
+import BuyFrame from "../models/notifications/buyFrame";
+import mongoose from "mongoose";
 
 export const getNotifications = async (req: Request, res: Response) => {
   const userId = req.currentUser._id;
   try {
-    const notifications = await Notification.find({
-      belongsTo: userId,
-    })
-      .sort({ updatedAt: "descending" })
-      .populate(["mentionedUser", "referredUser", "frame", "interactedUser"]);
+    const promises = [
+      Referrer.find({ belongsTo: userId }).populate("referredUser", "-password"),
+      Mention.find({ belongsTo: userId }).populate("mentionedUser", "-password"),
+      MessageInteraction.find({ belongsTo: userId }).populate("interactedUser", "-password"),
+      BuyFrame.find({ belongsTo: userId }).populate("frame"),
+      QuizeApp.find({ belongsTo: userId }),
+      GuessCard.find({ belongsTo: userId }),
+      EmailVerfication.find({ belongsTo: userId }),
+      Music.find({ belongsTo: userId }),
+      Announcement.find({ belongsTo: userId }),
+    ];
 
+    const allNotifications = await Promise.all(promises);
+
+    const notifications = allNotifications
+      .flat()
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     return res.status(200).json(notifications);
   } catch (error) {
     return res.status(404).json({ error: "can't Load your Notifications" });
@@ -20,46 +40,43 @@ export const getNotifications = async (req: Request, res: Response) => {
 export const getUserActivities = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
-    const allNotifications = await Notification.find({
-      belongsTo: userId,
-    })
-      .populate("referredUser", "-password")
-      .populate("frame");
-    return res.status(200).json(allNotifications);
+
+    const promises = [
+      Referrer.find({ belongsTo: userId }).populate("referredUser", "-password"),
+      BuyFrame.find({ belongsTo: userId }).populate("frame"),
+      QuizeApp.find({ belongsTo: userId }),
+      GuessCard.find({ belongsTo: userId }),
+      EmailVerfication.find({ belongsTo: userId }),
+      Music.find({ belongsTo: userId }),
+    ];
+
+    const allNotifications = await Promise.all(promises);
+    const notifications = allNotifications
+      .flat()
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return res.status(200).json(notifications);
   } catch (error) {
     return res.status(404).json({ error: "can't get user Activities" });
   }
 };
 
-export const createNotification = async (req: Request, res: Response) => {
-  const requestBody = req.body;
-  try {
-    const notification = new Notification(requestBody);
-
-    if (!notification) {
-      return res.status(404).json({ error: "can't create notification" });
-    }
-
-    return res.status(200).json(notification);
-  } catch (error) {
-    return res.status(200).json({ error: "an Error occurred" });
-  }
-};
-
 export const markAsReaded = async (req: Request, res: Response) => {
-  const userid = req.currentUser._id;
-
+  const userId = req.currentUser._id;
   try {
-    const notifications = await Notification.updateMany(
-      { belongsTo: userid, isRead: false },
-      { isRead: true },
-    );
+    const promises = [
+      Referrer.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      Mention.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      MessageInteraction.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      BuyFrame.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      QuizeApp.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      GuessCard.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      EmailVerfication.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      Music.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+      Announcement.updateMany({ belongsTo: userId, isRead: false }, { isRead: true }),
+    ];
+    await Promise.all(promises);
 
-    if (!notifications) {
-      return res.status(404).json({ error: "Somtign went wrong" });
-    }
-
-    return res.status(200).json(notifications);
+    return res.status(200).json([]);
   } catch (error) {
     return res.status(404).json({ error: "an unexpected Error happened" });
   }
@@ -67,28 +84,23 @@ export const markAsReaded = async (req: Request, res: Response) => {
 
 export const collectReward = async (req: Request, res: Response) => {
   const notificationId = req.params.id;
+  const modelName = req.params.modelName;
   const currentUserId = req.currentUser._id;
 
   try {
-    const notify = await Notification.findById(notificationId);
-
+    const notify = await mongoose.models[modelName].findById(notificationId);
     if (!notify) {
       return res.status(404).json({ error: "Reward Not Found" });
     }
     const isCollectedBefore = notify.isCollected;
-
     if (isCollectedBefore) {
       return res.status(404).json({ error: "Reward Already collected" });
     }
-
     await User.findByIdAndUpdate(currentUserId, {
       $inc: { points: notify.prize },
     });
-
     notify.isCollected = true;
-
     const saveNotify = await notify.save();
-
     return res.status(200).json(saveNotify);
   } catch (error) {
     return res.status(404).json({ error: "can't collect a Reward, an error occurred" });

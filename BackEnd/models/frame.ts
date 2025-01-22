@@ -18,11 +18,12 @@ const framesSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    purshasedBy: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
+    purshasedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true },
 );

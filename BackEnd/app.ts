@@ -15,17 +15,29 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
+// app.use(
+//   cors({
+//     origin: [process.env.CLIENT_BASE_URL!],
+//   }),
+// );
+
 app.use(
   cors({
-    origin: [process.env.CLIENT_BASE_URL!],
+    origin: "*",
   }),
 );
 
 export const io = new Server(server, {
   cors: {
-    origin: [process.env.CLIENT_BASE_URL!],
+    origin: "*",
   },
 });
+
+// export const io = new Server(server, {
+//   cors: {
+//     origin: [process.env.CLIENT_BASE_URL!],
+//   },
+// });
 
 connecteToMongodb();
 socketOperations(io);

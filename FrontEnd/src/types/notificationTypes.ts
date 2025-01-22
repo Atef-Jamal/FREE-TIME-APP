@@ -43,6 +43,7 @@ export interface IBuyFrameNotify {
   updatedAt: Date;
   isRead: boolean;
   frame: IFrame;
+  price: number;
 }
 export interface IQuizTaskNotify {
   _id: string;
@@ -67,14 +68,15 @@ export interface IGuessCardTaskNotify {
   createdAt: Date;
   isRead: boolean;
 }
+
 export interface IMusicNotify {
   _id: string;
   type: "MUSIC";
+  isRead: boolean;
   musicId: string;
   musicTitle: string;
   price: number;
   createdAt: Date;
-  isRead: boolean;
 }
 
 export type INotifications =
@@ -87,5 +89,7 @@ export type INotifications =
   | IGuessCardTaskNotify
   | IMusicNotify
   | IInteractWithMessageNotify;
+
+export type INotificationModelName = "Referrer" | "EmailVerfication" | "GuessCard" | "QuizeApp" | "Referrer";
 
 export type ICashedNotificaions = INotifications[];
