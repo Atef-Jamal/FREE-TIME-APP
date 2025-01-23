@@ -13,9 +13,12 @@ import { BsCashStack } from "react-icons/bs";
 import { TbAffiliateFilled } from "react-icons/tb";
 import { MdStorefront } from "react-icons/md";
 import { BiSolidMessageAltDetail } from "react-icons/bi";
-import { IoHomeSharp } from "react-icons/io5";
+import { IoChatbubblesSharp, IoHomeSharp } from "react-icons/io5";
 import { FaMusic } from "react-icons/fa6";
-
+import { DiAndroid } from "react-icons/di";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoDesktop } from "react-icons/io5";
+import { SiApple, SiFirewalla } from "react-icons/si";
 import {
   paypalShopLogo,
   bitcoinShopLogo,
@@ -43,6 +46,9 @@ import {
   csgoShopLogo,
   achShopLogo,
 } from "../assets";
+import { IFilterByDevice, IFilterByPopularity } from "../types/earnTypes";
+import { VscExpandAll } from "react-icons/vsc";
+import { FaHeart, FaStar } from "react-icons/fa";
 
 export const sidebareItems = [
   {
@@ -89,6 +95,62 @@ export const sidebareItems = [
     title: "Cashout",
     path: "cashout",
     icon: <BsCashStack />,
+  },
+];
+export const mobileNavBottomItems = [
+  {
+    path: "leaderboard",
+    icon: <MdLeaderboard className="text-xl" />,
+  },
+  {
+    path: "earn",
+    icon: <RiMoneyPoundBoxFill className="text-2xl" />,
+  },
+  {
+    path: "rewards",
+    icon: <GiWantedReward className="text-2xl" />,
+  },
+  {
+    path: "chat",
+    icon: <IoChatbubblesSharp className="text-2xl" />,
+  },
+];
+
+export const filterByDeviceMenuItems: { value: IFilterByDevice; icon: React.ReactNode }[] = [
+  {
+    value: "ALL",
+    icon: <GiHamburgerMenu className="text-lg" />,
+  },
+  {
+    value: "DESKTOP",
+    icon: <IoDesktop className="text-lg" />,
+  },
+  {
+    value: "ANDROID",
+    icon: <DiAndroid className="text-lg" />,
+  },
+  {
+    value: "MAC",
+    icon: <SiApple className="text-lg" />,
+  },
+];
+
+export const filterByPopularMenuItems: { value: IFilterByPopularity; icon: React.ReactNode }[] = [
+  {
+    value: "ALL",
+    icon: <VscExpandAll className="text-lg" />,
+  },
+  {
+    value: "REWARD",
+    icon: <SiFirewalla className="text-lg" />,
+  },
+  {
+    value: "POPULAR",
+    icon: <FaHeart className="text-lg" />,
+  },
+  {
+    value: "RAITING",
+    icon: <FaStar className="text-lg" />,
   },
 ];
 

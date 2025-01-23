@@ -6,9 +6,11 @@ import { Provider } from "react-redux";
 import store from "./context/store";
 import App from "./App";
 import "./index.css";
+import "./App.css";
 import "@fontsource/poppins";
 import "@fontsource/roboto";
 import "./i18next";
+
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
@@ -18,7 +20,7 @@ root.render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <App />
-        <SpeedInsights />
+        <SpeedInsights debug={false} />
       </QueryClientProvider>
     </Provider>
   </StrictMode>,

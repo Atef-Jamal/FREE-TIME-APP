@@ -2,197 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: "Poppins", system-ui, sans-serif;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #e7dcdc;
+    scroll-behavior: smooth;
+  }
+  @supports (-moz-appearance: none) {
+    @-moz-document url-prefix() {
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #635e6d #37363d;
+      }
+    }
+  }
+}
+
 @layer utilities {
   .scrollbar-custom {
     @apply [&::-webkit-scrollbar-thumb]:bg-[#79b6fc] [&::-webkit-scrollbar-track]:bg-[#5e5d5dee] [&::-webkit-scrollbar]:w-2;
   }
   .scrollbar-custom-livestats {
     @apply [&::-webkit-scrollbar-thumb]:bg-[#79b6fc] [&::-webkit-scrollbar-track]:bg-[#5e5d5dee] [&::-webkit-scrollbar]:h-1;
-  }
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  color: #e7dcdc;
-  scroll-behavior: smooth;
-}
-
-@layer base {
-  html {
-    font-family: "Poppins", system-ui, sans-serif;
-  }
-}
-
-body {
-  background-color: #222337;
-  min-height: 100dvh;
-}
-
-::-webkit-scrollbar {
-  width: 13px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a071670;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #5ba06e;
-}
-
-.select__languages::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: 25px;
-  width: 10px;
-  height: 10px;
-  background-color: #33334d;
-  rotate: 45deg;
-}
-
-.reach__level::before {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  rotate: 40deg;
-  background-color: #242438;
-  top: 7px;
-  left: 22px;
-}
-
-.reach__level::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  rotate: 40deg;
-  background-color: #242438;
-  top: 7px;
-  right: 22px;
-}
-
-.light__animation__one {
-  animation: firstAnimation 300ms linear infinite alternate;
-}
-.light__animation__two {
-  animation: secondAnimation 300ms linear infinite alternate;
-}
-
-@keyframes firstAnimation {
-  from {
-    background-color: #3d3d5f;
-  }
-  to {
-    background-color: #01d676;
-  }
-}
-
-@keyframes secondAnimation {
-  from {
-    background-color: #01d676;
-  }
-  to {
-    background-color: #3d3d5f;
-  }
-}
-
-.affiliate__background__left {
-  background-image: url("./assets/images/coins-gray-left.png");
-  background-position: left top;
-  background-repeat: no-repeat;
-  background-size: 300px;
-}
-
-@media (max-width: 760px) {
-  .affiliate__background__left {
-    background-image: url("./assets/images/coins-gray-left.png");
-    background-position: top;
-    background-repeat: no-repeat;
-    background-size: 400px;
-  }
-}
-
-.stars__background {
-  background-image: url("./assets/images/stars.svg");
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.activeElement {
-  border: 1px solid #ffffff;
-  animation: activeElementAnimation 1100ms infinite linear;
-}
-
-@keyframes activeElementAnimation {
-  to {
-    opacity: 0.3;
-  }
-}
-
-.activeQuizeChoise {
-  background-color: rgba(127, 216, 38, 0.692);
-  color: black;
-}
-
-.active-guesscard {
-  transition: all ease 300ms;
-  transform: rotate(0deg);
-  background-color: rgb(25, 90, 81);
-}
-
-.skeleton-box::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0,
-    rgba(206, 201, 201, 0.2) 20%,
-    rgba(201, 170, 170, 0.5) 60%,
-    rgba(255, 255, 255, 0)
-  );
-  -webkit-animation: shimmer 1000ms infinite;
-  animation: shimmer 1000ms infinite;
-  content: "";
-}
-
-@-webkit-keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.leaderboardUserRankNumber {
-  box-shadow:
-    rgba(60, 255, 1, 0.432) 0px -23px 25px 0px inset,
-    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
-    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset,
-    rgba(0, 0, 0, 0.06) 0px 2px 1px,
-    rgba(0, 0, 0, 0.09) 0px 4px 2px,
-    rgba(0, 0, 0, 0.09) 0px 8px 4px,
-    rgba(51, 255, 0, 0.09) 0px 16px 8px,
-    rgba(31, 31, 30, 0.09) 0px 32px 16px;
-}
-
-.loadingAnimation {
-  animation: loadingAnimation infinite 1s linear;
-}
-
-@keyframes loadingAnimation {
-  to {
-    transform: rotate(365deg);
   }
 }

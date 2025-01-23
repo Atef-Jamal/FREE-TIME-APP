@@ -1,10 +1,10 @@
 import { MouseEvent, useState } from "react";
+import { ImSpinner3 } from "react-icons/im";
+import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { setCurrentUser, showPopup } from "../../context/StateManeger";
-import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
-import { ImSpinner3 } from "react-icons/im";
 import { IQuizTask } from "../../types/earnTypes";
 
 interface IProps {
@@ -156,7 +156,7 @@ const QuizTask = ({ taskApp }: IProps) => {
         <>
           {results.corrects > results.wrongs && (
             <div className="mx-2 flex h-[150px] w-[400px] flex-col items-center justify-center gap-2 rounded-sm bg-[#422c75c5]">
-              <div className="xs:gap-1 flex justify-center gap-3">
+              <div className="flex justify-center gap-1 md:gap-3">
                 <BsCheck2Circle className="text-3xl" />
                 <p className="font-500 text-center text-gray-400">
                   <span className="mr-1 font-bold text-[#8ecf58]">Congratulation!</span>

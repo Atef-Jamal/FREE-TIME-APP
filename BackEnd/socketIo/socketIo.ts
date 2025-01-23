@@ -17,6 +17,10 @@ const socketOperations = function (io: TypeIO) {
       socket.broadcast.emit("user-updated", updatedUser);
     };
 
+    const handleNewUserRegistered = () => {
+      socket.broadcast.emit("new-user-registered");
+    };
+
     const handleNewPublicMessage = (message: any) => {
       socket.broadcast.emit("public-message", message);
     };
@@ -48,6 +52,7 @@ const socketOperations = function (io: TypeIO) {
         io.emit("online-users", Object.keys(onLineUsers));
       }
       socket.off("user-updated", handleUserUpdated);
+      socket.off("new-user-registered", handleNewUserRegistered);
       socket.off("public-message", handleNewPublicMessage);
       socket.off("typing-public-message", handleTypingPublicMessage);
       socket.off("stop-typing-public-message", handleStopTypingPublicMessage);
@@ -56,6 +61,7 @@ const socketOperations = function (io: TypeIO) {
       socket.off("conversation-readed", handleConversationReaded);
     };
 
+    socket.on("new-user-registered", handleNewUserRegistered);
     socket.on("user-updated", handleUserUpdated);
     socket.on("public-message", handleNewPublicMessage);
     socket.on("typing-public-message", handleTypingPublicMessage);

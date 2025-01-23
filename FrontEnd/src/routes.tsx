@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import BigLoading from "./Pages/BigLoading";
+import BigLoading from "./Pages/BigLoading/BigLoading";
+// import Layout from "./Layout/Layout";
+
 import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, PublicChatMobile } from "./Pages";
 import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./Pages";
 import { ProtectedPage, PageNotFound, AppError } from "./Pages";

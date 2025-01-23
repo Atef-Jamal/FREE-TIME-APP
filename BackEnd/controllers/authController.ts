@@ -73,7 +73,8 @@ export const register = async (req: Request, res: Response) => {
         io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", savedNotification);
       }
     }
-    return res.status(201).json({ ...savedUser, token });
+
+    return res.status(201).json({ token });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again Later" });
   }
@@ -88,8 +89,8 @@ export const login = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).json({ error: "User Not Found" });
     }
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(404).json({ error: "Invalid Password" });
     }
@@ -100,7 +101,7 @@ export const login = async (req: Request, res: Response) => {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
 
-    return res.status(200).json({ ...user, token });
+    return res.status(200).json({ token });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again later" });
   }

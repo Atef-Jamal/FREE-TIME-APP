@@ -91,9 +91,9 @@ const GuessCardTask = ({ taskApp }: IProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex h-full min-h-[70vh] items-center justify-center">
-        <div className="flex items-center gap-4 sm:gap-2">
-          <ImSpinner3 className="animate-spin text-4xl sm:text-2xl" />
+      <div className="flex h-full items-center justify-center">
+        <div className="flex items-center justify-center gap-x-2 md:gap-x-4">
+          <ImSpinner3 className="animate-spin text-2xl md:text-4xl" />
           <span className="font-serif text-3xl font-bold text-[#abbe3eee] sm:text-xl">
             Waiting Results...
           </span>
@@ -104,16 +104,16 @@ const GuessCardTask = ({ taskApp }: IProps) => {
 
   if (error) {
     return (
-      <div className="flex h-full min-h-[70vh] flex-col items-center justify-center gap-3 px-8 text-center font-bold opacity-70">
+      <div className="flex h-full flex-col items-center justify-center px-4 text-center font-bold opacity-70">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-3 py-8">
+    <div className="flex flex-col items-center justify-center gap-y-3 py-8">
       {completed && (
-        <div className="xs:w-[90%] flex h-[150px] w-[400px] flex-col items-center justify-center gap-1 rounded-md bg-[#422c75c5]">
+        <div className="flex h-[150px] w-[90%] flex-col items-center justify-center gap-1 rounded-md bg-[#422c75c5] md:w-[400px]">
           <BsCheck2Circle className="mb-3 text-3xl" />
           <div className="flex items-center justify-center gap-3">
             <p className="font-500 text-gray-400">
@@ -126,13 +126,13 @@ const GuessCardTask = ({ taskApp }: IProps) => {
       )}
       {!completed && (
         <>
-          <div className="xs:w-[90%] flex w-[500px] items-center justify-between sm:w-[400px]">
+          <div className="flex w-[90%] items-center justify-between sm:w-[400px] md:w-[500px]">
             <span className="ml-1 text-sm text-gray-300">Easy Level</span>
             <span className="rounded-md bg-[#b8ae56] px-5 py-1 font-bold text-black">
               SCORE :<span className="ml-2 font-bold text-[#2341ca]">{score}</span>
             </span>
           </div>
-          <div className="xs:w-[90%] xs:h-[230px] grid h-[300px] w-[500px] grid-cols-4 gap-2 border p-2 sm:w-[400px]">
+          <div className="grid h-[230px] w-[90%] grid-cols-4 gap-2 border p-2 sm:w-[400px] md:h-[300px] md:w-[500px]">
             {cards.map((item: string, i: number) => {
               return (
                 <div

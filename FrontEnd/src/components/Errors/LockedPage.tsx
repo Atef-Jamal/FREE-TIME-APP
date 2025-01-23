@@ -2,7 +2,7 @@ import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { showModal, updateThisEntity } from "../../context/StateManeger";
 import { useAppDispatch } from "../../context/Hooks";
-import RegisterationForm from "../Navebare/Registration/RegisterationForm";
+import RegisterationForm from "../Shared/Modals/RegisterModal/RegisterationForm";
 
 const LockedPage = () => {
   const dispatch = useAppDispatch();
