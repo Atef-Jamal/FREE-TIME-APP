@@ -16,7 +16,7 @@ interface IProps {
   error: string | undefined;
 }
 
-const NotificationMenu = ({ notifications, isLoading, error }: IProps) => {
+const Notifications = ({ notifications, isLoading, error }: IProps) => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -78,4 +78,4 @@ const NotificationMenu = ({ notifications, isLoading, error }: IProps) => {
   );
 };
 
-export default NotificationMenu;
+export default Notifications;

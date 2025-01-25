@@ -24,6 +24,7 @@ export const useListenToSocketEvents = ({ eventsToListen, handlers, dependencies
 
   useEffect(() => {
     if (!socket) return;
+
     for (let index = 0; index < eventsToListen.length; index++) {
       socket.on(eventsToListen[index], handlers[index]);
     }

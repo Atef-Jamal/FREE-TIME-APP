@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useState } from "react";
 import { useAppSelector } from "../context/Hooks";
 import Navbare from "./Navbare/Navbare";
 import ToastNotify from "../components/Shared/Common/ToastNotify";
-import Model from "../components/Shared/Modals/Model";
+import Modal from "../components/Shared/Modals/Modal";
 import ContentBody from "./ContentBody/ContentBody";
 import LogicalComponent from "./LogicalComponent";
 
@@ -18,7 +18,7 @@ const Layout = () => {
 
   return (
     <main>
-      <Model />
+      <Modal />
       <ToastNotify />
       <Navbare />
       <ContentBody

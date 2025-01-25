@@ -1,6 +1,6 @@
-import Skeleton from "./Skeleton";
+import Skeleton from "../Shared/Common/Skeleton";
 
-const ProfileSkeleton = () => {
+const NavProfileHeaderSkeleton = () => {
   return (
     <div className="flex h-full items-center gap-1 sm:gap-2">
       <div className="flex h-full items-center gap-1 rounded-md bg-[#2f3043] p-2 sm:p-3">
@@ -20,4 +20,4 @@ const ProfileSkeleton = () => {
   );
 };
 
-export default ProfileSkeleton;
+export default NavProfileHeaderSkeleton;

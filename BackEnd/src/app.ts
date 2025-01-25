@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
@@ -25,14 +25,7 @@ socketOperations(io);
 
 app.use(routes);
 
-app.use("/uploads", express.static(path.resolve("uploads")));
-
-app.use((err: Error, _: Request, res: Response) => {
-  console.error("____here is the error____", err.stack);
-  return res.status(500).json({
-    error: err.message || "Internal server error",
-  });
-});
+app.use("/uploads", express.static(path.resolve("src/uploads")));
 
 app.use((_, res) => {
   return res.status(500).json({

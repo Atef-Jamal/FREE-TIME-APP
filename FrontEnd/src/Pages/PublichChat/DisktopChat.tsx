@@ -5,7 +5,7 @@ import { setPublicMsgRedPoint, updateThisEntity } from "../../context/StateManeg
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { useListenToSocketEvents } from "../../hooks";
 import ChatHeader from "./ChatHeader";
-import PublicChat from "./PublicChat";
+import PublicChatBody from "./PublicChatBody";
 
 const DisktopChat = memo(() => {
   const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
@@ -58,7 +58,7 @@ const DisktopChat = memo(() => {
       </span>
       <ChatHeader />
       <div className="flex-1 overflow-hidden">
-        <PublicChat />
+        <PublicChatBody />
       </div>
     </div>
   );

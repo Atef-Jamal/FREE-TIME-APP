@@ -10,11 +10,11 @@ import { IoMdNotifications } from "react-icons/io";
 import ProfileMenu from "./ProfileMenu";
 import { ICashedNotificaions, INotifications } from "../../types/notificationTypes";
 import { useListenToSocketEvents } from "../../hooks";
-import NotificationMenu from "../Shared/Modals/NotificationsModal/NotificationMenu";
+import Notifications from "../Shared/Modals/NotificationsModal/Notifications";
 import ApplyCoupon from "../Shared/Modals/ApplyCouponModal/ApplyCoupon";
 import UserImage from "../Shared/Common/UserImage";
 
-const ProfileActions = () => {
+const NavProfileHeader = () => {
   const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const queryClient = useQueryClient();
@@ -52,6 +52,20 @@ const ProfileActions = () => {
     handlers: [handleAddNewNotification],
   });
 
+  const handleOpenNotificatioModal = () => {
+    dispatch(
+      showModal({
+        children: (
+          <Notifications
+            notifications={notifications}
+            isLoading={status === "pending"}
+            error={error?.response?.data.error}
+          />
+        ),
+      }),
+    );
+  };
+
   return (
     <div className="relative flex h-full items-center gap-x-1 sm:gap-x-2">
       <div className="scrollbar-none flex h-full items-center overflow-auto rounded-md bg-[#000000]">
@@ -72,34 +86,22 @@ const ProfileActions = () => {
         <div className="h-[25px] w-[30px] sm:h-[30px] sm:w-[35px]">
           <UserImage user={currentUser} />
         </div>
-        <span className="scrollbar-none max-w-[80px] overflow-auto text-center text-xs whitespace-nowrap text-[#c0c0ba] sm:max-w-[120px] sm:text-base">
+        <span className="scrollbar-none max-w-[80px] overflow-auto whitespace-nowrap text-center text-xs text-[#c0c0ba] sm:max-w-[120px] sm:text-base">
           {currentUser?.name}
         </span>
         <BsArrowDown className="text-sm sm:text-base" />
         {openProfileMenu && (
-          <div className="absolute top-[105%] left-0 z-[100] w-[205px] rounded-lg bg-[#32324c] sm:w-[270px]">
+          <div className="absolute left-0 top-[105%] z-[100] w-[205px] rounded-lg bg-[#32324c] sm:w-[270px]">
             <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
           </div>
         )}
       </div>
       <div
-        onClick={() => {
-          dispatch(
-            showModal({
-              children: (
-                <NotificationMenu
-                  notifications={notifications}
-                  isLoading={status === "pending"}
-                  error={error?.response?.data.error}
-                />
-              ),
-            }),
-          );
-        }}
+        onClick={handleOpenNotificatioModal}
         className="relative flex h-full cursor-pointer items-center justify-center rounded-md bg-[#3a3e58b7] px-2 sm:px-4"
       >
         {numUnReaded && numUnReaded > 0 ? (
-          <span className="absolute top-1 right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-600 text-xs">
+          <span className="absolute right-1 top-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-600 text-xs">
             {numUnReaded}
           </span>
         ) : undefined}
@@ -109,4 +111,4 @@ const ProfileActions = () => {
   );
 };
 
-export default ProfileActions;
+export default NavProfileHeader;

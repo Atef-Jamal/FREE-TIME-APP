@@ -18,6 +18,7 @@ export const router = createBrowserRouter(
           index: true,
           element: <Suspense fallback={<BigLoading />} children={<Home />} />,
         },
+
         {
           path: "earn",
           element: <Suspense fallback={<BigLoading />} children={<Earn />} />,

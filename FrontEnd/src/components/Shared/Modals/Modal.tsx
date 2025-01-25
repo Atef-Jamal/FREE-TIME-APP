@@ -3,7 +3,7 @@ import { resetModel } from "../../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import Spinner from "../Common/Spinner";
 
-const Model = () => {
+const Modal = () => {
   const modal = useAppSelector((state) => state.stateManeger.modal);
   const dispatch = useAppDispatch();
 
@@ -29,4 +29,4 @@ const Model = () => {
   );
 };
 
-export default Model;
+export default Modal;

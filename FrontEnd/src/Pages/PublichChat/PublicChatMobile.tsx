@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { setPublicMsgRedPoint } from "../../context/StateManeger";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import PublicChat from "./PublicChat";
+import PublicChatBody from "./PublicChatBody";
 
 const PublicChatMobile = () => {
   const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
@@ -18,7 +18,7 @@ const PublicChatMobile = () => {
       }}
       className={"bg-[#202233] lg:hidden"}
     >
-      <PublicChat />
+      <PublicChatBody />
     </div>
   );
 };

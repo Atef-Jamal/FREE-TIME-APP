@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { showModal } from "../../context/StateManeger";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Search from "../../components/Shared/Modals/SearchModal/Search";
-import RegisterButtons from "../../components/Ui/RegisterButtons";
-import ProfileSkeleton from "../../components/Shared/Common/ProfileSkeleton";
-import ProfileActions from "../../components/Ui/ProfileActions";
+import NavRegisterButtons from "../../components/Ui/NavRegisterButtons";
+import NavProfileHeaderSkeleton from "../../components/Ui/NavProfileHeaderSkeleton";
+import NavProfileHeader from "../../components/Ui/NavProfileHeader";
 
 const Navbare = memo(() => {
   const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
@@ -31,11 +31,11 @@ const Navbare = memo(() => {
           <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
         </div>
 
-        {currentUserStatus === "unauthenticated" && <RegisterButtons />}
+        {currentUserStatus === "unauthenticated" && <NavRegisterButtons />}
 
-        {token && currentUserStatus === "pending" && <ProfileSkeleton />}
+        {token && currentUserStatus === "pending" && <NavProfileHeaderSkeleton />}
 
-        {currentUserStatus === "authenticated" && <ProfileActions />}
+        {currentUserStatus === "authenticated" && <NavProfileHeader />}
       </div>
     </div>
   );

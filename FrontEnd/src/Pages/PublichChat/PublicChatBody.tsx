@@ -16,7 +16,7 @@ import { useScrollToElement } from "../../hooks";
 import { IPublicChatMessage } from "../../types/publicChatTypes";
 import { ChatModelDeletion } from "./ChatModelDeletion";
 
-const PublicChat = memo(() => {
+const PublicChatBody = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [stopScrolling, setStopScrolling] = useState<boolean>(false);
   const [stagingMessages, setStagingMessages] = useState(0);
@@ -193,7 +193,7 @@ const PublicChat = memo(() => {
     <div className="relative flex h-full flex-col gap-y-1 pb-1">
       <div
         ref={messageContainerRef}
-        className="lg:scrollbar-custom relative flex-1 space-y-1 overflow-y-auto px-1 pb-[2px] max-lg:scrollbar-thin lg:px-2"
+        className="lg:scrollbar-custom max-lg:scrollbar-thin relative flex-1 space-y-1 overflow-y-auto px-1 pb-[2px] lg:px-2"
       >
         {messageToDelete && (
           <ChatModelDeletion
@@ -267,4 +267,4 @@ const PublicChat = memo(() => {
   );
 });
 
-export default PublicChat;
+export default PublicChatBody;
