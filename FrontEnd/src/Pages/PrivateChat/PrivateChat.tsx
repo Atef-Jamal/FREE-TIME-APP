@@ -32,7 +32,7 @@ const PrivateChat = () => {
     if (openSidebar) return;
     setOpenSidebar(true);
   };
-
+  console.log(openSidebar);
   useEffect(() => {
     if (secondPartyId && secondPartyId !== currentUserId) {
       dispatch(setActiveConversation(secondPartyId));
@@ -67,8 +67,8 @@ const PrivateChat = () => {
       <div className="relative mx-auto h-full max-w-[1400px] overflow-hidden 2xl:flex 2xl:gap-x-4">
         <div
           className={cn(
-            "absolute left-0 top-0 z-[1] h-full w-[80%] max-w-[450px] translate-x-[0%] transition-all 2xl:static",
-            openSidebar && "-translate-x-[100%] 2xl:translate-x-0",
+            "absolute top-0 left-0 z-[1] h-full w-[80%] max-w-[450px] translate-x-[0%] transition-all 2xl:static",
+            !openSidebar && "-translate-x-[100%] 2xl:translate-x-0",
           )}
         >
           <ChatSidebar openSidebar={openSidebar} toggleSidebar={toggleSidebar} />

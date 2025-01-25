@@ -38,37 +38,9 @@ const LogicalComponent = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-  const token = localStorage.getItem("token");
-
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
-
-  useInfiniteQuery({
-    queryKey: ["conversations"],
-    queryFn: ({ pageParam }) => fetchAllConversations({ pageParam }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
-    staleTime: 60 * 60 * 1000,
-  });
-
-  useQuery({
-    queryKey: ["conversation-messages", activeConversation],
-    queryFn: activeConversation
-      ? () => fetchPrivateChatMessages({ secondUserId: activeConversation })
-      : skipToken,
-    staleTime: 60 * 60 * 1000,
-  });
-
-  useInfiniteQuery({
-    queryKey: ["public-chat-messages"],
-    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
-    },
-    getNextPageParam: () => undefined,
-    staleTime: 60 * 60 * 1000,
-  });
+  const token = localStorage.getItem("token");
 
   const handleUpdateOnlineUsers = useCallback(
     (data: string[]) => {
@@ -150,6 +122,36 @@ const LogicalComponent = () => {
   const handleNewUserRegistered = () => {
     queryClient.invalidateQueries({ queryKey: ["conversations"] });
   };
+
+  useInfiniteQuery({
+    queryKey: ["conversations"],
+    queryFn:
+      currentUserStatus === "authenticated"
+        ? ({ pageParam }) => fetchAllConversations({ pageParam })
+        : skipToken,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
+    staleTime: 60 * 60 * 1000,
+  });
+
+  useQuery({
+    queryKey: ["conversation-messages", activeConversation],
+    queryFn: activeConversation
+      ? () => fetchPrivateChatMessages({ secondUserId: activeConversation })
+      : skipToken,
+    staleTime: 60 * 60 * 1000,
+  });
+
+  useInfiniteQuery({
+    queryKey: ["public-chat-messages"],
+    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage, _, pageParam) => {
+      return firstPage.hasOlder ? pageParam + 1 : undefined;
+    },
+    getNextPageParam: () => undefined,
+    staleTime: 60 * 60 * 1000,
+  });
 
   useEffect(() => {
     const getCurrentUser = async () => {

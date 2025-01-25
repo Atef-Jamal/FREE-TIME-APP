@@ -54,7 +54,7 @@ const ProfileActions = () => {
 
   return (
     <div className="relative flex h-full items-center gap-x-1 sm:gap-x-2">
-      <div className="flex h-full items-center overflow-auto rounded-md bg-[#000000] scrollbar-none">
+      <div className="scrollbar-none flex h-full items-center overflow-auto rounded-md bg-[#000000]">
         <button
           onClick={() => {
             dispatch(showModal({ children: <ApplyCoupon /> }));
@@ -72,12 +72,12 @@ const ProfileActions = () => {
         <div className="h-[25px] w-[30px] sm:h-[30px] sm:w-[35px]">
           <UserImage user={currentUser} />
         </div>
-        <span className="max-w-[80px] overflow-auto whitespace-nowrap text-center text-xs text-[#c0c0ba] scrollbar-none sm:max-w-[120px] sm:text-base">
+        <span className="scrollbar-none max-w-[80px] overflow-auto text-center text-xs whitespace-nowrap text-[#c0c0ba] sm:max-w-[120px] sm:text-base">
           {currentUser?.name}
         </span>
         <BsArrowDown className="text-sm sm:text-base" />
         {openProfileMenu && (
-          <div className="absolute left-0 top-[105%] z-[100] w-[205px] rounded-lg bg-[#32324c] sm:w-[270px]">
+          <div className="absolute top-[105%] left-0 z-[100] w-[205px] rounded-lg bg-[#32324c] sm:w-[270px]">
             <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
           </div>
         )}
@@ -99,7 +99,7 @@ const ProfileActions = () => {
         className="relative flex h-full cursor-pointer items-center justify-center rounded-md bg-[#3a3e58b7] px-2 sm:px-4"
       >
         {numUnReaded && numUnReaded > 0 ? (
-          <span className="absolute right-1 top-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-600 text-xs">
+          <span className="absolute top-1 right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-red-600 text-xs">
             {numUnReaded}
           </span>
         ) : undefined}

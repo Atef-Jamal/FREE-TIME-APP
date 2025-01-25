@@ -71,11 +71,11 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
     <div className="relative flex h-full flex-col space-y-2 bg-[#131129] px-1 pt-1 sm:px-2 sm:pt-2">
       <span
         onClick={toggleSidebar}
-        className="absolute -right-[45px] top-0 flex h-8 w-11 items-center justify-center rounded-sm bg-[#1f1425] sm:h-[48px] sm:w-11 2xl:hidden"
+        className="absolute top-0 -right-[44px] flex h-8 w-11 items-center justify-center rounded-sm bg-[#1f1425] sm:h-[48px] 2xl:hidden"
       >
-        {redPoint && <span className="absolute right-[2px] top-[2px] h-3 w-3 rounded-full bg-red-600"></span>}
-        {!openSidebar && <IoCloseSharp className="text-2xl sm:text-3xl" />}
-        {openSidebar && <MdOutlineMenu className="text-2xl sm:text-3xl" />}
+        {redPoint && <span className="absolute top-[2px] right-[2px] h-3 w-3 rounded-full bg-red-600"></span>}
+        {openSidebar && <IoCloseSharp className="text-2xl sm:text-3xl" />}
+        {!openSidebar && <MdOutlineMenu className="text-2xl sm:text-3xl" />}
       </span>
       <div className="h-8 w-full overflow-hidden">
         <SearchBar placeholder="Find Conversation" onChange={() => {}} />

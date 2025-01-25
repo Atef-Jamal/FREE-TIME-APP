@@ -13,21 +13,21 @@ export interface IGameTask {
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   title: string;
   image: string;
-  reviews: { _id: string; appId: string; user: IUser; comment: string }[];
+  reviews: IReview[];
   prize: number;
   rating: number;
   completedBy: IUser[];
   description: string;
   createdAt: Date;
-  updatedAt: Date;
 }
+
 export interface IQuizTask {
   _id: string;
   type: "QUIZ_APP";
   isAvailable: "AVAILABLE" | "UNAVAILABLE";
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   quizes: IQuiz[];
-  reviews: { _id: string; appId: string; user: IUser; comment: string }[];
+  reviews: IReview[];
   title: string;
   image: string;
   prize: number;
@@ -35,7 +35,6 @@ export interface IQuizTask {
   completedBy: IUser[];
   description: string;
   createdAt: Date;
-  updatedAt: Date;
 }
 
 export type ITask = IQuizTask | IGameTask;
