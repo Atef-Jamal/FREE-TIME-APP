@@ -79,7 +79,7 @@ const MusicPlayer = memo(() => {
           </span>
           <span
             onClick={() => {
-audioElement.src= undefined 
+audioElement.src= "" 
               dispatch(handleCloseMusic());
               dispatch(updateThisEntity({ entity: "openMusicModal", value: false }));
             }}
