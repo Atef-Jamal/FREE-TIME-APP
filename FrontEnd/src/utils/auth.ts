@@ -1,12 +1,12 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { makeRequest } from ".";
 import { auth } from "../firebase";
-import { showPopup } from "../context/StateManeger";
+import { openToast } from "../context/appStateSlice";
 import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
 
 export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {
   dispatch(
-    showPopup({
+    openToast({
       message: "Registering....",
       type: "LOADING",
     }),
@@ -18,7 +18,7 @@ export const register = async ({ formData, dispatch, referrerUser }: IRegisterPr
 
 export const login = async ({ formData, dispatch }: ILoginProps) => {
   dispatch(
-    showPopup({
+    openToast({
       message: "Logging In....",
       type: "LOADING",
     }),
@@ -35,7 +35,7 @@ export const signInWithGoogle = async ({ dispatch }: { dispatch: IDispatch }) =>
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   dispatch(
-    showPopup({
+    openToast({
       message: "signing in....",
       type: "LOADING",
     }),

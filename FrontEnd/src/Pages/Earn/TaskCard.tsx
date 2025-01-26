@@ -14,7 +14,7 @@ interface IProps {
 }
 
 const AppCard = ({ taskDetail, index, setTaskId }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
 
   const { t } = useTranslation("earn");
   const { _id, description, image, prize, title, isAvailable, devices } = taskDetail;

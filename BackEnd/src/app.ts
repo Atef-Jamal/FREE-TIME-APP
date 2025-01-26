@@ -5,7 +5,6 @@ import cors from "cors";
 import { connecteToMongodb } from "./db/connectToMongodb";
 import routes from "./routes/routes";
 import http from "http";
-import { Server } from "socket.io";
 import socketOperations from "./socketIo/socketIo";
 
 dotenv.config();
@@ -18,10 +17,8 @@ const server = http.createServer(app);
 
 app.use(cors({ origin: "*" }));
 
-export const io = new Server(server, { cors: { origin: "*" } });
-
 connecteToMongodb();
-socketOperations(io);
+socketOperations(server);
 
 app.use(routes);
 

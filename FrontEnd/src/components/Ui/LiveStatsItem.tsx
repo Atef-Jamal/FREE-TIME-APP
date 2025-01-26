@@ -10,8 +10,8 @@ interface IProps {
 }
 
 const LiveStatsItem = ({ user, userHieghestPoints }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
 
   const { _id, name, points, emailVerified } = user;
   const isOnline = onlineUsers.includes(_id);

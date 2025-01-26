@@ -11,7 +11,7 @@ import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { fetchTestimonials, handleSendTestimonial } from "../../utils";
 import { cn, formateDate, handleApiError } from "../../utils/common";
 import { ITestimonial } from "../../types/othersTypes";
@@ -27,7 +27,7 @@ import "swiper/css/scrollbar";
 import Input from "../../components/Shared/Common/Input";
 
 const Home = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -57,7 +57,7 @@ const Home = () => {
       window.location.href = `${window.location.origin}/?redirectedfrom=login`;
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -71,7 +71,7 @@ const Home = () => {
       await signInWithGoogle({ dispatch });
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -88,7 +88,7 @@ const Home = () => {
     mutationFn: handleSendTestimonial,
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -106,7 +106,7 @@ const Home = () => {
     event.preventDefault();
     if (!currentUser) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_LOCK",
           message: "Log In First",
         }),
@@ -115,7 +115,7 @@ const Home = () => {
     }
     if (comment.trim() === "") {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "Enter Your Opinion",
         }),
@@ -141,7 +141,7 @@ const Home = () => {
             <h1 className="mb-4 w-full text-center text-4xl font-bold text-[#af5a5a] md:text-6xl">
               {t("Get Paid For")}
             </h1>
-            <p className="mt-2 text-center text-sm text-balance md:text-base lg:text-lg">
+            <p className="mt-2 text-balance text-center text-sm md:text-base lg:text-lg">
               Opening Bank Account, Refer Your Friend Through your Referal Link, complete Tasks and apps,
               offers and much more. Opening Bank Account, Refer Your Friend Through your Referal Link,
               complete Tasks and apps, offers and much more. Opening Bank Account, Refer Your Friend Through
@@ -219,7 +219,7 @@ const Home = () => {
           )}
         </div>
 
-        <div className="scrollbar-none mx-auto grid grid-cols-4 gap-1 overflow-auto sm:gap-2">
+        <div className="mx-auto grid grid-cols-4 gap-1 overflow-auto scrollbar-none sm:gap-2">
           <span className="rounded-sm bg-[#f89723] py-1 text-center text-xs font-bold text-black sm:text-sm md:rounded-md">
             Bitcoin
           </span>
@@ -265,7 +265,7 @@ const Home = () => {
               {t("Average money earned by users yesterday")}
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center rounded-b-lg bg-[#101127] py-3 md:rounded-r-lg md:rounded-b-none">
+          <div className="flex flex-col items-center justify-center rounded-b-lg bg-[#101127] py-3 md:rounded-b-none md:rounded-r-lg">
             <div className="flex items-center gap-4">
               <MdOutlineAccountBalanceWallet />
               <span className="font-bold text-green-400"> $ 32,539,299.52</span>
@@ -286,11 +286,11 @@ const Home = () => {
 
         <div className="flex flex-col items-center justify-around gap-7 md:flex-row">
           <div className="relative h-[180px] w-[80%] rounded-md bg-[#4346745e] md:w-[45%]">
-            <span className="absolute top-[-12%] left-[6%] text-5xl font-bold text-yellow-300">01</span>
-            <p className="mt-8 ml-8 text-sm font-bold text-white blur-sm">This text have some Blure</p>
-            <p className="mt-2 ml-8 text-xs text-white blur-sm">This text have some Blure again</p>
-            <p className="mt-10 ml-8 text-xs text-white blur-sm">another</p>
-            <div className="absolute top-[6%] left-[5%] flex h-[90%] w-[90%] flex-col items-center overflow-hidden rounded-md bg-[#241c38d3] opacity-[0.6]">
+            <span className="absolute left-[6%] top-[-12%] text-5xl font-bold text-yellow-300">01</span>
+            <p className="ml-8 mt-8 text-sm font-bold text-white blur-sm">This text have some Blure</p>
+            <p className="ml-8 mt-2 text-xs text-white blur-sm">This text have some Blure again</p>
+            <p className="ml-8 mt-10 text-xs text-white blur-sm">another</p>
+            <div className="absolute left-[5%] top-[6%] flex h-[90%] w-[90%] flex-col items-center overflow-hidden rounded-md bg-[#241c38d3] opacity-[0.6]">
               <h1 className="text-center font-bold tracking-wider text-yellow-300">{t("Choose a Task")}</h1>
               <div className="mt-1 flex h-9 w-[90%] justify-between rounded-lg bg-[#5c46aa80] p-2">
                 <img alt={""} src={stashLogo} className="rounded-md" />
@@ -312,10 +312,10 @@ const Home = () => {
             </div>
           </div>
           <div className="relative h-[180px] w-[80%] rounded-md bg-[#4346745e] md:w-[45%]">
-            <span className="absolute top-[-12%] left-[6%] text-5xl font-bold text-yellow-300">02</span>
-            <p className="mt-10 ml-8 text-xs text-white blur-sm">someThing</p>
-            <div className="absolute top-[6%] left-[5%] m-auto flex h-[90%] w-[90%] flex-col items-center overflow-hidden rounded-md bg-[#171125cc] opacity-[0.6] sm:w-[90%]">
-              <h1 className="mt-4 mb-4 text-center font-bold tracking-wider text-yellow-300">
+            <span className="absolute left-[6%] top-[-12%] text-5xl font-bold text-yellow-300">02</span>
+            <p className="ml-8 mt-10 text-xs text-white blur-sm">someThing</p>
+            <div className="absolute left-[5%] top-[6%] m-auto flex h-[90%] w-[90%] flex-col items-center overflow-hidden rounded-md bg-[#171125cc] opacity-[0.6] sm:w-[90%]">
+              <h1 className="mb-4 mt-4 text-center font-bold tracking-wider text-yellow-300">
                 {t("Complete a Task")}
               </h1>
               <p className="text-center text-xs font-[200] text-white">
@@ -329,12 +329,12 @@ const Home = () => {
         </div>
 
         <div className="relative mx-auto h-[180px] w-[80%] rounded-md bg-[#4346745e] md:w-[45%]">
-          <span className="absolute top-[-12%] left-[6%] text-5xl font-bold text-yellow-300">03</span>
-          <div className="absolute top-[6%] left-[5%] m-auto flex h-[90%] w-[90%] flex-col items-center overflow-hidden rounded-md bg-[#130f1fbb] pl-8 opacity-[0.6] sm:pl-0">
-            <h1 className="mt-4 mb-2 text-center font-bold tracking-wider text-yellow-200">
+          <span className="absolute left-[6%] top-[-12%] text-5xl font-bold text-yellow-300">03</span>
+          <div className="absolute left-[5%] top-[6%] m-auto flex h-[90%] w-[90%] flex-col items-center overflow-hidden rounded-md bg-[#130f1fbb] pl-8 opacity-[0.6] sm:pl-0">
+            <h1 className="mb-2 mt-4 text-center font-bold tracking-wider text-yellow-200">
               {t("Recieve a Points")}
             </h1>
-            <img alt={""} src={moneyHome} className="absolute top-5 left-[-20px] h-36 w-36" />
+            <img alt={""} src={moneyHome} className="absolute left-[-20px] top-5 h-36 w-36" />
             <p className="mb-2 text-white">{t("And Cash Them Out")}</p>
             <button className="ml-8 w-[80%] rounded-md border-t-[0.6px] border-gray-300 bg-black py-2 text-center text-sm text-white sm:ml-0 sm:text-base">
               {t("About $1,000 Bitcoins")}
@@ -476,7 +476,7 @@ const Home = () => {
                   <SwiperSlide key={item._id} className="max-h-[315px] rounded-lg border bg-[#272336ee]">
                     <div className="flex h-full flex-col justify-between px-3 pb-3">
                       <span className="text-5xl font-[900]">،،</span>
-                      <div className="scrollbar-none h-[50%] overflow-auto text-[#b5cea4]">
+                      <div className="h-[50%] overflow-auto text-[#b5cea4] scrollbar-none">
                         {item.content}
                       </div>
                       <div className="flex items-center justify-between">

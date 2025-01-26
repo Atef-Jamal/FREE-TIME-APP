@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
-import { setCurrentUser, showPopup } from "../../context/StateManeger";
+import { setCurrentUser, openToast } from "../../context/appStateSlice";
 import { handleApiError } from "../../utils/common";
 import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
@@ -20,8 +20,8 @@ interface IProps {
 }
 
 const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateNextTimerDay }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const socket = useAppSelector((state) => state.appState.socket);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation("rewards");
   const [, setRefresh] = useState(false);
@@ -31,7 +31,7 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
 
   const collectDailyReward = async () => {
     if (!currentUser) {
-      dispatch(showPopup({ type: "ERROR_LOCK", message: "Log in First" }));
+      dispatch(openToast({ type: "ERROR_LOCK", message: "Log in First" }));
       return;
     }
     try {
@@ -46,13 +46,13 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
       dispatch(setCurrentUser(updatedUser));
       socket?.emit("user-updated", updatedUser);
       dispatch(
-        showPopup({
+        openToast({
           message: `successfully collect ${dayInfo.reward} points`,
           type: "SUCESS",
         }),
       );
     } catch (error) {
-      dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
+      dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     } finally {
       setIsLoading(false);
     }

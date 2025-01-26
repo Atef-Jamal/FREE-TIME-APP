@@ -2,15 +2,15 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { useTranslation } from "react-i18next";
-import { showModal } from "../../context/StateManeger";
+import { showModal } from "../../context/appStateSlice";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-import Search from "../../components/Shared/Modals/SearchModal/Search";
+// import Search from "../../components/Shared/Modals/SearchModal/Search";
 import NavRegisterButtons from "../../components/Ui/NavRegisterButtons";
 import NavProfileHeaderSkeleton from "../../components/Ui/NavProfileHeaderSkeleton";
 import NavProfileHeader from "../../components/Ui/NavProfileHeader";
 
 const Navbare = memo(() => {
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const { t } = useTranslation("navbar");
   const dispatch = useAppDispatch();
 
@@ -25,7 +25,7 @@ const Navbare = memo(() => {
 
       <div className="ml-4 flex h-10 flex-1 items-center justify-end gap-x-3 lg:h-11">
         <div
-          onClick={() => dispatch(showModal({ children: <Search /> }))}
+          onClick={() => dispatch(showModal("search-modal"))}
           className="hidden h-10 max-w-[600px] flex-1 lg:block lg:h-11"
         >
           <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />

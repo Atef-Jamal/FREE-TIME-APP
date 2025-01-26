@@ -4,6 +4,6 @@ import { buyMusic } from "../controllers/musicsController";
 
 const router = express.Router();
 
-router.get("/buy-song/:id", protectedRoute, buyMusic);
+router.post("/buy-song/:id", protectedRoute, buyMusic);
 
 export default router;

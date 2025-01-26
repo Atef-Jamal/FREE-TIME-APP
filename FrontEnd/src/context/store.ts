@@ -1,11 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import StateManegerSlice from "./StateManeger";
+import appStateReducer from "./appStateSlice";
 
 const store = configureStore({
-  reducer: { stateManeger: StateManegerSlice.reducer },
+  reducer: {
+    appState: appStateReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredPaths: ["appState.socket"],
+        ignoredActions: ["appState/setSocket"],
+      },
     }),
 });
 

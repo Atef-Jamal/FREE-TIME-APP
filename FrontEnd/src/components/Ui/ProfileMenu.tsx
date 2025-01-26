@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { updateThisEntity } from "../../context/StateManeger";
+import { updateThisEntity } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
@@ -16,7 +16,7 @@ interface IProps {
 }
 
 const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
-  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
+  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
   const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 

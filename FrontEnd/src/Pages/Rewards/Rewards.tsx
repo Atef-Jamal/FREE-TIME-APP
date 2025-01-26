@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { MdCardGiftcard } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
 import { IBounusCode } from "../../types/rewardsTypes";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { makeRequest } from "../../utils";
 import { cn, handleApiError } from "../../utils/common";
@@ -14,7 +14,7 @@ import DailyReward from "./DailyReward";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const Rewards = () => {
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<IBounusCode | null>(null);
   const { t } = useTranslation("rewards");
@@ -25,7 +25,7 @@ const Rewards = () => {
   const getBonusCode = async () => {
     if (currentUserStatus !== "authenticated") {
       dispatch(
-        showPopup({
+        openToast({
           message: "Log In first",
           type: "ERROR_LOCK",
         }),
@@ -38,7 +38,7 @@ const Rewards = () => {
       setBonusCode(response.data);
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -52,7 +52,7 @@ const Rewards = () => {
     if (bonusCode) {
       navigator.clipboard.writeText(bonusCode.code);
       dispatch(
-        showPopup({
+        openToast({
           message: "Copied!",
           type: "SUCESS",
         }),

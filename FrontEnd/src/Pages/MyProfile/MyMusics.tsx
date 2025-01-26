@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "../../context/Hooks";
 import { fetchMusics } from "../../utils";
 import { useScrollToElement } from "../../hooks";
-import MusicCard from "../Musics/MusicCard";
+import MusicCard from "../../components/Ui/MusicCard";
 import Empty from "../../components/Shared/Common/Empty";
 
 const MyMusics = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const { data: musics = [] } = useQuery({
     queryKey: ["musics"],
     queryFn: fetchMusics,

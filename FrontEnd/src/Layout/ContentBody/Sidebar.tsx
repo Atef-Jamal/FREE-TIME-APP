@@ -5,29 +5,27 @@ import { ICashedConversation, ICashedConversations, IPrivateMessage } from "../.
 import {
   showModal,
   updateThisEntity,
-  showPopup,
+  openToast,
   updateSidebarUnReadedMsgCount,
-} from "../../context/StateManeger";
+} from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
-import { lazy, memo, Suspense, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { useListenToSocketEvents } from "../../hooks";
 import { cn, handleApiError } from "../../utils/common";
 import { makeRequest } from "../../utils";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-import Search from "../../components/Shared/Modals/SearchModal/Search";
-
-const MusicPlayer = lazy(() => import("../../components/Ui/MusicPlayer"));
+import MusicPlayer from "../../components/Ui/MusicPlayer";
 
 const Sidebar = memo(() => {
-  const allUnReadedMesseges = useAppSelector((state) => state.stateManeger.allUnReadedMesseges);
-  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
-  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
-  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
+  const allUnReadedMesseges = useAppSelector((state) => state.appState.allUnReadedMesseges);
+  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
+  const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
+  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
   const { t } = useTranslation("sidebar");
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -111,7 +109,7 @@ const Sidebar = memo(() => {
         );
       } catch (error) {
         dispatch(
-          showPopup({
+          openToast({
             message: handleApiError(error),
             type: "ERROR_GENERAL",
           }),
@@ -136,11 +134,11 @@ const Sidebar = memo(() => {
         />
       </div>
 
-      <div onClick={() => dispatch(showModal({ children: <Search /> }))} className="h-10 lg:hidden">
+      <div onClick={() => dispatch(showModal("search-modal"))} className="h-10 lg:hidden">
         <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
 
-      {openMusicModal && <Suspense children={<MusicPlayer />} />}
+      {openMusicModal && <MusicPlayer />}
 
       <ul className="flex w-full flex-col gap-1">
         {sidebareItems.map((item, index) => {

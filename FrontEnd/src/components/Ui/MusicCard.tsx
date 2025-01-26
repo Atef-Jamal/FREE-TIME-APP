@@ -6,35 +6,30 @@ import { purshaseMusic } from "../../utils";
 import { cn, handleApiError } from "../../utils/common";
 import { IMusicDetail } from "../../types/othersTypes";
 import { useMutation } from "@tanstack/react-query";
-import {
-  handleAddMusic,
-  handlePauseMusic,
-  handlePlayMusic,
-  setCurrentUser,
-  showPopup,
-  updateThisEntity,
-} from "../../context/StateManeger";
-import Spinner from "../../components/Shared/Common/Spinner";
+import { handleAddMusic, setCurrentUser, openToast, updateThisEntity } from "../../context/appStateSlice";
+import Spinner from "../Shared/Common/Spinner";
 
 interface IProps {
   songDetails: IMusicDetail;
 }
 
 const MusicCard = ({ songDetails }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
-  const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
-  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const activeMusic = useAppSelector((state) => state.appState.activeMusic);
+  const musicIsPlaying = useAppSelector((state) => state.appState.musicIsPlaying);
+  const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const isAlreadyPurshased = !!currentUser?.mySongs.includes(songDetails.id.toString());
   const dispatch = useAppDispatch();
   const location = useLocation();
+
+  const audioElement = document.getElementById("audioElement") as HTMLAudioElement;
 
   const mutation = useMutation({
     mutationFn: purshaseMusic,
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -50,7 +45,7 @@ const MusicCard = ({ songDetails }: IProps) => {
         }),
       );
       dispatch(
-        showPopup({
+        openToast({
           type: "SUCESS",
           message: "successfully purshased",
         }),
@@ -61,24 +56,25 @@ const MusicCard = ({ songDetails }: IProps) => {
   const handlePurshase = () => {
     if (!currentUser) {
       dispatch(
-        showPopup({
+        openToast({
           message: "Log In First",
           type: "ERROR_LOCK",
         }),
       );
       return;
     }
-    mutation.mutate({ musicId: songDetails.id.toString() });
+    mutation.mutate({ musicId: songDetails.id.toString(), musicTitle: songDetails.title });
   };
 
   const handleAdd = () => {
     if (!openMusicModal) {
       dispatch(updateThisEntity({ entity: "openMusicModal", value: true }));
     }
+    audioElement.src = songDetails.preview;
+    audioElement.play();
     dispatch(
       handleAddMusic({
         id: songDetails.id.toString(),
-        musicSrc: songDetails.preview,
         title: songDetails.title,
         cover: songDetails.album.cover,
         artist: songDetails.artist.name,
@@ -99,7 +95,7 @@ const MusicCard = ({ songDetails }: IProps) => {
       <span
         className={cn(
           "h-[80px] w-[80px] rounded-full border-2 border-b-[#222770] border-l-[#cef03a] border-r-[#cef03a] border-t-[#222770]",
-          musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && "animate-spin",
+          musicIsPlaying && activeMusic?.id === songDetails.id.toString() && "animate-spin",
         )}
       >
         <img alt={""} src={songDetails.album.cover} className="h-full w-full rounded-full object-contain" />
@@ -137,25 +133,32 @@ const MusicCard = ({ songDetails }: IProps) => {
       )}
       {isAlreadyPurshased && currentUserStatus !== "pending" && (
         <>
-          {musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
+          {musicIsPlaying && activeMusic?.id === songDetails.id.toString() && (
             <button
-              onClick={() => dispatch(handlePauseMusic())}
+              onClick={() => {
+                audioElement.pause();
+                dispatch(updateThisEntity({ entity: "musicIsPlaying", value: false }));
+              }}
               className="flex h-[29px] w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] font-bold text-gray-300"
             >
               <IoIosPause />
               Pause
             </button>
           )}
-          {!musicIsPlaying && activeMusic.musicInfo?.id === songDetails.id.toString() && (
+          {!musicIsPlaying && activeMusic?.id === songDetails.id.toString() && (
             <button
-              onClick={() => dispatch(handlePlayMusic())}
+              onClick={() => {
+                console.log(audioElement);
+                audioElement.play();
+                dispatch(updateThisEntity({ entity: "musicIsPlaying", value: true }));
+              }}
               className="flex h-[29px] w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] font-bold text-gray-300"
             >
               <FaPlay />
               Play
             </button>
           )}
-          {activeMusic.musicInfo?.id !== songDetails.id.toString() && (
+          {activeMusic?.id !== songDetails.id.toString() && (
             <button
               onClick={handleAdd}
               className="flex h-[29px] w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] font-bold text-gray-300"

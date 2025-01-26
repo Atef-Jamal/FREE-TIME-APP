@@ -1,16 +1,16 @@
 import { ChangeEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { IoClose } from "react-icons/io5";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { resetModel, setCurrentUser, showPopup } from "../../context/StateManeger";
-import VerifyEmailBox from "./VerifyEmailBox";
-import { changeUserName, changeUserPassword } from "../../utils";
-import { handleApiError } from "../../utils/common";
-import Spinner from "../../components/Shared/Common/Spinner";
+import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
+import { resetModel, setCurrentUser, openToast } from "../../../../context/appStateSlice";
+import { changeUserName, changeUserPassword } from "../../../../utils";
+import Spinner from "../../Common/Spinner";
+import { handleApiError } from "../../../../utils/common";
+import VerifyEmailBox from "../../../../Pages/MyProfile/VerifyEmailBox";
 
 const ProfileSettings = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const socket = useAppSelector((state) => state.appState.socket);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
@@ -34,7 +34,7 @@ const ProfileSettings = () => {
     onSuccess: (data) => {
       if (currentUser) dispatch(setCurrentUser({ ...currentUser, name: data.name }));
       dispatch(
-        showPopup({
+        openToast({
           message: "Name changed successfully",
           type: "SUCESS",
         }),
@@ -46,7 +46,7 @@ const ProfileSettings = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -58,7 +58,7 @@ const ProfileSettings = () => {
     mutationFn: changeUserPassword,
     onSuccess: () => {
       dispatch(
-        showPopup({
+        openToast({
           message: "Password changed successfully",
           type: "SUCESS",
         }),
@@ -66,7 +66,7 @@ const ProfileSettings = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -84,7 +84,7 @@ const ProfileSettings = () => {
     if (!currentUser || !newPass) return;
     if (newPass.trim().length < 6) {
       dispatch(
-        showPopup({
+        openToast({
           message: "Password must be at least 6 characters",
           type: "ERROR_GENERAL",
         }),

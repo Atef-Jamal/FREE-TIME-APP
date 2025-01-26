@@ -14,9 +14,9 @@ interface IProps {
 }
 
 const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IProps) => {
-  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
-  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
-  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
+  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
+  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
+  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
 
   const sidebarHeigh = smallScreen ? `calc(100dvh - 115px)` : `calc(100dvh - 55px)`;
 

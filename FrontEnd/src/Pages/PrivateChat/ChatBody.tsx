@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
 import { ICashedConversations } from "../../types/privateChatTypes";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { handleApiError } from "../../utils/common";
 import { fetchPrivateChatMessages, makeRequest } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
@@ -11,10 +11,10 @@ import PrivateMessageItem from "./PrivateMessageItem";
 import UserImage from "../../components/Shared/Common/UserImage";
 
 const ChatBody = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
-  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
+  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const socket = useAppSelector((state) => state.appState.socket);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -60,7 +60,7 @@ const ChatBody = () => {
       });
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),

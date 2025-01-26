@@ -2,7 +2,7 @@ import { useState } from "react";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BsArrowDown } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
-import { showModal } from "../../context/StateManeger";
+import { showModal } from "../../context/appStateSlice";
 import { fetchMyNotifications } from "../../utils";
 import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
@@ -10,12 +10,10 @@ import { IoMdNotifications } from "react-icons/io";
 import ProfileMenu from "./ProfileMenu";
 import { ICashedNotificaions, INotifications } from "../../types/notificationTypes";
 import { useListenToSocketEvents } from "../../hooks";
-import Notifications from "../Shared/Modals/NotificationsModal/Notifications";
-import ApplyCoupon from "../Shared/Modals/ApplyCouponModal/ApplyCoupon";
 import UserImage from "../Shared/Common/UserImage";
 
 const NavProfileHeader = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const queryClient = useQueryClient();
 
@@ -26,8 +24,8 @@ const NavProfileHeader = () => {
 
   const {
     data: notifications,
-    status,
-    error,
+    // status,
+    // error,
   } = useQuery({
     queryKey: ["notifications"],
     queryFn: currentUser?._id ? fetchMyNotifications : skipToken,
@@ -53,25 +51,15 @@ const NavProfileHeader = () => {
   });
 
   const handleOpenNotificatioModal = () => {
-    dispatch(
-      showModal({
-        children: (
-          <Notifications
-            notifications={notifications}
-            isLoading={status === "pending"}
-            error={error?.response?.data.error}
-          />
-        ),
-      }),
-    );
+    dispatch(showModal("notifications-modal"));
   };
 
   return (
     <div className="relative flex h-full items-center gap-x-1 sm:gap-x-2">
-      <div className="scrollbar-none flex h-full items-center overflow-auto rounded-md bg-[#000000]">
+      <div className="flex h-full items-center overflow-auto rounded-md bg-[#000000] scrollbar-none">
         <button
           onClick={() => {
-            dispatch(showModal({ children: <ApplyCoupon /> }));
+            dispatch(showModal("apply-bonus-code-modal"));
           }}
           className="px-2"
         >
@@ -86,7 +74,7 @@ const NavProfileHeader = () => {
         <div className="h-[25px] w-[30px] sm:h-[30px] sm:w-[35px]">
           <UserImage user={currentUser} />
         </div>
-        <span className="scrollbar-none max-w-[80px] overflow-auto whitespace-nowrap text-center text-xs text-[#c0c0ba] sm:max-w-[120px] sm:text-base">
+        <span className="max-w-[80px] overflow-auto whitespace-nowrap text-center text-xs text-[#c0c0ba] scrollbar-none sm:max-w-[120px] sm:text-base">
           {currentUser?.name}
         </span>
         <BsArrowDown className="text-sm sm:text-base" />

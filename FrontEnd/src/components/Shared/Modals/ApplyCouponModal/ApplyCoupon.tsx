@@ -7,14 +7,14 @@ import { FaHandsHelping } from "react-icons/fa";
 import { CgPushDown } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { resetModel, setCurrentUser, showPopup } from "../../../../context/StateManeger";
+import { resetModel, setCurrentUser, openToast } from "../../../../context/appStateSlice";
 import bonusImage from "../../../../assets/images/Bonus-Code.png";
 import { applyCode } from "../../../../utils";
 import { cn, handleApiError } from "../../../../utils/common";
 import Spinner from "../../Common/Spinner";
 
 const ApplyCoupon = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [code, setCode] = useState<string>("");
   const [openHelp, setOpenHelp] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const ApplyCoupon = () => {
       setCode("");
       dispatch(setCurrentUser({ ...currentUser, points: data.points }));
       dispatch(
-        showPopup({
+        openToast({
           message: "successfully applied",
           type: "SUCESS",
         }),
@@ -35,7 +35,7 @@ const ApplyCoupon = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -47,7 +47,7 @@ const ApplyCoupon = () => {
     if (!currentUser) return;
     if (code.trim() === "") {
       dispatch(
-        showPopup({
+        openToast({
           message: "Enter the code",
           type: "ERROR_GENERAL",
         }),

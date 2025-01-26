@@ -27,7 +27,7 @@ import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 
 const Earn = () => {
-  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
+  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] = useState(false);

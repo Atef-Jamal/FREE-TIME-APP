@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Server } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import http from "http";
+
+type TypeIO = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 
 export const onLineUsers: { [key: string]: string } = {};
 
-type TypeIO = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+export let io: TypeIO;
 
-const socketOperations = function (io: TypeIO) {
+const socketOperations = function (server: IServer) {
+  io = new Server(server, { cors: { origin: "*" } });
+
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId as string;
     if (userId && userId !== "undefined") {

@@ -1,8 +1,15 @@
 import { howItWorksLeft, affiliateExplained, howItWorksRight, affiliateBag } from "../../assets";
-import { useAppSelector } from "../../context/Hooks";
+import { showModal, updateThisEntity } from "../../context/appStateSlice";
+import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 
 const Affiliates = () => {
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const dispatch = useAppDispatch();
+
+  const handleOpenRegisterModal = () => {
+    dispatch(updateThisEntity({ entity: "isSignInMode", value: false }));
+    dispatch(showModal("register-modal"));
+  };
   return (
     <div className="flex flex-col bg-[#141523]">
       <div className="affiliate__background__left mx-auto flex flex-col items-center justify-center gap-5 py-8 lg:w-[80%]">
@@ -14,7 +21,10 @@ const Affiliates = () => {
           We offer the most rewarding referral system in the market.
         </p>
         {currentUserStatus === "unauthenticated" && (
-          <button className="mt-6 w-40 rounded-md bg-[#01D676] py-2 font-bold tracking-wider text-black">
+          <button
+            onClick={handleOpenRegisterModal}
+            className="mt-6 w-40 rounded-md bg-[#01D676] py-2 font-bold tracking-wider text-black"
+          >
             Sign Up
           </button>
         )}

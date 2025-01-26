@@ -7,9 +7,8 @@ import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { FcOk } from "react-icons/fc";
 import { rank1Desktop, rank2Desktop, rank3Desktop, verifiedImage } from "../../assets";
-import { showModal, showPopup } from "../../context/StateManeger";
+import { showModal, openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import ProfileSettings from "./ProfileSettings";
 import Statistics from "./Statistics";
 import WhoVisitProfile from "./WhoVisitProfile";
 import MyFrames from "./MyFrames";
@@ -17,7 +16,7 @@ import MyMusics from "./MyMusics";
 import UserImage from "../../components/Shared/Common/UserImage";
 
 const MyProfile = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const queryParam = searchParams.get("to");
@@ -34,7 +33,7 @@ const MyProfile = () => {
   const copyReferralLink = (text: string) => {
     navigator.clipboard.writeText(text);
     dispatch(
-      showPopup({
+      openToast({
         message: "Copied!",
         type: "SUCESS",
       }),
@@ -42,11 +41,7 @@ const MyProfile = () => {
   };
 
   const handleOpenSetting = useCallback(() => {
-    dispatch(
-      showModal({
-        children: <ProfileSettings />,
-      }),
-    );
+    dispatch(showModal("profile-setting-modal"));
   }, [dispatch]);
 
   useEffect(() => {

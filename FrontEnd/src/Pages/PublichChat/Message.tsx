@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { FcLike, FcOk } from "react-icons/fc";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { handleMessageReaction } from "../../utils";
 import { IPublicChatMessage } from "../../types/publicChatTypes";
@@ -24,9 +24,9 @@ interface IProps {
 }
 
 const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelete }: IProps) => {
-  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const socket = useAppSelector((state) => state.appState.socket);
   const [messageItem, setMessageItem] = useState<IPublicChatMessage>(singleMessage);
   const [date, setDate] = useState(formateDate(messageItem.createdAt));
   const dispatch = useAppDispatch();
@@ -36,7 +36,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     onMutate: ({ fieldName, otherFieldOne, otherFieldTow }) => {
       if (!currentUserId) {
         dispatch(
-          showPopup({
+          openToast({
             type: "ERROR_GENERAL",
             message: "Log in First",
           }),
@@ -62,7 +62,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     onError: (error, _, context) => {
       if (context) setMessageItem(context.previousMessage);
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -107,7 +107,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   const handleLove = () => {
     if (currentUserStatus !== "authenticated") {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "Log in First",
         }),
@@ -125,7 +125,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   const handleLike = () => {
     if (currentUserStatus !== "authenticated") {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "Log in First",
         }),
@@ -143,7 +143,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   const handleDisLike = () => {
     if (currentUserStatus !== "authenticated") {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "Log in First",
         }),

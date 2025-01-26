@@ -1,15 +1,44 @@
-import { Suspense } from "react";
-import { resetModel } from "../../../context/StateManeger";
+import { lazy, Suspense } from "react";
+import { resetModel } from "../../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
 import Spinner from "../Common/Spinner";
 
+const RegisterationForm = lazy(() => import("./RegisterModal/RegisterationForm"));
+const ApplyCoupon = lazy(() => import("./ApplyCouponModal/ApplyCoupon"));
+const Notifications = lazy(() => import("./NotificationsModal/Notifications"));
+const Search = lazy(() => import("./SearchModal/Search"));
+const ProfileSettings = lazy(() => import("./ProfileSettingModal/ProfileSettings"));
+
 const Modal = () => {
-  const modal = useAppSelector((state) => state.stateManeger.modal);
+  const modal = useAppSelector((state) => state.appState.modal);
   const dispatch = useAppDispatch();
 
   const closeModel = () => dispatch(resetModel());
 
-  if (!modal.children) return;
+  if (!modal) return;
+
+  let modalContent = null;
+
+  switch (modal) {
+    case "register-modal":
+      modalContent = <RegisterationForm />;
+      break;
+    case "apply-bonus-code-modal":
+      modalContent = <ApplyCoupon />;
+      break;
+    case "notifications-modal":
+      modalContent = <Notifications />;
+      break;
+    case "search-modal":
+      modalContent = <Search />;
+      break;
+    case "profile-setting-modal":
+      modalContent = <ProfileSettings />;
+      break;
+
+    default:
+      break;
+  }
 
   return (
     <div className="fixed z-[11] flex h-[100dvh] w-[100dvw] items-center justify-center">
@@ -23,7 +52,7 @@ const Modal = () => {
             <Spinner className="h-14 w-14 border-[4px]" />
           </div>
         }
-        children={modal.children}
+        children={modalContent}
       />
     </div>
   );

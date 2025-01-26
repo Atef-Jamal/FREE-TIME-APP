@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
-import { io } from "../app";
+import { io } from "../socketIo/socketIo";
 import PublicMessage from "../models/publicMessage";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";

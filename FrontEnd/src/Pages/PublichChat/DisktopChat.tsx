@@ -1,15 +1,15 @@
 import { memo, useEffect } from "react";
 import { BsChatLeftText } from "react-icons/bs";
 import { cn } from "../../utils/common";
-import { setPublicMsgRedPoint, updateThisEntity } from "../../context/StateManeger";
+import { setPublicMsgRedPoint, updateThisEntity } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { useListenToSocketEvents } from "../../hooks";
 import ChatHeader from "./ChatHeader";
 import PublicChatBody from "./PublicChatBody";
 
 const DisktopChat = memo(() => {
-  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
-  const publicMsgRedPoint = useAppSelector((state) => state.stateManeger.publicMsgRedPoint);
+  const isChatOpen = useAppSelector((state) => state.appState.isChatOpen);
+  const publicMsgRedPoint = useAppSelector((state) => state.appState.publicMsgRedPoint);
   const dispatch = useAppDispatch();
 
   const handleRecievedMessage = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setCurrentUser } from "../../context/StateManeger";
+import { setCurrentUser } from "../../context/appStateSlice";
 import { BsCheck2Circle } from "react-icons/bs";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
@@ -12,7 +12,7 @@ interface IProps {
 }
 
 const GuessCardTask = ({ taskApp }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
   const [score, setScore] = useState(0);

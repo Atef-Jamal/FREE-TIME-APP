@@ -4,7 +4,7 @@ import { IFormData } from "../../../types/othersTypes";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../firebase";
 import { useAppDispatch } from "../../../context/Hooks";
-import { showPopup } from "../../../context/StateManeger";
+import { openToast } from "../../../context/appStateSlice";
 import { cn } from "../../../utils/common";
 
 interface IProps {
@@ -40,7 +40,7 @@ const UploadImage = ({ setFormData, setImageIsUploading }: IProps) => {
           setImageIsUploading(false);
           setPercentage(0);
           dispatch(
-            showPopup({
+            openToast({
               type: "ERROR_GENERAL",
               message: "Can't upload Image, May be its bigger than 5 MB",
             }),

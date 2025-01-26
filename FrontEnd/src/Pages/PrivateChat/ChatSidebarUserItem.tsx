@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { IConversation } from "../../types/privateChatTypes";
-import { setActiveConversation } from "../../context/StateManeger";
+import { setActiveConversation } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { cn, formateDate } from "../../utils/common";
 import UserImage from "../../components/Shared/Common/UserImage";
@@ -12,7 +12,7 @@ interface IProps {
 }
 
 const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const dispatch = useAppDispatch();
 
   let date = "";

@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { BiErrorAlt } from "react-icons/bi";
 import { IVisitor } from "../../types/userTypes";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setCurrentUser, showPopup } from "../../context/StateManeger";
+import { setCurrentUser, openToast } from "../../context/appStateSlice";
 import { makeRequest } from "../../utils";
 import { cn, formateDate, handleApiError } from "../../utils/common";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 
 const WhoVisitProfile = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<IVisitor[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,7 +23,7 @@ const WhoVisitProfile = () => {
 
     if (currentUser.points < 5) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "sorry, your points is not Enough",
         }),
@@ -40,7 +40,7 @@ const WhoVisitProfile = () => {
     } catch (error) {
       setError(handleApiError(error));
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),

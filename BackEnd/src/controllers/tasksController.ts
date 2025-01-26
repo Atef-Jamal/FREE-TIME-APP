@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import Task from "../models/task";
 import User from "../models/user";
 import PublicMessage from "../models/publicMessage";
-import { io } from "../app";
+import { io } from "../socketIo/socketIo";
 import AppsReview from "../models/appsReview";
 import { onLineUsers } from "../socketIo/socketIo";
 import QuizeApp from "../models/notifications/quizeApp";

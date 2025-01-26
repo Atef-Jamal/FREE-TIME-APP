@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
 import { IFormData } from "../../../../types/othersTypes";
-import { resetModel, showPopup, updateThisEntity } from "../../../../context/StateManeger";
+import { resetModel, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { useAppSelector, useAppDispatch } from "../../../../context/Hooks";
 import { cn, handleApiError, validation } from "../../../../utils/common";
 import { login, register, signInWithGoogle } from "../../../../utils/auth";
@@ -22,9 +22,9 @@ const initialValue = {
 };
 
 const RegisterationForm = () => {
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
-  const isSignInMode = useAppSelector((state) => state.stateManeger.isSignInMode);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const socket = useAppSelector((state) => state.appState.socket);
+  const isSignInMode = useAppSelector((state) => state.appState.isSignInMode);
   const [formData, setFormData] = useState<IFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
@@ -60,7 +60,7 @@ const RegisterationForm = () => {
     }
     if (errorMessage) {
       dispatch(
-        showPopup({
+        openToast({
           message: errorMessage,
           type: "ERROR_GENERAL",
         }),
@@ -96,7 +96,7 @@ const RegisterationForm = () => {
       }
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -112,7 +112,7 @@ const RegisterationForm = () => {
       await signInWithGoogle({ dispatch });
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),

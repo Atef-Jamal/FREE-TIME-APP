@@ -15,8 +15,8 @@ import ActivitiesList from "./ActivitiesList";
 import UserImage from "../../components/Shared/Common/UserImage";
 
 const PublicUserProfile = () => {
-  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const { id } = useParams();
 
   const {

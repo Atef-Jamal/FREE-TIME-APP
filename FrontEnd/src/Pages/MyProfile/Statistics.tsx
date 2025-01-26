@@ -7,7 +7,7 @@ import { useAppSelector } from "../../context/Hooks";
 import { fetchMyNotifications } from "../../utils";
 
 const Statistics = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
 
   const { data: statistics = [], error } = useQuery({
     queryKey: ["notifications"],

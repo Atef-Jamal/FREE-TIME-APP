@@ -10,7 +10,7 @@ import {
   INotificationModelName,
   INotifications,
 } from "../../../../types/notificationTypes";
-import { resetModel, setCurrentUser, showPopup, updateThisEntity } from "../../../../context/StateManeger";
+import { resetModel, setCurrentUser, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { verifiedImage } from "../../../../assets";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import { cn, collectReward, formateDate, handleApiError } from "../../../../utils/common";
@@ -19,10 +19,10 @@ import Spinner from "../../Common/Spinner";
 const NotificationItem = (notify: INotifications) => {
   // @ts-expect-error-isCollected does not exist on some notifications
   const [isRewardCollected, setIsRewadCollected] = useState(notify.isCollected);
-  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const isChatOpen = useAppSelector((state) => state.appState.isChatOpen);
+  const socket = useAppSelector((state) => state.appState.socket);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -300,14 +300,14 @@ const NotificationItem = (notify: INotifications) => {
       dispatch(setCurrentUser(updatedUser));
       socket?.emit("user-updated", updatedUser);
       dispatch(
-        showPopup({
+        openToast({
           message: "collected successfully ",
           type: "SUCESS",
         }),
       );
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),

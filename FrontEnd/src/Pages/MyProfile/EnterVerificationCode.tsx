@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/Hooks";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { sendVerificationCode, verifyMyEmail } from "../../utils";
 import { handleApiError } from "../../utils/common";
 
@@ -70,7 +70,7 @@ const EnterVerificationCode = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -88,14 +88,14 @@ const EnterVerificationCode = () => {
     try {
       await sendVerificationCode();
       dispatch(
-        showPopup({
+        openToast({
           message: "Resended successfully, check your email box",
           type: "SUCESS",
         }),
       );
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),

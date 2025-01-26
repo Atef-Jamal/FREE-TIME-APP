@@ -11,8 +11,8 @@ interface IProps {
 }
 
 const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
-  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const {

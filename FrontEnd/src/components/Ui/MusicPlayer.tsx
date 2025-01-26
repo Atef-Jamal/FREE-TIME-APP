@@ -4,20 +4,15 @@ import { IoPlaySkipBackSharp } from "react-icons/io5";
 import { IoPlaySkipForward } from "react-icons/io5";
 import { memo, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import {
-  handleCloseMusic,
-  handlePauseMusic,
-  handlePlayMusic,
-  updateThisEntity,
-} from "../../context/StateManeger";
+import { handleCloseMusic, updateThisEntity } from "../../context/appStateSlice";
 import { MdClose } from "react-icons/md";
 import { cn } from "../../utils/common";
 
 const MusicPlayer = memo(() => {
   const [trackValue, setTrackValue] = useState(0);
-  const activeMusic = useAppSelector((state) => state.stateManeger.activeMusic);
-  const musicIsPlaying = useAppSelector((state) => state.stateManeger.musicIsPlaying);
-  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
+  const activeMusic = useAppSelector((state) => state.appState.activeMusic);
+  const musicIsPlaying = useAppSelector((state) => state.appState.musicIsPlaying);
+  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
   const dispatch = useAppDispatch();
 
   const formatTime = (timeInSeconds: number) => {
@@ -27,31 +22,39 @@ const MusicPlayer = memo(() => {
     return formattedTime;
   };
 
+  const audioElement = document.getElementById("audioElement") as HTMLAudioElement;
+
   const handlePlayPauseMusic = () => {
-    if (musicIsPlaying) dispatch(handlePauseMusic());
-    if (!musicIsPlaying) dispatch(handlePlayMusic());
+    if (musicIsPlaying) {
+      audioElement.pause();
+      dispatch(updateThisEntity({ entity: "musicIsPlaying", value: false }));
+    }
+    if (!musicIsPlaying) {
+      audioElement.play();
+      dispatch(updateThisEntity({ entity: "musicIsPlaying", value: true }));
+    }
   };
 
   useEffect(() => {
-    const activeMusicAudio = activeMusic.audio;
     const handleTimeUpdate = (event: Event) => {
       const element = event.target as HTMLAudioElement;
       setTrackValue(element.currentTime);
     };
 
     const handleMusicEnded = () => {
-      dispatch(handlePauseMusic());
+      audioElement.pause();
+      dispatch(updateThisEntity({ entity: "musicIsPlaying", value: false }));
       setTrackValue(0);
     };
 
-    activeMusicAudio.addEventListener("timeupdate", handleTimeUpdate);
-    activeMusicAudio.addEventListener("ended", handleMusicEnded);
+    audioElement.addEventListener("timeupdate", handleTimeUpdate);
+    audioElement.addEventListener("ended", handleMusicEnded);
 
     return () => {
-      activeMusicAudio.removeEventListener("timeupdate", handleTimeUpdate);
-      activeMusicAudio.removeEventListener("ended", handleMusicEnded);
+      audioElement.removeEventListener("timeupdate", handleTimeUpdate);
+      audioElement.removeEventListener("ended", handleMusicEnded);
     };
-  }, [activeMusic.audio, dispatch]);
+  }, [audioElement, dispatch]);
 
   return (
     <div className="flex h-20 items-center justify-center gap-x-3 rounded-md bg-[#3d3e4b] px-1">
@@ -62,7 +65,7 @@ const MusicPlayer = memo(() => {
           musicIsPlaying && "animate-spin",
         )}
       >
-        <img src={activeMusic.musicInfo?.cover} alt="" className="h-full w-full rounded-full" />
+        <img src={activeMusic?.cover} alt="" className="h-full w-full rounded-full" />
       </button>
       <div
         className={cn(
@@ -72,7 +75,7 @@ const MusicPlayer = memo(() => {
       >
         <div className="flex items-center justify-between">
           <span className="truncate text-xs text-[#abcdff]">
-            {activeMusic.musicInfo?.title || "----"} | {activeMusic.musicInfo?.artist || "----"}
+            {activeMusic?.title || "----"} | {activeMusic?.artist || "----"}
           </span>
           <span
             onClick={() => {
@@ -95,19 +98,19 @@ const MusicPlayer = memo(() => {
           <button>
             <IoPlaySkipForward size={13} />
           </button>
-          {!!activeMusic.audio.duration && (
-            <span className="ml-auto text-xs text-gray-300">{formatTime(activeMusic.audio.duration)}</span>
+          {!!audioElement.duration && (
+            <span className="ml-auto text-xs text-gray-300">{formatTime(audioElement.duration)}</span>
           )}
         </div>
         <input
           type="range"
           id="trackSong"
           min={0}
-          max={Math.floor(activeMusic.audio.duration).toString()}
+          max={Math.floor(audioElement.duration).toString()}
           value={trackValue}
           step={0.1}
           onChange={(e) => {
-            activeMusic.audio.currentTime = Number(e.target.value);
+            audioElement.currentTime = Number(e.target.value);
           }}
           className="mt-1 h-[2px] w-full outline-none"
         />

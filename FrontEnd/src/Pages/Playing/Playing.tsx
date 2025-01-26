@@ -9,7 +9,7 @@ import { fetchAppDetails, fetchUserById } from "../../utils";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const Playing = () => {
-  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
+  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const { taskId } = useParams();
 
   const {

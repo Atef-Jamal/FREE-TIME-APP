@@ -20,7 +20,7 @@ interface IScrollToElementHook {
 }
 
 export const useListenToSocketEvents = ({ eventsToListen, handlers, dependencies = [] }: ISocketHook) => {
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const socket = useAppSelector((state) => state.appState.socket);
 
   useEffect(() => {
     if (!socket) return;

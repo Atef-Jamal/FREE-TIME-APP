@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
-import { setActiveConversation } from "../../context/StateManeger";
+import { setActiveConversation } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { cn } from "../../utils/common";
 import Welcome from "./Welcome";
@@ -10,11 +10,11 @@ import ChatBody from "./ChatBody";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const PrivateChat = () => {
-  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
-  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
-  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
+  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
+  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const dispatch = useAppDispatch();
@@ -67,7 +67,7 @@ const PrivateChat = () => {
       <div className="relative mx-auto h-full max-w-[1400px] overflow-hidden 2xl:flex 2xl:gap-x-4">
         <div
           className={cn(
-            "absolute top-0 left-0 z-[1] h-full w-[80%] max-w-[450px] translate-x-[0%] transition-all 2xl:static",
+            "absolute left-0 top-0 z-[1] h-full w-[80%] max-w-[450px] translate-x-[0%] transition-all 2xl:static",
             !openSidebar && "-translate-x-[100%] 2xl:translate-x-0",
           )}
         >

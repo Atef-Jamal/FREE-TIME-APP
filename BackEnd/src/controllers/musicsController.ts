@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user";
-import { io } from "../app";
+import { io } from "../socketIo/socketIo";
 import PublicMessage from "../models/publicMessage";
 import { onLineUsers } from "../socketIo/socketIo";
 import Music from "../models/notifications/music";

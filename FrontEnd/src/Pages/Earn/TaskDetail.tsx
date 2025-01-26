@@ -5,7 +5,7 @@ import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link, useSearchParams } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
 import { BsArrowDownCircle } from "react-icons/bs";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { cn, handleApiError } from "../../utils/common";
 import { fetchAppDetails, handleAddReview } from "../../utils";
@@ -17,7 +17,7 @@ interface IProps {
 }
 
 const TaskDetail = ({ taskId }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
   const [comment, setComment] = useState("");
@@ -47,7 +47,7 @@ const TaskDetail = ({ taskId }: IProps) => {
   const mutation = useMutation({
     mutationFn: handleAddReview,
     onError: (error) => {
-      dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
+      dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["earn", taskId] });
@@ -58,7 +58,7 @@ const TaskDetail = ({ taskId }: IProps) => {
   const addReviewHandler = (event: React.FormEvent) => {
     event.preventDefault();
     if (comment.trim() === "") {
-      dispatch(showPopup({ message: handleApiError(error), type: "ERROR_GENERAL" }));
+      dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
       return;
     }
     mutation.mutate({ taskId, comment });

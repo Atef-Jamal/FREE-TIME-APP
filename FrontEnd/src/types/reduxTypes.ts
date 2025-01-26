@@ -14,29 +14,28 @@ export interface IMusicInfo {
   artist: string;
   cover: string;
   title: string;
-  musicSrc: string;
 }
 
-export interface IModal {
-  children: React.ReactNode;
-}
+export type IModal =
+  | "register-modal"
+  | "search-modal"
+  | "apply-bonus-code-modal"
+  | "notifications-modal"
+  | "profile-setting-modal"
+  | null;
 
 export interface IInitialState {
   currentUserStatus: "pending" | "authenticated" | "unauthenticated";
   currentUser: IUser | null;
   isChatOpen: boolean;
   isSignInMode: boolean;
-  openSidebarMobile: boolean;
   smallScreen: boolean;
   ToastNotify: IToast;
   sidebarCollapsed: boolean;
   hiddenLiveStats: boolean;
   openMusicModal: boolean;
   musicIsPlaying: boolean;
-  activeMusic: {
-    audio: HTMLAudioElement;
-    musicInfo: IMusicInfo | null;
-  };
+  activeMusic: IMusicInfo | null;
   socket: Socket | null;
   onlineUsers: string[];
   allUnReadedMesseges: string[];
@@ -47,7 +46,7 @@ export interface IInitialState {
 
 export type IDispatch = ThunkDispatch<
   {
-    stateManeger: IInitialState;
+    appState: IInitialState;
   },
   undefined,
   UnknownAction

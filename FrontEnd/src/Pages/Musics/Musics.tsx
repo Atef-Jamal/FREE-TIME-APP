@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FcMusic } from "react-icons/fc";
 import { useScrollToElement } from "../../hooks";
 import { fetchMusics } from "../../utils";
-import MusicCard from "./MusicCard";
+import MusicCard from "../../components/Ui/MusicCard";
 import Skeleton from "../../components/Shared/Common/Skeleton";
 
 const Musics = () => {

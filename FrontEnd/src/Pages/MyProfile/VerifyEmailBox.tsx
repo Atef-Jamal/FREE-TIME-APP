@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { CgClose } from "react-icons/cg";
-import { resetModel, showPopup } from "../../context/StateManeger";
+import { resetModel, openToast } from "../../context/appStateSlice";
 import EnterVerificationCode from "./EnterVerificationCode";
 import { sendVerificationCode } from "../../utils";
 import { handleApiError } from "../../utils/common";
@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const VerifyEmailBox = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [openEnterCode, setOpenEnterCode] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -20,7 +20,7 @@ const VerifyEmailBox = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -32,7 +32,7 @@ const VerifyEmailBox = () => {
     if (!currentUser) return;
     if (currentUser.emailVerified) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "sorry, Email already verified",
         }),

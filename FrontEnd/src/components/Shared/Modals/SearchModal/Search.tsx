@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { getSearchResults } from "../../../../utils";
 import { CgClose } from "react-icons/cg";
-import { resetModel } from "../../../../context/StateManeger";
+import { resetModel } from "../../../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
@@ -10,7 +10,7 @@ import { debounce } from "../../../../utils/common";
 import Empty from "../../Common/Empty";
 
 const Search = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [searchQ, setSearchQ] = useState("");
   const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();

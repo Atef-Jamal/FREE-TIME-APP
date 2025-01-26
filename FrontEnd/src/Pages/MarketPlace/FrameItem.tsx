@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setCurrentUser, showPopup } from "../../context/StateManeger";
+import { setCurrentUser, openToast } from "../../context/appStateSlice";
 import { purshaseFrame } from "../../utils";
 import { handleApiError } from "../../utils/common";
 import { IFrame } from "../../types/frameTypes";
@@ -11,8 +11,8 @@ interface IProps {
 }
 
 const FrameItem = ({ singleFrame }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const purshasedByCurrentUser = !!currentUser?.myFrames.find((item) => item._id === singleFrame._id);
   const dispatch = useAppDispatch();
 
@@ -20,7 +20,7 @@ const FrameItem = ({ singleFrame }: IProps) => {
     mutationFn: purshaseFrame,
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -41,7 +41,7 @@ const FrameItem = ({ singleFrame }: IProps) => {
   const handlePurshaseFrame = () => {
     if (!currentUser) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_LOCK",
           message: "Log In First",
         }),
@@ -75,7 +75,7 @@ const FrameItem = ({ singleFrame }: IProps) => {
         <button
           onClick={() =>
             dispatch(
-              showPopup({
+              openToast({
                 type: "ERROR_GENERAL",
                 message: "Already Buyed. Try with another Frames",
               }),

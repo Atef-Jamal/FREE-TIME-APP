@@ -4,30 +4,23 @@ import { IInitialState, IModal, IMusicInfo, IToast } from "../types/reduxTypes";
 import { IUser } from "../types/userTypes";
 
 const initialState: IInitialState = {
-  currentUserStatus: "pending",
   currentUser: null,
-  ToastNotify: {
-    type: null,
-    message: "",
-  },
-  isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
+  currentUserStatus: "pending",
   isSignInMode: false,
-  smallScreen: window.innerWidth < 1024,
-  openSidebarMobile: false,
-  sidebarCollapsed: window.innerWidth < 1400 ? true : false,
-  hiddenLiveStats: false,
-  openMusicModal: false,
-  musicIsPlaying: false,
-  activeMusic: {
-    audio: new Audio(),
-    musicInfo: null,
-  },
-  socket: null,
   onlineUsers: [],
+  socket: null,
+  smallScreen: window.innerWidth < 1024,
+  isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
   allUnReadedMesseges: [],
   activeConversation: localStorage.getItem("active-converstaion") || null,
-  modal: { children: null },
   publicMsgRedPoint: false,
+  openMusicModal: false,
+  activeMusic: null,
+  musicIsPlaying: false,
+  sidebarCollapsed: window.innerWidth < 1400 ? true : false,
+  hiddenLiveStats: false,
+  ToastNotify: { type: null, message: "" },
+  modal: null,
 };
 
 interface ITogglActionPayload {
@@ -36,7 +29,6 @@ interface ITogglActionPayload {
     | "smallScreen"
     | "hiddenLiveStats"
     | "isChatOpen"
-    | "openSidebarMobile"
     | "sidebarCollapsed"
     | "openMusicModal"
     | "musicIsPlaying";
@@ -48,8 +40,8 @@ interface ISidbareUnreadedMsgs {
   userId?: string | string[];
 }
 
-const StateManegerSlice = createSlice({
-  name: "stateManeger",
+const appStateReducer = createSlice({
+  name: "appState",
   initialState,
   reducers: {
     updateCurrentUserStatus(state, action: PayloadAction<typeof state.currentUserStatus>) {
@@ -62,42 +54,35 @@ const StateManegerSlice = createSlice({
       const { entity, value } = action.payload;
       state[entity] = value;
     },
-    showPopup(state, action: PayloadAction<IToast>) {
+    openToast(state, action: PayloadAction<IToast>) {
       state.ToastNotify.message = action.payload.message;
       state.ToastNotify.type = action.payload.type;
     },
     showModal(state, action: PayloadAction<IModal>) {
-      state.modal.children = action.payload.children;
+      state.modal = action.payload;
     },
     resetModel(state) {
-      state.modal.children = null;
+      state.modal = null;
     },
     resetPopup(state) {
       state.ToastNotify.type = null;
       state.ToastNotify.message = null;
     },
     handleAddMusic(state, action: PayloadAction<IMusicInfo>) {
-      state.activeMusic.audio.src = action.payload.musicSrc;
-      state.activeMusic.musicInfo = action.payload;
-      state.activeMusic.audio.play();
+      state.activeMusic = action.payload;
       state.musicIsPlaying = true;
     },
     handleCloseMusic(state) {
-      state.activeMusic.audio.src = "";
-      state.activeMusic.musicInfo = null;
-      state.musicIsPlaying = false;
-    },
-    handlePlayMusic(state) {
-      state.activeMusic.audio.play();
-      state.musicIsPlaying = true;
-    },
-    handlePauseMusic(state) {
-      state.activeMusic.audio.pause();
+      state.activeMusic = null;
       state.musicIsPlaying = false;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setSocet(state, action: PayloadAction<any>) {
+    setSocket(state, action: PayloadAction<any>) {
       state.socket = action.payload;
+    },
+    disconnectSocket(state) {
+      if (state.socket) state.socket.disconnect();
+      state.socket = null;
     },
     setOnlineUsers(state, action: PayloadAction<string[]>) {
       state.onlineUsers = action.payload;
@@ -129,13 +114,12 @@ const StateManegerSlice = createSlice({
 export const {
   updateCurrentUserStatus,
   setCurrentUser,
-  showPopup,
+  openToast,
   resetPopup,
   handleAddMusic,
   handleCloseMusic,
-  handlePlayMusic,
-  handlePauseMusic,
-  setSocet,
+  setSocket,
+  disconnectSocket,
   setOnlineUsers,
   updateSidebarUnReadedMsgCount,
   setActiveConversation,
@@ -143,6 +127,6 @@ export const {
   resetModel,
   updateThisEntity,
   setPublicMsgRedPoint,
-} = StateManegerSlice.actions;
+} = appStateReducer.actions;
 
-export default StateManegerSlice;
+export default appStateReducer.reducer;

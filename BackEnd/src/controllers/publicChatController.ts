@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import PublicMessage from "../models/publicMessage";
-import { io } from "../app";
+import { io } from "../socketIo/socketIo";
 import { onLineUsers } from "../socketIo/socketIo";
 import Mention from "../models/notifications/mention";
 import MessageInteraction from "../models/notifications/messageInteraction";

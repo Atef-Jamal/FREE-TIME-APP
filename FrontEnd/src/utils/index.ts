@@ -209,10 +209,12 @@ export const purshaseFrame = async ({
 
 export const purshaseMusic = async ({
   musicId,
+  musicTitle,
 }: {
   musicId: string;
+  musicTitle: string;
 }): Promise<{ points: number; musicId: string }> => {
-  const response = await makeRequest.get(`api/songs/buy-song/${musicId}`);
+  const response = await makeRequest.post(`api/songs/buy-song/${musicId}`, { musicTitle });
   const data = response.data;
   return data;
 };

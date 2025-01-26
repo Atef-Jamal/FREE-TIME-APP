@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
 import { IoMdSend } from "react-icons/io";
 import { ICashedConversation, ICashedConversations } from "../../types/privateChatTypes";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sendPrivateChatMessage } from "../../utils";
 import { handleApiError } from "../../utils/common";
@@ -13,8 +13,8 @@ interface IProps {
 }
 
 const SendMessagePrivateChat = ({ id }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const socket = useAppSelector((state) => state.appState.socket);
   const [message, setMessage] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -105,7 +105,7 @@ const SendMessagePrivateChat = ({ id }: IProps) => {
           }
         });
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -117,7 +117,7 @@ const SendMessagePrivateChat = ({ id }: IProps) => {
     event.preventDefault();
     if (message.trim() === "") {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "Enter a Message",
         }),

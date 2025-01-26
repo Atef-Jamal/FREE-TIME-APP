@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import Frame from "../models/frame";
 import User from "../models/user";
-import { io } from "../app";
 import PublicMessage from "../models/publicMessage";
-import { onLineUsers } from "../socketIo/socketIo";
+import { io, onLineUsers } from "../socketIo/socketIo";
 import BuyFrame from "../models/notifications/buyFrame";
 
 export const getAllFrames = async (_: Request, res: Response) => {

@@ -1,8 +1,7 @@
 import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { showModal, updateThisEntity } from "../../context/StateManeger";
+import { showModal, updateThisEntity } from "../../context/appStateSlice";
 import { useAppDispatch } from "../../context/Hooks";
-import RegisterationForm from "../Shared/Modals/RegisterModal/RegisterationForm";
 
 const LockedPage = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +18,7 @@ const LockedPage = () => {
           <button
             onClick={() => {
               dispatch(updateThisEntity({ entity: "isSignInMode", value: true }));
-              dispatch(showModal({ children: <RegisterationForm /> }));
+              dispatch(showModal("register-modal"));
             }}
             className="mb-2 w-full rounded-lg bg-[#1a4b68] py-1 text-lg font-bold text-[#95aeb9] md:py-2 lg:text-2xl"
           >

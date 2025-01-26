@@ -2,7 +2,7 @@ import { MouseEvent, useState } from "react";
 import { ImSpinner3 } from "react-icons/im";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setCurrentUser, showPopup } from "../../context/StateManeger";
+import { setCurrentUser, openToast } from "../../context/appStateSlice";
 import { makeRequest } from "../../utils";
 import { handleApiError } from "../../utils/common";
 import { IQuizTask } from "../../types/earnTypes";
@@ -12,7 +12,7 @@ interface IProps {
 }
 
 const QuizTask = ({ taskApp }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [activeQuesition, setActiveQeustion] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [answers, setAnswers] = useState<string[]>([]);
@@ -77,7 +77,7 @@ const QuizTask = ({ taskApp }: IProps) => {
     } catch (error) {
       setError(handleApiError(error));
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),

@@ -7,7 +7,7 @@ import { MdSend } from "react-icons/md";
 import { RiBaseStationLine } from "react-icons/ri";
 import { ICashedPublicChat, IPublicChatItem } from "../../types/publicChatTypes";
 import { IUser } from "../../types/userTypes";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { sendPublicChatMessage } from "../../utils";
 import { cn, handleApiError } from "../../utils/common";
@@ -21,10 +21,10 @@ interface IProps {
 }
 
 const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const socket = useAppSelector((state) => state.appState.socket);
+  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
@@ -148,7 +148,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       }
 
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -161,7 +161,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     if (!currentUser) return;
     if (message.trim() === "") {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: "Enter a Message",
         }),

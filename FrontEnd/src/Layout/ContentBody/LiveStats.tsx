@@ -12,8 +12,8 @@ import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const LiveStats = memo(() => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const onlineUsers = useAppSelector((state) => state.stateManeger.onlineUsers);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
   const [openLangMenu, setOpenLangMenu] = useState(false);
   const queryClient = useQueryClient();
 

@@ -5,7 +5,7 @@ import { FaList } from "react-icons/fa";
 import { FaMusic } from "react-icons/fa6";
 import { useListenToSocketEvents } from "../../hooks";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { setPublicMsgRedPoint } from "../../context/StateManeger";
+import { setPublicMsgRedPoint } from "../../context/appStateSlice";
 import { mobileNavBottomItems } from "../../helper/data";
 import { cn } from "../../utils/common";
 
@@ -15,9 +15,9 @@ interface IProps {
 }
 
 const NavebareBottom = ({ setOpenSidbareMobile, openSidbareMobile }: IProps) => {
-  const publicMsgRedPoint = useAppSelector((state) => state.stateManeger.publicMsgRedPoint);
-  const openMusicModal = useAppSelector((state) => state.stateManeger.openMusicModal);
-  const isChatOpen = useAppSelector((state) => state.stateManeger.isChatOpen);
+  const publicMsgRedPoint = useAppSelector((state) => state.appState.publicMsgRedPoint);
+  const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
+  const isChatOpen = useAppSelector((state) => state.appState.isChatOpen);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
   const handleToggleMobileSidbare = () => setOpenSidbareMobile((prev) => !prev);

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuidV4 } from "uuid";
 import { handleDeleteMessage } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { handleApiError } from "../../utils/common";
 import { ICashedPublicChat } from "../../types/publicChatTypes";
 import Spinner from "../../components/Shared/Common/Spinner";
@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height }: IProps) => {
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const socket = useAppSelector((state) => state.appState.socket);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -46,7 +46,7 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),

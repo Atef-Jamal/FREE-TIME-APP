@@ -10,12 +10,13 @@ import { useAppDispatch, useAppSelector } from "../context/Hooks";
 import {
   showModal,
   setOnlineUsers,
-  setSocet,
-  showPopup,
+  setSocket,
+  openToast,
   updateThisEntity,
   setCurrentUser,
   updateCurrentUserStatus,
-} from "../context/StateManeger";
+  disconnectSocket,
+} from "../context/appStateSlice";
 import { useListenToSocketEvents } from "../hooks";
 import {
   fetchAllConversations,
@@ -24,16 +25,15 @@ import {
   makeRequest,
 } from "../utils";
 import { debounce, handleApiError } from "../utils/common";
-import RegisterationForm from "../components/Shared/Modals/RegisterModal/RegisterationForm";
 
 // implementing some global Logics her better than inside the Layout component,
 // this prevent entire Layout from Re-Rendering unnecessarily
 
 const LogicalComponent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeConversation = useAppSelector((state) => state.stateManeger.activeConversation);
-  const currentUserId = useAppSelector((state) => state.stateManeger.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
+  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -166,7 +166,7 @@ const LogicalComponent = () => {
       } catch (error) {
         dispatch(updateCurrentUserStatus("unauthenticated"));
         dispatch(
-          showPopup({
+          openToast({
             type: "ERROR_GENERAL",
             message: handleApiError(error),
           }),
@@ -194,25 +194,18 @@ const LogicalComponent = () => {
   });
 
   useEffect(() => {
-    if (currentUserStatus === "pending") return;
     const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
       query: { userId: currentUserId },
     });
-    dispatch(setSocet(socket));
+    dispatch(setSocket(socket));
     return () => {
-      if (socket) {
-        socket.close();
-      }
+      dispatch(disconnectSocket());
     };
-  }, [currentUserStatus, currentUserId, dispatch]);
+  }, [currentUserId, dispatch]);
 
   useEffect(() => {
     if (refQuery && currentUserStatus === "unauthenticated") {
-      dispatch(
-        showModal({
-          children: <RegisterationForm />,
-        }),
-      );
+      dispatch(showModal("register-modal"));
     }
   }, [dispatch, refQuery, currentUserStatus]);
 
@@ -230,7 +223,7 @@ const LogicalComponent = () => {
       }
       if (popupMessage) {
         dispatch(
-          showPopup({
+          openToast({
             message: popupMessage,
             type: "SUCESS",
           }),
@@ -245,11 +238,11 @@ const LogicalComponent = () => {
 
   useEffect(() => {
     const handleNetworkOnline = () => {
-      dispatch(showPopup({ message: "Back online", type: "SUCESS" }));
+      dispatch(openToast({ message: "Back online", type: "SUCESS" }));
     };
 
     const handleNetworkOffline = () => {
-      dispatch(showPopup({ message: "No internet connection", type: "ERROR_GENERAL" }));
+      dispatch(openToast({ message: "No internet connection", type: "ERROR_GENERAL" }));
     };
 
     const handleResize = () => {

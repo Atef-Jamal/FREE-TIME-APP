@@ -7,7 +7,7 @@ import { cn } from "../../utils/common";
 import FrameItem from "./FrameItem";
 
 const MarketPlace = () => {
-  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
+  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
 
   const {
     data: frames = [],

@@ -10,7 +10,7 @@ import { FaArrowDownLong } from "react-icons/fa6";
 import MessageSkeleton from "./MessageSkeleton";
 import { useAppDispatch } from "../../context/Hooks";
 import { fetchPublicChatMessages, makeRequest } from "../../utils";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { debounce, handleApiError } from "../../utils/common";
 import { useScrollToElement } from "../../hooks";
 import { IPublicChatMessage } from "../../types/publicChatTypes";
@@ -80,7 +80,7 @@ const PublicChatBody = memo(() => {
       setOldMessage(message);
     } catch (error) {
       dispatch(
-        showPopup({
+        openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
         }),
@@ -193,7 +193,7 @@ const PublicChatBody = memo(() => {
     <div className="relative flex h-full flex-col gap-y-1 pb-1">
       <div
         ref={messageContainerRef}
-        className="lg:scrollbar-custom max-lg:scrollbar-thin relative flex-1 space-y-1 overflow-y-auto px-1 pb-[2px] lg:px-2"
+        className="lg:scrollbar-custom relative flex-1 space-y-1 overflow-y-auto px-1 pb-[2px] max-lg:scrollbar-thin lg:px-2"
       >
         {messageToDelete && (
           <ChatModelDeletion

@@ -10,7 +10,7 @@ interface IProps {
 }
 
 const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const date = formateDate(singleMessage.createdAt);
   return (
     <div ref={lastMessageRef} className="space-y-2 rounded-md bg-[#2f2f4e88] p-2">

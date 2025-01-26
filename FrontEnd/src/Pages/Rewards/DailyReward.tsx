@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { showPopup } from "../../context/StateManeger";
+import { openToast } from "../../context/appStateSlice";
 import { makeRequest } from "../../utils";
 import { cn } from "../../utils/common";
 import { desktopAffiliateGraphicRight } from "../../assets";
@@ -13,9 +13,9 @@ import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
 import DailyStreakRewardCard from "./DailyStreakRewardCard";
 
 const DailyReward = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const sidebarCollapsed = useAppSelector((state) => state.stateManeger.sidebarCollapsed);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
 
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<string | null>(null);
   const [today, setToday] = useState("");
@@ -48,7 +48,7 @@ const DailyReward = () => {
         const response = await makeRequest.get("api/date");
         setToday(response.data);
       } catch (error) {
-        dispatch(showPopup({ message: "an error occured!", type: "ERROR_GENERAL" }));
+        dispatch(openToast({ message: "an error occured!", type: "ERROR_GENERAL" }));
       }
     };
     getDate();

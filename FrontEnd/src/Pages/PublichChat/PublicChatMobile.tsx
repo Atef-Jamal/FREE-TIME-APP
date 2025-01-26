@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { setPublicMsgRedPoint } from "../../context/StateManeger";
+import { setPublicMsgRedPoint } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import PublicChatBody from "./PublicChatBody";
 
 const PublicChatMobile = () => {
-  const hiddenLiveStats = useAppSelector((state) => state.stateManeger.hiddenLiveStats);
+  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

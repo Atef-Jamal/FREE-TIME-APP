@@ -9,7 +9,7 @@ import LogicalComponent from "./LogicalComponent";
 const NavebareBottom = lazy(() => import("./Navbare/NavebareBottom"));
 
 const Layout = () => {
-  const smallScreen = useAppSelector((state) => state.stateManeger.smallScreen);
+  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
 
   const handleCloseMobileSidebare = useCallback((open: boolean) => {
@@ -18,6 +18,7 @@ const Layout = () => {
 
   return (
     <main>
+      <audio src={undefined} id="audioElement" className="hidden" />
       <Modal />
       <ToastNotify />
       <Navbare />

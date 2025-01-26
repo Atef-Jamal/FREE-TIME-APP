@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { IFrame } from "../../types/frameTypes";
-import { setCurrentUser, showPopup } from "../../context/StateManeger";
+import { setCurrentUser, openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/Hooks";
 import { changeMyPictureFrame, unselectMyPictureFrame } from "../../utils";
 import { handleApiError } from "../../utils/common";
 import Empty from "../../components/Shared/Common/Empty";
 
 const MyFrames = () => {
-  const currentUser = useAppSelector((state) => state.stateManeger.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.stateManeger.currentUserStatus);
-  const socket = useAppSelector((state) => state.stateManeger.socket);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const socket = useAppSelector((state) => state.appState.socket);
   const dispatch = useAppDispatch();
 
   const changeMutation = useMutation({
@@ -18,7 +18,7 @@ const MyFrames = () => {
       if (!currentUser) return;
       dispatch(setCurrentUser({ ...currentUser, activeFrame: frame }));
       dispatch(
-        showPopup({
+        openToast({
           message: "Changed Successfully",
           type: "SUCESS",
         }),
@@ -30,7 +30,7 @@ const MyFrames = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
@@ -43,7 +43,7 @@ const MyFrames = () => {
       if (!currentUser) return;
       dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));
       dispatch(
-        showPopup({
+        openToast({
           message: "Removed Successfully",
           type: "SUCESS",
         }),
@@ -52,7 +52,7 @@ const MyFrames = () => {
     },
     onError: (error) => {
       dispatch(
-        showPopup({
+        openToast({
           message: handleApiError(error),
           type: "ERROR_GENERAL",
         }),
