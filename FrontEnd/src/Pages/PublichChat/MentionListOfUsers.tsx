@@ -4,6 +4,7 @@ import { useAppSelector } from "../../context/hooks";
 import { IUser } from "../../types/userTypes";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getOnlineUsers } from "../../services";
+import Empty from "../../components/shared/common/Empty";
 
 interface IProps {
   setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
@@ -12,7 +13,6 @@ interface IProps {
 
 const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
-  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -33,6 +33,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
       style={{ scrollbarColor: "red" }}
       className="flex h-full w-full flex-col items-center gap-1 overflow-auto bg-[#141a36] p-1 sm:scrollbar-thin"
     >
+      {users?.length === 0 &&status === "success" && <Empty text="no user online now" />}
       {error && <div className="my-4 w-full">{error.response?.data.error}</div>}
       {status === "pending" && (
         <div className="w-full space-y-1">
@@ -44,12 +45,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
           ))}
         </div>
       )}
-      {users
-        .sort((a, b) => {
-          if (onlineUsers.includes(a._id) && !onlineUsers.includes(b._id)) return -1;
-          return 1;
-        })
-        .map((user: IUser) => {
+      {users.map((user: IUser) => {
           if (user._id === currentUserId) return;
           return (
             <div
