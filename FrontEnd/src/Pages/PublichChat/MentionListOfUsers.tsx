@@ -44,26 +44,21 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
           ))}
         </div>
       )}
-      {users
-        .sort((a, b) => {
-          if (onlineUsers.includes(a._id) && !onlineUsers.includes(b._id)) return -1;
-          return 1;
-        })
-        .map((user: IUser) => {
-          if (user._id === currentUserId) return;
-          return (
-            <div
-              key={user._id}
-              onClick={() => setMentionedUsers((prev) => new Set(prev.add(user)))}
-              className="flex w-full items-center justify-between rounded-sm bg-[#475aa02c] px-3 py-2 hover:bg-[#475aa06b]"
-            >
-              <p className="text-xs font-bold tracking-wide text-blue-700">@{user.name}</p>
-              {onlineUsers.includes(user._id) && (
-                <span className="h-3 w-3 animate-pulse rounded-full bg-[#c92626]"></span>
-              )}
-            </div>
-          );
-        })}
+      {users.map((user: IUser) => {
+        if (user._id === currentUserId) return;
+        return (
+          <div
+            key={user._id}
+            onClick={() => setMentionedUsers((prev) => new Set(prev.add(user)))}
+            className="flex w-full items-center justify-between rounded-sm bg-[#475aa02c] px-3 py-2 hover:bg-[#475aa06b]"
+          >
+            <p className="text-xs font-bold tracking-wide text-blue-700">@{user.name}</p>
+            {onlineUsers.includes(user._id) && (
+              <span className="h-3 w-3 animate-pulse rounded-full bg-[#c92626]"></span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
