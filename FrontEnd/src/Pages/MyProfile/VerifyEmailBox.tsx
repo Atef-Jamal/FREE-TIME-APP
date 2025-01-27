@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { CgClose } from "react-icons/cg";
 import { resetModel, openToast } from "../../context/appStateSlice";
 import EnterVerificationCode from "./EnterVerificationCode";
-import { sendVerificationCode } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { sendVerificationCode } from "../../services";
+import { handleApiError } from "../../utilities";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/Shared/Common/Spinner";
 

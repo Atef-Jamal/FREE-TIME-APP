@@ -1,4 +1,4 @@
-import { cn, formateDate } from "../../utils/common";
+import { cn, formateDate } from "../../utilities";
 
 interface IProps {
   index: number;

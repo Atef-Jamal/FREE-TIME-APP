@@ -3,8 +3,8 @@ import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { BsFillClockFill } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
 import { BiTask } from "react-icons/bi";
-import { useAppSelector } from "../../context/Hooks";
-import { fetchMyNotifications } from "../../utils";
+import { useAppSelector } from "../../context/hooks";
+import { fetchMyNotifications } from "../../services";
 
 const Statistics = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);

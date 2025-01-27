@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { crown } from "../../assets";
 import TopWinsLast24Hours from "./TopWinsLast24Hours";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 const Ladder = () => {
   const { t } = useTranslation("rewards");

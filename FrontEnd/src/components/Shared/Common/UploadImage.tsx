@@ -3,9 +3,9 @@ import UploadIcon from "../../../assets/images/upload-icon.png";
 import { IFormData } from "../../../types/othersTypes";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../firebase";
-import { useAppDispatch } from "../../../context/Hooks";
+import { useAppDispatch } from "../../../context/hooks";
 import { openToast } from "../../../context/appStateSlice";
-import { cn } from "../../../utils/common";
+import { cn } from "../../../utilities";
 
 interface IProps {
   setFormData: React.Dispatch<SetStateAction<IFormData>>;

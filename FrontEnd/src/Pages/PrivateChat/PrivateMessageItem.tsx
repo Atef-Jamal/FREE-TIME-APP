@@ -3,8 +3,8 @@ import { FcOk } from "react-icons/fc";
 import { BiCircle } from "react-icons/bi";
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp, IoCloseCircleOutline } from "react-icons/io5";
 import { IPrivateMessage } from "../../types/privateChatTypes";
-import { useAppSelector } from "../../context/Hooks";
-import { cn, formateDate } from "../../utils/common";
+import { useAppSelector } from "../../context/hooks";
+import { cn, formateDate } from "../../utilities";
 
 interface IProps {
   messagesLength: number;

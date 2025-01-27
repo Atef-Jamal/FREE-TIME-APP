@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser } from "../../context/appStateSlice";
 import { BsCheck2Circle } from "react-icons/bs";
-import { makeRequest } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { makeRequest } from "../../services";
+import { handleApiError } from "../../utilities";
 import { ImSpinner3 } from "react-icons/im";
 import { IGameTask } from "../../types/earnTypes";
 

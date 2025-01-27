@@ -1,9 +1,9 @@
-import { memo, useEffect } from "react";
+import { memo, useCallback, useEffect, useMemo } from "react";
 import { BsChatLeftText } from "react-icons/bs";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 import { setPublicMsgRedPoint, updateThisEntity } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { useListenToSocketEvents } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import ChatHeader from "./ChatHeader";
 import PublicChatBody from "./PublicChatBody";
 
@@ -12,11 +12,20 @@ const DisktopChat = memo(() => {
   const publicMsgRedPoint = useAppSelector((state) => state.appState.publicMsgRedPoint);
   const dispatch = useAppDispatch();
 
-  const handleRecievedMessage = () => {
+  const handleRecievedMessage = useCallback(() => {
     if (!isChatOpen) dispatch(setPublicMsgRedPoint(true));
-  };
+  }, [isChatOpen, dispatch]);
+
+  const events = useMemo(() => ["public-message"], []);
+  const handlers = useMemo(() => [handleRecievedMessage], [handleRecievedMessage]);
+
+  useListenToSocketEvents({
+    eventsToListen: events,
+    handlers: handlers,
+  });
 
   useEffect(() => {
+    // initiallly open chat if user comes with url searchParam containing messageID
     const timeOut = setTimeout(() => {
       if (location.search.includes("messageId"))
         if (!isChatOpen) dispatch(updateThisEntity({ entity: "isChatOpen", value: true }));
@@ -30,11 +39,6 @@ const DisktopChat = memo(() => {
       dispatch(setPublicMsgRedPoint(false));
     }
   }, [isChatOpen, dispatch]);
-
-  useListenToSocketEvents({
-    eventsToListen: ["public-message"],
-    handlers: [handleRecievedMessage],
-  });
 
   return (
     <div

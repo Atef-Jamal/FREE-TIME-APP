@@ -1,4 +1,4 @@
-import { memo, RefObject, useEffect, useState } from "react";
+import { memo, RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -8,12 +8,12 @@ import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { FcLike, FcOk } from "react-icons/fc";
 import { openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { handleMessageReaction } from "../../utils";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { handleMessageReaction } from "../../services";
 import { IPublicChatMessage } from "../../types/publicChatTypes";
-import { useListenToSocketEvents } from "../../hooks";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import { IUser } from "../../types/userTypes";
-import { formateDate, handleApiError } from "../../utils/common";
+import { formateDate, handleApiError } from "../../utilities";
 import { verifiedImage } from "../../assets";
 import UserImage from "../../components/Shared/Common/UserImage";
 
@@ -77,24 +77,37 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     handleSetMessageIdToDelete(messageItem._id);
   };
 
-  const handleUpdateMessage = (updatedMessage: IPublicChatMessage) => {
-    if (updatedMessage._id === messageItem._id) {
-      setMessageItem(updatedMessage);
-    }
-  };
+  const handleUpdateMessage = useCallback(
+    (updatedMessage: IPublicChatMessage) => {
+      if (updatedMessage._id === messageItem._id) {
+        setMessageItem(updatedMessage);
+      }
+    },
+    [messageItem._id],
+  );
 
-  const handleUpdateUser = (updatedUser: IUser) => {
-    if (messageItem.sender._id === updatedUser._id) {
-      setMessageItem((prevMessageItem) => ({
-        ...prevMessageItem,
-        sender: updatedUser,
-      }));
-    }
-  };
+  const handleUpdateUser = useCallback(
+    (updatedUser: IUser) => {
+      if (messageItem.sender._id === updatedUser._id) {
+        setMessageItem((prevMessageItem) => ({
+          ...prevMessageItem,
+          sender: updatedUser,
+        }));
+      }
+    },
+    [messageItem.sender._id],
+  );
+
+  const events = useMemo(() => ["interact-with-public-message", "user-updated"], []);
+
+  const handlers = useMemo(
+    () => [handleUpdateMessage, handleUpdateUser],
+    [handleUpdateMessage, handleUpdateUser],
+  );
 
   useListenToSocketEvents({
-    eventsToListen: ["interact-with-public-message", "user-updated"],
-    handlers: [handleUpdateMessage, handleUpdateUser],
+    eventsToListen: events,
+    handlers: handlers,
   });
 
   useEffect(() => {

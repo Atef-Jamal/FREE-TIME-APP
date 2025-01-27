@@ -2,8 +2,8 @@ import { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { MdLiveHelp } from "react-icons/md";
 import { dailyleaderboard } from "../../assets";
-import { getLeaderboardUsers } from "../../utils";
-import { useScrollToElement } from "../../hooks";
+import { getLeaderboardUsers } from "../../services";
+import { useScrollToElement } from "../../hooks/useScrollToElement";
 import UsersWinnerCard from "./UsersWinnerCard";
 import PeopleList from "./PeopleList";
 

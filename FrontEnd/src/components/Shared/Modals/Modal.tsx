@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { resetModel } from "../../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../context/hooks";
 import Spinner from "../Common/Spinner";
 
 const RegisterationForm = lazy(() => import("./RegisterModal/RegisterationForm"));

@@ -4,10 +4,10 @@ import { MdCardGiftcard } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
 import { IBounusCode } from "../../types/rewardsTypes";
 import { openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { makeRequest } from "../../utils";
-import { cn, handleApiError } from "../../utils/common";
-import { useScrollToElement } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { makeRequest } from "../../services";
+import { cn, handleApiError } from "../../utilities";
+import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { dollarInHand } from "../../assets";
 import Ladder from "./Ladder";
 import DailyReward from "./DailyReward";
@@ -59,6 +59,7 @@ const Rewards = () => {
       );
     }
   };
+
   return (
     <div className="flex flex-col gap-8 bg-[#242438] py-6">
       <div className="flex flex-col items-start justify-between gap-6 bg-[#242438] px-4 md:flex-row md:items-center md:px-6">

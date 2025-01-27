@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useTranslation } from "react-i18next";
 import { showModal } from "../../context/appStateSlice";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";

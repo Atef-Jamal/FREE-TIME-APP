@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { MdStorefront } from "react-icons/md";
-import { useAppSelector } from "../../context/Hooks";
-import { useScrollToElement } from "../../hooks";
-import { fetchAllFrames } from "../../utils";
-import { cn } from "../../utils/common";
+import { useAppSelector } from "../../context/hooks";
+import { useScrollToElement } from "../../hooks/useScrollToElement";
+import { fetchAllFrames } from "../../services";
+import { cn } from "../../utilities";
 import FrameItem from "./FrameItem";
 
 const MarketPlace = () => {
@@ -19,7 +19,7 @@ const MarketPlace = () => {
     staleTime: 60 * 60 * 1000,
   });
 
-  useScrollToElement({ dependencies: [frames] });
+  useScrollToElement({ startScroll: status === "success" });
 
   return (
     <div className="min-h-screen w-full p-3 lg:p-5">

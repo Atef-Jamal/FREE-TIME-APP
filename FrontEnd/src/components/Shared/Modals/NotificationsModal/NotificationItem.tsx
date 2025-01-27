@@ -12,9 +12,10 @@ import {
 } from "../../../../types/notificationTypes";
 import { resetModel, setCurrentUser, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { verifiedImage } from "../../../../assets";
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
-import { cn, collectReward, formateDate, handleApiError } from "../../../../utils/common";
+import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
+import { cn, formateDate, handleApiError } from "../../../../utilities";
 import Spinner from "../../Common/Spinner";
+import { collectReward } from "../../../../services";
 
 const NotificationItem = (notify: INotifications) => {
   // @ts-expect-error-isCollected does not exist on some notifications

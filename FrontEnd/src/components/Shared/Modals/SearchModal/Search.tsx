@@ -1,18 +1,17 @@
-import { useRef, useState } from "react";
-import { getSearchResults } from "../../../../utils";
+import { useState } from "react";
+import { getSearchResults } from "../../../../services";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { debounce } from "../../../../utils/common";
+import { debounce } from "../../../../utilities";
 import Empty from "../../Common/Empty";
 
 const Search = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
   const [searchQ, setSearchQ] = useState("");
-  const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();
 
   const {
@@ -41,7 +40,7 @@ const Search = () => {
     setSearchQ(value);
   };
 
-  const debounced = debounce(handleSetSearchQuery, 500, timeOutRef);
+  const debounced = debounce(handleSetSearchQuery, 500);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.replace(/\s+/g, " ").trim().toLocaleLowerCase();

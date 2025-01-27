@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import io from "socket.io-client";
@@ -6,7 +6,7 @@ import { IUser } from "../types/userTypes";
 import { ICashedPublicChat, IPublicChatItem } from "../types/publicChatTypes";
 import { ICashedConversation, ICashedConversations } from "../types/privateChatTypes";
 import { IConversationReadedSocketData } from "../types/othersTypes";
-import { useAppDispatch, useAppSelector } from "../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../context/hooks";
 import {
   showModal,
   setOnlineUsers,
@@ -17,24 +17,20 @@ import {
   updateCurrentUserStatus,
   disconnectSocket,
 } from "../context/appStateSlice";
-import { useListenToSocketEvents } from "../hooks";
+import { useListenToSocketEvents } from "./useListenToSocketEvents";
 import {
   fetchAllConversations,
   fetchPrivateChatMessages,
   fetchPublicChatMessages,
   makeRequest,
-} from "../utils";
-import { debounce, handleApiError } from "../utils/common";
+} from "../services";
+import { debounce, handleApiError } from "../utilities";
 
-// implementing some global Logics her better than inside the Layout component,
-// this prevent entire Layout from Re-Rendering unnecessarily
-
-const LogicalComponent = () => {
+export const useGlobalLogicInitializer = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeConversation = useAppSelector((state) => state.appState.activeConversation);
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const timeOutRef = useRef(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -119,9 +115,9 @@ const LogicalComponent = () => {
     [queryClient],
   );
 
-  const handleNewUserRegistered = () => {
+  const handleNewUserRegistered = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["conversations"] });
-  };
+  }, [queryClient]);
 
   useInfiniteQuery({
     queryKey: ["conversations"],
@@ -176,24 +172,35 @@ const LogicalComponent = () => {
     getCurrentUser();
   }, [token, dispatch]);
 
-  useListenToSocketEvents({
-    eventsToListen: [
-      "online-users",
-      "public-message",
-      "user-updated",
-      "conversation-readed",
-      "new-user-registered",
-    ],
-    handlers: [
+  const events = useMemo(
+    () => ["online-users", "public-message", "user-updated", "conversation-readed", "new-user-registered"],
+    [],
+  );
+  const handlers = useMemo(
+    () => [
       handleUpdateOnlineUsers,
       handleRecieveNewPublicChatMessage,
       handleUserUpdated,
       handleConversationReaded,
       handleNewUserRegistered,
     ],
+    [
+      handleUpdateOnlineUsers,
+      handleRecieveNewPublicChatMessage,
+      handleUserUpdated,
+      handleConversationReaded,
+      handleNewUserRegistered,
+    ],
+  );
+
+  useListenToSocketEvents({
+    eventsToListen: events,
+    handlers: handlers,
   });
 
   useEffect(() => {
+    if (currentUserStatus === "pending") return;
+
     const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
       query: { userId: currentUserId },
     });
@@ -201,7 +208,7 @@ const LogicalComponent = () => {
     return () => {
       dispatch(disconnectSocket());
     };
-  }, [currentUserId, dispatch]);
+  }, [currentUserStatus, currentUserId, dispatch]);
 
   useEffect(() => {
     if (refQuery && currentUserStatus === "unauthenticated") {
@@ -253,7 +260,8 @@ const LogicalComponent = () => {
       }
     };
 
-    const debouncedResize = debounce(handleResize, 100, timeOutRef);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const debouncedResize: any = debounce(handleResize, 250);
 
     window.addEventListener("online", handleNetworkOnline);
     window.addEventListener("offline", handleNetworkOffline);
@@ -264,8 +272,4 @@ const LogicalComponent = () => {
       window.removeEventListener("resize", debouncedResize);
     };
   }, [dispatch]);
-
-  return <></>;
 };
-
-export default LogicalComponent;

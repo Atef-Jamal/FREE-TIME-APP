@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../../context/Hooks";
+import { useAppSelector } from "../../../context/hooks";
 import LockedPage from "../../Errors/LockedPage";
 import BigLoading from "../../../Pages/BigLoading/BigLoading";
 

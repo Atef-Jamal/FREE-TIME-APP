@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { setPublicMsgRedPoint } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import PublicChatBody from "./PublicChatBody";
 
 const PublicChatMobile = () => {

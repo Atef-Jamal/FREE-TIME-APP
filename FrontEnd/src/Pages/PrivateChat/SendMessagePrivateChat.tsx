@@ -4,9 +4,9 @@ import { v4 as uuId } from "uuid";
 import { IoMdSend } from "react-icons/io";
 import { ICashedConversation, ICashedConversations } from "../../types/privateChatTypes";
 import { openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { sendPrivateChatMessage } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { sendPrivateChatMessage } from "../../services";
+import { handleApiError } from "../../utilities";
 
 interface IProps {
   id: string;

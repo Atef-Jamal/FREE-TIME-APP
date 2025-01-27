@@ -1,6 +1,6 @@
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
 import { IUser } from "../../types/userTypes";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 import Skeleton from "../../components/Shared/Common/Skeleton";
 import Empty from "../../components/Shared/Common/Empty";
 

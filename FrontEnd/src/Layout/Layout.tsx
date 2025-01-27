@@ -1,10 +1,10 @@
 import { lazy, Suspense, useCallback, useState } from "react";
-import { useAppSelector } from "../context/Hooks";
 import Navbare from "./Navbare/Navbare";
 import ToastNotify from "../components/Shared/Common/ToastNotify";
 import Modal from "../components/Shared/Modals/Modal";
 import ContentBody from "./ContentBody/ContentBody";
-import LogicalComponent from "./LogicalComponent";
+import { useGlobalLogicInitializer } from "../hooks/useGlobalLogicInitializer";
+import { useAppSelector } from "../context/hooks";
 
 const NavebareBottom = lazy(() => import("./Navbare/NavebareBottom"));
 
@@ -16,9 +16,10 @@ const Layout = () => {
     setOpenSidbareMobile(open);
   }, []);
 
+  useGlobalLogicInitializer();
+
   return (
     <main>
-      <audio src={undefined} id="audioElement" className="hidden" />
       <Modal />
       <ToastNotify />
       <Navbare />
@@ -30,13 +31,13 @@ const Layout = () => {
         <Suspense
           children={
             <NavebareBottom
-              setOpenSidbareMobile={setOpenSidbareMobile}
+              handleCloseMobileSidebare={handleCloseMobileSidebare}
               openSidbareMobile={openSidbareMobile}
             />
           }
         />
       )}
-      <LogicalComponent />
+      <audio src={undefined} id="audioElement" className="hidden" />
     </main>
   );
 };

@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { IFrame } from "../../types/frameTypes";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { changeMyPictureFrame, unselectMyPictureFrame } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { changeMyPictureFrame, unselectMyPictureFrame } from "../../services";
+import { handleApiError } from "../../utilities";
 import Empty from "../../components/Shared/Common/Empty";
 
 const MyFrames = () => {

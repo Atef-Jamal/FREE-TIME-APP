@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import { setActiveConversation } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { cn } from "../../utils/common";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { cn } from "../../utilities";
 import Welcome from "./Welcome";
 import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
@@ -32,7 +32,7 @@ const PrivateChat = () => {
     if (openSidebar) return;
     setOpenSidebar(true);
   };
-  console.log(openSidebar);
+
   useEffect(() => {
     if (secondPartyId && secondPartyId !== currentUserId) {
       dispatch(setActiveConversation(secondPartyId));

@@ -1,7 +1,7 @@
 import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { showModal, updateThisEntity } from "../../context/appStateSlice";
-import { useAppDispatch } from "../../context/Hooks";
+import { useAppDispatch } from "../../context/hooks";
 
 const LockedPage = () => {
   const dispatch = useAppDispatch();

@@ -1,8 +1,8 @@
 import { Suspense, lazy, memo } from "react";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 import LiveStats from "./LiveStats";
 import Footer from "./Footer";
 
@@ -17,6 +17,10 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
   const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
   const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
   const smallScreen = useAppSelector((state) => state.appState.smallScreen);
+
+  const handlClose = () => {
+    handleCloseMobileSidebare(false);
+  };
 
   const sidebarHeigh = smallScreen ? `calc(100dvh - 115px)` : `calc(100dvh - 55px)`;
 
@@ -38,7 +42,7 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
   return (
     <section className="flex">
       <div style={{ height: sidebarHeigh, width: sidebarWidth }} className={sidebarClassName}>
-        <div onClick={() => handleCloseMobileSidebare(false)} className={"h-full w-full backdrop-blur-sm"}>
+        <div onClick={handlClose} className={"h-full w-full backdrop-blur-sm"}>
           <Sidebar />
         </div>
       </div>

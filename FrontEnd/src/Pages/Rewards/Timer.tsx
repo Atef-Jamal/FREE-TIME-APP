@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { calculateTimeLeft } from "../../utils/common";
+import { calculateTimeLeft } from "../../utilities";
 
 interface IProps {
   date: Date;

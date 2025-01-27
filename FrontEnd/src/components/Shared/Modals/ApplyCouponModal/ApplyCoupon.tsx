@@ -6,11 +6,11 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { FaHandsHelping } from "react-icons/fa";
 import { CgPushDown } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import { resetModel, setCurrentUser, openToast } from "../../../../context/appStateSlice";
 import bonusImage from "../../../../assets/images/Bonus-Code.png";
-import { applyCode } from "../../../../utils";
-import { cn, handleApiError } from "../../../../utils/common";
+import { applyCode } from "../../../../services";
+import { cn, handleApiError } from "../../../../utilities";
 import Spinner from "../../Common/Spinner";
 
 const ApplyCoupon = () => {

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import { IUser } from "../../types/userTypes";
 import { crown, verifiedImage } from "../../assets";
 import UserImage from "../Shared/Common/UserImage";

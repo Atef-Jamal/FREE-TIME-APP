@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import { IUser } from "../../types/userTypes";
-import { useClickOutside } from "../../hooks";
-import { getOnlineUsers } from "../../utils";
+import { useClickOutside } from "../../hooks/useClickOutside";
+import { getOnlineUsers } from "../../services";
 
 interface IProps {
   setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;

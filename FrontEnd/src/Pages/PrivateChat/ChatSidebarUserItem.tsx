@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { IConversation } from "../../types/privateChatTypes";
 import { setActiveConversation } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { cn, formateDate } from "../../utils/common";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { cn, formateDate } from "../../utilities";
 import UserImage from "../../components/Shared/Common/UserImage";
 
 interface IProps {

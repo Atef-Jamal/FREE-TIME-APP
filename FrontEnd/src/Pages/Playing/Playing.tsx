@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import { FaCircleCheck } from "react-icons/fa6";
 import GuessCardTask from "../../components/Tasks/GuessCardTask";
 import QuizTask from "../../components/Tasks/QuizTask";
 import { BiErrorAlt } from "react-icons/bi";
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { fetchAppDetails, fetchUserById } from "../../utils";
+import { fetchAppDetails, fetchUserById } from "../../services";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const Playing = () => {

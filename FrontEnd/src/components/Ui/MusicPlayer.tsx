@@ -3,10 +3,10 @@ import { IoMdPlay } from "react-icons/io";
 import { IoPlaySkipBackSharp } from "react-icons/io5";
 import { IoPlaySkipForward } from "react-icons/io5";
 import { memo, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { handleCloseMusic, updateThisEntity } from "../../context/appStateSlice";
 import { MdClose } from "react-icons/md";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 const MusicPlayer = memo(() => {
   const [trackValue, setTrackValue] = useState(0);

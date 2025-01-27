@@ -1,11 +1,11 @@
 import { memo, Suspense, useEffect, useMemo, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import { FaExclamationCircle } from "react-icons/fa";
 import { ICashedLiveStatsUsers } from "../../types/userTypes";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { getUsers } from "../../utils";
+import { getUsers } from "../../services";
 import LiveStatsItem from "../../components/Ui/LiveStatsItem";
 import LangMenu from "../../components/Ui/LangMenu";
 import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";

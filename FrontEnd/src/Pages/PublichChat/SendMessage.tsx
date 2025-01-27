@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { SetURLSearchParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
@@ -8,10 +8,10 @@ import { RiBaseStationLine } from "react-icons/ri";
 import { ICashedPublicChat, IPublicChatItem } from "../../types/publicChatTypes";
 import { IUser } from "../../types/userTypes";
 import { openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { sendPublicChatMessage } from "../../utils";
-import { cn, handleApiError } from "../../utils/common";
-import { useListenToSocketEvents } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { sendPublicChatMessage } from "../../services";
+import { cn, handleApiError } from "../../utilities";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import MentionListOfUsers from "./MentionListOfUsers";
 
 interface IProps {
@@ -212,24 +212,24 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     [socket, somoneTyping],
   );
 
-  const handleOpenMentionList = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleOpenMentionList = () => {
     setOpenMentionList((prev) => !prev);
   };
 
-  const handleTyping = () => {
-    if (!somoneTyping) {
-      setSomeOneTyping(true);
-    }
-  };
+  const handleTyping = useCallback(() => {
+    setSomeOneTyping(true);
+  }, []);
 
-  const handleStopTyping = () => {
+  const handleStopTyping = useCallback(() => {
     setSomeOneTyping(false);
-  };
+  }, []);
+
+  const events = useMemo(() => ["typing-public-message", "stop-typing-public-message"], []);
+  const handlers = useMemo(() => [handleTyping, handleStopTyping], [handleTyping, handleStopTyping]);
 
   useListenToSocketEvents({
-    eventsToListen: ["typing-public-message", "stop-typing-public-message"],
-    handlers: [handleTyping, handleStopTyping],
+    eventsToListen: events,
+    handlers: handlers,
   });
 
   return (

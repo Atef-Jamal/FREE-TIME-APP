@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BiErrorAlt } from "react-icons/bi";
 import { IVisitor } from "../../types/userTypes";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { makeRequest } from "../../utils";
-import { cn, formateDate, handleApiError } from "../../utils/common";
+import { makeRequest } from "../../services";
+import { cn, formateDate, handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 

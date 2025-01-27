@@ -1,5 +1,5 @@
 import { ISearchItem } from "../../../../types/othersTypes";
-import { cn } from "../../../../utils/common";
+import { cn } from "../../../../utilities";
 
 interface IProps {
   searchElement: ISearchItem;

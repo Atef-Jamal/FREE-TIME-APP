@@ -1,4 +1,4 @@
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 const BigLoading = ({ className }: { className?: string }) => {
   return (

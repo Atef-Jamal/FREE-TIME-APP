@@ -9,19 +9,19 @@ import { FaCaretDown } from "react-icons/fa6";
 import { IoIosArrowBack, IoMdArrowDropdown } from "react-icons/io";
 import { notikLogo, tapresearch, AdscendMediaGlow } from "../../assets";
 import { IoIosArrowForward } from "react-icons/io";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import { arrayoffers } from "../../helper/data";
 import { IFilterByPopularity, IFilterByDevice } from "../../types/earnTypes";
 import TaskDetail from "./TaskDetail";
 import AppSkeleton from "./TaskSkeleton";
 import ParnterCard from "./ParnterCard";
 import TaskCard from "./TaskCard";
-import { useScrollToElement } from "../../hooks";
+import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { useSearchParams } from "react-router-dom";
 import FilterByDeviceMenu from "./FilterByDeviceMenu";
 import FilterByPopularityMenu from "./FilterByPopularityMenu";
-import { fetchAllTasks } from "../../utils";
-import { cn } from "../../utils/common";
+import { fetchAllTasks } from "../../services";
+import { cn } from "../../utilities";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
@@ -35,7 +35,7 @@ const Earn = () => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [filterByPopularity, setFilterByPopularity] = useState<IFilterByPopularity>("ALL");
   const [filterByDevice, setFilterByDevice] = useState<IFilterByDevice>("ALL");
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { t } = useTranslation("earn");
 
@@ -59,7 +59,21 @@ const Earn = () => {
 
   const allTasks = data?.pages.map((page) => page.tasks).flat();
 
-  useScrollToElement({ dependencies: [allTasks?.length] });
+  const goToAppDetailSection = useCallback(() => {
+    const appIdFromUrlSearchParam = searchParams.get("to");
+    setTaskId(appIdFromUrlSearchParam);
+    setTimeout(() => {
+      setSearchParams((prev) => {
+        prev.delete("to");
+        return prev;
+      });
+    }, 2000);
+  }, [searchParams, setSearchParams]);
+
+  useScrollToElement({
+    startScroll: status === "success",
+    callback: goToAppDetailSection,
+  });
 
   useEffect(() => {
     if (!taskId) return;
@@ -71,16 +85,6 @@ const Earn = () => {
     }, 500);
     return () => clearTimeout(timout);
   }, [taskId]);
-
-  useEffect(() => {
-    const appIdFromUrlSearchParam = searchParams.get("to");
-    if (appIdFromUrlSearchParam && allTasks && allTasks.length > 0) {
-      const isExistInAppList = allTasks.find((task) => task._id === appIdFromUrlSearchParam);
-      const isAppDetailOpen = translate === "-translate-x-[50%]";
-      if (isExistInAppList && !isAppDetailOpen) return;
-      setTaskId(appIdFromUrlSearchParam);
-    }
-  }, [searchParams, allTasks, translate]);
 
   const selectApp = () => {
     setTranslate("-translate-x-[0%]");
@@ -105,9 +109,6 @@ const Earn = () => {
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
-    setTimeout(() => {
-      setTaskId(null);
-    }, 1000);
   };
 
   const prev = () => {

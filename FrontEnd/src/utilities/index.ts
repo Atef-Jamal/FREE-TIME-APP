@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RefObject } from "react";
-import { makeRequest } from "../utils";
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { INotificationModelName } from "../types/notificationTypes";
 
 export const validation = (values: string[], signIn: boolean, agreePrivacy?: boolean) => {
   let result = `Must Be Exist-`;
@@ -86,22 +83,30 @@ export const handleApiError = (error: any) => {
   return errorMessage;
 };
 
-export const collectReward = async (notificationId: string, modelName: INotificationModelName) => {
-  const response = await makeRequest.patch(`api/notifications/collect/${notificationId}/${modelName}`, {
-    FOR_CONSISTENCY: "FOR_CONSISTENCY",
-  });
-  return response.data;
-};
+// export const debounce = (
+//   func: (params: any) => void,
+//   wait: number,
+//   timoutRef: RefObject<NodeJS.Timeout | null>,
+// ) => {
+//   return (...arg: any) => {
+//     if (timoutRef.current) clearTimeout(timoutRef.current);
+//     timoutRef.current = setTimeout(() => {
+//       func.apply(this, arg);
+//     }, wait);
+//   };
+// };
 
-export const debounce = (
-  func: (params: any) => void,
-  wait: number,
-  timoutRef: RefObject<NodeJS.Timeout | null>,
-) => {
-  return (...arg: any) => {
-    if (timoutRef.current) clearTimeout(timoutRef.current);
-    timoutRef.current = setTimeout(() => {
-      func.apply(this, arg);
+type IDebouncedFunction<T extends (...args: any[]) => void> = (...args: Parameters<T>) => void;
+
+export const debounce = <T extends (...args: any[]) => void>(
+  func: T,
+  wait: number = 300,
+): IDebouncedFunction<T> => {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func(...args);
     }, wait);
   };
 };

@@ -2,7 +2,7 @@ import egypt from "../../assets/images/eg.svg";
 import { MdLanguage } from "react-icons/md";
 import { SetStateAction, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useClickOutside } from "../../hooks";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface IProps {
   setOpenLangMenu: React.Dispatch<SetStateAction<boolean>>;

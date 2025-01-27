@@ -2,17 +2,17 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSearchParams } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useListenToSocketEvents } from "../../hooks";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import SendMessage from "./SendMessage";
 import Message from "./Message";
 import FreeTime from "./FreeTime";
 import { FaArrowDownLong } from "react-icons/fa6";
 import MessageSkeleton from "./MessageSkeleton";
-import { useAppDispatch } from "../../context/Hooks";
-import { fetchPublicChatMessages, makeRequest } from "../../utils";
+import { useAppDispatch } from "../../context/hooks";
+import { fetchPublicChatMessages, makeRequest } from "../../services";
 import { openToast } from "../../context/appStateSlice";
-import { debounce, handleApiError } from "../../utils/common";
-import { useScrollToElement } from "../../hooks";
+import { debounce, handleApiError } from "../../utilities";
+import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { IPublicChatMessage } from "../../types/publicChatTypes";
 import { ChatModelDeletion } from "./ChatModelDeletion";
 
@@ -25,7 +25,6 @@ const PublicChatBody = memo(() => {
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
-  const scrollTimout = useRef<NodeJS.Timeout | null>(null);
   const searchParamsTimout = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useAppDispatch();
 
@@ -61,18 +60,7 @@ const PublicChatBody = memo(() => {
     (msg, index, selfArray) => index === selfArray.findIndex((t) => t._id === msg._id),
   );
 
-  const isThereMessages = messages && messages.length > 0;
-
-  const handleRecievedMessage = () => {
-    const element = messageContainerRef.current!;
-    const addToStaging = element.scrollHeight - element.scrollTop > element.clientHeight + 70;
-    if (addToStaging) {
-      setStagingMessages((prev) => prev + 1);
-    }
-  };
-
-  const fetchOldMessage = async () => {
-    if (!isThereMessages) return;
+  const fetchOldMessage = useCallback(async () => {
     setIsLoadingOldMsg(true);
     try {
       const response = await makeRequest.get(`/api/publicchat/${queryParam}`);
@@ -88,7 +76,15 @@ const PublicChatBody = memo(() => {
     } finally {
       setIsLoadingOldMsg(false);
     }
-  };
+  }, [queryParam, dispatch]);
+
+  const handleRecievedMessage = useCallback(() => {
+    const element = messageContainerRef.current!;
+    const addToStaging = element.scrollHeight - element.scrollTop > element.clientHeight + 70;
+    if (addToStaging) {
+      setStagingMessages((prev) => prev + 1);
+    }
+  }, []);
 
   const handleLoadMoreMessages = () => {
     setOldMessage(null);
@@ -114,15 +110,18 @@ const PublicChatBody = memo(() => {
     setStagingMessages(0);
   }, []);
 
+  const events = useMemo(() => ["public-message"], []);
+  const handler = useMemo(() => [handleRecievedMessage], [handleRecievedMessage]);
+
   useListenToSocketEvents({
-    eventsToListen: ["public-message"],
-    handlers: [handleRecievedMessage],
+    eventsToListen: events,
+    handlers: handler,
   });
 
   useScrollToElement({
     key: "messageId",
     scrollPosition: "start",
-    dependencies: [isThereMessages],
+    startScroll: status === "success",
     callback: fetchOldMessage,
   });
 
@@ -149,7 +148,7 @@ const PublicChatBody = memo(() => {
       }
     };
 
-    const debouncedHandleScroll = debounce(handleScroll, 700, scrollTimout);
+    const debouncedHandleScroll = debounce(handleScroll, 500);
     element.addEventListener("scroll", debouncedHandleScroll);
     return () => {
       element.removeEventListener("scroll", debouncedHandleScroll);

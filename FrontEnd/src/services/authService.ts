@@ -1,5 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { makeRequest } from ".";
+import { makeRequest } from "./config";
 import { auth } from "../firebase";
 import { openToast } from "../context/appStateSlice";
 import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";

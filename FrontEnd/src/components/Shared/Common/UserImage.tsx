@@ -1,5 +1,5 @@
 import { IUser } from "../../../types/userTypes";
-import { cn } from "../../../utils/common";
+import { cn } from "../../../utilities";
 
 interface IProps {
   user: IUser | null;

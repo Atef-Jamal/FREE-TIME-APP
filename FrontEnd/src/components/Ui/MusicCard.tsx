@@ -1,9 +1,9 @@
 import { FaPlay } from "react-icons/fa6";
 import { IoIosPause } from "react-icons/io";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useLocation } from "react-router-dom";
-import { purshaseMusic } from "../../utils";
-import { cn, handleApiError } from "../../utils/common";
+import { purshaseMusic } from "../../services";
+import { cn, handleApiError } from "../../utilities";
 import { IMusicDetail } from "../../types/othersTypes";
 import { useMutation } from "@tanstack/react-query";
 import { handleAddMusic, setCurrentUser, openToast, updateThisEntity } from "../../context/appStateSlice";
@@ -148,7 +148,6 @@ const MusicCard = ({ songDetails }: IProps) => {
           {!musicIsPlaying && activeMusic?.id === songDetails.id.toString() && (
             <button
               onClick={() => {
-                console.log(audioElement);
                 audioElement.play();
                 dispatch(updateThisEntity({ entity: "musicIsPlaying", value: true }));
               }}

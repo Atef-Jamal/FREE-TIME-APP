@@ -1,11 +1,11 @@
 import { ChangeEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { IoClose } from "react-icons/io5";
-import { useAppDispatch, useAppSelector } from "../../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import { resetModel, setCurrentUser, openToast } from "../../../../context/appStateSlice";
-import { changeUserName, changeUserPassword } from "../../../../utils";
+import { changeUserName, changeUserPassword } from "../../../../services";
 import Spinner from "../../Common/Spinner";
-import { handleApiError } from "../../../../utils/common";
+import { handleApiError } from "../../../../utilities";
 import VerifyEmailBox from "../../../../Pages/MyProfile/VerifyEmailBox";
 
 const ProfileSettings = () => {

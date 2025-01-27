@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { FcMusic } from "react-icons/fc";
-import { useScrollToElement } from "../../hooks";
-import { fetchMusics } from "../../utils";
+import { useScrollToElement } from "../../hooks/useScrollToElement";
+import { fetchMusics } from "../../services";
 import MusicCard from "../../components/Ui/MusicCard";
 import Skeleton from "../../components/Shared/Common/Skeleton";
 
@@ -12,7 +12,7 @@ const Musics = () => {
     staleTime: 60 * 60 * 1000,
   });
 
-  useScrollToElement({ dependencies: [musics] });
+  useScrollToElement({ startScroll: status === "success" });
 
   return (
     <div className="p-3 sm:p-6">

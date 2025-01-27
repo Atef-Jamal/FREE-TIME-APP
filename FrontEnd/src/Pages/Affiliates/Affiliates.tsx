@@ -1,6 +1,6 @@
 import { howItWorksLeft, affiliateExplained, howItWorksRight, affiliateBag } from "../../assets";
 import { showModal, updateThisEntity } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 
 const Affiliates = () => {
   const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);

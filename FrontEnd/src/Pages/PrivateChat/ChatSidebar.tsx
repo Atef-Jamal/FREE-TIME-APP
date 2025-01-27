@@ -1,12 +1,12 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { MdOutlineMenu } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
 import { IPrivateMessage } from "../../types/privateChatTypes";
-import { useAppSelector } from "../../context/Hooks";
-import { fetchAllConversations } from "../../utils";
-import { useListenToSocketEvents } from "../../hooks";
-import { debounce } from "../../utils/common";
+import { useAppSelector } from "../../context/hooks";
+import { fetchAllConversations } from "../../services";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { debounce } from "../../utilities";
 import ChatSidebarUserItem from "./ChatSidebarUserItem";
 import ChatSidebarUserItemSkeleton from "./ChatSidebarUserItemSkeleton";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
@@ -23,7 +23,6 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
 
   const [redPoint, setRedPoint] = useState(false);
   const conversationsListRef = useRef<HTMLDivElement>(null);
-  const timeOutRef = useRef(null);
 
   const { data, error, status, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
     useInfiniteQuery({
@@ -38,14 +37,20 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
     return data?.pages.map((page) => page.conversations).flat();
   }, [data?.pages]);
 
-  const handleNotify = (data: IPrivateMessage) => {
-    const isChatWithUserOpen = data.sender._id === activeConversation;
-    if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
-  };
+  const handleNotify = useCallback(
+    (data: IPrivateMessage) => {
+      const isChatWithUserOpen = data.sender._id === activeConversation;
+      if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
+    },
+    [openSidebar, activeConversation],
+  );
+
+  const events = useMemo(() => ["private-message"], []);
+  const handlers = useMemo(() => [handleNotify], [handleNotify]);
 
   useListenToSocketEvents({
-    eventsToListen: ["private-message"],
-    handlers: [handleNotify],
+    eventsToListen: events,
+    handlers: handlers,
   });
 
   useEffect(() => {
@@ -62,7 +67,7 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
         fetchNextPage();
       }
     };
-    const debounced = debounce(onScroll, 250, timeOutRef);
+    const debounced = debounce(onScroll);
     container.addEventListener("scroll", debounced);
     return () => container.removeEventListener("scroll", debounced);
   }, [hasNextPage, fetchNextPage, isFetchingNextPage]);

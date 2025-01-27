@@ -8,13 +8,13 @@ import {
   openToast,
   updateSidebarUnReadedMsgCount,
 } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink, useLocation } from "react-router-dom";
-import { memo, useCallback, useEffect } from "react";
-import { useListenToSocketEvents } from "../../hooks";
-import { cn, handleApiError } from "../../utils/common";
-import { makeRequest } from "../../utils";
+import { memo, useCallback, useEffect, useMemo } from "react";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { cn, handleApiError } from "../../utilities";
+import { makeRequest } from "../../services";
 import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import MusicPlayer from "../../components/Ui/MusicPlayer";
@@ -82,9 +82,12 @@ const Sidebar = memo(() => {
     [queryClient, activeConversation, dispatch, isPrivateChatPageOpen],
   );
 
+  const events = useMemo(() => ["private-message"], []);
+  const handlers = useMemo(() => [handleNewPrivateMessage], [handleNewPrivateMessage]);
+
   useListenToSocketEvents({
-    eventsToListen: ["private-message"],
-    handlers: [handleNewPrivateMessage],
+    eventsToListen: events,
+    handlers: handlers,
   });
 
   useEffect(() => {

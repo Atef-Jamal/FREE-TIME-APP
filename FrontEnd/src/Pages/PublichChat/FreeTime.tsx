@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { formateDate } from "../../utils/common";
-import { useAppSelector } from "../../context/Hooks";
+import { formateDate } from "../../utilities";
+import { useAppSelector } from "../../context/hooks";
 import { IPublicChatFreeTime } from "../../types/publicChatTypes";
 import { verifiedImage } from "../../assets";
 

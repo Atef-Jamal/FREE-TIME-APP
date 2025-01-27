@@ -1,7 +1,7 @@
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { purshaseFrame } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { purshaseFrame } from "../../services";
+import { handleApiError } from "../../utilities";
 import { IFrame } from "../../types/frameTypes";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/Shared/Common/Spinner";

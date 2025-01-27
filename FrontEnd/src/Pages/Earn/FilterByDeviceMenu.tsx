@@ -1,8 +1,8 @@
 import { memo, useRef } from "react";
 import { IFilterByDevice } from "../../types/earnTypes";
-import { useClickOutside } from "../../hooks";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 import { filterByDeviceMenuItems } from "../../helper/data";
 
 interface IProps {

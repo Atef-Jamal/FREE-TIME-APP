@@ -1,6 +1,6 @@
 import { leaderboard_place1_winnings, leaderboard_place3_winnings, crown } from "../../assets";
 import { IUser } from "../../types/userTypes";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 interface IProps {
   user: IUser | undefined;

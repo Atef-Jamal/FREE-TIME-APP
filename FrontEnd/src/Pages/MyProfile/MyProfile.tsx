@@ -8,7 +8,7 @@ import { RiNumbersFill } from "react-icons/ri";
 import { FcOk } from "react-icons/fc";
 import { rank1Desktop, rank2Desktop, rank3Desktop, verifiedImage } from "../../assets";
 import { showModal, openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import Statistics from "./Statistics";
 import WhoVisitProfile from "./WhoVisitProfile";
 import MyFrames from "./MyFrames";

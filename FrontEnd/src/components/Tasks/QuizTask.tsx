@@ -1,10 +1,10 @@
 import { MouseEvent, useState } from "react";
 import { ImSpinner3 } from "react-icons/im";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { makeRequest } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { makeRequest } from "../../services";
+import { handleApiError } from "../../utilities";
 import { IQuizTask } from "../../types/earnTypes";
 
 interface IProps {

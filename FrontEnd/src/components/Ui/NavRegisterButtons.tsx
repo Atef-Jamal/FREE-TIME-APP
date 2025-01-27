@@ -1,7 +1,7 @@
 import { ImKey2 } from "react-icons/im";
 import { showModal, updateThisEntity } from "../../context/appStateSlice";
 import { BsFillPersonFill } from "react-icons/bs";
-import { useAppDispatch } from "../../context/Hooks";
+import { useAppDispatch } from "../../context/hooks";
 import { useTranslation } from "react-i18next";
 
 const NavRegisterButtons = () => {

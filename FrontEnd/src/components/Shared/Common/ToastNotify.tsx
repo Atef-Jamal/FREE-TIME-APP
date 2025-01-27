@@ -1,11 +1,11 @@
 import { memo, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../../context/hooks";
 import { resetPopup } from "../../../context/appStateSlice";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 import Spinner from "./Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { cn } from "../../../utils/common";
+import { cn } from "../../../utilities";
 
 const ToastNotify = memo(() => {
   const ToastNotify = useAppSelector((state) => state.appState.ToastNotify);

@@ -1,9 +1,9 @@
 import { memo, useCallback, useEffect } from "react";
 import { MdOutlineClose, MdOutlineEditNotifications } from "react-icons/md";
-import { useAppDispatch } from "../../../../context/Hooks";
+import { useAppDispatch } from "../../../../context/hooks";
 import { resetModel, openToast } from "../../../../context/appStateSlice";
-import { makeRequest } from "../../../../utils";
-import { handleApiError } from "../../../../utils/common";
+import { makeRequest } from "../../../../services";
+import { handleApiError } from "../../../../utilities";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { ICashedNotificaions, INotifications } from "../../../../types/notificationTypes";
 import Spinner from "../../Common/Spinner";

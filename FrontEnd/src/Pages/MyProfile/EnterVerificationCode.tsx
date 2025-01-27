@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useAppDispatch } from "../../context/Hooks";
+import { useAppDispatch } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
-import { sendVerificationCode, verifyMyEmail } from "../../utils";
-import { handleApiError } from "../../utils/common";
+import { sendVerificationCode, verifyMyEmail } from "../../services";
+import { handleApiError } from "../../utilities";
 
 const EnterVerificationCode = () => {
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);

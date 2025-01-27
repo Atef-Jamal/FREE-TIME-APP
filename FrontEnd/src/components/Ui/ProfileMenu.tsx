@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
 import { updateThisEntity } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
 import { MdContactSupport } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import { useRef } from "react";
-import { useClickOutside } from "../../hooks";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 interface IProps {
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;

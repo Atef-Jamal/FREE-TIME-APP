@@ -2,10 +2,10 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { AiFillAndroid } from "react-icons/ai";
 import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
-import { useAppSelector } from "../../context/Hooks";
+import { useAppSelector } from "../../context/hooks";
 import { ITask } from "../../types/earnTypes";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 interface IProps {
   taskDetail: ITask;

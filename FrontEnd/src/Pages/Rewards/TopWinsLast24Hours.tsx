@@ -1,4 +1,4 @@
-import { cn } from "../../utils/common";
+import { cn } from "../../utilities";
 
 interface IProps {
   name: string;

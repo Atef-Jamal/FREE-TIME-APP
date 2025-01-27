@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { makeRequest } from "../../utils";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { makeRequest } from "../../services";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { handleApiError } from "../../utils/common";
+import { handleApiError } from "../../utilities";
 import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
 import { useTranslation } from "react-i18next";

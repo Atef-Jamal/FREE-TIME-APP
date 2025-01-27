@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BsArrowDown } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { showModal } from "../../context/appStateSlice";
-import { fetchMyNotifications } from "../../utils";
+import { fetchMyNotifications } from "../../services";
 import notificationSoundSrc from "../../assets/images/notificationSound.wav";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { IoMdNotifications } from "react-icons/io";
 import ProfileMenu from "./ProfileMenu";
 import { ICashedNotificaions, INotifications } from "../../types/notificationTypes";
-import { useListenToSocketEvents } from "../../hooks";
+import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import UserImage from "../Shared/Common/UserImage";
+
+const notifySound = new Audio(notificationSoundSrc);
 
 const NavProfileHeader = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
@@ -18,9 +20,6 @@ const NavProfileHeader = () => {
   const queryClient = useQueryClient();
 
   const dispatch = useAppDispatch();
-
-  const notifySound = new Audio();
-  notifySound.src = notificationSoundSrc;
 
   const {
     data: notifications,
@@ -34,20 +33,26 @@ const NavProfileHeader = () => {
 
   const numUnReaded = notifications?.filter((element) => element.isRead === false).length;
 
-  const handleAddNewNotification = (data: INotifications) => {
-    queryClient.setQueryData(
-      ["notifications"],
-      (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
-        if (!previous) return;
-        return [data, ...previous];
-      },
-    );
-    notifySound.play();
-  };
+  const handleAddNewNotification = useCallback(
+    (data: INotifications) => {
+      queryClient.setQueryData(
+        ["notifications"],
+        (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
+          if (!previous) return;
+          return [data, ...previous];
+        },
+      );
+      notifySound.play();
+    },
+    [queryClient],
+  );
+
+  const events = useMemo(() => ["new-notification"], []);
+  const handlers = useMemo(() => [handleAddNewNotification], [handleAddNewNotification]);
 
   useListenToSocketEvents({
-    eventsToListen: ["new-notification"],
-    handlers: [handleAddNewNotification],
+    eventsToListen: events,
+    handlers: handlers,
   });
 
   const handleOpenNotificatioModal = () => {

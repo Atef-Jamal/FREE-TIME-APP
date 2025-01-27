@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
 import { BsArrowDownCircle } from "react-icons/bs";
 import { openToast } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/Hooks";
-import { cn, handleApiError } from "../../utils/common";
-import { fetchAppDetails, handleAddReview } from "../../utils";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { cn, handleApiError } from "../../utilities";
+import { fetchAppDetails, handleAddReview } from "../../services";
 import AppDetailsSkeleton from "./TaskDetailsSkeleton";
 import Empty from "../../components/Shared/Common/Empty";
 
@@ -21,7 +21,6 @@ const TaskDetail = ({ taskId }: IProps) => {
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
   const [comment, setComment] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation("earn");
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -64,21 +63,9 @@ const TaskDetail = ({ taskId }: IProps) => {
     mutation.mutate({ taskId, comment });
   };
 
-  useEffect(() => {
-    const searchQuery = searchParams.get("to");
-    return () => {
-      if (searchQuery) {
-        setSearchParams((prev) => {
-          prev.delete("to");
-          return prev;
-        });
-      }
-    };
-  }, [searchParams, setSearchParams]);
-
   if (status === "pending") return <AppDetailsSkeleton />;
 
-  if (error) return <p>{error.response?.data.error}</p>;
+  if (error) return <p className="py-16 text-center text-red-500">{error.response?.data.error}</p>;
 
   return (
     <>

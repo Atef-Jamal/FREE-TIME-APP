@@ -36,7 +36,7 @@ interface ITogglActionPayload {
 }
 
 interface ISidbareUnreadedMsgs {
-  type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ONE" | "REMOVE-ALL";
+  type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ALL" | "REMOVE-ONE";
   userId?: string | string[];
 }
 
