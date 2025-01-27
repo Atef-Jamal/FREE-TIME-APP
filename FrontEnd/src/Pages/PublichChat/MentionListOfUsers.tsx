@@ -4,7 +4,7 @@ import { useAppSelector } from "../../context/hooks";
 import { IUser } from "../../types/userTypes";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getOnlineUsers } from "../../services";
-import Empty from "../../components/shared/Common/Empty";
+import Empty from "../../components/Shared/Common/Empty";
 
 interface IProps {
   setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
@@ -54,9 +54,9 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
               className="flex w-full items-center justify-between rounded-sm bg-[#475aa02c] px-3 py-2 hover:bg-[#475aa06b]"
             >
               <p className="text-xs font-bold tracking-wide text-blue-700">@{user.name}</p>
-              {onlineUsers.includes(user._id) && (
+              
                 <span className="h-3 w-3 animate-pulse rounded-full bg-[#c92626]"></span>
-              )}
+              
             </div>
           );
         })}
