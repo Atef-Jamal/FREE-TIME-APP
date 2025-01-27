@@ -4,7 +4,7 @@ import { useAppSelector } from "../../context/hooks";
 import { IUser } from "../../types/userTypes";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getOnlineUsers } from "../../services";
-import Empty from "../../components/shared/common/Empty";
+import Empty from "../../components/shared/Common/Empty";
 
 interface IProps {
   setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
