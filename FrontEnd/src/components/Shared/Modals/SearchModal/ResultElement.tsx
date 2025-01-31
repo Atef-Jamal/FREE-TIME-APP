@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { MdOutlineWeb } from "react-icons/md";
 import ResultText from "./ResultText";
 import { ISearchItem } from "../../../../types/othersTypes";
-import { resetModel } from "../../../../context/appStateSlice";
+import { resetModel, updateActiveChatId } from "../../../../context/appStateSlice";
 import { useAppDispatch } from "../../../../context/hooks";
 
 interface IProps {
@@ -42,8 +42,11 @@ const ResultElement = ({ type, results, searchTerm }: IProps) => {
           </Link>
           {type === "USERS" && (
             <Link
-              to={`/privatechat?chat-with=${item._id}`}
-              onClick={() => dispatch(resetModel())}
+              to={"/privatechat"}
+              onClick={() => {
+                dispatch(updateActiveChatId(item._id));
+                dispatch(resetModel());
+              }}
               className="ml-auto rounded-lg bg-[#484b26] px-2 text-sm"
             >
               chat with

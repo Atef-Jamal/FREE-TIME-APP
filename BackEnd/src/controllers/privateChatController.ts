@@ -2,95 +2,190 @@
 import { Request, Response } from "express";
 import Conversation from "../models/conversation";
 import User from "../models/user";
+import PrivateMessage from "../models/privateMessage";
 import { Types } from "mongoose";
 
 export const getAllConversations = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
   const pageParam = Number(req.query.pageParam) || 1;
-  const limit = 15;
+  let limit = 15;
   const skip = (pageParam - 1) * limit;
+
   try {
-    const conversations = await Conversation.find({
-      participants: { $in: [currentUserId] },
-    })
-      .sort({ "lastMessage.createdAt": 1 })
-      .skip(skip)
-      .limit(limit)
-      .select("participants lastMessage messages")
-      .populate("lastMessage.sender", "_id name")
-      .populate("participants", "_id name profilePicture activeFrame");
+    const conversations = await Conversation.aggregate([
+      {
+        $match: { participants: currentUserId },
+      },
+      { $sort: { updatedAt: -1 } },
+      { $limit: limit },
+      { $skip: skip },
+      {
+        $lookup: {
+          from: "users",
+          localField: "participants",
+          foreignField: "_id",
+          as: "participantDetails",
+        },
+      },
+      {
+        $addFields: {
+          otherParticipant: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: "$participantDetails",
+                  as: "participant",
+                  cond: { $ne: ["$$participant._id", currentUserId] }, // Exclude the requesting user
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "privatemessages",
+          localField: "_id",
+          foreignField: "conversationId",
+          as: "messages",
+        },
+      },
+      {
+        $addFields: {
+          unReadCount: {
+            $size: {
+              $filter: {
+                input: "$messages",
+                as: "msg",
+                cond: {
+                  $and: [
+                    { $eq: ["$$msg.receiver", currentUserId] }, // Unread messages for the user
+                    { $eq: ["$$msg.isRead", false] },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "privatemessages",
+          localField: "lastMessage",
+          foreignField: "_id",
+          as: "lastMessageDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastMessageDetails.sender",
+          foreignField: "_id",
+          as: "lastMessageDetailSender",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastMessageDetails.receiver",
+          foreignField: "_id",
+          as: "lastMessageDetailReceiver",
+        },
+      },
+      { $unwind: { path: "$lastMessageDetailSender", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$lastMessageDetailReceiver", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$lastMessageDetails", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          secondParty: {
+            _id: "$otherParticipant._id",
+            name: "$otherParticipant.name",
+            profilePicture: "$otherParticipant.profilePicture",
+            activeFrame: "$otherParticipant.activeFrame",
+          },
+          lastMessage: {
+            _id: "$lastMessageDetails._id",
+            conversationId: "$lastMessageDetails.conversationId",
+            isRead: "$lastMessageDetails.isRead",
+            sender: "$lastMessageDetailSender",
+            receiver: "$lastMessageDetailReceiver",
+            message: "$lastMessageDetails.message",
+            createdAt: "$lastMessageDetails.createdAt",
+          },
+          unReadCount: 1,
+        },
+      },
+    ]);
 
-    const numOfConversations = conversations.length;
-    const excludeThoseUsers: Types.ObjectId[] = [currentUserId];
+    const excludedUsers: Types.ObjectId[] = conversations.map((conv) => conv.secondParty._id);
+    let newPotintialConversations: any[] = [];
 
-    const newArr = conversations.map((conv) => {
-      let count = 0;
-      conv.messages.forEach((msg) => {
-        if (msg.sender.toString() !== currentUserId.toString() && msg.isRead === false) {
-          count = count + 1;
-        }
-      });
-      const second = conv.participants.filter((user) => user._id.toString() !== currentUserId.toString())[0];
+    if (conversations.length < limit) {
+      limit = limit - conversations.length;
 
-      excludeThoseUsers.push(second._id);
-      return {
-        secondParty: second,
-        lastMessage: conv.lastMessage,
-        unreadedCount: count,
-      };
-    });
+      const users = await User.find({ _id: { $nin: [...excludedUsers, currentUserId] } })
+        .select("-password")
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(skip);
 
-    let users: any[] = [];
-
-    if (numOfConversations < limit) {
-      const difference = limit - numOfConversations;
-      const skipOther = (pageParam - 1) * (limit - numOfConversations);
-
-      const allUsers = await User.find({ _id: { $nin: excludeThoseUsers } })
-        .sort({ points: -1, createdAt: -1 })
-        .skip(skipOther)
-        .limit(difference);
-      users = allUsers.map((user) => {
-        return {
-          secondParty: user,
-          lastMessage: null,
-          unreadedCount: 0,
-        };
-      });
+      newPotintialConversations = users.map((user) => ({
+        _id: new Types.ObjectId(),
+        secondParty: user,
+        lastMessage: null,
+        unReadCount: 0,
+      }));
     }
 
-    const results = [...newArr, ...users];
+    const allConversations = [...conversations, ...newPotintialConversations];
 
     const countAllUsers = await User.countDocuments({
       _id: { $ne: currentUserId },
     });
+
     const hasMore = pageParam * limit < countAllUsers;
 
-    return res.status(200).json({ conversations: results, hasMore });
+    return res.status(200).json({ conversations: allConversations, hasMore });
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "can not load all conversations" });
   }
 };
 
 export const getConversationMessages = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { seconduserId } = req.params;
+  const { secondUserId } = req.params;
+  const pageParam = Number(req.query.pageParam) || 1;
+  const limit = 15;
+  const skip = (pageParam - 1) * limit;
+
   try {
-    const getConversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, seconduserId] },
-    });
+    const conversation = await Conversation.findOne({
+      participants: { $all: [currentUserId, secondUserId] },
+    }).select("_id");
 
-    const getSecondUser = await User.findById(seconduserId).select("-password");
+    const secondUser = await User.findById(secondUserId).select("_id name profilePicture activeFrame");
 
-    if (!getSecondUser) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
-    if (!getConversation) {
-      return res.status(200).json({ messages: [], secondUser: getSecondUser });
+    if (!secondUser) {
+      return res.status(404).json({ error: "user not found" });
     }
 
-    const conversation = await getConversation.populate("messages.sender", "-password");
-    return res.status(200).json({ messages: conversation.messages, secondUser: getSecondUser });
+    if (!conversation) {
+      return res.status(200).json({ messages: [], secondUser });
+    }
+
+    const messages = await PrivateMessage.find({ conversationId: conversation._id })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip)
+      .populate("sender", "_id name profilePicture")
+      .populate("receiver", "_id name profilePicture");
+
+    const allMessagesLength = await PrivateMessage.countDocuments({ conversationId: conversation._id });
+    const hasMore = pageParam * limit < allMessagesLength;
+    return res.status(200).json({ messages, secondUser, hasMore });
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }
@@ -98,32 +193,41 @@ export const getConversationMessages = async (req: Request, res: Response) => {
 
 export const createMessage = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { seconduserId } = req.params;
-  const { messageText } = req.body;
-  try {
-    let getConversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, seconduserId] },
-    });
+  const { messageText, receiver } = req.body;
 
-    if (!getConversation) {
-      getConversation = new Conversation({
-        participants: [currentUserId, seconduserId],
+  try {
+    let conversation = await Conversation.findOne({ participants: { $all: [currentUserId, receiver] } });
+
+    if (!conversation) {
+      conversation = new Conversation({
+        participants: [currentUserId, receiver],
       });
+      await conversation.save();
     }
 
-    getConversation.messages.push({
-      message: messageText,
+    const newMessage = new PrivateMessage({
+      conversationId: conversation._id,
       sender: currentUserId,
-      isRead: false,
+      receiver: receiver,
+      message: messageText,
     });
 
-    getConversation.lastMessage = getConversation.messages[getConversation.messages.length - 1];
+    await newMessage.save();
 
-    const saveConversation = await getConversation.save();
-    const conversation = await saveConversation.populate("lastMessage.sender");
+    conversation.lastMessage = newMessage.id;
 
-    return res.status(200).json(conversation.lastMessage);
+    await conversation.save();
+
+    const message = await PrivateMessage.findById(newMessage._id)
+      .populate("sender", "-password")
+      .populate("receiver", "-password");
+
+    if (!message) {
+      return res.status(404).json({ error: "can't create message, an Error occurred" });
+    }
+    return res.status(200).json(message);
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "can't create message, an Error occurred" });
   }
 };
@@ -132,22 +236,12 @@ export const getAllUnReadedMessages = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
 
   try {
-    const conversations = await Conversation.find({
-      participants: { $in: [currentUserId] },
-    });
+    const messages = await PrivateMessage.find({ receiver: currentUserId, isRead: false });
 
-    if (!conversations) {
-      return res.status(200).json([]);
-    }
+    const usersIds: Types.ObjectId[] = [];
 
-    const usersIds: string[] = [];
-
-    conversations.forEach((conversation) => {
-      conversation.messages.forEach((message) => {
-        if (message.sender.toString() !== currentUserId.toString() && message.isRead === false) {
-          usersIds.push(message.sender.toString());
-        }
-      });
+    messages.forEach((msg) => {
+      usersIds.push(msg.sender);
     });
 
     return res.status(200).json(usersIds);
@@ -158,23 +252,19 @@ export const getAllUnReadedMessages = async (req: Request, res: Response) => {
 
 export const markAsReaded = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-  const { seconduserId } = req.params;
+  const { secondUserId } = req.params;
   try {
     const conversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, seconduserId] },
-    });
+      participants: { $all: [currentUserId, secondUserId] },
+    }).select("_id");
 
-    if (!conversation) {
+    if (conversation) {
+      await PrivateMessage.updateMany(
+        { conversationId: conversation._id, receiver: currentUserId, isRead: false },
+        { isRead: true },
+      );
       return res.status(200).json({ message: "success" });
     }
-
-    conversation.messages.forEach((item) => {
-      if (item.sender?.toString() === seconduserId && item.isRead === false) {
-        return (item.isRead = true);
-      }
-    });
-    await conversation.save();
-    return res.status(200).json({ message: "success" });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred" });
   }

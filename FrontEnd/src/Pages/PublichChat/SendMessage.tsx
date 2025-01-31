@@ -28,7 +28,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
-  const [somoneTyping, setSomeOneTyping] = useState<boolean>(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -185,14 +185,14 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       inputRef.current!.style.height = `${contentText.scrollHeight}px`;
 
       setMessage(contentText.value);
-      if (!somoneTyping && contentText.value.trim() !== "") {
-        setSomeOneTyping(true);
+      if (!isTyping && contentText.value.trim() !== "") {
+        setIsTyping(true);
         socket?.emit("typing-public-message");
       }
 
       if (contentText.value.trim() === "") {
         socket?.emit("stop-typing-public-message");
-        setSomeOneTyping(false);
+        setIsTyping(false);
       } else {
         const lastTypingTime = new Date().getTime();
         const timmerLenth = 3000;
@@ -202,14 +202,14 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
 
           if (timDiff >= timmerLenth) {
             socket?.emit("stop-typing-public-message");
-            setSomeOneTyping(false);
+            setIsTyping(false);
           }
         }, timmerLenth);
         if (timeOutRef.current) clearTimeout(timeOutRef.current);
         timeOutRef.current = timmer;
       }
     },
-    [socket, somoneTyping],
+    [socket, isTyping],
   );
 
   const handleOpenMentionList = () => {
@@ -217,11 +217,11 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   };
 
   const handleTyping = useCallback(() => {
-    setSomeOneTyping(true);
+    setIsTyping(true);
   }, []);
 
   const handleStopTyping = useCallback(() => {
-    setSomeOneTyping(false);
+    setIsTyping(false);
   }, []);
 
   const events = useMemo(() => ["typing-public-message", "stop-typing-public-message"], []);
@@ -235,7 +235,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   return (
     <div className={cn("relative flex flex-col")}>
       {openMentionList && (
-        <div className="absolute -top-[152px] left-0 h-[150px] w-full border border-gray-500">
+        <div className="absolute -top-[152px] left-0 h-[150px] w-full border-y border-gray-500">
           <MentionListOfUsers setMentionedUsers={setMentionedUsers} setOpenMentionList={setOpenMentionList} />
         </div>
       )}
@@ -247,29 +247,31 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
           Onlines
         </span>
 
-        {somoneTyping && <p className="text-xs">somone is typing...</p>}
+        {isTyping && <p className="text-xs">somone is typing...</p>}
 
-        <div className="flex flex-1 items-center gap-x-1 overflow-x-auto scrollbar-thin">
-          {[...mentionedUsers].map((user) => (
-            <div
-              key={user._id}
-              onClick={() =>
-                setMentionedUsers(
-                  (prev) => new Set([...prev].filter((prevUser) => prevUser._id !== user._id)),
-                )
-              }
-              className="flex items-center justify-center gap-x-2 rounded-sm bg-[#201d42] px-1 py-[2px]"
-            >
-              <span className="text-[10px]">{user.name}</span>
-              <span className="text-[10px]">x</span>
-            </div>
-          ))}
+        <div className="flex flex-1 items-center gap-x-1 overflow-x-auto scrollbar-none">
+          {[...mentionedUsers]
+            .map((user) => (
+              <div
+                key={user._id}
+                onClick={() =>
+                  setMentionedUsers(
+                    (prev) => new Set([...prev].filter((prevUser) => prevUser._id !== user._id)),
+                  )
+                }
+                className="flex items-center justify-center gap-x-2 rounded-sm bg-[#201d42] px-1 py-[2px]"
+              >
+                <span className="text-nowrap text-[10px]">{user.name}</span>
+                <span className="text-[10px]">x</span>
+              </div>
+            ))
+            .reverse()}
         </div>
       </div>
 
-      <form className={"relative flex items-center justify-center"}>
+      <form className={"relative flex items-center justify-center pb-1"}>
         {currentUserStatus !== "authenticated" && (
-          <div className="absolute z-[1] flex h-full w-full items-center justify-center gap-x-3 backdrop-blur-[2.5px] backdrop-brightness-[0.7]">
+          <div className="absolute z-[1] flex h-full w-full items-center justify-start gap-x-3 px-5 backdrop-blur-[2.5px] backdrop-brightness-[0.7]">
             <FcLock className="text-2xl" />
             <span className="">Register To Unlock</span>
           </div>

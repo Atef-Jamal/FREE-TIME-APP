@@ -16,6 +16,7 @@ interface IProps {
 const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: IProps) => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
   const date = formateDate(message.createdAt);
+
   return (
     <div
       style={{

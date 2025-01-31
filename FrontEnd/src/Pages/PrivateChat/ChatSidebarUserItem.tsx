@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { IConversation } from "../../types/privateChatTypes";
-import { setActiveConversation } from "../../context/appStateSlice";
+import { updateActiveChatId } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn, formateDate } from "../../utilities";
 import UserImage from "../../components/Shared/Common/UserImage";
@@ -23,10 +23,13 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
   return (
     <div
       onClick={() => {
-        dispatch(setActiveConversation(conversation.secondParty._id));
+        dispatch(updateActiveChatId(conversation.secondParty._id));
         localStorage.setItem("active-converstaion", conversation.secondParty._id);
       }}
-      className={cn("relative w-full rounded-md p-1", chatWithUserOpen && "bg-[#dcdbff17]")}
+      className={cn(
+        "relative w-full space-y-1 rounded-md px-[6px] py-[3px] lg:space-y-2",
+        chatWithUserOpen && "bg-[#dcdbff17]",
+      )}
     >
       <div className="mb-1 flex items-center gap-2">
         <div className="h-[25px] w-[30px] sm:h-[32px] sm:w-[37px]">
@@ -38,33 +41,29 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
             <span className="truncate text-xs text-[#4077c9] sm:-mt-1 sm:text-sm">
               {conversation.secondParty.name}
             </span>
-            {isOnLine && (
-              <span className="text-xs font-bold tracking-wider text-[#68e44a] sm:text-sm">onLine</span>
-            )}
-            {!isOnLine && (
-              <span className="text-xs font-bold tracking-wider text-[#676867] sm:text-sm">offLine</span>
-            )}
+            {isOnLine && <span className="text-xs tracking-wider text-[#68e44a] sm:text-sm">onLine</span>}
+            {!isOnLine && <span className="text-xs tracking-wider text-[#676867] sm:text-sm">offLine</span>}
           </span>
           {(conversation.lastMessage?.createdAt && (
             <span className="-mt-[2px] text-[0.7rem] font-bold text-[#746767] sm:text-xs">{date}</span>
-          )) || <span className="text-xs font-bold text-gray-400"> --:--</span>}
+          )) || <span className="text-xs text-gray-400 md:font-bold"> --:--</span>}
         </div>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="h-6 flex-1 overflow-hidden truncate text-xs tracking-wide text-[#d3c5c5] md:text-sm">
-          {conversation.lastMessage ? (
+      <div className="relative flex items-center justify-between">
+        <span className="flex-1 overflow-hidden truncate text-xs tracking-wide text-[#d3c5c5] md:text-sm">
+          {conversation.lastMessage?.sender?._id ? (
             <>
-              {conversation.lastMessage.sender._id === currentUser?._id ? (
+              {conversation.lastMessage.sender?._id === currentUser?._id ? (
                 <>
-                  <span className="font-bold text-[#8eac60]">
+                  <span className="text-[#8eac60]">
                     me <b className="mr-1"> : </b>
                   </span>
                   {conversation.lastMessage.message}
                 </>
               ) : (
                 <>
-                  <span className="font-bold text-[#8eac60]">
-                    {conversation.lastMessage.sender.name} <b className="mr-1"> : </b>
+                  <span className="text-[#8eac60]">
+                    {conversation.secondParty.name} <b className="mr-1"> : </b>
                   </span>
                   {conversation.lastMessage.message}
                 </>
@@ -76,9 +75,9 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
             </p>
           )}
         </span>
-        {conversation.unreadedCount > 0 ? (
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#e63636] text-xs font-bold transition-all">
-            {conversation.unreadedCount}
+        {conversation.unReadCount > 0 ? (
+          <span className="absolute right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#e63636] text-xs font-bold transition-all">
+            {conversation.unReadCount}
           </span>
         ) : undefined}
       </div>

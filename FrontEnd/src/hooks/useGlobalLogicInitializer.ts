@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
-import { skipToken, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { skipToken, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import io from "socket.io-client";
 import { IUser } from "../types/userTypes";
 import { ICashedPublicChat, IPublicChatItem } from "../types/publicChatTypes";
-import { ICashedConversation, ICashedConversations } from "../types/privateChatTypes";
+import { ICashedSingleConversation, ICashedConversations, IPrivateMessage } from "../types/privateChatTypes";
 import { IConversationReadedSocketData } from "../types/othersTypes";
 import { useAppDispatch, useAppSelector } from "../context/hooks";
 import {
@@ -16,6 +16,7 @@ import {
   setCurrentUser,
   updateCurrentUserStatus,
   disconnectSocket,
+  updateSidebarUnReadedMsgCount,
 } from "../context/appStateSlice";
 import { useListenToSocketEvents } from "./useListenToSocketEvents";
 import {
@@ -25,15 +26,20 @@ import {
   makeRequest,
 } from "../services";
 import { debounce, handleApiError } from "../utilities";
+import messageSoundSrc from "../assets/images/messageSound.mp3";
 
 export const useGlobalLogicInitializer = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+  const location = useLocation();
 
+  const userAuth = currentUserStatus === "authenticated";
+
+  const isPrivateChatPageOpen = location.pathname === "/privatechat";
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
   const token = localStorage.getItem("token");
@@ -66,6 +72,84 @@ export const useGlobalLogicInitializer = () => {
     [queryClient],
   );
 
+  const handleNewPrivateMessage = useCallback(
+    (data: IPrivateMessage) => {
+      if (!isPrivateChatPageOpen) {
+        dispatch(
+          updateSidebarUnReadedMsgCount({
+            type: "ADD-ONE",
+            userId: data.sender._id,
+          }),
+        );
+        new Audio(messageSoundSrc).play();
+      }
+
+      const allConversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
+
+      const isConversationExistOnTheList = allConversations?.pages.some((page) =>
+        page.conversations.some((conv) => conv.secondParty._id === data.sender._id),
+      );
+
+      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
+        if (!isConversationExistOnTheList) {
+          return {
+            ...previous,
+            pages: previous.pages.map((page, index) => {
+              const firstPage = index === 0;
+              const newConversation = {
+                _id: data.conversationId,
+                lastMessage: data,
+                secondParty: data.sender,
+                unReadCount: 1,
+              };
+              if (firstPage) {
+                return {
+                  ...page,
+                  conversations: [newConversation, ...page.conversations],
+                };
+              } else {
+                return page;
+              }
+            }),
+          };
+        }
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations.map((conv) => {
+                const isConversationWithUserOpen = conv.secondParty._id === activeChatWithUserId;
+                if (conv.secondParty._id === data.sender._id) {
+                  return {
+                    ...conv,
+                    lastMessage: data,
+                    unReadCount: isConversationWithUserOpen ? conv.unReadCount : conv.unReadCount + 1,
+                  };
+                }
+                return conv;
+              }),
+            };
+          }),
+        };
+      });
+
+      queryClient.setQueryData(
+        ["conversation-messages", data.sender._id],
+        (previous: ICashedSingleConversation): ICashedSingleConversation => {
+          return {
+            ...previous,
+            pages: previous.pages.map((page, index) => {
+              if (index === previous.pages.length - 1) return { ...page, messages: [...page.messages, data] };
+              return page;
+            }),
+          };
+        },
+      );
+    },
+    [queryClient, activeChatWithUserId, dispatch, isPrivateChatPageOpen],
+  );
+
   const handleUserUpdated = useCallback(
     (updatedUser: IUser) => {
       queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
@@ -89,9 +173,14 @@ export const useGlobalLogicInitializer = () => {
       });
       queryClient.setQueryData(
         ["conversation-messages", updatedUser._id],
-        (previous: ICashedConversation): ICashedConversation | undefined => {
+        (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
           if (!previous) return;
-          return { ...previous, secondUser: updatedUser };
+          return {
+            ...previous,
+            pages: previous.pages.map((page) => {
+              return { ...page, secondUser: updatedUser };
+            }),
+          };
         },
       );
     },
@@ -100,17 +189,19 @@ export const useGlobalLogicInitializer = () => {
 
   const handleConversationReaded = useCallback(
     (data: IConversationReadedSocketData) => {
-      queryClient.setQueryData(["conversation-messages", data.sender], (previous: ICashedConversation) => {
-        if (previous) {
+      queryClient.setQueryData(
+        ["conversation-messages", data.sender],
+        (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
+          if (!previous) return;
           return {
             ...previous,
-            messages: previous.messages.map((msg) => ({
-              ...msg,
-              isRead: true,
+            pages: previous.pages.map((page) => ({
+              ...page,
+              messages: page.messages.map((msg) => ({ ...msg, isRead: true })),
             })),
           };
-        }
-      });
+        },
+      );
     },
     [queryClient],
   );
@@ -121,20 +212,20 @@ export const useGlobalLogicInitializer = () => {
 
   useInfiniteQuery({
     queryKey: ["conversations"],
-    queryFn:
-      currentUserStatus === "authenticated"
-        ? ({ pageParam }) => fetchAllConversations({ pageParam })
-        : skipToken,
+    queryFn: userAuth ? ({ pageParam }) => fetchAllConversations({ pageParam }) : skipToken,
     initialPageParam: 1,
     getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
     staleTime: 60 * 60 * 1000,
   });
 
-  useQuery({
-    queryKey: ["conversation-messages", activeConversation],
-    queryFn: activeConversation
-      ? () => fetchPrivateChatMessages({ secondUserId: activeConversation })
-      : skipToken,
+  useInfiniteQuery({
+    queryKey: ["conversation-messages", activeChatWithUserId],
+    queryFn:
+      userAuth && activeChatWithUserId
+        ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatWithUserId })
+        : skipToken,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
     staleTime: 60 * 60 * 1000,
   });
 
@@ -173,13 +264,21 @@ export const useGlobalLogicInitializer = () => {
   }, [token, dispatch]);
 
   const events = useMemo(
-    () => ["online-users", "public-message", "user-updated", "conversation-readed", "new-user-registered"],
+    () => [
+      "online-users",
+      "public-message",
+      "private-message",
+      "user-updated",
+      "conversation-readed",
+      "new-user-registered",
+    ],
     [],
   );
   const handlers = useMemo(
     () => [
       handleUpdateOnlineUsers,
       handleRecieveNewPublicChatMessage,
+      handleNewPrivateMessage,
       handleUserUpdated,
       handleConversationReaded,
       handleNewUserRegistered,
@@ -187,6 +286,7 @@ export const useGlobalLogicInitializer = () => {
     [
       handleUpdateOnlineUsers,
       handleRecieveNewPublicChatMessage,
+      handleNewPrivateMessage,
       handleUserUpdated,
       handleConversationReaded,
       handleNewUserRegistered,

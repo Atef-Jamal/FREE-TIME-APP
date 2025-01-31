@@ -39,7 +39,7 @@ export interface IInitialState {
   socket: Socket | null;
   onlineUsers: string[];
   allUnReadedMesseges: string[];
-  activeConversation: string | null;
+  activeChatWithUserId: string | null;
   modal: IModal;
   publicMsgRedPoint: boolean;
 }

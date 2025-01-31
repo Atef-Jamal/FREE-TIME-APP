@@ -25,7 +25,7 @@
 
 @layer utilities {
   .scrollbar-custom {
-    @apply [&::-webkit-scrollbar-thumb]:bg-[#79b6fc] [&::-webkit-scrollbar-track]:bg-[#5e5d5dee] [&::-webkit-scrollbar]:w-2;
+    @apply [&::-webkit-scrollbar-thumb]:bg-[#637a94] [&::-webkit-scrollbar-track]:bg-[#525151ee] [&::-webkit-scrollbar]:w-2;
   }
   .scrollbar-custom-livestats {
     @apply [&::-webkit-scrollbar-thumb]:bg-[#79b6fc] [&::-webkit-scrollbar-track]:bg-[#5e5d5dee] [&::-webkit-scrollbar]:h-1;

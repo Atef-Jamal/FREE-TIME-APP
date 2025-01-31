@@ -44,7 +44,8 @@ export const allUsers = async (req: Request, res: Response) => {
 };
 
 export const getOnlineUsers = async (req: Request, res: Response) => {
-  const onlines = Object.keys(onLineUsers).filter((id) => id !== req.currentUser._id);
+  const onlines = Object.keys(onLineUsers).filter((id) => id !== req.currentUser._id.toString());
+
   try {
     const users = await User.find({ _id: { $in: onlines } })
       .sort({ points: -1, createdAt: 1 })

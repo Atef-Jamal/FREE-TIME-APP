@@ -59,35 +59,37 @@ export const fetchAllConversations = async ({
 }: {
   pageParam: number;
 }): Promise<{ conversations: IConversation[]; hasMore: boolean }> => {
-  const response = await makeRequest.get(
-    `api/conversations/all-conversations/allusers?pageParam=${pageParam}`,
-  );
+  const response = await makeRequest.get(`api/conversations?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
+
 export const fetchPrivateChatMessages = async ({
-  secondUserId,
+  pageParam,
+  activeChatWithUserId,
 }: {
-  secondUserId: string;
+  pageParam: number;
+  activeChatWithUserId: string;
 }): Promise<{
   messages: IPrivateMessage[];
   secondUser: IUser | null;
+  hasMore: boolean;
 }> => {
-  const response = await makeRequest.get(`api/conversations/${secondUserId}`);
-  const messages = response.data.messages;
-  const secondUser = response.data.secondUser;
-  return { messages, secondUser };
+  const response = await makeRequest.get(`api/conversations/${activeChatWithUserId}?pageParam=${pageParam}`);
+  const data = response.data;
+  return data;
 };
 
 export const sendPrivateChatMessage = async ({
-  secondUserId,
+  receiver,
   message,
 }: {
-  secondUserId: string;
+  receiver: string;
   message: string;
 }): Promise<IPrivateMessage> => {
-  const response = await makeRequest.post(`api/conversations/${secondUserId}`, {
+  const response = await makeRequest.post(`api/conversations`, {
     messageText: message,
+    receiver,
   });
   const data = response.data;
   return data;

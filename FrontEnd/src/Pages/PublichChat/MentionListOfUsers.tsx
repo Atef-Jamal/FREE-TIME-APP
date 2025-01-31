@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAppSelector } from "../../context/hooks";
 import { IUser } from "../../types/userTypes";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { getOnlineUsers } from "../../services";
@@ -12,7 +11,6 @@ interface IProps {
 }
 
 const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
-  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -25,15 +23,18 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
   });
 
   useClickOutside(menuRef, () => setOpenMentionList(false));
-
   return (
     <div
       ref={menuRef}
       onClick={() => setOpenMentionList(false)}
       style={{ scrollbarColor: "red" }}
-      className="flex h-full w-full flex-col items-center gap-1 overflow-auto bg-[#141a36] p-1 sm:scrollbar-thin"
+      className="scrollbar-custom flex h-full w-full flex-col items-center gap-1 overflow-auto bg-[#141a36] p-1 max-lg:scrollbar-thin"
     >
-      {users?.length === 0 && status === "success" && <Empty text="no user online now" />}
+      {users?.length === 0 && status === "success" && (
+        <div className="my-auto">
+          <Empty text="no user online now" />
+        </div>
+      )}
       {error && <div className="my-4 w-full">{error.response?.data.error}</div>}
       {status === "pending" && (
         <div className="w-full space-y-1">
@@ -46,7 +47,6 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
         </div>
       )}
       {users.map((user: IUser) => {
-        if (user._id === currentUserId) return;
         return (
           <div
             key={user._id}

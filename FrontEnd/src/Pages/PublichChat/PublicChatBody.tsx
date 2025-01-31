@@ -189,7 +189,7 @@ const PublicChatBody = memo(() => {
   }, [messages, handleSetMessageIdToDelete]);
 
   return (
-    <div className="relative flex h-full flex-col gap-y-1 pb-1">
+    <div className="relative flex h-full flex-col gap-y-1">
       <div
         ref={messageContainerRef}
         className="lg:scrollbar-custom relative flex-1 space-y-1 overflow-y-auto px-1 pb-[2px] max-lg:scrollbar-thin lg:px-2"

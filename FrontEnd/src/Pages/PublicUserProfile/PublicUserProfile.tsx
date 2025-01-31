@@ -8,16 +8,18 @@ import { BiTask } from "react-icons/bi";
 import { BsFillClockFill } from "react-icons/bs";
 import { fetchUserById, getUserActivities, userVisited } from "../../services";
 import { formateDate } from "../../utilities";
-import { useAppSelector } from "../../context/hooks";
+import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { verifiedImage } from "../../assets";
 import { PublicUserProfileSkeleton } from "./PublicUserProfileSkeleton";
 import ActivitiesList from "./ActivitiesList";
 import UserImage from "../../components/Shared/Common/UserImage";
+import { updateActiveChatId } from "../../context/appStateSlice";
 
 const PublicUserProfile = () => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const { id } = useParams();
+  const dispatch = useAppDispatch();
 
   const {
     data: user,
@@ -148,7 +150,10 @@ const PublicUserProfile = () => {
         </div>
         {user && (
           <Link
-            to={`/privatechat?chat-with=${user._id}`}
+            to={"/privatechat"}
+            onClick={() => {
+              dispatch(updateActiveChatId(user._id));
+            }}
             className="block w-fit rounded-md bg-[#bbb55c] px-5 py-1 font-bold text-[#3a1f1f]"
           >
             Chat with {user.name}

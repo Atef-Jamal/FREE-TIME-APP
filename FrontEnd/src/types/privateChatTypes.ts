@@ -2,6 +2,7 @@ import { IUser } from "./userTypes";
 
 export interface IPrivateMessage {
   _id: string;
+  conversationId: string;
   sender: IUser;
   message: string;
   isRead: boolean;
@@ -11,15 +12,17 @@ export interface IPrivateMessage {
 }
 
 export interface IConversation {
+  _id: string;
   secondParty: IUser;
   lastMessage: IPrivateMessage | null;
-  unreadedCount: number;
+  unReadCount: number;
 }
 
-export interface ICashedConversation {
-  secondUser: IUser;
-  messages: IPrivateMessage[];
+export interface ICashedSingleConversation {
+  pageParams: number[];
+  pages: { secondUser: IUser; messages: IPrivateMessage[]; hasMore: boolean }[];
 }
+
 export interface ICashedConversations {
   pageParams: number[];
   pages: { conversations: IConversation[]; hasMore: boolean }[];

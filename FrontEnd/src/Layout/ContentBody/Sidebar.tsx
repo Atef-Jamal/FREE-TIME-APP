@@ -1,7 +1,5 @@
 import { BiMenu } from "react-icons/bi";
-import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ICashedConversation, ICashedConversations, IPrivateMessage } from "../../types/privateChatTypes";
 import {
   showModal,
   updateThisEntity,
@@ -10,95 +8,25 @@ import {
 } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sidebareItems } from "../../helper/data";
-import { NavLink, useLocation } from "react-router-dom";
-import { memo, useCallback, useEffect, useMemo } from "react";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { NavLink } from "react-router-dom";
+import { memo, useEffect } from "react";
 import { cn, handleApiError } from "../../utilities";
 import { makeRequest } from "../../services";
-import messageSoundSrc from "../../assets/images/messageSound.mp3";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import MusicPlayer from "../../components/Ui/MusicPlayer";
 
 const Sidebar = memo(() => {
   const allUnReadedMesseges = useAppSelector((state) => state.appState.allUnReadedMesseges);
-  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
   const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
   const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
   const smallScreen = useAppSelector((state) => state.appState.smallScreen);
   const { t } = useTranslation("sidebar");
-  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
-  const location = useLocation();
-
-  const isPrivateChatPageOpen = location.pathname === "/privatechat";
 
   const handleCollaps = () => {
     dispatch(updateThisEntity({ entity: "sidebarCollapsed", value: !sidebarCollapsed }));
   };
-
-  const handleNewPrivateMessage = useCallback(
-    (data: IPrivateMessage) => {
-      if (!isPrivateChatPageOpen) {
-        dispatch(
-          updateSidebarUnReadedMsgCount({
-            type: "ADD-ONE",
-            userId: data.sender._id,
-          }),
-        );
-        const messageSound = new Audio();
-        messageSound.src = messageSoundSrc;
-        messageSound.play();
-      }
-      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              conversations: page.conversations.map((conv) => {
-                const isConversationWithUserOpen = data.sender._id === activeConversation;
-                if (conv.secondParty._id === data.sender._id) {
-                  return {
-                    ...conv,
-                    lastMessage: data,
-                    unreadedCount: isConversationWithUserOpen ? conv.unreadedCount : conv.unreadedCount + 1,
-                  };
-                }
-                return conv;
-              }),
-            };
-          }),
-        };
-      });
-      queryClient.setQueryData(
-        ["conversation-messages", data.sender._id],
-        (previous: ICashedConversation) => {
-          if (!previous) return;
-          return { ...previous, messages: [...previous.messages, data] };
-        },
-      );
-    },
-    [queryClient, activeConversation, dispatch, isPrivateChatPageOpen],
-  );
-
-  const events = useMemo(() => ["private-message"], []);
-  const handlers = useMemo(() => [handleNewPrivateMessage], [handleNewPrivateMessage]);
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
-  });
-
-  useEffect(() => {
-    if (isPrivateChatPageOpen && allUnReadedMesseges.length > 0) {
-      dispatch(
-        updateSidebarUnReadedMsgCount({
-          type: "REMOVE-ALL",
-        }),
-      );
-    }
-  }, [allUnReadedMesseges, dispatch, isPrivateChatPageOpen]);
 
   useEffect(() => {
     const getAllUnReadedMsgs = async () => {
@@ -167,7 +95,7 @@ const Sidebar = memo(() => {
                   allUnReadedMesseges.length > 0 &&
                   item.path === "privatechat" && (
                     <span className="absolute right-1 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#e23e32] text-xs font-bold">
-                      {allUnReadedMesseges.length + 2}
+                      {allUnReadedMesseges.length}
                     </span>
                   )}
               </NavLink>

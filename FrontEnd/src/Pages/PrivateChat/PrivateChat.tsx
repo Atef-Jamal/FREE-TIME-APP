@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import messageSoundSrc from "../../assets/images/messageSound.mp3";
-import { setActiveConversation } from "../../context/appStateSlice";
+import { updateSidebarUnReadedMsgCount } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn } from "../../utilities";
 import Welcome from "./Welcome";
@@ -10,19 +8,13 @@ import ChatBody from "./ChatBody";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const PrivateChat = () => {
-  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const allUnReadedMesseges = useAppSelector((state) => state.appState.allUnReadedMesseges);
+  const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
   const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
   const smallScreen = useAppSelector((state) => state.appState.smallScreen);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const dispatch = useAppDispatch();
-
-  const messageSound = new Audio();
-  messageSound.src = messageSoundSrc;
-
-  const secondPartyId = searchParams.get("chat-with");
 
   const toggleSidebar = useCallback(() => {
     setOpenSidebar((prev) => !prev);
@@ -34,15 +26,14 @@ const PrivateChat = () => {
   };
 
   useEffect(() => {
-    if (secondPartyId && secondPartyId !== currentUserId) {
-      dispatch(setActiveConversation(secondPartyId));
-      localStorage.setItem("active-converstaion", secondPartyId);
-      setSearchParams((prev) => {
-        prev.delete("chat-with");
-        return prev;
-      });
+    if (allUnReadedMesseges.length > 0) {
+      dispatch(
+        updateSidebarUnReadedMsgCount({
+          type: "REMOVE-ALL",
+        }),
+      );
     }
-  }, [dispatch, secondPartyId, currentUserId, setSearchParams]);
+  }, [allUnReadedMesseges, dispatch]);
 
   if (currentUserStatus === "pending") {
     return (
@@ -73,7 +64,8 @@ const PrivateChat = () => {
         >
           <ChatSidebar openSidebar={openSidebar} toggleSidebar={toggleSidebar} />
         </div>
-        {activeConversation ? <ChatBody /> : <Welcome handleOpenSidebar={handleOpenSidebar} />}
+        {activeChatWithUserId && <ChatBody activeChatWithUserId={activeChatWithUserId} />}
+        {!activeChatWithUserId && <Welcome handleOpenSidebar={handleOpenSidebar} />}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ const initialState: IInitialState = {
   smallScreen: window.innerWidth < 1024,
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
   allUnReadedMesseges: [],
-  activeConversation: localStorage.getItem("active-converstaion") || null,
+  activeChatWithUserId: localStorage.getItem("active-converstaion") || null,
   publicMsgRedPoint: false,
   openMusicModal: false,
   activeMusic: null,
@@ -105,8 +105,8 @@ const appStateReducer = createSlice({
         state.allUnReadedMesseges = [];
       }
     },
-    setActiveConversation(state, action: PayloadAction<string | null>) {
-      state.activeConversation = action.payload;
+    updateActiveChatId(state, action: PayloadAction<string | null>) {
+      state.activeChatWithUserId = action.payload;
     },
   },
 });
@@ -122,7 +122,7 @@ export const {
   disconnectSocket,
   setOnlineUsers,
   updateSidebarUnReadedMsgCount,
-  setActiveConversation,
+  updateActiveChatId,
   showModal,
   resetModel,
   updateThisEntity,

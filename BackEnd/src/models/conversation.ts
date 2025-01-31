@@ -1,30 +1,10 @@
 import mongoose, { Document, Model, Schema, Types } from "mongoose";
 
-export interface IPrivateMessage {
-  sender: Types.ObjectId;
-  message: string;
-  isRead: boolean;
-}
-
 export interface IConversation extends Document {
   conversationName: string;
-  participants: [Types.ObjectId, Types.ObjectId];
-  lastMessage: IPrivateMessage | null;
-  messages: IPrivateMessage[];
+  participants: Types.ObjectId[];
+  lastMessage: Types.ObjectId | null;
 }
-
-const messageSchema: Schema<IPrivateMessage> = new mongoose.Schema<IPrivateMessage>(
-  {
-    sender: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    message: { type: String, required: true },
-    isRead: { type: Boolean, default: false },
-  },
-  { timestamps: true },
-);
 
 const conversationSchema: Schema<IConversation> = new mongoose.Schema<IConversation>(
   {
@@ -39,8 +19,7 @@ const conversationSchema: Schema<IConversation> = new mongoose.Schema<IConversat
         ref: "User",
       },
     ],
-    lastMessage: { type: messageSchema, default: null },
-    messages: [messageSchema],
+    lastMessage: { type: Schema.Types.ObjectId, ref: "PrivateMessage", default: null },
   },
   {
     timestamps: true,

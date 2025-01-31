@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
-  const activeConversation = useAppSelector((state) => state.appState.activeConversation);
+  const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
   const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
 
   const [redPoint, setRedPoint] = useState(false);
@@ -39,10 +39,10 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
 
   const handleNotify = useCallback(
     (data: IPrivateMessage) => {
-      const isChatWithUserOpen = data.sender._id === activeConversation;
+      const isChatWithUserOpen = data.sender._id === activeChatWithUserId;
       if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
     },
-    [openSidebar, activeConversation],
+    [openSidebar, activeChatWithUserId],
   );
 
   const events = useMemo(() => ["private-message"], []);
@@ -102,13 +102,21 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
         )}
         {status === "pending" &&
           [...Array(10).keys()].map((skeleton) => <ChatSidebarUserItemSkeleton key={skeleton} />)}
-        {status === "success" &&
-          conversations?.map((conversation) => {
+
+        {conversations
+          ?.sort((a, b) => {
+            if (a.lastMessage?.sender._id && b.lastMessage?.sender._id) {
+              if (a.lastMessage.createdAt > b.lastMessage.createdAt) return -1;
+              if (a.lastMessage.createdAt < b.lastMessage.createdAt) return 1;
+            }
+            return 0;
+          })
+          .map((conversation) => {
             const isOnLine = onlineUsers.includes(conversation.secondParty._id);
-            const chatWithUserOpen = activeConversation === conversation.secondParty._id;
+            const chatWithUserOpen = activeChatWithUserId === conversation.secondParty._id;
             return (
               <ChatSidebarUserItem
-                key={conversation.secondParty._id}
+                key={conversation._id}
                 conversation={conversation}
                 isOnLine={isOnLine}
                 chatWithUserOpen={chatWithUserOpen}
