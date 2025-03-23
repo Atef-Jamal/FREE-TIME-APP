@@ -244,7 +244,7 @@ const Home = () => {
             Google Play
           </span>
         </div>
- <img src="https://firebasestorage.googleapis.com/v0/b/free-money-7aec1.appspot.com/o/images%2F9a18cb44280296915769b788b49fe9.webp?alt=media&token=ed43b3cc-895a-4627-9c9a-ba88b9782974" alt="test" className="w-[200px] h-[200px]" />
+
         <div className="grid grid-cols-1 gap-y-2 md:grid-cols-3">
           <div className="flex flex-col items-center justify-center rounded-t-lg bg-[#101127] py-3 md:rounded-l-lg md:rounded-t-none md:border-r">
             <div className="flex items-center gap-4">
