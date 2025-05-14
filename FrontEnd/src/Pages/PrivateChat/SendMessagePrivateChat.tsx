@@ -2,7 +2,7 @@ import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
 import { IoMdSend } from "react-icons/io";
-import { ICashedSingleConversation, ICashedConversations } from "../../types/privateChatTypes";
+import { ICashedSingleConversation, ICashedConversations, IConversation } from "../../types/privateChatTypes";
 import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPrivateChatMessage } from "../../services";
@@ -85,22 +85,57 @@ const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
           };
         },
       );
-      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
+      const allConversationPages: ICashedConversations | undefined = queryClient.getQueryData([
+        "conversations",
+      ]);
+      const flatedConversations = allConversationPages?.pages.map((page) => page.conversations).flat();
+      const isExists = flatedConversations?.some((conv) => conv.secondParty._id === data.receiver._id);
+      if (!isExists) {
+        queryClient.setQueryData(
+          ["conversations"],
+          (previous: ICashedConversations): ICashedConversations => {
             return {
-              ...page,
-              conversations: page.conversations.map((conv) => {
-                if (conv.secondParty._id === activeChatWithUserId) {
-                  return { ...conv, lastMessage: data };
+              ...previous,
+              pages: previous.pages.map((page, index) => {
+                const lastPage = index === previous.pages.length - 1;
+                if (lastPage) {
+                  const newConversation: IConversation = {
+                    _id: data.conversationId,
+                    lastMessage: data,
+                    secondParty: data.receiver,
+                    unReadCount: 0,
+                  };
+                  return {
+                    ...page,
+                    conversations: [newConversation, ...page.conversations],
+                  };
                 }
-                return conv;
+                return page;
               }),
             };
-          }),
-        };
-      });
+          },
+        );
+      } else {
+        queryClient.setQueryData(
+          ["conversations"],
+          (previous: ICashedConversations): ICashedConversations => {
+            return {
+              ...previous,
+              pages: previous.pages.map((page) => {
+                return {
+                  ...page,
+                  conversations: page.conversations.map((conv) => {
+                    if (conv.secondParty._id === activeChatWithUserId) {
+                      return { ...conv, lastMessage: data };
+                    }
+                    return conv;
+                  }),
+                };
+              }),
+            };
+          },
+        );
+      }
       socket?.emit("private-message", { to: activeChatWithUserId, data: data });
     },
     onError: (error, _, context) => {

@@ -18,13 +18,16 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-  const { data, status, error } = useInfiniteQuery({
+  const { data, status, error, hasPreviousPage, fetchPreviousPage } = useInfiniteQuery({
     queryKey: ["conversation-messages", activeChatWithUserId],
     queryFn: activeChatWithUserId
       ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatWithUserId })
       : skipToken,
     initialPageParam: 1,
-    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
+    getPreviousPageParam: (firstPage, _, pageParam) => {
+      return firstPage.hasOlder ? pageParam + 1 : undefined;
+    },
+    getNextPageParam: () => undefined,
     staleTime: 60 * 60 * 1000,
   });
 
@@ -68,15 +71,17 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
     }
   }, [activeChatWithUserId, messages, queryClient, dispatch, socket, currentUserId]);
 
-  const scrollToLastMessage = useCallback(() => {
-    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  useEffect(() => {
+    markAsReaded();
+  }, [activeChatWithUserId, markAsReaded]);
 
   useEffect(() => {
-    scrollToLastMessage();
-    markAsReaded();
-  }, [activeChatWithUserId, markAsReaded, scrollToLastMessage]);
+    const scrollToLastMessage = () => {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
+    scrollToLastMessage();
+  }, [messages]);
   if (!activeChatWithUserId) return;
 
   if (status === "pending") {
@@ -112,6 +117,14 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
       </div>
 
       <div className="scrollbar-custom flex-1 overflow-y-auto max-lg:scrollbar-thin">
+        {hasPreviousPage && (
+          <button
+            onClick={() => fetchPreviousPage()}
+            className="w-full rounded-sm bg-[#4cb0c217] py-1 text-center text-sm text-slate-300"
+          >
+            Load more
+          </button>
+        )}
         {messages?.map((msg, index) => (
           <PrivateMessageItem
             key={msg._id}

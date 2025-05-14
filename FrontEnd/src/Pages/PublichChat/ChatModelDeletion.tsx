@@ -22,7 +22,7 @@ export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height 
   const mutation = useMutation({
     mutationFn: handleDeleteMessage,
     onSuccess: (deletedMessage) => {
-      socket?.emit("interact-with-public-message", deletedMessage);
+      socket?.emit("public-message-interaction", deletedMessage);
       queryClient.setQueryData(
         ["public-chat-messages"],
         (previous: ICashedPublicChat): ICashedPublicChat | undefined => {

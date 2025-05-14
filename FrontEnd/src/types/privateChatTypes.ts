@@ -4,6 +4,7 @@ export interface IPrivateMessage {
   _id: string;
   conversationId: string;
   sender: IUser;
+  receiver: IUser;
   message: string;
   isRead: boolean;
   createdAt: Date;

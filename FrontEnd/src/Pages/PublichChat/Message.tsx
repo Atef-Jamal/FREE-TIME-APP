@@ -69,7 +69,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
       );
     },
     onSuccess: (newMessage) => {
-      socket?.emit("interact-with-public-message", newMessage);
+      socket?.emit("public-message-interaction", newMessage);
     },
   });
 
@@ -98,7 +98,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     [messageItem.sender._id],
   );
 
-  const events = useMemo(() => ["interact-with-public-message", "user-updated"], []);
+  const events = useMemo(() => ["public-message-interaction", "user-updated"], []);
 
   const handlers = useMemo(
     () => [handleUpdateMessage, handleUpdateUser],

@@ -41,7 +41,7 @@ const socketOperations = function (server: IServer) {
     };
 
     const handleInteractWithPMessage = (updatedMessage: any) => {
-      socket.broadcast.emit("interact-with-public-message", updatedMessage);
+      socket.broadcast.emit("public-message-interaction", updatedMessage);
     };
 
     const handleNewPrivateMessage = (message: any) => {
@@ -65,7 +65,7 @@ const socketOperations = function (server: IServer) {
       socket.off("typing-public-message", handleTypingPublicMessage);
       socket.off("stop-typing-public-message", handleStopTypingPublicMessage);
       socket.off("private-message", handleNewPrivateMessage);
-      socket.off("interact-with-public-message", handleInteractWithPMessage);
+      socket.off("public-message-interaction", handleInteractWithPMessage);
       socket.off("conversation-readed", handleConversationReaded);
     };
 

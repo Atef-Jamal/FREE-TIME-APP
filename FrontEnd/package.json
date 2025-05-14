@@ -18,12 +18,9 @@
     "axios": "^1.6.7",
     "clsx": "^2.1.1",
     "firebase": "^10.12.3",
-    "html2canvas": "^1.4.1",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.5.2",
-    "install": "^0.13.0",
-    "npm": "^11.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-i18next": "^14.1.2",
@@ -37,6 +34,8 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.62.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -47,12 +46,14 @@
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "jsdom": "^26.0.0",
     "postcss": "^8.4.29",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vitest": "^3.0.5"
   }
 }

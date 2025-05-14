@@ -97,9 +97,9 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
       {!dayInfo.isCollected && new Date(dayInfo.availableAt) <= today ? (
         <button
           onClick={collectDailyReward}
-          className="flex w-full items-center justify-center rounded-md bg-[#01D676]"
+          className="flex w-full items-center justify-center rounded-md bg-[#01D676] py-1 font-bold"
         >
-          {isLoading ? <Spinner color="blue" /> : t("Collect")}
+          {isLoading ? <Spinner color="brown" /> : t("Collect")}
         </button>
       ) : undefined}
 

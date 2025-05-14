@@ -225,7 +225,10 @@ export const useGlobalLogicInitializer = () => {
         ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatWithUserId })
         : skipToken,
     initialPageParam: 1,
-    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
+    getPreviousPageParam: (firstPage, _, pageParam) => {
+      return firstPage.hasOlder ? pageParam + 1 : undefined;
+    },
+    getNextPageParam: () => undefined,
     staleTime: 60 * 60 * 1000,
   });
 

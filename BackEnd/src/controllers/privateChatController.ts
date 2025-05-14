@@ -183,9 +183,11 @@ export const getConversationMessages = async (req: Request, res: Response) => {
       .populate("sender", "_id name profilePicture")
       .populate("receiver", "_id name profilePicture");
 
+    const reversedMessages = messages.reverse();
     const allMessagesLength = await PrivateMessage.countDocuments({ conversationId: conversation._id });
-    const hasMore = pageParam * limit < allMessagesLength;
-    return res.status(200).json({ messages, secondUser, hasMore });
+    const hasOlder = pageParam * limit < allMessagesLength;
+
+    return res.status(200).json({ messages: reversedMessages, secondUser, hasOlder });
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }

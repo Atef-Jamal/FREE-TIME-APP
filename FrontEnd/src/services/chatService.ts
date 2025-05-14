@@ -73,7 +73,7 @@ export const fetchPrivateChatMessages = async ({
 }): Promise<{
   messages: IPrivateMessage[];
   secondUser: IUser | null;
-  hasMore: boolean;
+  hasOlder: boolean;
 }> => {
   const response = await makeRequest.get(`api/conversations/${activeChatWithUserId}?pageParam=${pageParam}`);
   const data = response.data;

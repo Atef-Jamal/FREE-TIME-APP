@@ -37,7 +37,11 @@ const ToastNotify = memo(() => {
       <span className="text-xl">
         {type === "ERROR_LOCK" && <IoLockClosed />}
         {type === "ERROR_GENERAL" && <BiErrorAlt />}
-        {type === "LOADING" && <Spinner className="border-[4px]" />}
+        {type === "LOADING" && (
+          <span className="flex items-center justify-center rounded-full">
+            <Spinner className="border-[3px]" />
+          </span>
+        )}
         {type === "SUCESS" && <FaRegCheckCircle />}
       </span>
       <p className={cn("text-xs md:text-sm", textNoWrap)}>{message}</p>

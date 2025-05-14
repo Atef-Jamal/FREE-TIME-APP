@@ -29,7 +29,8 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const timeOutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeOutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -177,40 +178,30 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     mutation.mutate({ message, mentionedUsers: [...mentionedUsers].map((i) => i._id) });
   };
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const contentText = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const textareaElement = e.target;
 
-      inputRef.current!.style.height = "auto";
-      inputRef.current!.style.height = `${contentText.scrollHeight}px`;
+    inputRef.current!.style.height = "auto";
+    inputRef.current!.style.height = `${textareaElement.scrollHeight}px`;
 
-      setMessage(contentText.value);
-      if (!isTyping && contentText.value.trim() !== "") {
-        setIsTyping(true);
-        socket?.emit("typing-public-message");
-      }
+    setMessage(textareaElement.value);
+    if (!isTyping && textareaElement.value.trim() !== "") {
+      setIsTyping(true);
+      socket?.emit("typing-public-message");
+    }
+    const lastTypingTime = new Date().getTime();
+    const timmerLenth = 3000;
 
-      if (contentText.value.trim() === "") {
+    if (timeOutIdRef.current) clearTimeout(timeOutIdRef.current);
+    timeOutIdRef.current = setTimeout(() => {
+      const now = new Date().getTime();
+      const timDifference = now - lastTypingTime;
+      if (timDifference >= timmerLenth) {
         socket?.emit("stop-typing-public-message");
         setIsTyping(false);
-      } else {
-        const lastTypingTime = new Date().getTime();
-        const timmerLenth = 3000;
-        const timmer = setTimeout(() => {
-          const now = new Date().getTime();
-          const timDiff = now - lastTypingTime;
-
-          if (timDiff >= timmerLenth) {
-            socket?.emit("stop-typing-public-message");
-            setIsTyping(false);
-          }
-        }, timmerLenth);
-        if (timeOutRef.current) clearTimeout(timeOutRef.current);
-        timeOutRef.current = timmer;
       }
-    },
-    [socket, isTyping],
-  );
+    }, timmerLenth);
+  };
 
   const handleOpenMentionList = () => {
     setOpenMentionList((prev) => !prev);
@@ -269,7 +260,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
         </div>
       </div>
 
-      <form className={"relative flex items-center justify-center pb-1"}>
+      <form className={"relative flex items-end justify-center"}>
         {currentUserStatus !== "authenticated" && (
           <div className="absolute z-[1] flex h-full w-full items-center justify-start gap-x-3 px-5 backdrop-blur-[2.5px] backdrop-brightness-[0.7]">
             <FcLock className="text-2xl" />
@@ -284,7 +275,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
           placeholder={!currentUser ? "Register First " : "Type here.."}
           rows={1}
           className={
-            "max-h-[250px] min-h-[35px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] -outline-offset-2 outline-[#2bf70273] scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 focus:outline md:text-sm lg:text-base"
+            "max-h-[250px] min-h-[35px] flex-1 resize-none overflow-scroll bg-[#090b20] p-2 text-xs text-[#a0bb9d] -outline-offset-1 scrollbar-none placeholder:tracking-wide placeholder:text-[#ccadad] placeholder:opacity-30 focus:outline focus:outline-[#2bf70273] md:text-sm lg:text-base lg:-outline-offset-[3px]"
           }
         />
 
