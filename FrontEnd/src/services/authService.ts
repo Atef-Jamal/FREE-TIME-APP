@@ -1,6 +1,4 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { makeRequest } from "./config";
-import { auth } from "../firebase";
 import { openToast } from "../context/appStateSlice";
 import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
 
@@ -12,7 +10,10 @@ export const register = async ({ formData, dispatch, referrerUser }: IRegisterPr
     }),
   );
   const query = referrerUser ? `?referrerUser=${referrerUser}` : "";
-  const response = await makeRequest.post(`api/auth/register${query}`, formData);
+  console.log(formData);
+  const response = await makeRequest.post(`api/auth/register${query}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response;
 };
 
@@ -30,22 +31,16 @@ export const login = async ({ formData, dispatch }: ILoginProps) => {
   });
   return response;
 };
-
-export const signInWithGoogle = async ({ dispatch }: { dispatch: IDispatch }) => {
-  const provider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, provider);
+interface IParams {
+  provider: "google" | "github";
+  dispatch: IDispatch;
+}
+export const signInWithOauthProvider = async ({ provider, dispatch }: IParams) => {
   dispatch(
     openToast({
       message: "signing in....",
       type: "LOADING",
     }),
   );
-  const loginUser = await makeRequest.post(`api/auth/login-with-google`, {
-    name: result.user.displayName,
-    email: result.user.email,
-    profilePicture: result.user.photoURL,
-    accessToken: await result.user.getIdToken(),
-  });
-  localStorage.setItem("token", loginUser.data.token);
-  window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+  window.location.href = `http://localhost:3000/api/auth/${provider}`;
 };

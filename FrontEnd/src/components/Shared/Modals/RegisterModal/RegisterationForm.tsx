@@ -8,7 +8,7 @@ import { IFormData } from "../../../../types/othersTypes";
 import { resetModel, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { useAppSelector, useAppDispatch } from "../../../../context/hooks";
 import { cn, handleApiError, validation } from "../../../../utilities";
-import { login, register, signInWithGoogle } from "../../../../services";
+import { login, register, signInWithOauthProvider } from "../../../../services";
 import LeftSide from "./LeftSide";
 import UploadImage from "../../Common/UploadImage";
 import Input from "../../Common/Input";
@@ -18,7 +18,7 @@ const initialValue = {
   email: "",
   password: "",
   confirmPassword: "",
-  profilePicture: "",
+  profilePicture: null,
 };
 
 const RegisterationForm = () => {
@@ -28,7 +28,7 @@ const RegisterationForm = () => {
   const [formData, setFormData] = useState<IFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
-  const [imageIsUploading, setImageIsUploading] = useState(false);
+  // const [imageIsUploading, setImageIsUploading] = useState(false);
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("register");
@@ -47,7 +47,7 @@ const RegisterationForm = () => {
   const handleSubmite = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (currentUserStatus === "authenticated") return;
-    if (imageIsUploading) return;
+    // if (imageIsUploading) return;
     setSubmiting(true);
 
     const { name, email, password, confirmPassword } = formData;
@@ -106,10 +106,13 @@ const RegisterationForm = () => {
     }
   };
 
-  const handleSignInWithGoogle = async (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSignInWithOauth = async (
+    e: React.FormEvent<HTMLButtonElement>,
+    provider: "google" | "github",
+  ) => {
     e.preventDefault();
     try {
-      await signInWithGoogle({ dispatch });
+      await signInWithOauthProvider({ provider, dispatch });
     } catch (error) {
       dispatch(
         openToast({
@@ -158,14 +161,15 @@ const RegisterationForm = () => {
         <div className="hidden w-[40%] md:block">
           <LeftSide
             isSignInMode={isSignInMode}
+            formData={formData}
             setFormData={setFormData}
-            setImageIsUploading={setImageIsUploading}
+            // setImageIsUploading={setImageIsUploading}
           />
         </div>
         <div className="flex-1">
           {!isSignInMode && (
             <div className="flex items-center justify-center md:hidden">
-              <UploadImage setImageIsUploading={setImageIsUploading} setFormData={setFormData} />
+              <UploadImage formData={formData} setFormData={setFormData} />
             </div>
           )}
           <form autoComplete="off" className="mt-2 flex flex-col gap-2">
@@ -232,7 +236,7 @@ const RegisterationForm = () => {
               type="submit"
               className="w-full rounded-md border border-white bg-[#05BA6B] py-1 font-[600] text-black disabled:opacity-60 lg:py-2"
               onClick={handleSubmite}
-              disabled={submiting || imageIsUploading}
+              disabled={submiting}
             >
               {!isSignInMode
                 ? `${submiting ? "Submiting" : t("Sign Up")} `
@@ -245,7 +249,7 @@ const RegisterationForm = () => {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={handleSignInWithGoogle}
+                onClick={(e) => handleSignInWithOauth(e, "google")}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <FcGoogle className="text-2xl" />
@@ -255,7 +259,7 @@ const RegisterationForm = () => {
                 </p>
               </button>
               <button
-                onClick={() => {}}
+                onClick={(e) => handleSignInWithOauth(e, "github")}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <GrGithub className="text-2xl" />

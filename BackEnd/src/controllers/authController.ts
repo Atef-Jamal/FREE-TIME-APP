@@ -9,14 +9,17 @@ import Mail from "nodemailer/lib/mailer";
 import { onLineUsers } from "../socketIo/socketIo";
 import Referrer from "../models/notifications/referrer";
 import EmailVerfication from "../models/notifications/emailVerfication";
+import { cloudinary } from "../utils";
+// import fs from "fs";
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password, confirmPassword, profilePicture } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
   const referrerUser = req.query.referrerUser;
 
   if (!name || !email || !password || !confirmPassword) {
     return res.status(404).json({ error: "all field required" });
   }
+
   try {
     const userExisted = await User.findOne({ email });
     if (userExisted) {
@@ -29,12 +32,20 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture:
-        "https://firebasestorage.googleapis.com/v0/b/free-money-7aec1.appspot.com/o/images%2Favatar.jpeg?alt=media&token=a8ab8c57-2ccd-4139-9a12-b029a572ca3b",
+      profilePicture: "https://res.cloudinary.com/dql5bc50n/image/upload/v1748245424/avatar_kqektj.jpg",
     });
 
-    if (profilePicture) {
-      newUser.profilePicture = profilePicture;
+    if (req.file) {
+      try {
+        const base64String = req.file.buffer.toString("base64");
+        const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
+          folder: "nice",
+        });
+        console.log(result);
+        newUser.profilePicture = result.secure_url;
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     const savedUser = await newUser.save();
@@ -89,16 +100,23 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User Not Found" });
     }
 
+    if (user.googleId) {
+      return res.status(404).json({ error: "try Login with google" });
+    }
+
+    if (user.githubId) {
+      return res.status(404).json({ error: "try Login with github" });
+    }
+
+    if (!user.password) return;
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
     if (!isPasswordCorrect) {
       return res.status(404).json({ error: "Invalid Password" });
     }
 
-    if (!process.env.JWT_SECRET_KEY) {
-      return res.status(404).json({ error: "an Error occurred, Try again later" });
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY!);
 
     return res.status(200).json({ token });
   } catch (error) {
@@ -106,28 +124,12 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const signInWithGoogle = async (req: Request, res: Response) => {
+export const signInWithProvider = async (req: Request, res: Response) => {
   try {
-    const { name, email, profilePicture, accessToken } = req.body;
-    const user = await User.findOne({ email });
-    if (user) {
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY!);
-      return res.status(200).json({ ...user, token });
-    } else {
-      const newUser = new User({
-        name,
-        email,
-        password: accessToken,
-        emailVerified: true,
-        profilePicture,
-      });
-      const savedUser = await newUser.save();
-      const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET_KEY!);
-
-      return res.status(200).json({ ...savedUser, token });
-    }
+    const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET_KEY!);
+    return res.redirect(`${process.env.CLIENT_BASE_URL}/?token=${token}`);
   } catch (error) {
-    return res.status(404).json({ error: "failed to sign in with google" });
+    return res.status(404).json({ error: "failed to sign in with provider" });
   }
 };
 
@@ -254,6 +256,8 @@ export const changePassword = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User Not Found" });
     }
     const oldPassword = user.password;
+
+    if (!oldPassword) return res.status(404).json({ error: "you logged in with Oauth provider!" });
 
     const isCorrect = await bcrypt.compare(enterdOldPass, oldPassword);
 

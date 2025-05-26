@@ -28,7 +28,7 @@ import {
 import { debounce, handleApiError } from "../utilities";
 import messageSoundSrc from "../assets/images/messageSound.mp3";
 
-export const useGlobalLogicInitializer = () => {
+export const useInitialization = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
@@ -42,7 +42,6 @@ export const useGlobalLogicInitializer = () => {
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
-  const token = localStorage.getItem("token");
 
   const handleUpdateOnlineUsers = useCallback(
     (data: string[]) => {
@@ -244,6 +243,16 @@ export const useGlobalLogicInitializer = () => {
   });
 
   useEffect(() => {
+    let token = localStorage.getItem("token");
+
+    if (!token) {
+      const googleAuthToken = searchParams.get("token");
+      if (googleAuthToken) {
+        token = searchParams.get("token");
+        localStorage.setItem("token", googleAuthToken);
+      }
+    }
+
     const getCurrentUser = async () => {
       try {
         if (token) {
@@ -264,7 +273,7 @@ export const useGlobalLogicInitializer = () => {
       }
     };
     getCurrentUser();
-  }, [token, dispatch]);
+  }, [searchParams, dispatch]);
 
   const events = useMemo(
     () => [

@@ -12,7 +12,7 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
-import { login, signInWithGoogle, fetchTestimonials, handleSendTestimonial } from "../../services";
+import { login, signInWithOauthProvider, fetchTestimonials, handleSendTestimonial } from "../../services";
 import { cn, formateDate, handleApiError } from "../../utilities";
 import { ITestimonial } from "../../types/othersTypes";
 import signuporfree from "../../assets/images/signuporfree.png";
@@ -64,10 +64,13 @@ const Home = () => {
     }
   };
 
-  const handleSignInWithGoogle = async (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSignInWithOauth = async (
+    e: React.FormEvent<HTMLButtonElement>,
+    provider: "google" | "github",
+  ) => {
     e.preventDefault();
     try {
-      await signInWithGoogle({ dispatch });
+      await signInWithOauthProvider({ provider, dispatch });
     } catch (error) {
       dispatch(
         openToast({
@@ -140,6 +143,7 @@ const Home = () => {
             <h1 className="mb-4 w-full text-center text-4xl font-bold text-[#af5a5a] md:text-6xl">
               {t("Get Paid For")}
             </h1>
+
             <p className="mt-2 text-balance text-center text-sm md:text-base lg:text-lg">
               Opening Bank Account, Refer Your Friend Through your Referal Link, complete Tasks and apps,
               offers and much more. Opening Bank Account, Refer Your Friend Through your Referal Link,
@@ -170,12 +174,15 @@ const Home = () => {
               </div>
               <div className="flex flex-col items-center gap-y-2">
                 <button
-                  onClick={handleSignInWithGoogle}
+                  onClick={(e) => handleSignInWithOauth(e, "google")}
                   className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs"
                 >
                   {t("Sign In With Google")} <FcGoogle />
                 </button>
-                <button className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs">
+                <button
+                  onClick={(e) => handleSignInWithOauth(e, "github")}
+                  className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs"
+                >
                   {t("Sign In With GitHub")}
                   <VscGithub />
                 </button>

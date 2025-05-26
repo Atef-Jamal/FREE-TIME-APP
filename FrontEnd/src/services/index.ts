@@ -1,4 +1,4 @@
-export { login, register, signInWithGoogle } from "./authService";
+export { login, register, signInWithOauthProvider } from "./authService";
 export { makeRequest } from "./config";
 export {
   changeUserName,

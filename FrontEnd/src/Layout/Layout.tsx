@@ -3,7 +3,7 @@ import Navbare from "./Navbare/Navbare";
 import ToastNotify from "../components/Shared/Common/ToastNotify";
 import Modal from "../components/Shared/Modals/Modal";
 import ContentBody from "./ContentBody/ContentBody";
-import { useGlobalLogicInitializer } from "../hooks/useGlobalLogicInitializer";
+import { useInitialization } from "../hooks/useInitialization";
 import { useAppSelector } from "../context/hooks";
 
 const NavebareBottom = lazy(() => import("./Navbare/NavebareBottom"));
@@ -16,7 +16,7 @@ const Layout = () => {
     setOpenSidbareMobile(open);
   }, []);
 
-  useGlobalLogicInitializer();
+  useInitialization();
 
   return (
     <main>

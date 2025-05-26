@@ -6,6 +6,7 @@ import User, { IUser } from "../models/user";
 declare module "express" {
   interface Request {
     currentUser?: IUser | any;
+    user?: IUser | any;
   }
 }
 
@@ -33,6 +34,7 @@ const protectedRoute = async (req: Request, res: Response, next: NextFunction) =
 
     return next();
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Internal Server Error, log in with your credentials" });
   }
 };

@@ -11,7 +11,9 @@ export interface IDailyReward {
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
+  googleId?: string;
+  githubId?: string;
+  password?: string;
   points: number;
   profilePicture: string;
   emailVerified: boolean;
@@ -40,9 +42,16 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       required: [true, "Email is Required"],
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please provide a valid Email address"],
     },
+    googleId: {
+      type: String,
+      unique: true,
+    },
+    githubId: {
+      type: String,
+      unique: true,
+    },
     password: {
       type: String,
-      required: [true, "Password is Required"],
     },
     profilePicture: {
       type: String,

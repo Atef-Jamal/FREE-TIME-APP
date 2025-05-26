@@ -4,18 +4,19 @@ import { IFormData } from "../../../../types/othersTypes";
 import { useTranslation } from "react-i18next";
 
 interface IProps {
+  formData: IFormData;
   setFormData: React.Dispatch<SetStateAction<IFormData>>;
-  setImageIsUploading: React.Dispatch<SetStateAction<boolean>>;
+  // setImageIsUploading: React.Dispatch<SetStateAction<boolean>>;
   isSignInMode: boolean;
 }
-const LeftSide = ({ setFormData, isSignInMode, setImageIsUploading }: IProps) => {
+const LeftSide = ({ formData, setFormData, isSignInMode }: IProps) => {
   const { t } = useTranslation("register");
 
   return (
     <div className="flex h-full flex-col gap-y-2">
       {!isSignInMode && (
         <div className="flex w-full items-center justify-center p-1">
-          <UploadImage setImageIsUploading={setImageIsUploading} setFormData={setFormData} />
+          <UploadImage formData={formData} setFormData={setFormData} />
         </div>
       )}
       <div className="relative flex items-center justify-center">
