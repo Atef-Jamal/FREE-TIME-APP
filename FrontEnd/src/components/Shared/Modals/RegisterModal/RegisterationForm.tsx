@@ -76,7 +76,6 @@ const RegisterationForm = () => {
           type: "ERROR_GENERAL",
         }),
       );
-    } finally {
       setSubmiting(false);
     }
   };

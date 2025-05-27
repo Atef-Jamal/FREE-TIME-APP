@@ -250,6 +250,10 @@ export const useInitialization = () => {
       if (googleAuthToken) {
         token = searchParams.get("token");
         localStorage.setItem("token", googleAuthToken);
+        setSearchParams(() => {
+          searchParams.delete("token");
+          return searchParams;
+        });
       }
     }
 
@@ -273,7 +277,7 @@ export const useInitialization = () => {
       }
     };
     getCurrentUser();
-  }, [searchParams, dispatch]);
+  }, [searchParams, setSearchParams, dispatch]);
 
   const events = useMemo(
     () => [
