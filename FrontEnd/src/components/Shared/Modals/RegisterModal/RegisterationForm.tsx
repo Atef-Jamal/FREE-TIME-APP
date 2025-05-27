@@ -207,7 +207,10 @@ const RegisterationForm = () => {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => handleSignInWithOauth("google", dispatch)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSignInWithOauth("google", dispatch);
+                }}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <FcGoogle className="text-2xl" />
@@ -217,7 +220,10 @@ const RegisterationForm = () => {
                 </p>
               </button>
               <button
-                onClick={() => handleSignInWithOauth("github", dispatch)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSignInWithOauth("github", dispatch);
+                }}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <GrGithub className="text-2xl" />
