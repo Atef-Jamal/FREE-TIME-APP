@@ -8,7 +8,7 @@ import { IFormData } from "../../../../types/othersTypes";
 import { resetModel, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { useAppSelector, useAppDispatch } from "../../../../context/hooks";
 import { cn, handleApiError, validateCredentials } from "../../../../utilities";
-import { login, register } from "../../../../services";
+import { handleSignInWithOauth, login, register } from "../../../../services";
 import LeftSide from "./LeftSide";
 import UploadImage from "../../Common/UploadImage";
 import Input from "../../Common/Input";
@@ -78,25 +78,6 @@ const RegisterationForm = () => {
       );
     } finally {
       setSubmiting(false);
-    }
-  };
-
-  const handleSignInWithOauth = async (provider: "google" | "github") => {
-    try {
-      dispatch(
-        openToast({
-          message: "signing in....",
-          type: "LOADING",
-        }),
-      );
-      window.location.href = `${import.meta.env.VITE_SERVER_BASE_URL}/api/auth/${provider}`;
-    } catch (error) {
-      dispatch(
-        openToast({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        }),
-      );
     }
   };
 
@@ -226,7 +207,7 @@ const RegisterationForm = () => {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => handleSignInWithOauth("google")}
+                onClick={() => handleSignInWithOauth("google", dispatch)}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <FcGoogle className="text-2xl" />
@@ -236,7 +217,7 @@ const RegisterationForm = () => {
                 </p>
               </button>
               <button
-                onClick={() => handleSignInWithOauth("github")}
+                onClick={() => handleSignInWithOauth("github", dispatch)}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <GrGithub className="text-2xl" />

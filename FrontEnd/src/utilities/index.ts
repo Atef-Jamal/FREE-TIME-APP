@@ -145,19 +145,6 @@ export const handleApiError = (error: any) => {
   return errorMessage;
 };
 
-// export const debounce = (
-//   func: (params: any) => void,
-//   wait: number,
-//   timoutRef: RefObject<NodeJS.Timeout | null>,
-// ) => {
-//   return (...arg: any) => {
-//     if (timoutRef.current) clearTimeout(timoutRef.current);
-//     timoutRef.current = setTimeout(() => {
-//       func.apply(this, arg);
-//     }, wait);
-//   };
-// };
-
 type IDebouncedFunction<T extends (...args: any[]) => void> = (...args: Parameters<T>) => void;
 
 export const debounce = <T extends (...args: any[]) => void>(

@@ -12,9 +12,9 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
-import { login, signInWithOauthProvider, fetchTestimonials, handleSendTestimonial } from "../../services";
-import { cn, formateDate, handleApiError } from "../../utilities";
-import { ITestimonial } from "../../types/othersTypes";
+import { login, handleSignInWithOauth, fetchTestimonials, handleSendTestimonial } from "../../services";
+import { cn, formateDate, handleApiError, validateCredentials } from "../../utilities";
+import { IFormData, ITestimonial } from "../../types/othersTypes";
 import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -50,32 +50,24 @@ const Home = () => {
 
   const handlaSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    try {
-      const response = await login({ formData: { email, password }, dispatch });
-      localStorage.setItem("token", response.data.token);
-      window.location.href = `${window.location.origin}/?redirectedfrom=login`;
-    } catch (error) {
+    const result = validateCredentials({ email, password } as IFormData, true, true);
+
+    if (!result.isValid) {
       dispatch(
         openToast({
+          message: Object.values(result.errors).join(", "),
           type: "ERROR_GENERAL",
-          message: handleApiError(error),
         }),
       );
+      return;
     }
-  };
-
-  const handleSignInWithOauth = async (
-    e: React.FormEvent<HTMLButtonElement>,
-    provider: "google" | "github",
-  ) => {
-    e.preventDefault();
     try {
-      await signInWithOauthProvider({ provider, dispatch });
+      await login({ formData: { email, password }, dispatch });
     } catch (error) {
       dispatch(
         openToast({
-          message: handleApiError(error),
           type: "ERROR_GENERAL",
+          message: handleApiError(error),
         }),
       );
     }
@@ -174,13 +166,13 @@ const Home = () => {
               </div>
               <div className="flex flex-col items-center gap-y-2">
                 <button
-                  onClick={(e) => handleSignInWithOauth(e, "google")}
+                  onClick={() => handleSignInWithOauth("google", dispatch)}
                   className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs"
                 >
                   {t("Sign In With Google")} <FcGoogle />
                 </button>
                 <button
-                  onClick={(e) => handleSignInWithOauth(e, "github")}
+                  onClick={() => handleSignInWithOauth("github", dispatch)}
                   className="flex w-full items-center justify-between rounded-md bg-[#25253b] px-4 py-2 text-[.8rem] text-[#f7d0d0] sm:text-xs"
                 >
                   {t("Sign In With GitHub")}

@@ -1,6 +1,7 @@
 import { makeRequest } from "./config";
 import { openToast } from "../context/appStateSlice";
-import { ILoginProps, IRegisterProps } from "../types/reduxTypes";
+import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
+import { handleApiError } from "../utilities";
 
 export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {
   dispatch(
@@ -33,4 +34,23 @@ export const login = async ({ formData, dispatch }: ILoginProps) => {
   });
   localStorage.setItem("token", response.data.token);
   window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+};
+
+export const handleSignInWithOauth = async (provider: "google" | "github", dispatch: IDispatch) => {
+  try {
+    dispatch(
+      openToast({
+        message: "signing in....",
+        type: "LOADING",
+      }),
+    );
+    window.location.href = `${import.meta.env.VITE_SERVER_BASE_URL}/api/auth/${provider}`;
+  } catch (error) {
+    dispatch(
+      openToast({
+        message: handleApiError(error),
+        type: "ERROR_GENERAL",
+      }),
+    );
+  }
 };
