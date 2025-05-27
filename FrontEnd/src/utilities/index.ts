@@ -1,6 +1,68 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { IFormData } from "../types/othersTypes";
+
+interface IValidationResult {
+  isValid: boolean;
+  errors: {
+    name?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    agreePrivacy?: string;
+  };
+}
+
+export const validateCredentials = (
+  formData: IFormData,
+  isSignIn: boolean,
+  agreePrivacy: boolean,
+): IValidationResult => {
+  const errors: IValidationResult["errors"] = {};
+
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  // Email validation
+  if (!formData.email || formData.email.trim().length === 0) {
+    errors.email = "Email is required";
+  } else if (!emailRegex.test(formData.email)) {
+    errors.email = "Email is invalid";
+  }
+
+  // Password validation
+  if (!formData.password) {
+    errors.password = "Password is required";
+  } else if (formData.password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+
+  if (isSignIn) return { isValid: Object.keys(errors).length === 0, errors };
+
+  // Name validation
+  if (!formData.name || formData.name.trim().length === 0) {
+    errors.name = "Name is required";
+  } else if (formData.name.length < 2) {
+    errors.name = "Name must be at least 2 characters";
+  } else if (formData.name.length > 50) {
+    errors.name = "Name cannot exceed 50 characters";
+  }
+
+  // Confirm password validation
+  if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+  }
+
+  if (!agreePrivacy) {
+    errors.agreePrivacy = "you must agree to the Privacy Policy and Terms of Service";
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+};
 
 export const validation = (values: string[], signIn: boolean, agreePrivacy?: boolean) => {
   let result = `Must Be Exist-`;

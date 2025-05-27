@@ -7,8 +7,8 @@ import { GrClose } from "react-icons/gr";
 import { IFormData } from "../../../../types/othersTypes";
 import { resetModel, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { useAppSelector, useAppDispatch } from "../../../../context/hooks";
-import { cn, handleApiError, validation } from "../../../../utilities";
-import { login, register, signInWithOauthProvider } from "../../../../services";
+import { cn, handleApiError, validateCredentials } from "../../../../utilities";
+import { login, register } from "../../../../services";
 import LeftSide from "./LeftSide";
 import UploadImage from "../../Common/UploadImage";
 import Input from "../../Common/Input";
@@ -28,7 +28,6 @@ const RegisterationForm = () => {
   const [formData, setFormData] = useState<IFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
-  // const [imageIsUploading, setImageIsUploading] = useState(false);
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("register");
@@ -47,21 +46,15 @@ const RegisterationForm = () => {
   const handleSubmite = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (currentUserStatus === "authenticated") return;
-    // if (imageIsUploading) return;
+
     setSubmiting(true);
 
-    const { name, email, password, confirmPassword } = formData;
+    const result = validateCredentials(formData, isSignInMode, agreePrivacy);
 
-    let errorMessage;
-    if (isSignInMode) {
-      errorMessage = validation([email, password], true);
-    } else {
-      errorMessage = validation([name, email, password, confirmPassword], false, agreePrivacy);
-    }
-    if (errorMessage) {
+    if (!result.isValid) {
       dispatch(
         openToast({
-          message: errorMessage,
+          message: Object.values(result.errors).join(", "),
           type: "ERROR_GENERAL",
         }),
       );
@@ -71,28 +64,10 @@ const RegisterationForm = () => {
 
     try {
       if (isSignInMode) {
-        const response = await login({
-          formData: { email, password },
-          dispatch,
-        });
-        localStorage.setItem("token", response.data.token);
-        window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+        await login({ formData, dispatch });
       } else {
-        const newUser = {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          profilePicture: formData.profilePicture,
-        };
-        const response = await register({
-          dispatch,
-          formData: newUser,
-          referrerUser: queryParam,
-        });
-        localStorage.setItem("token", response.data.token);
+        await register({ formData, referrerUser: queryParam, dispatch });
         socket?.emit("new-user-registered");
-        window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
       }
     } catch (error) {
       dispatch(
@@ -106,13 +81,15 @@ const RegisterationForm = () => {
     }
   };
 
-  const handleSignInWithOauth = async (
-    e: React.FormEvent<HTMLButtonElement>,
-    provider: "google" | "github",
-  ) => {
-    e.preventDefault();
+  const handleSignInWithOauth = async (provider: "google" | "github") => {
     try {
-      await signInWithOauthProvider({ provider, dispatch });
+      dispatch(
+        openToast({
+          message: "signing in....",
+          type: "LOADING",
+        }),
+      );
+      window.location.href = `${import.meta.env.VITE_SERVER_BASE_URL}/api/auth/${provider}`;
     } catch (error) {
       dispatch(
         openToast({
@@ -249,7 +226,7 @@ const RegisterationForm = () => {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={(e) => handleSignInWithOauth(e, "google")}
+                onClick={() => handleSignInWithOauth("google")}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <FcGoogle className="text-2xl" />
@@ -259,7 +236,7 @@ const RegisterationForm = () => {
                 </p>
               </button>
               <button
-                onClick={(e) => handleSignInWithOauth(e, "github")}
+                onClick={() => handleSignInWithOauth("github")}
                 className="flex w-[49%] items-center justify-between rounded-md bg-[#7474bb52] px-3 py-[6px] lg:py-3"
               >
                 <GrGithub className="text-2xl" />

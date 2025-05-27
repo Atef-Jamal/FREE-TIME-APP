@@ -1,6 +1,6 @@
 import { makeRequest } from "./config";
 import { openToast } from "../context/appStateSlice";
-import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
+import { ILoginProps, IRegisterProps } from "../types/reduxTypes";
 
 export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {
   dispatch(
@@ -10,11 +10,13 @@ export const register = async ({ formData, dispatch, referrerUser }: IRegisterPr
     }),
   );
   const query = referrerUser ? `?referrerUser=${referrerUser}` : "";
-  console.log(formData);
+
   const response = await makeRequest.post(`api/auth/register${query}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-  return response;
+
+  localStorage.setItem("token", response.data.token);
+  window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
 };
 
 export const login = async ({ formData, dispatch }: ILoginProps) => {
@@ -29,18 +31,6 @@ export const login = async ({ formData, dispatch }: ILoginProps) => {
     email,
     password,
   });
-  return response;
-};
-interface IParams {
-  provider: "google" | "github";
-  dispatch: IDispatch;
-}
-export const signInWithOauthProvider = async ({ provider, dispatch }: IParams) => {
-  dispatch(
-    openToast({
-      message: "signing in....",
-      type: "LOADING",
-    }),
-  );
-  window.location.href = `http://localhost:3000/api/auth/${provider}`;
+  localStorage.setItem("token", response.data.token);
+  window.location.href = `${window.location.origin}/?redirectedfrom=login`;
 };
