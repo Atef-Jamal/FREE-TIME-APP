@@ -7,8 +7,6 @@ import { MdContactSupport } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import { useRef } from "react";
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
 import { cn } from "../../utilities";
 
 interface IProps {
@@ -24,7 +22,6 @@ const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
 
   const handleLogOut = async () => {
     localStorage.clear();
-    await signOut(auth);
     setOpenProfileMenu((previos) => !previos);
     window.location.href = `${window.location.origin}/?redirectedfrom=logout`;
   };
