@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -8,9 +8,10 @@ import { BsArrowDownCircle } from "react-icons/bs";
 import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn, handleApiError } from "../../utilities";
-import { fetchAppDetails, handleAddReview } from "../../services";
+import { handleAddReview } from "../../services";
 import AppDetailsSkeleton from "./TaskDetailsSkeleton";
 import Empty from "../../components/Shared/Common/Empty";
+import { useFetchTaskDetails } from "../../tanstackQuery/queryFetch";
 
 interface IProps {
   taskId: string;
@@ -28,15 +29,7 @@ const TaskDetail = ({ taskId }: IProps) => {
   let isCompleted;
   let notActiveStars;
 
-  const {
-    data: taskDetails,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["earn", taskId],
-    queryFn: () => fetchAppDetails({ taskId }),
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data: taskDetails, status, error } = useFetchTaskDetails({ taskId });
 
   if (taskDetails) {
     isCompleted = currentUser?.completedTasks.includes(taskDetails?._id);

@@ -14,7 +14,7 @@ export interface IPrivateMessage {
 
 export interface IConversation {
   _id: string;
-  secondParty: IUser;
+  secondUser: IUser;
   lastMessage: IPrivateMessage | null;
   unReadCount: number;
 }

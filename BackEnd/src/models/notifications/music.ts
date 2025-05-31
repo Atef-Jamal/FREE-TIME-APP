@@ -38,6 +38,7 @@ const musicSchema = new mongoose.Schema<IMusicNotify>(
   },
   { timestamps: true },
 );
+musicSchema.index({ belongsTo: 1 });
 
 const Music: Model<IMusicNotify> = mongoose.model<IMusicNotify>("Music", musicSchema);
 

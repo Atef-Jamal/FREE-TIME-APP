@@ -3,22 +3,14 @@ import User from "../models/user";
 import Frame from "../models/frame";
 import ProfileVisits from "../models/profileVisits";
 import { onLineUsers } from "../socketIo/socketIo";
-import { Types } from "mongoose";
 
 export const allUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
   const limit = 20;
   const skip = (pageParam - 1) * limit;
-  const onlines = Object.keys(onLineUsers).filter((item) => Types.ObjectId.isValid(item));
 
   try {
-    const fetchOnlineUsers = await User.find({ _id: { $in: onlines } })
-      .sort({ points: -1, emailVerified: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .select("_id name points profilePicture activeFrame emailVerified");
-
-    const users = await User.find({ _id: { $nin: onlines } })
+    const users = await User.find({})
       .sort({ points: -1, emailVerified: -1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -29,13 +21,11 @@ export const allUsers = async (req: Request, res: Response) => {
       .limit(1)
       .select("_id");
 
-    const userHighestPoints = findUserHighestPoints?._id;
-    const counts = await User.countDocuments();
-    const hasMore = pageParam * limit < counts;
+    const hasMore = pageParam * limit <= users.length;
 
     return res.status(200).json({
-      users: [...fetchOnlineUsers, ...users],
-      userHighestPoints,
+      users,
+      userHighestPoints: findUserHighestPoints?._id,
       hasMore,
     });
   } catch (error) {

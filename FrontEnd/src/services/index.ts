@@ -1,10 +1,9 @@
 export { login, register, handleSignInWithOauth } from "./authService";
-export { makeRequest } from "./config";
 export {
   changeUserName,
   fetchUserById,
   getUsers,
-  getUserActivities,
+  fetchUserActivities,
   sendVerificationCode,
   verifyMyEmail,
   changeUserPassword,

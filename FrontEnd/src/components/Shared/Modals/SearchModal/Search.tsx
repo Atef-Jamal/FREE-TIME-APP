@@ -1,29 +1,19 @@
 import { useState } from "react";
-import { getSearchResults } from "../../../../services";
 import { CgClose } from "react-icons/cg";
 import { resetModel } from "../../../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
-import { skipToken, useQuery } from "@tanstack/react-query";
 import { debounce } from "../../../../utilities";
 import Empty from "../../Common/Empty";
+import { useGetSearchResult } from "../../../../tanstackQuery/queryFetch";
 
 const Search = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const [searchQ, setSearchQ] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useAppDispatch();
 
-  const {
-    data: results,
-    error,
-    refetch,
-    isFetching,
-  } = useQuery({
-    queryKey: ["search", searchQ],
-    queryFn: searchQ ? () => getSearchResults({ searchQ }) : skipToken,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data: results, error, refetch, isFetching } = useGetSearchResult({ searchTerm });
 
   let resultsCounts = 0;
 
@@ -37,7 +27,7 @@ const Search = () => {
   }
 
   const handleSetSearchQuery = (value: string) => {
-    setSearchQ(value);
+    setSearchTerm(value);
   };
 
   const debounced = debounce(handleSetSearchQuery, 500);
@@ -104,7 +94,7 @@ const Search = () => {
                 <h1 className="mb-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Feartures
                 </h1>
-                <ResultElement type="FEATURES" results={results.features} searchTerm={searchQ} />
+                <ResultElement type="FEATURES" results={results.features} searchTerm={searchTerm} />
               </>
             )}
 
@@ -116,7 +106,7 @@ const Search = () => {
                 <ResultElement
                   type="USERS"
                   results={results.users.filter((usr) => usr._id !== currentUser?._id)}
-                  searchTerm={searchQ}
+                  searchTerm={searchTerm}
                 />
               </>
             )}
@@ -126,7 +116,7 @@ const Search = () => {
                 <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Apps
                 </h1>
-                <ResultElement type="APPS" results={results.apps} searchTerm={searchQ} />
+                <ResultElement type="APPS" results={results.apps} searchTerm={searchTerm} />
               </>
             )}
 
@@ -135,7 +125,7 @@ const Search = () => {
                 <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Frames
                 </h1>
-                <ResultElement type="FRAMES" results={results.frames} searchTerm={searchQ} />
+                <ResultElement type="FRAMES" results={results.frames} searchTerm={searchTerm} />
               </>
             )}
             {results.musics.length > 0 && (
@@ -143,7 +133,7 @@ const Search = () => {
                 <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
                   Musics
                 </h1>
-                <ResultElement type="MUSICS" results={results.musics} searchTerm={searchQ} />
+                <ResultElement type="MUSICS" results={results.musics} searchTerm={searchTerm} />
               </>
             )}
           </div>

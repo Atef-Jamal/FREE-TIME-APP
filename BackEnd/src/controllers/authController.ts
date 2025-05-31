@@ -10,7 +10,6 @@ import { onLineUsers } from "../socketIo/socketIo";
 import Referrer from "../models/notifications/referrer";
 import EmailVerfication from "../models/notifications/emailVerfication";
 import { cloudinary } from "../utils";
-// import fs from "fs";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -44,7 +43,7 @@ export const register = async (req: Request, res: Response) => {
         console.log(result);
         newUser.profilePicture = result.secure_url;
       } catch (error) {
-        console.log(error);
+        console.log("this error here", error);
       }
     }
 

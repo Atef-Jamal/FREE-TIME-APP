@@ -1,4 +1,4 @@
-import { makeRequest } from "./config";
+import { axiosRequest } from "../utilities";
 import { IFilterByDevice, IFilterByPopularity, IReview, ITask } from "../types/earnTypes";
 
 export const fetchAllTasks = async ({
@@ -12,7 +12,7 @@ export const fetchAllTasks = async ({
   limitPerPage: number;
   pageParam: number;
 }): Promise<{ tasks: ITask[]; hasMore: boolean }> => {
-  const response = await makeRequest.get(
+  const response = await axiosRequest.get(
     `api/tasks?filterByPopularity=${filterByPopularity}&&filterByDevice=${filterByDevice}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`,
   );
   const data = response.data;
@@ -26,7 +26,7 @@ export const handleAddReview = async ({
   taskId: string;
   comment: string;
 }): Promise<IReview> => {
-  const response = await makeRequest.post(`/api/tasks/${taskId}/review`, {
+  const response = await axiosRequest.post(`/api/tasks/${taskId}/review`, {
     comment,
   });
   const review = response.data;
@@ -34,7 +34,7 @@ export const handleAddReview = async ({
 };
 
 export const fetchAppDetails = async ({ taskId }: { taskId: string }): Promise<ITask> => {
-  const response = await makeRequest.get(`api/tasks/public/${taskId}`);
+  const response = await axiosRequest.get(`api/tasks/public/${taskId}`);
   const task = response.data;
   return task;
 };

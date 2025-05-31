@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser } from "../../context/appStateSlice";
 import { BsCheck2Circle } from "react-icons/bs";
-import { makeRequest } from "../../services";
-import { handleApiError } from "../../utilities";
+import { axiosRequest, handleApiError } from "../../utilities";
 import { ImSpinner3 } from "react-icons/im";
 import { IGameTask } from "../../types/earnTypes";
 
@@ -67,7 +66,7 @@ const GuessCardTask = ({ taskApp }: IProps) => {
       setError("");
       setIsLoading(true);
       try {
-        await makeRequest.post(`api/tasks/complete-guesscard-app/${taskApp._id}`, {
+        await axiosRequest.post(`api/tasks/complete-guesscard-app/${taskApp._id}`, {
           example: "example",
         });
         setCompleted(true);

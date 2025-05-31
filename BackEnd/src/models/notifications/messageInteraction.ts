@@ -41,6 +41,8 @@ const messageInteractionSchema = new mongoose.Schema<IInteractWithMessageNotify>
   { timestamps: true },
 );
 
+messageInteractionSchema.index({ belongsTo: 1 });
+
 const MessageInteraction: Model<IInteractWithMessageNotify> = mongoose.model<IInteractWithMessageNotify>(
   "MessageInteraction",
   messageInteractionSchema,

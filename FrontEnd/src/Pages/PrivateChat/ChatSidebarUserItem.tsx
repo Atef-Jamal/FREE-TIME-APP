@@ -23,8 +23,8 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
   return (
     <div
       onClick={() => {
-        dispatch(updateActiveChatId(conversation.secondParty._id));
-        localStorage.setItem("active-converstaion", conversation.secondParty._id);
+        dispatch(updateActiveChatId(conversation.secondUser._id));
+        localStorage.setItem("active-converstaion", conversation.secondUser._id);
       }}
       className={cn(
         "relative w-full space-y-1 rounded-md px-[6px] py-[3px] lg:space-y-2",
@@ -33,13 +33,13 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
     >
       <div className="mb-1 flex items-center gap-2">
         <div className="h-[25px] w-[30px] sm:h-[32px] sm:w-[37px]">
-          <UserImage user={conversation.secondParty} />
+          <UserImage user={conversation.secondUser} />
         </div>
 
         <div className="flex w-full flex-col overflow-hidden">
           <span className="flex items-center justify-between">
             <span className="truncate text-xs text-[#4077c9] sm:-mt-1 sm:text-sm">
-              {conversation.secondParty.name}
+              {conversation.secondUser.name}
             </span>
             {isOnLine && <span className="text-xs tracking-wider text-[#68e44a] sm:text-sm">onLine</span>}
             {!isOnLine && <span className="text-xs tracking-wider text-[#676867] sm:text-sm">offLine</span>}
@@ -63,7 +63,7 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
               ) : (
                 <>
                   <span className="text-[#8eac60]">
-                    {conversation.secondParty.name} <b className="mr-1"> : </b>
+                    {conversation.secondUser.name} <b className="mr-1"> : </b>
                   </span>
                   {conversation.lastMessage.message}
                 </>
@@ -71,7 +71,7 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
             </>
           ) : (
             <p className="italic tracking-wide text-[#bb8a8a]">
-              start chating with {conversation.secondParty.name}
+              start chating with {conversation.secondUser.name}
             </p>
           )}
         </span>

@@ -4,8 +4,7 @@ import { BiErrorAlt } from "react-icons/bi";
 import { IVisitor } from "../../types/userTypes";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { makeRequest } from "../../services";
-import { cn, formateDate, handleApiError } from "../../utilities";
+import { axiosRequest, cn, formateDate, handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 
@@ -33,7 +32,7 @@ const WhoVisitProfile = () => {
     }
     setIsLoading(true);
     try {
-      const response = await makeRequest.get("/api/users/who-visit-me/me");
+      const response = await axiosRequest.get("/api/users/who-visit-me/me");
       const data = response.data;
       dispatch(setCurrentUser({ ...currentUser, points: data.points }));
       setUsersVisitsMyProfile(data.users);

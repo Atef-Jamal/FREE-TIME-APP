@@ -1,15 +1,13 @@
 import { INotificationModelName } from "../types/notificationTypes";
-import { makeRequest } from "./config";
+import { axiosRequest } from "../utilities";
 
 export const collectReward = async (notificationId: string, modelName: INotificationModelName) => {
-  const response = await makeRequest.patch(`api/notifications/collect/${notificationId}/${modelName}`, {
-    FOR_CONSISTENCY: "FOR_CONSISTENCY",
-  });
+  const response = await axiosRequest.get(`api/notifications/collect/${notificationId}/${modelName}`);
   return response.data;
 };
 
 export const applyCode = async ({ code }: { code: string }): Promise<{ points: number }> => {
-  const response = await makeRequest.post("api/coupons", {
+  const response = await axiosRequest.post("api/coupons", {
     code,
   });
   const updatedPoints = response.data;

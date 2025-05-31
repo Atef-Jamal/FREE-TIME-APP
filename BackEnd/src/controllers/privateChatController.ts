@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import Conversation from "../models/conversation";
-import User from "../models/user";
+import User, { IUser } from "../models/user";
 import PrivateMessage from "../models/privateMessage";
 import { Types } from "mongoose";
 
@@ -16,59 +16,37 @@ export const getAllConversations = async (req: Request, res: Response) => {
       {
         $match: { participants: currentUserId },
       },
-      { $sort: { updatedAt: -1 } },
-      { $limit: limit },
-      { $skip: skip },
-      {
-        $lookup: {
-          from: "users",
-          localField: "participants",
-          foreignField: "_id",
-          as: "participantDetails",
-        },
-      },
       {
         $addFields: {
-          otherParticipant: {
-            $arrayElemAt: [
-              {
-                $filter: {
-                  input: "$participantDetails",
-                  as: "participant",
-                  cond: { $ne: ["$$participant._id", currentUserId] }, // Exclude the requesting user
-                },
-              },
-              0,
-            ],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: "privatemessages",
-          localField: "_id",
-          foreignField: "conversationId",
-          as: "messages",
-        },
-      },
-      {
-        $addFields: {
-          unReadCount: {
-            $size: {
-              $filter: {
-                input: "$messages",
-                as: "msg",
-                cond: {
-                  $and: [
-                    { $eq: ["$$msg.receiver", currentUserId] }, // Unread messages for the user
-                    { $eq: ["$$msg.isRead", false] },
-                  ],
-                },
-              },
+          secondUserId: {
+            $filter: {
+              input: "$participants",
+              as: "userId",
+              cond: { $ne: ["$$userId", currentUserId] },
             },
           },
         },
       },
+      { $unwind: "$secondUserId" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "secondUserId",
+          foreignField: "_id",
+          as: "secondUserData",
+          pipeline: [
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                profilePicture: 1,
+                activeFrame: 1,
+              },
+            },
+          ],
+        },
+      },
+      { $unwind: "$secondUserData" },
       {
         $lookup: {
           from: "privatemessages",
@@ -77,63 +55,108 @@ export const getAllConversations = async (req: Request, res: Response) => {
           as: "lastMessageDetails",
         },
       },
+      { $unwind: "$lastMessageDetails" },
       {
         $lookup: {
           from: "users",
           localField: "lastMessageDetails.sender",
           foreignField: "_id",
-          as: "lastMessageDetailSender",
+          as: "lastMessageSenderDetails",
+          pipeline: [
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                profilePicture: 1,
+                activeFrame: 1,
+              },
+            },
+          ],
         },
       },
+      { $unwind: "$lastMessageSenderDetails" },
       {
         $lookup: {
           from: "users",
           localField: "lastMessageDetails.receiver",
           foreignField: "_id",
-          as: "lastMessageDetailReceiver",
+          as: "lastMessageReceveiverDetails",
+          pipeline: [
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                profilePicture: 1,
+                activeFrame: 1,
+              },
+            },
+          ],
         },
       },
-      { $unwind: { path: "$lastMessageDetailSender", preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: "$lastMessageDetailReceiver", preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: "$lastMessageDetails", preserveNullAndEmptyArrays: true } },
+      { $unwind: "$lastMessageReceveiverDetails" },
+      {
+        $lookup: {
+          from: "privatemessages",
+          localField: "_id",
+          foreignField: "conversationId",
+          let: { secondUserId: "$secondUserId" },
+          as: "messages",
+          pipeline: [
+            {
+              $match: {
+                $expr: { $and: [{ $eq: ["$sender", "$$secondUserId"] }, { $eq: ["$isRead", false] }] },
+              },
+            },
+            { $count: "unreadCount" },
+          ],
+        },
+      },
+      { $unwind: "$messages" },
       {
         $project: {
           _id: 1,
-          secondParty: {
-            _id: "$otherParticipant._id",
-            name: "$otherParticipant.name",
-            profilePicture: "$otherParticipant.profilePicture",
-            activeFrame: "$otherParticipant.activeFrame",
+          secondUser: "$secondUserData",
+          lastMessageDetails: {
+            _id: 1,
+            conversationId: 1,
+            sender: "$lastMessageSenderDetails",
+            receiver: "$lastMessageReceveiverDetails",
+            message: 1,
+            isRead: 1,
+            createdAt: 1,
+            updatedAt: 1,
           },
-          lastMessage: {
-            _id: "$lastMessageDetails._id",
-            conversationId: "$lastMessageDetails.conversationId",
-            isRead: "$lastMessageDetails.isRead",
-            sender: "$lastMessageDetailSender",
-            receiver: "$lastMessageDetailReceiver",
-            message: "$lastMessageDetails.message",
-            createdAt: "$lastMessageDetails.createdAt",
-          },
+          unReadCount: "$messages.unreadCount",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          secondUser: "$secondUser",
+          lastMessage: "$lastMessageDetails",
           unReadCount: 1,
         },
       },
+      { $sort: { "lastMessage.createdAt": -1 } },
+      { $limit: limit },
+      { $skip: skip },
     ]);
 
-    const excludedUsers: Types.ObjectId[] = conversations.map((conv) => conv.secondParty._id);
+    const excludedUsers: Types.ObjectId[] = conversations.map((conv) => conv.secondUser._id);
     let newPotintialConversations: any[] = [];
 
     if (conversations.length < limit) {
       limit = limit - conversations.length;
 
-      const users = await User.find({ _id: { $nin: [...excludedUsers, currentUserId] } })
-        .select("-password")
+      const users: IUser[] = await User.find({ _id: { $nin: [...excludedUsers, currentUserId] } })
+        .select("_id name profilePicture activeFrame")
         .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip);
 
       newPotintialConversations = users.map((user) => ({
         _id: new Types.ObjectId(),
-        secondParty: user,
+        secondUser: user,
         lastMessage: null,
         unReadCount: 0,
       }));

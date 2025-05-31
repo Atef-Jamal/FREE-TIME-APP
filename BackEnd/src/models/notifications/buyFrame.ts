@@ -35,6 +35,7 @@ const buyFrameSchema = new mongoose.Schema<IBuyFrameNotify>(
   },
   { timestamps: true },
 );
+buyFrameSchema.index({ belongsTo: 1 });
 
 const BuyFrame: Model<IBuyFrameNotify> = mongoose.model<IBuyFrameNotify>("BuyFrame", buyFrameSchema);
 

@@ -1,9 +1,8 @@
 import { useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { IUser } from "../../types/userTypes";
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { getOnlineUsers } from "../../services";
 import Empty from "../../components/Shared/Common/Empty";
+import { useFetchOnlineUsers } from "../../tanstackQuery/queryFetch";
 
 interface IProps {
   setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
@@ -13,16 +12,10 @@ interface IProps {
 const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const {
-    data: users = [],
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["onlines-users"],
-    queryFn: getOnlineUsers,
-  });
+  const { data: users = [], status, error } = useFetchOnlineUsers();
 
   useClickOutside(menuRef, () => setOpenMentionList(false));
+
   return (
     <div
       ref={menuRef}

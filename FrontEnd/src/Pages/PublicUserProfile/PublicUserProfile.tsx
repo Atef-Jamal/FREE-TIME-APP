@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { GiProgression } from "react-icons/gi";
 import { BiTask } from "react-icons/bi";
 import { BsFillClockFill } from "react-icons/bs";
-import { fetchUserById, getUserActivities, userVisited } from "../../services";
+import { userVisited } from "../../services";
 import { formateDate } from "../../utilities";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { verifiedImage } from "../../assets";
@@ -14,6 +14,7 @@ import { PublicUserProfileSkeleton } from "./PublicUserProfileSkeleton";
 import ActivitiesList from "./ActivitiesList";
 import UserImage from "../../components/Shared/Common/UserImage";
 import { updateActiveChatId } from "../../context/appStateSlice";
+import { useFetchUser, useFetchUserActivities } from "../../tanstackQuery/queryFetch";
 
 const PublicUserProfile = () => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
@@ -21,21 +22,9 @@ const PublicUserProfile = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  const {
-    data: user,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["user", id],
-    queryFn: id ? () => fetchUserById(id) : skipToken,
-    staleTime: 10 * 60 * 1000,
-  });
+  const { data: user, status, error } = useFetchUser({ userId: id });
 
-  const { data: activities = [] } = useQuery({
-    queryKey: ["user-activities", id],
-    queryFn: id ? () => getUserActivities(id) : skipToken,
-    staleTime: 10 * 60 * 1000,
-  });
+  const { data: activities = [] } = useFetchUserActivities({ userId: id });
 
   const { mutate } = useMutation({
     mutationFn: userVisited,

@@ -2,6 +2,7 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { IFormData } from "../types/othersTypes";
+import axios from "axios";
 
 interface IValidationResult {
   isValid: boolean;
@@ -13,6 +14,20 @@ interface IValidationResult {
     agreePrivacy?: string;
   };
 }
+
+let token = localStorage.getItem("token");
+
+if (!token) {
+  const tokenFromUrl = new URLSearchParams(location.search);
+  if (tokenFromUrl) token = tokenFromUrl.get("token");
+}
+
+export const axiosRequest = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_BASE_URL,
+  headers: {
+    authorization: token ? `Bearer ${token}` : null,
+  },
+});
 
 export const validateCredentials = (
   formData: IFormData,
@@ -62,31 +77,6 @@ export const validateCredentials = (
     isValid: Object.keys(errors).length === 0,
     errors,
   };
-};
-
-export const validation = (values: string[], signIn: boolean, agreePrivacy?: boolean) => {
-  let result = `Must Be Exist-`;
-  values.map((item, index) => {
-    let name;
-    if (index === 0) name = `${signIn ? "Email" : "Username"} `;
-    if (index === 1) name = `${signIn ? "Password" : "Email"} `;
-    if (index === 2) name = `Password `;
-    if (index === 3) name = `Confirm Password `;
-    return item.trim() === "" ? (result += name) : undefined;
-  });
-  if (values.every((item) => item.trim() !== "") && values[2] !== values[3])
-    return (result = `Password doesn't Match`);
-  if (values[0].length < 3 && !signIn) return (result = `name must be at least 3 character`);
-  if (values[0].length > 17 && !signIn) return (result = `name must be less than 17 character`);
-  if (!signIn) {
-    if (!agreePrivacy && values.every((item) => item.trim() !== "")) {
-      return (result = `must agree Privacy Policy and terms of service`);
-    }
-  }
-  if (values.every((item) => item.trim() !== "")) {
-    return (result = "");
-  }
-  return result.split("-").reverse().join("");
 };
 
 export const formateDate = (date: Date): string => {

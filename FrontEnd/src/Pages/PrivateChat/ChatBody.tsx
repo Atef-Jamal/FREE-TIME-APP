@@ -1,34 +1,27 @@
 import { memo, useCallback, useEffect, useRef } from "react";
-import { skipToken, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
-import { ICashedConversations } from "../../types/privateChatTypes";
 import { openToast } from "../../context/appStateSlice";
-import { handleApiError } from "../../utilities";
-import { fetchPrivateChatMessages, makeRequest } from "../../services";
+import { axiosRequest, handleApiError } from "../../utilities";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import PrivateMessageItem from "./PrivateMessageItem";
 import UserImage from "../../components/Shared/Common/UserImage";
+import { useInfiniteConversationMsgs } from "../../tanstackQuery/queryFetch";
+import { updateConversationUnreadCountCache } from "../../tanstackQuery/queryCache";
 
 const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string }) => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
   const socket = useAppSelector((state) => state.appState.socket);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-  const { data, status, error, hasPreviousPage, fetchPreviousPage } = useInfiniteQuery({
-    queryKey: ["conversation-messages", activeChatWithUserId],
-    queryFn: activeChatWithUserId
-      ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatWithUserId })
-      : skipToken,
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
-    },
-    getNextPageParam: () => undefined,
-    staleTime: 60 * 60 * 1000,
+  const { data, status, error, hasPreviousPage, fetchPreviousPage } = useInfiniteConversationMsgs({
+    userAuth: currentUserStatus === "authenticated",
+    activeChatWithUserId,
   });
 
   const messages = data?.pages.map((page) => page.messages).flat();
@@ -44,23 +37,8 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
     });
 
     try {
-      await makeRequest.get(`api/conversations/${activeChatWithUserId}/mark-as-read`);
-      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              conversations: page.conversations.map((conv) => {
-                if (conv.secondParty._id === activeChatWithUserId) {
-                  return { ...conv, unReadCount: 0 };
-                }
-                return conv;
-              }),
-            };
-          }),
-        };
-      });
+      await axiosRequest.get(`api/conversations/${activeChatWithUserId}/mark-as-read`);
+      updateConversationUnreadCountCache({ queryClient, activeChatWithUserId });
     } catch (error) {
       dispatch(
         openToast({

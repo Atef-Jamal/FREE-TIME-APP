@@ -1,21 +1,15 @@
 import { useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { MdLiveHelp } from "react-icons/md";
 import { dailyleaderboard } from "../../assets";
-import { getLeaderboardUsers } from "../../services";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import UsersWinnerCard from "./UsersWinnerCard";
 import PeopleList from "./PeopleList";
+import { useFetchLeaderboardUsers } from "../../tanstackQuery/queryFetch";
 
 const LeaderBoard = () => {
   const [pageParam, setPageParam] = useState(1);
 
-  const { data, status, error } = useQuery({
-    queryKey: ["leaderboard-users", pageParam],
-    queryFn: () => getLeaderboardUsers({ pageParam }),
-    placeholderData: keepPreviousData,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data, status, error } = useFetchLeaderboardUsers({ pageParam });
 
   const topThreeUsers = data?.users.slice(0, 3);
 

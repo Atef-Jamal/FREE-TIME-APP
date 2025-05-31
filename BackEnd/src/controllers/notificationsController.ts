@@ -15,9 +15,12 @@ export const getNotifications = async (req: Request, res: Response) => {
   const userId = req.currentUser._id;
   try {
     const promises = [
-      Referrer.find({ belongsTo: userId }).populate("referredUser", "-password"),
-      Mention.find({ belongsTo: userId }).populate("mentionedUser", "-password"),
-      MessageInteraction.find({ belongsTo: userId }).populate("interactedUser", "-password"),
+      Referrer.find({ belongsTo: userId }).populate("referredUser", "_id name profilePicture activeFrame"),
+      Mention.find({ belongsTo: userId }).populate("mentionedUser", "_id name profilePicture activeFrame"),
+      MessageInteraction.find({ belongsTo: userId }).populate(
+        "interactedUser",
+        "_id name profilePicture activeFrame",
+      ),
       BuyFrame.find({ belongsTo: userId }).populate("frame"),
       QuizeApp.find({ belongsTo: userId }),
       GuessCard.find({ belongsTo: userId }),
@@ -33,6 +36,7 @@ export const getNotifications = async (req: Request, res: Response) => {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     return res.status(200).json(notifications);
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "can't Load your Notifications" });
   }
 };

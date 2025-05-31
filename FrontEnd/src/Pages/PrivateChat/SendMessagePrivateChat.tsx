@@ -2,11 +2,15 @@ import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
 import { IoMdSend } from "react-icons/io";
-import { ICashedSingleConversation, ICashedConversations, IConversation } from "../../types/privateChatTypes";
 import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPrivateChatMessage } from "../../services";
 import { handleApiError } from "../../utilities";
+import {
+  addPendingPrivateMsgCache,
+  addSuccessPrivateMsgCache,
+  addFailedPrivateMsgCache,
+} from "../../tanstackQuery/queryCache";
 
 interface IProps {
   activeChatWithUserId: string;
@@ -46,118 +50,29 @@ const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
         isRead: false,
         isSended: "PENDING",
       };
+      addPendingPrivateMsgCache({ queryClient, activeChatWithUserId, optimisticMsg });
 
-      queryClient.setQueryData(
-        ["conversation-messages", activeChatWithUserId],
-        (previous: ICashedSingleConversation): ICashedSingleConversation => {
-          return {
-            ...previous,
-            pages: previous.pages.map((page, index) => {
-              if (index === previous.pages.length - 1) {
-                return { ...page, messages: [...page.messages, optimisticMsg as any] };
-              }
-              return page;
-            }),
-          };
-        },
-      );
       setMessage("");
       inputRef.current?.focus();
       inputRef.current!.style.height = "auto";
       return { uniqeIdForRollback };
     },
     onSuccess: (data, _, context) => {
-      queryClient.setQueryData(
-        ["conversation-messages", activeChatWithUserId],
-        (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
-          if (!previous) return;
-          return {
-            ...previous,
-            pages: previous.pages.map((page) => ({
-              ...page,
-              messages: page.messages.map((msg) => {
-                if (msg._id === context.uniqeIdForRollback) {
-                  return { ...data, isSended: "SUCCESS" };
-                }
-                return msg;
-              }),
-            })),
-          };
-        },
-      );
-      const allConversationPages: ICashedConversations | undefined = queryClient.getQueryData([
-        "conversations",
-      ]);
-      const flatedConversations = allConversationPages?.pages.map((page) => page.conversations).flat();
-      const isExists = flatedConversations?.some((conv) => conv.secondParty._id === data.receiver._id);
-      if (!isExists) {
-        queryClient.setQueryData(
-          ["conversations"],
-          (previous: ICashedConversations): ICashedConversations => {
-            return {
-              ...previous,
-              pages: previous.pages.map((page, index) => {
-                const lastPage = index === previous.pages.length - 1;
-                if (lastPage) {
-                  const newConversation: IConversation = {
-                    _id: data.conversationId,
-                    lastMessage: data,
-                    secondParty: data.receiver,
-                    unReadCount: 0,
-                  };
-                  return {
-                    ...page,
-                    conversations: [newConversation, ...page.conversations],
-                  };
-                }
-                return page;
-              }),
-            };
-          },
-        );
-      } else {
-        queryClient.setQueryData(
-          ["conversations"],
-          (previous: ICashedConversations): ICashedConversations => {
-            return {
-              ...previous,
-              pages: previous.pages.map((page) => {
-                return {
-                  ...page,
-                  conversations: page.conversations.map((conv) => {
-                    if (conv.secondParty._id === activeChatWithUserId) {
-                      return { ...conv, lastMessage: data };
-                    }
-                    return conv;
-                  }),
-                };
-              }),
-            };
-          },
-        );
-      }
+      addSuccessPrivateMsgCache({
+        queryClient,
+        activeChatWithUserId,
+        data,
+        uniqeIdForRollback: context.uniqeIdForRollback,
+      });
       socket?.emit("private-message", { to: activeChatWithUserId, data: data });
     },
     onError: (error, _, context) => {
       if (context)
-        queryClient.setQueryData(
-          ["conversation-messages", activeChatWithUserId],
-          (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
-            if (!previous) return;
-            return {
-              ...previous,
-              pages: previous.pages.map((page) => ({
-                ...page,
-                messages: page.messages.map((msg) => {
-                  if (msg._id === context.uniqeIdForRollback) {
-                    return { ...msg, isSended: "FAILED" };
-                  }
-                  return msg;
-                }),
-              })),
-            };
-          },
-        );
+        addFailedPrivateMsgCache({
+          queryClient,
+          activeChatWithUserId,
+          uniqeIdForRollback: context.uniqeIdForRollback,
+        });
       dispatch(
         openToast({
           type: "ERROR_GENERAL",

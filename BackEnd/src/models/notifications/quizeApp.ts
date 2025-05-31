@@ -33,6 +33,7 @@ const quizeAppSchema = new mongoose.Schema<IQuizTaskNotify>(
   },
   { timestamps: true },
 );
+quizeAppSchema.index({ belongsTo: 1 });
 
 const QuizeApp: Model<IQuizTaskNotify> = mongoose.model<IQuizTaskNotify>("QuizeApp", quizeAppSchema);
 

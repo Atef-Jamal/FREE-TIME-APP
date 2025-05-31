@@ -4,41 +4,24 @@ import { FaCircleCheck } from "react-icons/fa6";
 import GuessCardTask from "../../components/Tasks/GuessCardTask";
 import QuizTask from "../../components/Tasks/QuizTask";
 import { BiErrorAlt } from "react-icons/bi";
-import { skipToken, useQuery } from "@tanstack/react-query";
-import { fetchAppDetails, fetchUserById } from "../../services";
 import Spinner from "../../components/Shared/Common/Spinner";
+import { useFetchTaskDetails } from "../../tanstackQuery/queryFetch";
 
 const Playing = () => {
-  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUser = useAppSelector((state) => state.appState.currentUser);
   const { taskId } = useParams();
 
-  const {
-    data: user,
-    status: userStatus,
-    error: errorUser,
-  } = useQuery({
-    queryKey: ["user", currentUserId],
-    queryFn: currentUserId ? () => fetchUserById(currentUserId) : skipToken,
-  });
-
-  const {
-    data: taskApp,
-    status: statusTaskApp,
-    error: errorTaskApp,
-  } = useQuery({
-    queryKey: ["task", taskId],
-    queryFn: taskId ? () => fetchAppDetails({ taskId }) : skipToken,
-  });
+  const { data: taskApp, status: statusTaskApp, error: errorTaskApp } = useFetchTaskDetails({ taskId });
 
   let isCompletedBefore: boolean = false;
 
   if (taskId) {
-    if (user?.completedTasks.includes(taskId)) {
+    if (currentUser?.completedTasks.includes(taskId)) {
       isCompletedBefore = true;
     }
   }
 
-  if (userStatus === "pending" || statusTaskApp === "pending") {
+  if (statusTaskApp === "pending") {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <Spinner className="h-16 w-16" />
@@ -61,11 +44,11 @@ const Playing = () => {
     );
   }
 
-  if (errorUser || errorTaskApp) {
+  if (errorTaskApp) {
     return (
       <div className="flex h-full w-full items-center justify-center gap-3 px-8 text-center font-bold opacity-70">
         <BiErrorAlt className="text-2xl" />
-        {errorUser?.response?.data.error || errorTaskApp?.response?.data.error}
+        {errorTaskApp?.response?.data.error || errorTaskApp?.response?.data.error}
       </div>
     );
   }

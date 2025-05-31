@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { skipToken, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import io from "socket.io-client";
 import { IUser } from "../types/userTypes";
-import { ICashedPublicChat, IPublicChatItem } from "../types/publicChatTypes";
-import { ICashedSingleConversation, ICashedConversations, IPrivateMessage } from "../types/privateChatTypes";
+import { IPublicChatItem } from "../types/publicChatTypes";
+import { ICashedConversations, IPrivateMessage } from "../types/privateChatTypes";
 import { IConversationReadedSocketData } from "../types/othersTypes";
 import { useAppDispatch, useAppSelector } from "../context/hooks";
 import {
@@ -19,14 +19,20 @@ import {
   updateSidebarUnReadedMsgCount,
 } from "../context/appStateSlice";
 import { useListenToSocketEvents } from "./useListenToSocketEvents";
-import {
-  fetchAllConversations,
-  fetchPrivateChatMessages,
-  fetchPublicChatMessages,
-  makeRequest,
-} from "../services";
-import { debounce, handleApiError } from "../utilities";
+import { axiosRequest, debounce, handleApiError } from "../utilities";
 import messageSoundSrc from "../assets/images/messageSound.mp3";
+import {
+  useInfiniteConversationMsgs,
+  useInfiniteConversations,
+  useInfinitePublicChatMsges,
+} from "../tanstackQuery/queryFetch";
+import {
+  addNewPrivateMsgCache,
+  addNewPublicMsgCache,
+  revalidateConversationsCache,
+  updateConversationReadCache,
+  updateUserCache,
+} from "../tanstackQuery/queryCache";
 
 export const useInitialization = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -53,31 +59,18 @@ export const useInitialization = () => {
 
   const handleRecieveNewPublicChatMessage = useCallback(
     (newMessage: IPublicChatItem) => {
-      queryClient.setQueryData(["public-chat-messages"], (previous: ICashedPublicChat): ICashedPublicChat => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page, index) => {
-            if (index === previous.pages.length - 1) {
-              return {
-                ...page,
-                messages: [...page.messages, newMessage],
-              };
-            }
-            return page;
-          }),
-        };
-      });
+      addNewPublicMsgCache({ queryClient, newMessage });
     },
     [queryClient],
   );
 
   const handleNewPrivateMessage = useCallback(
-    (data: IPrivateMessage) => {
+    (newMessage: IPrivateMessage) => {
       if (!isPrivateChatPageOpen) {
         dispatch(
           updateSidebarUnReadedMsgCount({
             type: "ADD-ONE",
-            userId: data.sender._id,
+            userId: newMessage.sender._id,
           }),
         );
         new Audio(messageSoundSrc).play();
@@ -85,162 +78,37 @@ export const useInitialization = () => {
 
       const allConversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
 
-      const isConversationExistOnTheList = allConversations?.pages.some((page) =>
-        page.conversations.some((conv) => conv.secondParty._id === data.sender._id),
+      const isConversationExist = allConversations?.pages.some((page) =>
+        page.conversations.some((conv) => conv.secondUser._id === newMessage.sender._id),
       );
 
-      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-        if (!isConversationExistOnTheList) {
-          return {
-            ...previous,
-            pages: previous.pages.map((page, index) => {
-              const firstPage = index === 0;
-              const newConversation = {
-                _id: data.conversationId,
-                lastMessage: data,
-                secondParty: data.sender,
-                unReadCount: 1,
-              };
-              if (firstPage) {
-                return {
-                  ...page,
-                  conversations: [newConversation, ...page.conversations],
-                };
-              } else {
-                return page;
-              }
-            }),
-          };
-        }
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              conversations: page.conversations.map((conv) => {
-                const isConversationWithUserOpen = conv.secondParty._id === activeChatWithUserId;
-                if (conv.secondParty._id === data.sender._id) {
-                  return {
-                    ...conv,
-                    lastMessage: data,
-                    unReadCount: isConversationWithUserOpen ? conv.unReadCount : conv.unReadCount + 1,
-                  };
-                }
-                return conv;
-              }),
-            };
-          }),
-        };
-      });
-
-      queryClient.setQueryData(
-        ["conversation-messages", data.sender._id],
-        (previous: ICashedSingleConversation): ICashedSingleConversation => {
-          return {
-            ...previous,
-            pages: previous.pages.map((page, index) => {
-              if (index === previous.pages.length - 1) return { ...page, messages: [...page.messages, data] };
-              return page;
-            }),
-          };
-        },
-      );
+      addNewPrivateMsgCache({ queryClient, activeChatWithUserId, isConversationExist, newMessage });
     },
     [queryClient, activeChatWithUserId, dispatch, isPrivateChatPageOpen],
   );
 
   const handleUserUpdated = useCallback(
     (updatedUser: IUser) => {
-      queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
-      queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
-      queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
-      queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              conversations: page.conversations.map((conv) => {
-                if (conv.secondParty._id === updatedUser._id) {
-                  return { ...conv, secondParty: updatedUser };
-                }
-                return conv;
-              }),
-            };
-          }),
-        };
-      });
-      queryClient.setQueryData(
-        ["conversation-messages", updatedUser._id],
-        (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
-          if (!previous) return;
-          return {
-            ...previous,
-            pages: previous.pages.map((page) => {
-              return { ...page, secondUser: updatedUser };
-            }),
-          };
-        },
-      );
+      updateUserCache({ queryClient, updatedUser });
     },
     [queryClient],
   );
 
   const handleConversationReaded = useCallback(
     (data: IConversationReadedSocketData) => {
-      queryClient.setQueryData(
-        ["conversation-messages", data.sender],
-        (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
-          if (!previous) return;
-          return {
-            ...previous,
-            pages: previous.pages.map((page) => ({
-              ...page,
-              messages: page.messages.map((msg) => ({ ...msg, isRead: true })),
-            })),
-          };
-        },
-      );
+      updateConversationReadCache({ queryClient, data });
     },
     [queryClient],
   );
 
   const handleNewUserRegistered = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    revalidateConversationsCache({ queryClient });
   }, [queryClient]);
 
-  useInfiniteQuery({
-    queryKey: ["conversations"],
-    queryFn: userAuth ? ({ pageParam }) => fetchAllConversations({ pageParam }) : skipToken,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
-    staleTime: 60 * 60 * 1000,
-  });
-
-  useInfiniteQuery({
-    queryKey: ["conversation-messages", activeChatWithUserId],
-    queryFn:
-      userAuth && activeChatWithUserId
-        ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatWithUserId })
-        : skipToken,
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
-    },
-    getNextPageParam: () => undefined,
-    staleTime: 60 * 60 * 1000,
-  });
-
-  useInfiniteQuery({
-    queryKey: ["public-chat-messages"],
-    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
-    },
-    getNextPageParam: () => undefined,
-    staleTime: 60 * 60 * 1000,
-  });
+  //prefetch chats
+  useInfinitePublicChatMsges();
+  useInfiniteConversations({ userAuth });
+  useInfiniteConversationMsgs({ userAuth, activeChatWithUserId });
 
   useEffect(() => {
     let token = localStorage.getItem("token");
@@ -260,7 +128,7 @@ export const useInitialization = () => {
     const getCurrentUser = async () => {
       try {
         if (token) {
-          const response = await makeRequest.get("api/auth/currentuser");
+          const response = await axiosRequest.get("api/auth/currentuser");
           dispatch(setCurrentUser(response.data));
           dispatch(updateCurrentUserStatus("authenticated"));
         } else {

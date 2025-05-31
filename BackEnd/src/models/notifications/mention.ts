@@ -34,6 +34,7 @@ const mentionSchema = new mongoose.Schema<IMentionNotify>(
   },
   { timestamps: true },
 );
+mentionSchema.index({ belongsTo: 1 });
 
 const Mention: Model<IMentionNotify> = mongoose.model<IMentionNotify>("Mention", mentionSchema);
 

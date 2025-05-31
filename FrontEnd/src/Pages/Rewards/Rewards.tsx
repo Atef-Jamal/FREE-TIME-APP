@@ -5,8 +5,7 @@ import { BiCopy } from "react-icons/bi";
 import { IBounusCode } from "../../types/rewardsTypes";
 import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { makeRequest } from "../../services";
-import { cn, handleApiError } from "../../utilities";
+import { axiosRequest, cn, handleApiError } from "../../utilities";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { dollarInHand } from "../../assets";
 import Ladder from "./Ladder";
@@ -34,7 +33,7 @@ const Rewards = () => {
     }
     setLoading(true);
     try {
-      const response = await makeRequest.get("api/coupons");
+      const response = await axiosRequest.get("api/coupons");
       setBonusCode(response.data);
     } catch (error) {
       dispatch(

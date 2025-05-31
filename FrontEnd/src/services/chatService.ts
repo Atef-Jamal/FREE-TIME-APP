@@ -1,8 +1,9 @@
-import { makeRequest } from "./config";
-type IPublicMsgFieldName = "loves" | "likes" | "dislikes";
+import { axiosRequest } from "../utilities";
 import { IConversation, IPrivateMessage } from "../types/privateChatTypes";
 import { IPublicChatItem, IPublicChatMessage } from "../types/publicChatTypes";
 import { IUser } from "../types/userTypes";
+
+type IPublicMsgFieldName = "loves" | "likes" | "dislikes";
 
 export const fetchPublicChatMessages = async ({
   pageParam,
@@ -11,7 +12,7 @@ export const fetchPublicChatMessages = async ({
   pageParam: number;
   limit: number;
 }): Promise<{ messages: IPublicChatItem[]; hasOlder: boolean }> => {
-  const response = await makeRequest.get(`api/publicchat?pageParam=${pageParam}&limit=${limit}`);
+  const response = await axiosRequest.get(`api/publicchat?pageParam=${pageParam}&limit=${limit}`);
   const data = response.data;
   return data;
 };
@@ -23,7 +24,7 @@ export const sendPublicChatMessage = async ({
   message: string;
   mentionedUsers: string[];
 }): Promise<IPublicChatMessage> => {
-  const response = await makeRequest.post("api/publicchat", {
+  const response = await axiosRequest.post("api/publicchat", {
     type: "MESSAGE",
     messageText: message,
     mentionedUsers: mentionedUsers,
@@ -31,25 +32,23 @@ export const sendPublicChatMessage = async ({
   const messageData = response.data;
   return messageData;
 };
+
 export const handleDeleteMessage = async (messageId: string): Promise<IPublicChatMessage> => {
-  const response = await makeRequest.patch(`api/publicchat/${messageId}`, {
-    isDeleted: true,
-  });
+  const response = await axiosRequest.delete(`api/publicchat/${messageId}`);
   const message = response.data;
   return message;
 };
+
 export const handleMessageReaction = async ({
   messageId,
   fieldName,
 }: {
   messageId: string;
   fieldName: IPublicMsgFieldName;
-  otherFieldOne: IPublicMsgFieldName;
-  otherFieldTow: IPublicMsgFieldName;
+  otherField1: IPublicMsgFieldName;
+  otherField2: IPublicMsgFieldName;
 }): Promise<IPublicChatMessage> => {
-  const response = await makeRequest.patch(`api/publicchat/${messageId}/${fieldName}`, {
-    FOR_CONSISTENCY: "FOR_CONSISTENCY",
-  });
+  const response = await axiosRequest.get(`api/publicchat/${messageId}/${fieldName}`);
   const updatedMessage = response.data;
   return updatedMessage;
 };
@@ -59,7 +58,7 @@ export const fetchAllConversations = async ({
 }: {
   pageParam: number;
 }): Promise<{ conversations: IConversation[]; hasMore: boolean }> => {
-  const response = await makeRequest.get(`api/conversations?pageParam=${pageParam}`);
+  const response = await axiosRequest.get(`api/conversations?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
@@ -75,7 +74,7 @@ export const fetchPrivateChatMessages = async ({
   secondUser: IUser | null;
   hasOlder: boolean;
 }> => {
-  const response = await makeRequest.get(`api/conversations/${activeChatWithUserId}?pageParam=${pageParam}`);
+  const response = await axiosRequest.get(`api/conversations/${activeChatWithUserId}?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
@@ -87,7 +86,7 @@ export const sendPrivateChatMessage = async ({
   receiver: string;
   message: string;
 }): Promise<IPrivateMessage> => {
-  const response = await makeRequest.post(`api/conversations`, {
+  const response = await axiosRequest.post(`api/conversations`, {
     messageText: message,
     receiver,
   });

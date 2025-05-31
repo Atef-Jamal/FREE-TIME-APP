@@ -1,16 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
 import { FcMusic } from "react-icons/fc";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
-import { fetchMusics } from "../../services";
 import MusicCard from "../../components/Ui/MusicCard";
 import Skeleton from "../../components/Shared/Common/Skeleton";
+import { useFetchMusics } from "../../tanstackQuery/queryFetch";
 
 const Musics = () => {
-  const { data: musics = [], status } = useQuery({
-    queryKey: ["musics"],
-    queryFn: fetchMusics,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data: musics = [], status } = useFetchMusics();
 
   useScrollToElement({ startScroll: status === "success" });
 

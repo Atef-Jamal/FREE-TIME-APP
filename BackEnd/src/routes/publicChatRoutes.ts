@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.get("/", getAllPublicMessages);
 router.post("/", protectedRoute, createPublicMessage);
-router.patch("/:messageId/:fieldName", protectedRoute, reactToPublicMessage);
+router.get("/:messageId/:fieldName", protectedRoute, reactToPublicMessage);
 router.get("/:messageId", protectedRoute, getSingleMessage);
-router.patch("/:messageId", protectedRoute, deletePublicMessage);
+router.delete("/:messageId", protectedRoute, deletePublicMessage);
 
 export default router;

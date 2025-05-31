@@ -26,6 +26,8 @@ const announcementSchema = new mongoose.Schema<IAnnouncementNoify>(
   { timestamps: true },
 );
 
+announcementSchema.index({ belongsTo: 1 });
+
 const Announcement: Model<IAnnouncementNoify> = mongoose.model<IAnnouncementNoify>(
   "Announcement",
   announcementSchema,

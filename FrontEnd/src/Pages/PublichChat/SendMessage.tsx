@@ -5,7 +5,7 @@ import { v4 as uuId } from "uuid";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { RiBaseStationLine } from "react-icons/ri";
-import { ICashedPublicChat, IPublicChatItem } from "../../types/publicChatTypes";
+import { IPublicChatItem } from "../../types/publicChatTypes";
 import { IUser } from "../../types/userTypes";
 import { openToast } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
@@ -13,6 +13,11 @@ import { sendPublicChatMessage } from "../../services";
 import { cn, handleApiError } from "../../utilities";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import MentionListOfUsers from "./MentionListOfUsers";
+import {
+  addFailedPublicMsgCache,
+  addPendingPublicMsgCache,
+  addSuccessPublicMsgCache,
+} from "../../tanstackQuery/queryCache";
 
 interface IProps {
   stopScrolling: boolean;
@@ -56,53 +61,16 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
         isSended: "PENDING",
       };
 
-      queryClient.setQueryData(
-        ["public-chat-messages"],
-        (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
-          if (!previous) return;
-
-          return {
-            ...previous,
-            pages: previous.pages.map((page, index) => {
-              if (index === previous.pages.length - 1) {
-                return { ...page, messages: [...page.messages, optimisticMsg] };
-              }
-              return page;
-            }),
-          };
-        },
-      );
+      addPendingPublicMsgCache({ queryClient, optimisticMsg });
 
       setMessage("");
       inputRef.current?.focus();
       inputRef.current!.style.height = "auto";
       return { uniqeIdForRollback, optimisticMsg };
     },
-    onSuccess: (data, _, context) => {
-      queryClient.setQueryData(
-        ["public-chat-messages"],
-        (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
-          if (!previous) return;
-          return {
-            ...previous,
-            pages: previous.pages.map((page, index) => {
-              if (index === previous.pages.length - 1) {
-                return {
-                  ...page,
-                  messages: page.messages.map((msg) => {
-                    if (msg.type === "MESSAGE" && msg._id === context.uniqeIdForRollback) {
-                      return { ...data, isSended: "SUCCESS" };
-                    }
-                    return msg;
-                  }),
-                };
-              }
-              return page;
-            }),
-          };
-        },
-      );
-      socket?.emit("public-message", data);
+    onSuccess: (newMessage, _, context) => {
+      addSuccessPublicMsgCache({ queryClient, uniqeIdForRollback: context.uniqeIdForRollback, newMessage });
+      socket?.emit("public-message", newMessage);
       if (mentionedUsers.size > 0) {
         setMentionedUsers(new Set());
       }
@@ -123,29 +91,11 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
           updatedAt: new Date(new Date().toLocaleString("en-US")),
           isSended: "FAILED",
         };
-        queryClient.setQueryData(
-          ["public-chat-messages"],
-          (previous: ICashedPublicChat): ICashedPublicChat | undefined => {
-            if (!previous) return;
-            return {
-              ...previous,
-              pages: previous.pages.map((page, index) => {
-                if (index === previous.pages.length - 1) {
-                  return {
-                    ...page,
-                    messages: page.messages.map((msg) => {
-                      if (msg._id === context.uniqeIdForRollback) {
-                        return failedMessage;
-                      }
-                      return msg;
-                    }),
-                  };
-                }
-                return page;
-              }),
-            };
-          },
-        );
+        addFailedPublicMsgCache({
+          queryClient,
+          failedMessage,
+          uniqeIdForRollback: context.uniqeIdForRollback,
+        });
       }
 
       dispatch(

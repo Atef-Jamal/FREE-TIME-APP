@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSearchParams } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import SendMessage from "./SendMessage";
 import Message from "./Message";
@@ -9,12 +8,12 @@ import FreeTime from "./FreeTime";
 import { FaArrowDownLong } from "react-icons/fa6";
 import MessageSkeleton from "./MessageSkeleton";
 import { useAppDispatch } from "../../context/hooks";
-import { fetchPublicChatMessages, makeRequest } from "../../services";
 import { openToast } from "../../context/appStateSlice";
-import { debounce, handleApiError } from "../../utilities";
+import { axiosRequest, debounce, handleApiError } from "../../utilities";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { IPublicChatMessage } from "../../types/publicChatTypes";
 import { ChatModelDeletion } from "./ChatModelDeletion";
+import { useInfinitePublicChatMsges } from "../../tanstackQuery/queryFetch";
 
 const PublicChatBody = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,16 +42,7 @@ const PublicChatBody = memo(() => {
     isFetchingPreviousPage,
     isFetchPreviousPageError,
     fetchPreviousPage,
-  } = useInfiniteQuery({
-    queryKey: ["public-chat-messages"],
-    queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
-    },
-    getNextPageParam: () => undefined,
-    staleTime: 60 * 60 * 1000,
-  });
+  } = useInfinitePublicChatMsges();
 
   const flatedMessages = data?.pages.map((page) => page.messages).flat();
 
@@ -63,7 +53,7 @@ const PublicChatBody = memo(() => {
   const fetchOldMessage = useCallback(async () => {
     setIsLoadingOldMsg(true);
     try {
-      const response = await makeRequest.get(`/api/publicchat/${queryParam}`);
+      const response = await axiosRequest.get(`/api/publicchat/${queryParam}`);
       const message = response.data;
       setOldMessage(message);
     } catch (error) {

@@ -33,7 +33,7 @@ export interface ISearchResults {
 }
 
 export interface IConversationReadedSocketData {
-  reciever: string;
+  receiver: string;
   sender: string;
 }
 

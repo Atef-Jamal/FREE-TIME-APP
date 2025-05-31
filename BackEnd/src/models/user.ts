@@ -73,7 +73,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       code: { type: String, default: "" },
       date: { type: Date, default: "" },
     },
-    activeFrame: { type: Schema.Types.ObjectId },
+    activeFrame: { type: Schema.Types.ObjectId, default: null },
     myFrames: [
       {
         type: Schema.Types.ObjectId,
@@ -89,6 +89,8 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
   },
   { timestamps: true },
 );
+
+userSchema.index({ points: -1 });
 
 userSchema.pre("save", function (next) {
   if (this.isNew) {

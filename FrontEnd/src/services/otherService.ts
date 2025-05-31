@@ -1,10 +1,10 @@
 import { IMusicDetail, ISearchResults, ITestimonial } from "../types/othersTypes";
-import { makeRequest } from "./config";
+import { axiosRequest } from "../utilities";
 import { fetchMusics } from "./musicService";
 
-export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promise<ISearchResults> => {
+export const getSearchResults = async ({ searchTerm }: { searchTerm: string }): Promise<ISearchResults> => {
   const musics = await fetchMusics();
-  const res = musics?.filter((item: IMusicDetail) => item.title.toLocaleLowerCase().includes(searchQ));
+  const res = musics?.filter((item: IMusicDetail) => item.title.toLocaleLowerCase().includes(searchTerm));
   const mappedMusics = res?.map((item: IMusicDetail) => ({
     _id: item.id.toString(),
     description: item.title,
@@ -12,7 +12,7 @@ export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promis
     title: item.title,
     link: `/musics?to=${item.id.toString()}`,
   }));
-  const response = await makeRequest.get(`api/search?q=${searchQ}`);
+  const response = await axiosRequest.get(`api/search?q=${searchTerm}`);
   const results = {
     ...response.data,
     musics: mappedMusics || [],
@@ -21,7 +21,7 @@ export const getSearchResults = async ({ searchQ }: { searchQ: string }): Promis
 };
 
 export const fetchTestimonials = async (): Promise<ITestimonial[]> => {
-  const response = await makeRequest.get("api/testimonials");
+  const response = await axiosRequest.get("api/testimonials");
   const testimonials = response.data.reverse();
   return testimonials;
 };
@@ -33,7 +33,7 @@ export const handleSendTestimonial = async ({
   comment: string;
   stars: number;
 }): Promise<ITestimonial> => {
-  const response = await makeRequest.post("api/testimonials", {
+  const response = await axiosRequest.post("api/testimonials", {
     content: comment,
     stars,
   });

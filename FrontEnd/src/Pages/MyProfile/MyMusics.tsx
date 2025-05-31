@@ -1,18 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "../../context/hooks";
-import { fetchMusics } from "../../services";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import MusicCard from "../../components/Ui/MusicCard";
 import Empty from "../../components/Shared/Common/Empty";
+import { useFetchMusics } from "../../tanstackQuery/queryFetch";
 
 const MyMusics = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
 
-  const { data: musics = [], status } = useQuery({
-    queryKey: ["musics"],
-    queryFn: fetchMusics,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data: musics = [], status } = useFetchMusics();
 
   useScrollToElement({ startScroll: status === "success" });
 

@@ -3,13 +3,13 @@ import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { useAppSelector } from "../../context/hooks";
 import { FaExclamationCircle } from "react-icons/fa";
-import { ICashedLiveStatsUsers } from "../../types/userTypes";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { getUsers } from "../../services";
+import { useQueryClient } from "@tanstack/react-query";
 import LiveStatsItem from "../../components/Ui/LiveStatsItem";
 import LangMenu from "../../components/Ui/LangMenu";
 import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";
 import Spinner from "../../components/Shared/Common/Spinner";
+import { useInfiniteLiveStatsUsers } from "../../tanstackQuery/queryFetch";
+import { updateCurrentUserCache } from "../../tanstackQuery/queryCache";
 
 const LiveStats = memo(() => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
@@ -18,42 +18,14 @@ const LiveStats = memo(() => {
   const queryClient = useQueryClient();
 
   const { data, status, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
-    useInfiniteQuery({
-      queryKey: ["live-stats-users"],
-      queryFn: ({ pageParam }) => getUsers({ pageParam }),
-      initialPageParam: 1,
-      getNextPageParam: (lastpage, _, pageParam) => {
-        return lastpage.hasMore ? pageParam + 1 : undefined;
-      },
-      staleTime: 60 * 60 * 1000,
-    });
+    useInfiniteLiveStatsUsers();
 
   const users = data?.pages.map((page) => page.users).flat();
   const userHieghestPoints = data?.pages[0].userHighestPoints;
 
   useEffect(() => {
     if (!currentUser) return;
-    queryClient.setQueryData(
-      ["live-stats-users"],
-      (previous: ICashedLiveStatsUsers): ICashedLiveStatsUsers | undefined => {
-        if (!previous) return;
-        return {
-          ...previous,
-          pages: previous.pages.map((page) => {
-            return {
-              ...page,
-              users: page.users.map((user) => {
-                if (user._id === currentUser._id) {
-                  return currentUser;
-                }
-                return user;
-              }),
-            };
-          }),
-        };
-      },
-    );
-    queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
+    updateCurrentUserCache({ queryClient, currentUser });
   }, [currentUser, queryClient]);
 
   useEffect(() => {

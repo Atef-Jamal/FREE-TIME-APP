@@ -3,8 +3,7 @@ import { ImSpinner3 } from "react-icons/im";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { makeRequest } from "../../services";
-import { handleApiError } from "../../utilities";
+import { axiosRequest, handleApiError } from "../../utilities";
 import { IQuizTask } from "../../types/earnTypes";
 
 interface IProps {
@@ -58,7 +57,7 @@ const QuizTask = ({ taskApp }: IProps) => {
       }
       if (error) setError("");
       if (!loading) setLoading(true);
-      const response = await makeRequest.post(`api/tasks/complete-quiz-app/${taskApp._id}`, {
+      const response = await axiosRequest.post(`api/tasks/complete-quiz-app/${taskApp._id}`, {
         answers: [...answers, selected],
       });
       if (response.data.corrects > response.data.wrongs) {

@@ -1,5 +1,5 @@
 import { memo, RefObject, useCallback, useEffect, useMemo, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiCircle } from "react-icons/bi";
@@ -16,6 +16,7 @@ import { IUser } from "../../types/userTypes";
 import { formateDate, handleApiError } from "../../utilities";
 import { verifiedImage } from "../../assets";
 import UserImage from "../../components/Shared/Common/UserImage";
+import { updatePublicMsgCache } from "../../tanstackQuery/queryCache";
 
 interface IProps {
   singleMessage: IPublicChatMessage;
@@ -30,10 +31,11 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   const [messageItem, setMessageItem] = useState<IPublicChatMessage>(singleMessage);
   const [date, setDate] = useState(formateDate(messageItem.createdAt));
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: handleMessageReaction,
-    onMutate: ({ fieldName, otherFieldOne, otherFieldTow }) => {
+    onMutate: ({ fieldName, otherField1, otherField2 }) => {
       if (!currentUserId) {
         dispatch(
           openToast({
@@ -49,12 +51,12 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
         [fieldName]: prev[fieldName].includes(currentUserId)
           ? prev[fieldName].filter((item) => item !== currentUserId)
           : [...prev[fieldName], currentUserId],
-        [otherFieldOne]: prev[otherFieldOne].includes(currentUserId)
-          ? prev[otherFieldOne].filter((item) => item !== currentUserId)
-          : prev[otherFieldOne],
-        [otherFieldTow]: prev[otherFieldTow].includes(currentUserId)
-          ? prev[otherFieldTow].filter((item) => item !== currentUserId)
-          : prev[otherFieldTow],
+        [otherField1]: prev[otherField1].includes(currentUserId)
+          ? prev[otherField1].filter((item) => item !== currentUserId)
+          : prev[otherField1],
+        [otherField2]: prev[otherField2].includes(currentUserId)
+          ? prev[otherField2].filter((item) => item !== currentUserId)
+          : prev[otherField2],
       });
       setMessageItem(updateMessage);
       return { previousMessage };
@@ -69,6 +71,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
       );
     },
     onSuccess: (newMessage) => {
+      updatePublicMsgCache({ queryClient, newMessage });
       socket?.emit("public-message-interaction", newMessage);
     },
   });
@@ -130,8 +133,8 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     mutation.mutate({
       messageId: messageItem._id,
       fieldName: "loves",
-      otherFieldOne: "dislikes",
-      otherFieldTow: "likes",
+      otherField1: "dislikes",
+      otherField2: "likes",
     });
   };
 
@@ -148,8 +151,8 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     mutation.mutate({
       messageId: messageItem._id,
       fieldName: "likes",
-      otherFieldOne: "dislikes",
-      otherFieldTow: "loves",
+      otherField1: "dislikes",
+      otherField2: "loves",
     });
   };
 
@@ -166,8 +169,8 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
     mutation.mutate({
       messageId: messageItem._id,
       fieldName: "dislikes",
-      otherFieldOne: "likes",
-      otherFieldTow: "loves",
+      otherField1: "likes",
+      otherField2: "loves",
     });
   };
 

@@ -1,16 +1,15 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { MdOutlineMenu } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
 import { IPrivateMessage } from "../../types/privateChatTypes";
 import { useAppSelector } from "../../context/hooks";
-import { fetchAllConversations } from "../../services";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import { debounce } from "../../utilities";
 import ChatSidebarUserItem from "./ChatSidebarUserItem";
 import ChatSidebarUserItemSkeleton from "./ChatSidebarUserItemSkeleton";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Spinner from "../../components/Shared/Common/Spinner";
+import { useInfiniteConversations } from "../../tanstackQuery/queryFetch";
 
 interface IProps {
   toggleSidebar: () => void;
@@ -19,19 +18,14 @@ interface IProps {
 
 const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
   const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
 
   const [redPoint, setRedPoint] = useState(false);
   const conversationsListRef = useRef<HTMLDivElement>(null);
 
   const { data, error, status, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
-    useInfiniteQuery({
-      queryKey: ["conversations"],
-      queryFn: ({ pageParam }) => fetchAllConversations({ pageParam }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, _, pageParam) => (lastPage.hasMore ? pageParam + 1 : undefined),
-      staleTime: 60 * 60 * 1000,
-    });
+    useInfiniteConversations({ userAuth: currentUserStatus === "authenticated" });
 
   const conversations = useMemo(() => {
     return data?.pages.map((page) => page.conversations).flat();
@@ -112,8 +106,8 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
             return 0;
           })
           .map((conversation) => {
-            const isOnLine = onlineUsers.includes(conversation.secondParty._id);
-            const chatWithUserOpen = activeChatWithUserId === conversation.secondParty._id;
+            const isOnLine = onlineUsers.includes(conversation.secondUser._id);
+            const chatWithUserOpen = activeChatWithUserId === conversation.secondUser._id;
             return (
               <ChatSidebarUserItem
                 key={conversation._id}

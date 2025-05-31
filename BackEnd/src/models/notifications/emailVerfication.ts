@@ -33,6 +33,7 @@ const emailVerficationSchema = new mongoose.Schema<IEmailVerifiedNotify>(
   },
   { timestamps: true },
 );
+emailVerficationSchema.index({ belongsTo: 1 });
 
 const EmailVerfication: Model<IEmailVerifiedNotify> = mongoose.model<IEmailVerifiedNotify>(
   "EmailVerfication",

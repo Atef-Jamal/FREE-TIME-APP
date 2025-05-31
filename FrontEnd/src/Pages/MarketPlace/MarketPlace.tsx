@@ -1,23 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import { MdStorefront } from "react-icons/md";
 import { useAppSelector } from "../../context/hooks";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
-import { fetchAllFrames } from "../../services";
 import { cn } from "../../utilities";
 import FrameItem from "./FrameItem";
+import { useFetchFrames } from "../../tanstackQuery/queryFetch";
 
 const MarketPlace = () => {
   const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
 
-  const {
-    data: frames = [],
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["frames"],
-    queryFn: fetchAllFrames,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data: frames = [], status, error } = useFetchFrames();
 
   useScrollToElement({ startScroll: status === "success" });
 

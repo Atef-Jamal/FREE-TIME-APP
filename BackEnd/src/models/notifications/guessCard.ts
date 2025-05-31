@@ -33,6 +33,7 @@ const guessCardSchema = new mongoose.Schema<IGuessCardTaskNotify>(
   },
   { timestamps: true },
 );
+guessCardSchema.index({ belongsTo: 1 });
 
 const GuessCard: Model<IGuessCardTaskNotify> = mongoose.model<IGuessCardTaskNotify>(
   "GuessCard",

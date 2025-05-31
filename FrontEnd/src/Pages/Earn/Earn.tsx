@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { SiApple } from "react-icons/si";
 import { ImFire } from "react-icons/im";
@@ -20,11 +19,11 @@ import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { useSearchParams } from "react-router-dom";
 import FilterByDeviceMenu from "./FilterByDeviceMenu";
 import FilterByPopularityMenu from "./FilterByPopularityMenu";
-import { fetchAllTasks } from "../../services";
 import { cn } from "../../utilities";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
+import { useInfiniteTasks } from "../../tanstackQuery/queryFetch";
 
 const Earn = () => {
   const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
@@ -36,44 +35,7 @@ const Earn = () => {
   const [filterByPopularity, setFilterByPopularity] = useState<IFilterByPopularity>("ALL");
   const [filterByDevice, setFilterByDevice] = useState<IFilterByDevice>("ALL");
   const [searchParams, setSearchParams] = useSearchParams();
-
   const { t } = useTranslation("earn");
-
-  const { status, data, error, isFetchingNextPage, fetchNextPage, hasNextPage, isFetchNextPageError } =
-    useInfiniteQuery({
-      queryKey: ["tasks", filterByDevice, filterByPopularity, limitPerPage],
-      queryFn: ({ pageParam }) =>
-        fetchAllTasks({
-          filterByDevice,
-          filterByPopularity,
-          limitPerPage,
-          pageParam,
-        }),
-
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.hasMore ? pages.length + 1 : undefined;
-      },
-      staleTime: 60 * 60 * 1000,
-    });
-
-  const allTasks = data?.pages.map((page) => page.tasks).flat();
-
-  const goToAppDetailSection = useCallback(() => {
-    const appIdFromUrlSearchParam = searchParams.get("to");
-    setTaskId(appIdFromUrlSearchParam);
-    setTimeout(() => {
-      setSearchParams((prev) => {
-        prev.delete("to");
-        return prev;
-      });
-    }, 2000);
-  }, [searchParams, setSearchParams]);
-
-  useScrollToElement({
-    startScroll: status === "success",
-    callback: goToAppDetailSection,
-  });
 
   useEffect(() => {
     if (!taskId) return;
@@ -106,6 +68,17 @@ const Earn = () => {
     setSelectDevice(open);
   }, []);
 
+  const goToAppDetailSection = useCallback(() => {
+    const appIdFromUrlSearchParam = searchParams.get("to");
+    setTaskId(appIdFromUrlSearchParam);
+    setTimeout(() => {
+      setSearchParams((prev) => {
+        prev.delete("to");
+        return prev;
+      });
+    }, 2000);
+  }, [searchParams, setSearchParams]);
+
   const next = () => {
     if (translate === "-translate-x-[0%]") return;
     setTranslate("-translate-x-[0%]");
@@ -115,6 +88,15 @@ const Earn = () => {
     if (translate === "-translate-x-[50%]") return;
     setTranslate("-translate-x-[50%]");
   };
+
+  const { status, data, error, isFetchingNextPage, fetchNextPage, hasNextPage, isFetchNextPageError } =
+    useInfiniteTasks({ filterByDevice, filterByPopularity, limitPerPage });
+
+  useScrollToElement({
+    startScroll: status === "success",
+    callback: goToAppDetailSection,
+  });
+  const allTasks = data?.pages.map((page) => page.tasks).flat();
 
   return (
     <div className="flex flex-col gap-4 bg-[#21223a] p-2 md:p-4">

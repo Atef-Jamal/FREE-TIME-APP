@@ -5,8 +5,7 @@ import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
-import { makeRequest } from "../../services";
-import { cn } from "../../utilities";
+import { axiosRequest, cn } from "../../utilities";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
@@ -45,7 +44,7 @@ const DailyReward = () => {
   useEffect(() => {
     const getDate = async () => {
       try {
-        const response = await makeRequest.get("api/date");
+        const response = await axiosRequest.get("api/date");
         setToday(response.data);
       } catch (error) {
         dispatch(openToast({ message: "an error occured!", type: "ERROR_GENERAL" }));

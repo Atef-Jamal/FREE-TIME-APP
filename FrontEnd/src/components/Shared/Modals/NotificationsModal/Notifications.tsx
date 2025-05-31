@@ -2,13 +2,13 @@ import { memo, useCallback, useEffect } from "react";
 import { MdOutlineClose, MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch } from "../../../../context/hooks";
 import { resetModel, openToast } from "../../../../context/appStateSlice";
-import { makeRequest } from "../../../../services";
-import { handleApiError } from "../../../../utilities";
+import { axiosRequest, handleApiError } from "../../../../utilities";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
-import { ICashedNotificaions, INotifications } from "../../../../types/notificationTypes";
+import { INotifications } from "../../../../types/notificationTypes";
 import Spinner from "../../Common/Spinner";
 import Empty from "../../Common/Empty";
 import NotificationItem from "./NotificationItem";
+import { updateNotificationsIsReadCache } from "../../../../tanstackQuery/queryCache";
 
 const Notifications = memo(() => {
   const queryClient = useQueryClient();
@@ -22,20 +22,9 @@ const Notifications = memo(() => {
 
   const markNotificationasRead = useCallback(async () => {
     try {
-      const response = await makeRequest.patch("api/notifications", { ddd: "ddd" });
+      const response = await axiosRequest.patch("api/notifications", { ddd: "ddd" });
       if (response.status === 200) {
-        queryClient.setQueryData(
-          ["notifications"],
-          (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
-            if (!previous) return;
-            return previous.map((notify) => {
-              if (notify.isRead === false) {
-                return { ...notify, isRead: true };
-              }
-              return notify;
-            });
-          },
-        );
+        updateNotificationsIsReadCache({ queryClient });
       }
     } catch (error) {
       dispatch(
@@ -70,8 +59,8 @@ const Notifications = memo(() => {
           </div>
         )}
         {notifications === undefined && isLoading === 0 && (
-          <div className="my-6 space-y-3 border text-center">
-            <p className="font-bold text-red-600">an error occurred</p>
+          <div className="my-6 space-y-3 text-center">
+            <p className="font-bold text-[#eb5050]">an error occurred</p>
             <button onClick={handleRefetch} className="rounded-sm bg-[#555768] px-5 py-1 text-gray-300">
               try again
             </button>

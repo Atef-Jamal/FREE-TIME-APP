@@ -5,17 +5,14 @@ import { AiTwotoneDislike, AiTwotoneLike } from "react-icons/ai";
 import { GoMention } from "react-icons/go";
 import { GrAnnounce } from "react-icons/gr";
 import { FcApproval, FcConferenceCall, FcLike, FcMusic, FcPaid } from "react-icons/fc";
-import {
-  ICashedNotificaions,
-  INotificationModelName,
-  INotifications,
-} from "../../../../types/notificationTypes";
+import { INotificationModelName, INotifications } from "../../../../types/notificationTypes";
 import { resetModel, setCurrentUser, openToast, updateThisEntity } from "../../../../context/appStateSlice";
 import { verifiedImage } from "../../../../assets";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import { cn, formateDate, handleApiError } from "../../../../utilities";
 import Spinner from "../../Common/Spinner";
 import { collectReward } from "../../../../services";
+import { updateNotificationsCollectCache } from "../../../../tanstackQuery/queryCache";
 
 const NotificationItem = (notify: INotifications) => {
   // @ts-expect-error-isCollected does not exist on some notifications
@@ -281,18 +278,7 @@ const NotificationItem = (notify: INotifications) => {
     setIsLoading(true);
     try {
       const response = await collectReward(notify._id, notificationType);
-      queryClient.setQueryData(
-        ["notifications"],
-        (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
-          if (!previous) return;
-          return previous.map((item) => {
-            if (item._id === notify._id) {
-              return { ...item, isCollected: true };
-            }
-            return item;
-          });
-        },
-      );
+      updateNotificationsCollectCache({ queryClient, notificationId: notify._id });
       setIsRewadCollected(response.isCollected);
       const updatedUser = {
         ...currentUser,

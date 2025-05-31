@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { makeRequest } from "../../services";
 import { setCurrentUser, openToast } from "../../context/appStateSlice";
-import { handleApiError } from "../../utilities";
+import { axiosRequest, handleApiError } from "../../utilities";
 import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
 import { useTranslation } from "react-i18next";
@@ -36,7 +35,7 @@ const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateN
     }
     try {
       setIsLoading(true);
-      const response = await makeRequest.post(`api/rewards/daily-reward/collect`, { day: dayInfo.day });
+      const response = await axiosRequest.post(`api/rewards/daily-reward/collect`, { day: dayInfo.day });
       const updatedUser = {
         ...currentUser,
         points: response.data.points,

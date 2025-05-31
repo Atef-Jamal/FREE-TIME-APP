@@ -1,19 +1,16 @@
-import { skipToken, useQuery } from "@tanstack/react-query";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { BsFillClockFill } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
 import { BiTask } from "react-icons/bi";
 import { useAppSelector } from "../../context/hooks";
-import { fetchMyNotifications } from "../../services";
+import { useFetchNotifications } from "../../tanstackQuery/queryFetch";
 
 const Statistics = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const userAuth = currentUserStatus === "authenticated";
 
-  const { data: statistics = [], error } = useQuery({
-    queryKey: ["notifications"],
-    queryFn: currentUser?._id ? fetchMyNotifications : skipToken,
-    staleTime: 1000 * 60 * 60,
-  });
+  const { data: statistics = [], error } = useFetchNotifications({ userAuth });
 
   const numReferredUsers = statistics.filter((item) => item.type === "REFERRER").length;
   const numCopletedTasks = statistics.filter(

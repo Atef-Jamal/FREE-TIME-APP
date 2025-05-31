@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { MdOutlineStarOutline, MdOutlineStarPurple500 } from "react-icons/md";
 import { FaStar } from "react-icons/fa6";
@@ -12,9 +12,9 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
-import { login, handleSignInWithOauth, fetchTestimonials, handleSendTestimonial } from "../../services";
+import { login, handleSignInWithOauth, handleSendTestimonial } from "../../services";
 import { cn, formateDate, handleApiError, validateCredentials } from "../../utilities";
-import { IFormData, ITestimonial } from "../../types/othersTypes";
+import { IFormData } from "../../types/othersTypes";
 import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -24,6 +24,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import Input from "../../components/Shared/Common/Input";
+import { useFetchTestimonials } from "../../tanstackQuery/queryFetch";
+import { addTestimonialCashe } from "../../tanstackQuery/queryCache";
 
 const Home = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
@@ -38,15 +40,7 @@ const Home = () => {
 
   const token = !!localStorage.getItem("token");
 
-  const {
-    data: testimonials,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["testimonials"],
-    queryFn: fetchTestimonials,
-    staleTime: 60 * 60 * 1000,
-  });
+  const { data: testimonials, status, error } = useFetchTestimonials();
 
   const handlaSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -90,9 +84,7 @@ const Home = () => {
     },
     onSuccess: (newTestimonial) => {
       setComment("");
-      queryClient.setQueryData(["testimonials"], (old: ITestimonial[]) => {
-        return [newTestimonial, ...old];
-      });
+      addTestimonialCashe({ queryClient, newTestimonial });
     },
   });
 

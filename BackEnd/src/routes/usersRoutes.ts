@@ -19,6 +19,6 @@ router.get("/select-myphoto-frame/:frameId", protectedRoute, changeUserPhotoFram
 router.get("/unselect-myphoto-frame", protectedRoute, unselectUserPhotoFrame);
 router.get("/:userId", getUser);
 router.get("/who-visit-me/me", protectedRoute, getWhoVisitMe);
-router.patch("/:userId/visited", protectedRoute, userVisited);
+router.get("/:userId/visited", protectedRoute, userVisited);
 
 export default router;

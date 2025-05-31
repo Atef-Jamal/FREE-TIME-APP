@@ -1,8 +1,8 @@
 import { IFrame } from "../types/frameTypes";
-import { makeRequest } from "./config";
+import { axiosRequest } from "../utilities";
 
 export const fetchAllFrames = async (): Promise<IFrame[]> => {
-  const response = await makeRequest.get("api/frames");
+  const response = await axiosRequest.get("api/frames");
   const frames = response.data;
   return frames;
 };
@@ -12,7 +12,7 @@ export const purshaseFrame = async ({
 }: {
   frameId: string;
 }): Promise<{ points: number; savedFrame: IFrame }> => {
-  const response = await makeRequest.get(`api/frames/${frameId}`);
+  const response = await axiosRequest.get(`api/frames/${frameId}`);
   const data = response.data;
   return data;
 };

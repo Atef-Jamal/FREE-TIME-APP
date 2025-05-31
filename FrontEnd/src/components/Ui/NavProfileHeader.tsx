@@ -1,51 +1,44 @@
 import { useCallback, useMemo, useState } from "react";
-import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { BsArrowDown } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { showModal } from "../../context/appStateSlice";
-import { fetchMyNotifications } from "../../services";
 import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { IoMdNotifications } from "react-icons/io";
 import ProfileMenu from "./ProfileMenu";
-import { ICashedNotificaions, INotifications } from "../../types/notificationTypes";
+import { INotifications } from "../../types/notificationTypes";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import UserImage from "../Shared/Common/UserImage";
+import { useFetchNotifications } from "../../tanstackQuery/queryFetch";
+import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
 
 const notifySound = new Audio(notificationSoundSrc);
 
 const NavProfileHeader = () => {
   const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const queryClient = useQueryClient();
-
   const dispatch = useAppDispatch();
 
-  const {
-    data: notifications,
-    // status,
-    // error,
-  } = useQuery({
-    queryKey: ["notifications"],
-    queryFn: currentUser?._id ? fetchMyNotifications : skipToken,
-    staleTime: 1000 * 60 * 60,
-  });
+  const userAuth = currentUserStatus === "authenticated";
+
+  const { data: notifications } = useFetchNotifications({ userAuth });
 
   const numUnReaded = notifications?.filter((element) => element.isRead === false).length;
 
   const handleAddNewNotification = useCallback(
-    (data: INotifications) => {
-      queryClient.setQueryData(
-        ["notifications"],
-        (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
-          if (!previous) return;
-          return [data, ...previous];
-        },
-      );
+    (newNotification: INotifications) => {
+      addNewNotificationCache({ queryClient, newNotification });
       notifySound.play();
     },
     [queryClient],
   );
+
+  const handleOpenNotificatioModal = () => {
+    dispatch(showModal("notifications-modal"));
+  };
 
   const events = useMemo(() => ["new-notification"], []);
   const handlers = useMemo(() => [handleAddNewNotification], [handleAddNewNotification]);
@@ -54,10 +47,6 @@ const NavProfileHeader = () => {
     eventsToListen: events,
     handlers: handlers,
   });
-
-  const handleOpenNotificatioModal = () => {
-    dispatch(showModal("notifications-modal"));
-  };
 
   return (
     <div className="relative flex h-full items-center gap-x-1 sm:gap-x-2">

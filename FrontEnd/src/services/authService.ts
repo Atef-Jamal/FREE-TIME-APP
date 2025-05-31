@@ -1,7 +1,6 @@
-import { makeRequest } from "./config";
 import { openToast } from "../context/appStateSlice";
 import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
-import { handleApiError } from "../utilities";
+import { axiosRequest, handleApiError } from "../utilities";
 
 export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {
   dispatch(
@@ -12,7 +11,7 @@ export const register = async ({ formData, dispatch, referrerUser }: IRegisterPr
   );
   const query = referrerUser ? `?referrerUser=${referrerUser}` : "";
 
-  const response = await makeRequest.post(`api/auth/register${query}`, formData, {
+  const response = await axiosRequest.post(`api/auth/register${query}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
@@ -28,7 +27,7 @@ export const login = async ({ formData, dispatch }: ILoginProps) => {
     }),
   );
   const { email, password } = formData;
-  const response = await makeRequest.post(`api/auth/login`, {
+  const response = await axiosRequest.post(`api/auth/login`, {
     email,
     password,
   });

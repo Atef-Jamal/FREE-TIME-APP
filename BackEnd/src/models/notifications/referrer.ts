@@ -39,6 +39,8 @@ const referrerSchema = new mongoose.Schema<IReferrerNotify>(
   { timestamps: true },
 );
 
+referrerSchema.index({ belongsTo: 1 });
+
 const Referrer: Model<IReferrerNotify> = mongoose.model<IReferrerNotify>("Referrer", referrerSchema);
 
 export default Referrer;

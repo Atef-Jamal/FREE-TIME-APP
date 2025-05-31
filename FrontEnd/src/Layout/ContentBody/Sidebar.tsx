@@ -10,8 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink } from "react-router-dom";
 import { memo, useEffect } from "react";
-import { cn, handleApiError } from "../../utilities";
-import { makeRequest } from "../../services";
+import { axiosRequest, cn, handleApiError } from "../../utilities";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import MusicPlayer from "../../components/Ui/MusicPlayer";
 
@@ -31,7 +30,7 @@ const Sidebar = memo(() => {
   useEffect(() => {
     const getAllUnReadedMsgs = async () => {
       try {
-        const response = await makeRequest.get("api/conversations/all/all-unreaded-count");
+        const response = await axiosRequest.get("api/conversations/all/all-unreaded-count");
         dispatch(
           updateSidebarUnReadedMsgCount({
             type: "ADD-ALL",
