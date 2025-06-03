@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { setCurrentUser, openToast } from "../../context/appStateSlice";
+import { setCurrentUser, openToast, selectSocket, selectCurrentUser } from "../../context/appStateSlice";
 import { axiosRequest, handleApiError } from "../../utilities";
 import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
@@ -19,8 +19,8 @@ interface IProps {
 }
 
 const DailyStreakRewardCard = ({ dayInfo, dayWhichTimmerIsLocated, handleUpdateNextTimerDay }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const socket = useAppSelector((state) => state.appState.socket);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const socket = useAppSelector(selectSocket);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation("rewards");
   const [, setRefresh] = useState(false);

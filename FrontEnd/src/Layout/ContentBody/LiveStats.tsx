@@ -10,10 +10,11 @@ import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useInfiniteLiveStatsUsers } from "../../tanstackQuery/queryFetch";
 import { updateCurrentUserCache } from "../../tanstackQuery/queryCache";
+import { selectCurrentUser, selectOnlineUsers } from "../../context/appStateSlice";
 
 const LiveStats = memo(() => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const onlineUsers = useAppSelector(selectOnlineUsers);
   const [openLangMenu, setOpenLangMenu] = useState(false);
   const queryClient = useQueryClient();
 
@@ -31,7 +32,7 @@ const LiveStats = memo(() => {
   useEffect(() => {
     const timeOut = setTimeout(() => {
       queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
-    }, 1000);
+    }, 500);
     return () => clearTimeout(timeOut);
   }, [onlineUsers, queryClient]);
 

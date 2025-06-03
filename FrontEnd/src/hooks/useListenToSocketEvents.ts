@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { useAppSelector } from "../context/hooks";
+import { selectSocket } from "../context/appStateSlice";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IHandleUpdate = (arg: any) => void;
@@ -11,7 +12,8 @@ interface ISocketHook {
 }
 
 export const useListenToSocketEvents = ({ eventsToListen, handlers }: ISocketHook) => {
-  const socket = useAppSelector((state) => state.appState.socket);
+  const socket = useAppSelector(selectSocket);
+
   useEffect(() => {
     if (!socket) return;
     for (let index = 0; index < eventsToListen.length; index++) {

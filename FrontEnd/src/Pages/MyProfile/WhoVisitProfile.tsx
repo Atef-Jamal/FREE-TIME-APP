@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BiErrorAlt } from "react-icons/bi";
-import { IVisitor } from "../../types/userTypes";
+import type { IVisitor } from "../../types";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { setCurrentUser, openToast } from "../../context/appStateSlice";
+import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { axiosRequest, cn, formateDate, handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 
 const WhoVisitProfile = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<IVisitor[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);

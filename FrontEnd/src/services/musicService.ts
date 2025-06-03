@@ -1,4 +1,4 @@
-import { IMusicDetail } from "../types/othersTypes";
+import type { IMusicDetail } from "../types";
 import { axiosRequest } from "../utilities";
 
 export const purshaseMusic = async ({

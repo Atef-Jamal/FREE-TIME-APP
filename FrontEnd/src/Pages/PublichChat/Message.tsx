@@ -7,12 +7,11 @@ import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
 import { FcLike, FcOk } from "react-icons/fc";
-import { openToast } from "../../context/appStateSlice";
+import { openToast, selectSocket, selectUserAuth } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { handleMessageReaction } from "../../services";
-import { IPublicChatMessage } from "../../types/publicChatTypes";
+import type { IUser, IPublicChatMessage } from "../../types";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
-import { IUser } from "../../types/userTypes";
 import { formateDate, handleApiError } from "../../utilities";
 import { verifiedImage } from "../../assets";
 import UserImage from "../../components/Shared/Common/UserImage";
@@ -26,8 +25,8 @@ interface IProps {
 
 const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelete }: IProps) => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const socket = useAppSelector((state) => state.appState.socket);
+  const userAuth = useAppSelector(selectUserAuth);
+  const socket = useAppSelector(selectSocket);
   const [messageItem, setMessageItem] = useState<IPublicChatMessage>(singleMessage);
   const [date, setDate] = useState(formateDate(messageItem.createdAt));
   const dispatch = useAppDispatch();
@@ -121,7 +120,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   }, [messageItem.createdAt]);
 
   const handleLove = () => {
-    if (currentUserStatus !== "authenticated") {
+    if (userAuth !== "authenticated") {
       dispatch(
         openToast({
           type: "ERROR_GENERAL",
@@ -139,7 +138,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   const handleLike = () => {
-    if (currentUserStatus !== "authenticated") {
+    if (userAuth !== "authenticated") {
       dispatch(
         openToast({
           type: "ERROR_GENERAL",
@@ -157,7 +156,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   const handleDisLike = () => {
-    if (currentUserStatus !== "authenticated") {
+    if (userAuth !== "authenticated") {
       dispatch(
         openToast({
           type: "ERROR_GENERAL",

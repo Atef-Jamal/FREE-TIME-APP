@@ -1,11 +1,11 @@
 import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
-import { IUser } from "../../types/userTypes";
 import { cn } from "../../utilities";
 import Skeleton from "../../components/Shared/Common/Skeleton";
 import Empty from "../../components/Shared/Common/Empty";
+import { ICashedLeaderboardUsers } from "../../types/userTypes";
 
 interface IProps {
-  data: { users: IUser[]; allDataLength: number } | undefined;
+  data: ICashedLeaderboardUsers | undefined;
   status: "error" | "success" | "pending";
   error: string | null;
   pageParam: number;

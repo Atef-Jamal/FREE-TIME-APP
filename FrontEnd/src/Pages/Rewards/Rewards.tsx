@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdCardGiftcard } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
-import { IBounusCode } from "../../types/rewardsTypes";
-import { openToast } from "../../context/appStateSlice";
+import type { IBounusCode } from "../../types";
+import { openToast, selectUserAuth } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { axiosRequest, cn, handleApiError } from "../../utilities";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
@@ -13,7 +13,7 @@ import DailyReward from "./DailyReward";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const Rewards = () => {
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const userAuth = useAppSelector(selectUserAuth);
   const [loading, setLoading] = useState<boolean>(false);
   const [bonusCode, setBonusCode] = useState<IBounusCode | null>(null);
   const { t } = useTranslation("rewards");
@@ -22,7 +22,7 @@ const Rewards = () => {
   useScrollToElement({});
 
   const getBonusCode = async () => {
-    if (currentUserStatus !== "authenticated") {
+    if (userAuth !== "authenticated") {
       dispatch(
         openToast({
           message: "Log In first",

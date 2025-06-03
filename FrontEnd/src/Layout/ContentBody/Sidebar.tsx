@@ -5,6 +5,11 @@ import {
   updateThisEntity,
   openToast,
   updateSidebarUnReadedMsgCount,
+  selectUnReadMsgsCount,
+  selectUserAuth,
+  selectSidebarCollapsed,
+  selectOpenMusicModal,
+  selectSmallScreen,
 } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sidebareItems } from "../../helper/data";
@@ -15,11 +20,11 @@ import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import MusicPlayer from "../../components/Ui/MusicPlayer";
 
 const Sidebar = memo(() => {
-  const allUnReadedMesseges = useAppSelector((state) => state.appState.allUnReadedMesseges);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
-  const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
-  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
+  const unReadMsgsCount = useAppSelector(selectUnReadMsgsCount);
+  const userAuth = useAppSelector(selectUserAuth);
+  const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
+  const openMusicModal = useAppSelector(selectOpenMusicModal);
+  const smallScreen = useAppSelector(selectSmallScreen);
   const { t } = useTranslation("sidebar");
   const dispatch = useAppDispatch();
 
@@ -47,10 +52,10 @@ const Sidebar = memo(() => {
       }
     };
 
-    if (currentUserStatus === "authenticated") {
+    if (userAuth === "authenticated") {
       getAllUnReadedMsgs();
     }
-  }, [currentUserStatus, dispatch]);
+  }, [userAuth, dispatch]);
 
   return (
     <div
@@ -90,11 +95,11 @@ const Sidebar = memo(() => {
                 <span className={`truncate text-sm font-bold tracking-wide text-gray-400`}>
                   {t(item.title)}
                 </span>
-                {currentUserStatus === "authenticated" &&
-                  allUnReadedMesseges.length > 0 &&
+                {userAuth === "authenticated" &&
+                  unReadMsgsCount.length > 0 &&
                   item.path === "privatechat" && (
                     <span className="absolute right-1 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#e23e32] text-xs font-bold">
-                      {allUnReadedMesseges.length}
+                      {unReadMsgsCount.length}
                     </span>
                   )}
               </NavLink>

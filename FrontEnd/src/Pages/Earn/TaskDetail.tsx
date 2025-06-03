@@ -5,7 +5,7 @@ import { IoIosStarOutline, IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
 import { BsArrowDownCircle } from "react-icons/bs";
-import { openToast } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn, handleApiError } from "../../utilities";
 import { handleAddReview } from "../../services";
@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const TaskDetail = ({ taskId }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
   const [comment, setComment] = useState("");

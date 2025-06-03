@@ -1,5 +1,5 @@
 import { axiosRequest } from "../utilities";
-import { IFilterByDevice, IFilterByPopularity, IReview, ITask } from "../types/earnTypes";
+import type { IFilterByDevice, IFilterByPopularity, IReview, ITask } from "../types";
 
 export const fetchAllTasks = async ({
   filterByPopularity,

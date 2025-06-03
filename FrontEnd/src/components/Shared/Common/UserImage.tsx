@@ -1,4 +1,4 @@
-import { IUser } from "../../../types/userTypes";
+import type { IUser } from "../../../types";
 import { cn } from "../../../utilities";
 
 interface IProps {

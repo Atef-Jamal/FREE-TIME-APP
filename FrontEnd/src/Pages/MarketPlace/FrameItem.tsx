@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { setCurrentUser, openToast } from "../../context/appStateSlice";
+import { setCurrentUser, openToast, selectUserAuth, selectCurrentUser } from "../../context/appStateSlice";
 import { purshaseFrame } from "../../services";
 import { handleApiError } from "../../utilities";
-import { IFrame } from "../../types/frameTypes";
+import type { IFrame } from "../../types";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/Shared/Common/Spinner";
 
@@ -11,8 +11,8 @@ interface IProps {
 }
 
 const FrameItem = ({ singleFrame }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const userAuth = useAppSelector(selectUserAuth);
   const purshasedByCurrentUser = !!currentUser?.myFrames.find((item) => item._id === singleFrame._id);
   const dispatch = useAppDispatch();
 
@@ -71,7 +71,7 @@ const FrameItem = ({ singleFrame }: IProps) => {
         </span>
       </div>
 
-      {currentUserStatus === "authenticated" && purshasedByCurrentUser && (
+      {userAuth === "authenticated" && purshasedByCurrentUser && (
         <button
           onClick={() =>
             dispatch(
@@ -86,7 +86,7 @@ const FrameItem = ({ singleFrame }: IProps) => {
           Purshased
         </button>
       )}
-      {currentUserStatus !== "pending" && !purshasedByCurrentUser && (
+      {userAuth !== "pending" && !purshasedByCurrentUser && (
         <button
           onClick={handlePurshaseFrame}
           disabled={mutation.isPending}
@@ -96,7 +96,7 @@ const FrameItem = ({ singleFrame }: IProps) => {
         </button>
       )}
 
-      {currentUserStatus === "pending" && (
+      {userAuth === "pending" && (
         <span className="mt-3 flex h-[29px] items-center justify-center rounded-md border border-gray-500 text-sm font-bold">
           <Spinner />
         </span>

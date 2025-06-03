@@ -2,10 +2,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import io from "socket.io-client";
-import { IUser } from "../types/userTypes";
-import { IPublicChatItem } from "../types/publicChatTypes";
-import { ICashedConversations, IPrivateMessage } from "../types/privateChatTypes";
-import { IConversationReadedSocketData } from "../types/othersTypes";
+import type { IUser, ICashedConversations, IPublicChatItem, IPrivateMessage } from "../types";
 import { useAppDispatch, useAppSelector } from "../context/hooks";
 import {
   showModal,
@@ -17,6 +14,9 @@ import {
   updateCurrentUserStatus,
   disconnectSocket,
   updateSidebarUnReadedMsgCount,
+  selectActiveChatId,
+  selectUserAuth,
+  selectCurrentUser,
 } from "../context/appStateSlice";
 import { useListenToSocketEvents } from "./useListenToSocketEvents";
 import { axiosRequest, debounce, handleApiError } from "../utilities";
@@ -36,14 +36,12 @@ import {
 
 export const useInitialization = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
-  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const activeChatId = useAppSelector(selectActiveChatId);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const userAuth = useAppSelector(selectUserAuth);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const location = useLocation();
-
-  const userAuth = currentUserStatus === "authenticated";
 
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
   const redirectQuery = searchParams.get("redirectedfrom");
@@ -82,9 +80,9 @@ export const useInitialization = () => {
         page.conversations.some((conv) => conv.secondUser._id === newMessage.sender._id),
       );
 
-      addNewPrivateMsgCache({ queryClient, activeChatWithUserId, isConversationExist, newMessage });
+      addNewPrivateMsgCache({ queryClient, activeChatId, isConversationExist, newMessage });
     },
-    [queryClient, activeChatWithUserId, dispatch, isPrivateChatPageOpen],
+    [queryClient, activeChatId, dispatch, isPrivateChatPageOpen],
   );
 
   const handleUserUpdated = useCallback(
@@ -95,7 +93,7 @@ export const useInitialization = () => {
   );
 
   const handleConversationReaded = useCallback(
-    (data: IConversationReadedSocketData) => {
+    (data: { receiver: string; sender: string }) => {
       updateConversationReadCache({ queryClient, data });
     },
     [queryClient],
@@ -107,8 +105,8 @@ export const useInitialization = () => {
 
   //prefetch chats
   useInfinitePublicChatMsges();
-  useInfiniteConversations({ userAuth });
-  useInfiniteConversationMsgs({ userAuth, activeChatWithUserId });
+  useInfiniteConversations({ userAuth: userAuth === "authenticated" });
+  useInfiniteConversationMsgs({ userAuth: userAuth === "authenticated", activeChatId });
 
   useEffect(() => {
     let token = localStorage.getItem("token");
@@ -183,22 +181,22 @@ export const useInitialization = () => {
   });
 
   useEffect(() => {
-    if (currentUserStatus === "pending") return;
+    if (userAuth === "pending") return;
 
     const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-      query: { userId: currentUserId },
+      query: { userId: currentUser?._id },
     });
     dispatch(setSocket(socket));
     return () => {
       dispatch(disconnectSocket());
     };
-  }, [currentUserStatus, currentUserId, dispatch]);
+  }, [userAuth, currentUser?._id, dispatch]);
 
   useEffect(() => {
-    if (refQuery && currentUserStatus === "unauthenticated") {
+    if (refQuery && userAuth === "unauthenticated") {
       dispatch(showModal("register-modal"));
     }
-  }, [dispatch, refQuery, currentUserStatus]);
+  }, [dispatch, refQuery, userAuth]);
 
   useEffect(() => {
     if (redirectQuery) {

@@ -8,7 +8,6 @@ export interface IPrivateMessage extends Document {
   isRead: boolean;
   createdAt: Date;
 }
-
 const privateMessageSchema = new mongoose.Schema<IPrivateMessage>(
   {
     conversationId: { type: Schema.Types.ObjectId, ref: "Conversation", required: true },
@@ -19,7 +18,7 @@ const privateMessageSchema = new mongoose.Schema<IPrivateMessage>(
   },
   { timestamps: true },
 );
-
+privateMessageSchema.index({ sender: 1, receiver: 1 });
 const PrivateMessage: Model<IPrivateMessage> = mongoose.model<IPrivateMessage>(
   "PrivateMessage",
   privateMessageSchema,

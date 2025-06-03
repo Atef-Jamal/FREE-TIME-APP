@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useTranslation } from "react-i18next";
-import { showModal } from "../../context/appStateSlice";
+import { selectUserAuth, showModal } from "../../context/appStateSlice";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 // import Search from "../../components/Shared/Modals/SearchModal/Search";
 import NavRegisterButtons from "../../components/Ui/NavRegisterButtons";
@@ -10,7 +10,7 @@ import NavProfileHeaderSkeleton from "../../components/Ui/NavProfileHeaderSkelet
 import NavProfileHeader from "../../components/Ui/NavProfileHeader";
 
 const Navbare = memo(() => {
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const userAuth = useAppSelector(selectUserAuth);
   const { t } = useTranslation("navbar");
   const dispatch = useAppDispatch();
 
@@ -31,11 +31,11 @@ const Navbare = memo(() => {
           <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
         </div>
 
-        {currentUserStatus === "unauthenticated" && <NavRegisterButtons />}
+        {userAuth === "unauthenticated" && <NavRegisterButtons />}
 
-        {token && currentUserStatus === "pending" && <NavProfileHeaderSkeleton />}
+        {token && userAuth === "pending" && <NavProfileHeaderSkeleton />}
 
-        {currentUserStatus === "authenticated" && <NavProfileHeader />}
+        {userAuth === "authenticated" && <NavProfileHeader />}
       </div>
     </div>
   );

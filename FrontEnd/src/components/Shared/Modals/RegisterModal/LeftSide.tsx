@@ -1,6 +1,6 @@
 import { SetStateAction } from "react";
 import UploadImage from "../../Common/UploadImage";
-import { IFormData } from "../../../../types/othersTypes";
+import type { IFormData } from "../../../../types";
 import { useTranslation } from "react-i18next";
 
 interface IProps {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IFormData } from "../types/othersTypes";
+import type { IFormData } from "../types";
 import axios from "axios";
 
 interface IValidationResult {

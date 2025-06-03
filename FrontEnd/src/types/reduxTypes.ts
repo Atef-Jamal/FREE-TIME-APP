@@ -25,23 +25,23 @@ export type IModal =
   | null;
 
 export interface IInitialState {
-  currentUserStatus: "pending" | "authenticated" | "unauthenticated";
+  userAuth: "pending" | "authenticated" | "unauthenticated";
   currentUser: IUser | null;
   isChatOpen: boolean;
   isSignInMode: boolean;
   smallScreen: boolean;
-  ToastNotify: IToast;
+  toastNotify: IToast;
   sidebarCollapsed: boolean;
-  hiddenLiveStats: boolean;
+  hideLiveStats: boolean;
   openMusicModal: boolean;
   musicIsPlaying: boolean;
   activeMusic: IMusicInfo | null;
   socket: Socket | null;
   onlineUsers: string[];
-  allUnReadedMesseges: string[];
-  activeChatWithUserId: string | null;
+  unReadMsgsCount: string[];
+  activeChatId: string | null;
   modal: IModal;
-  publicMsgRedPoint: boolean;
+  publicMsgNotify: boolean;
 }
 
 export type IDispatch = ThunkDispatch<

@@ -24,5 +24,7 @@ const profileVisitsSchema: Schema = new mongoose.Schema<IVisitor>(
   },
 );
 
+profileVisitsSchema.index({ visited: 1 });
+
 const ProfileVisits: Model<IVisitor> = mongoose.model<IVisitor>("ProfileVisits", profileVisitsSchema);
 export default ProfileVisits;

@@ -1,82 +1,60 @@
 import { IFrame } from "./frameTypes";
 import { IUser } from "./userTypes";
 
-export interface IMentionNotify {
+interface INotificationBase {
   _id: string;
+  createdAt: Date;
+  isRead: boolean;
+}
+
+export interface IMentionNotify extends INotificationBase {
   type: "MENTION";
-  createdAt: Date;
-  isRead: boolean;
-  messageLocation: string;
-  mentionedUser: IUser;
+  metadata: { messageLocation: string; mentionedUser: IUser };
 }
 
-export interface IInteractWithMessageNotify {
-  _id: string;
+export interface IInteractWithMessageNotify extends INotificationBase {
   type: "INTERACT-WITH-MESSAGE";
-  typeOfInteraction: "loves" | "likes" | "dislikes";
-  createdAt: Date;
-  isRead: boolean;
-  messageLocation: string;
-  interactedUser: IUser;
+  metadata: {
+    typeOfInteraction: "loves" | "likes" | "dislikes";
+    messageLocation: string;
+    interactedUser: IUser;
+  };
 }
-export interface IEmailVerifiedNotify {
-  _id: string;
+export interface IEmailVerifiedNotify extends INotificationBase {
   type: "EMAIL-VERIFIED";
-  createdAt: Date;
-  isRead: boolean;
-  isCollected: boolean;
-  prize: number;
+  metadata: {
+    isCollected: boolean;
+    prize: number;
+  };
 }
-export interface IReferrerNotify {
-  _id: string;
+export interface IReferrerNotify extends INotificationBase {
   type: "REFERRER";
-  createdAt: Date;
-  isRead: boolean;
-  isCollected: boolean;
-  referredUser: IUser;
-  prize: number;
+  metadata: {
+    isCollected: boolean;
+    referredUser: IUser;
+    prize: number;
+  };
 }
-export interface IBuyFrameNotify {
-  _id: string;
+export interface IBuyFrameNotify extends INotificationBase {
   type: "BUY-FRAME";
-  createdAt: Date;
-  updatedAt: Date;
-  isRead: boolean;
-  frame: IFrame;
-  price: number;
+  metadata: { frame: IFrame; price: number };
 }
-export interface IQuizTaskNotify {
-  _id: string;
+export interface IQuizTaskNotify extends INotificationBase {
   type: "QUIZ-APP";
-  createdAt: Date;
-  isRead: boolean;
-  isCollected: boolean;
-  prize: number;
+  metadata: { isCollected: boolean; prize: number };
 }
-export interface IAnnouncementNoify {
-  _id: string;
+export interface IAnnouncementNoify extends INotificationBase {
   type: "ANNOUNCEMENT";
-  announceContent: string;
-  createdAt: Date;
-  isRead: boolean;
+  metadata: { announceContent: string };
 }
-export interface IGuessCardTaskNotify {
-  _id: string;
+export interface IGuessCardTaskNotify extends INotificationBase {
   type: "GUESS-CARD";
-  isCollected: boolean;
-  prize: number;
-  createdAt: Date;
-  isRead: boolean;
+  metadata: { isCollected: boolean; prize: number };
 }
 
-export interface IMusicNotify {
-  _id: string;
+export interface IMusicNotify extends INotificationBase {
   type: "MUSIC";
-  isRead: boolean;
-  musicId: string;
-  musicTitle: string;
-  price: number;
-  createdAt: Date;
+  metadata: { musicId: string; musicTitle: string; price: number };
 }
 
 export type INotifications =
@@ -89,7 +67,5 @@ export type INotifications =
   | IGuessCardTaskNotify
   | IMusicNotify
   | IInteractWithMessageNotify;
-
-export type INotificationModelName = "Referrer" | "EmailVerfication" | "GuessCard" | "QuizeApp" | "Referrer";
 
 export type ICashedNotificaions = INotifications[];

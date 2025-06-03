@@ -3,7 +3,8 @@ import Frame from "../models/frame";
 import User from "../models/user";
 import PublicMessage from "../models/publicMessage";
 import { io, onLineUsers } from "../socketIo/socketIo";
-import BuyFrame from "../models/notifications/buyFrame";
+import Notification from "../models/notification";
+import { userExcludedFields } from "../constants";
 
 export const getAllFrames = async (_: Request, res: Response) => {
   try {
@@ -15,7 +16,7 @@ export const getAllFrames = async (_: Request, res: Response) => {
 };
 
 export const buyFrame = async (req: Request, res: Response) => {
-  const { points, myFrames, _id } = req.currentUser ? req.currentUser : null;
+  const { points, myFrames, _id } = req.currentUser;
   const { frameId } = req.params;
 
   try {
@@ -51,15 +52,17 @@ export const buyFrame = async (req: Request, res: Response) => {
     frame.purshasedBy.push(_id);
     const savedFrame = await frame.save();
 
-    const createNotification = new BuyFrame({
+    const createNotification = new Notification({
       type: "BUY-FRAME",
       belongsTo: _id,
-      frame: frame._id,
-      price: frame.price,
+      metadata: {
+        frame: frame._id,
+        price: frame.price,
+      },
     });
 
     const saveNotification = await createNotification.save();
-    const savedNotification = await saveNotification.populate("frame");
+    const savedNotification = await saveNotification.populate("metadata.frame");
 
     io.to(onLineUsers[_id]).emit("new-notification", savedNotification);
 
@@ -70,7 +73,7 @@ export const buyFrame = async (req: Request, res: Response) => {
     });
 
     const savePublicMessage = await createPublicMessage.save();
-    const savedPublicMessage = await savePublicMessage.populate("sender", "-password");
+    const savedPublicMessage = await savePublicMessage.populate("sender", userExcludedFields);
 
     io.emit("public-message", savedPublicMessage);
 

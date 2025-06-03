@@ -4,7 +4,7 @@ import { useAppDispatch } from "../../../../context/hooks";
 import { resetModel, openToast } from "../../../../context/appStateSlice";
 import { axiosRequest, handleApiError } from "../../../../utilities";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
-import { INotifications } from "../../../../types/notificationTypes";
+import type { INotifications } from "../../../../types";
 import Spinner from "../../Common/Spinner";
 import Empty from "../../Common/Empty";
 import NotificationItem from "./NotificationItem";

@@ -1,5 +1,5 @@
 import { memo, useRef } from "react";
-import { IFilterByDevice } from "../../types/earnTypes";
+import type { IFilterByDevice } from "../../types";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../utilities";

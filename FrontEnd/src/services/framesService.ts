@@ -1,4 +1,4 @@
-import { IFrame } from "../types/frameTypes";
+import type { IFrame } from "../types";
 import { axiosRequest } from "../utilities";
 
 export const fetchAllFrames = async (): Promise<IFrame[]> => {

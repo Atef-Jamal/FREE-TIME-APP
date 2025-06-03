@@ -1,25 +1,25 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { IInitialState, IModal, IMusicInfo, IToast } from "../types/reduxTypes";
-import { IUser } from "../types/userTypes";
+import type { IUser, IInitialState, IModal, IMusicInfo, IToast } from "../types";
+import { RootState } from "./store";
 
 const initialState: IInitialState = {
   currentUser: null,
-  currentUserStatus: "pending",
+  userAuth: "pending",
   isSignInMode: false,
   onlineUsers: [],
   socket: null,
   smallScreen: window.innerWidth < 1024,
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
-  allUnReadedMesseges: [],
-  activeChatWithUserId: localStorage.getItem("active-converstaion") || null,
-  publicMsgRedPoint: false,
+  unReadMsgsCount: [],
+  activeChatId: localStorage.getItem("active-converstaion") || null,
+  publicMsgNotify: false,
   openMusicModal: false,
   activeMusic: null,
   musicIsPlaying: false,
   sidebarCollapsed: window.innerWidth < 1400 ? true : false,
-  hiddenLiveStats: false,
-  ToastNotify: { type: null, message: "" },
+  hideLiveStats: false,
+  toastNotify: { type: null, message: "" },
   modal: null,
 };
 
@@ -27,7 +27,7 @@ interface ITogglActionPayload {
   entity:
     | "isSignInMode"
     | "smallScreen"
-    | "hiddenLiveStats"
+    | "hideLiveStats"
     | "isChatOpen"
     | "sidebarCollapsed"
     | "openMusicModal"
@@ -44,8 +44,8 @@ const appStateReducer = createSlice({
   name: "appState",
   initialState,
   reducers: {
-    updateCurrentUserStatus(state, action: PayloadAction<typeof state.currentUserStatus>) {
-      state.currentUserStatus = action.payload;
+    updateCurrentUserStatus(state, action: PayloadAction<typeof state.userAuth>) {
+      state.userAuth = action.payload;
     },
     setCurrentUser(state, action: PayloadAction<IUser>) {
       state.currentUser = action.payload;
@@ -55,8 +55,8 @@ const appStateReducer = createSlice({
       state[entity] = value;
     },
     openToast(state, action: PayloadAction<IToast>) {
-      state.ToastNotify.message = action.payload.message;
-      state.ToastNotify.type = action.payload.type;
+      state.toastNotify.message = action.payload.message;
+      state.toastNotify.type = action.payload.type;
     },
     showModal(state, action: PayloadAction<IModal>) {
       state.modal = action.payload;
@@ -65,8 +65,8 @@ const appStateReducer = createSlice({
       state.modal = null;
     },
     resetPopup(state) {
-      state.ToastNotify.type = null;
-      state.ToastNotify.message = null;
+      state.toastNotify.type = null;
+      state.toastNotify.message = null;
     },
     handleAddMusic(state, action: PayloadAction<IMusicInfo>) {
       state.activeMusic = action.payload;
@@ -88,25 +88,25 @@ const appStateReducer = createSlice({
       state.onlineUsers = action.payload;
     },
     setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
-      state.publicMsgRedPoint = action.payload;
+      state.publicMsgNotify = action.payload;
     },
     updateSidebarUnReadedMsgCount(state, action: PayloadAction<ISidbareUnreadedMsgs>) {
       const { type, userId } = action.payload;
       if (type === "ADD-ALL") {
-        state.allUnReadedMesseges = userId as string[];
+        state.unReadMsgsCount = userId as string[];
       }
       if (type === "ADD-ONE") {
-        state.allUnReadedMesseges.push(userId as string);
+        state.unReadMsgsCount.push(userId as string);
       }
       if (type === "REMOVE-ONE") {
-        state.allUnReadedMesseges = state.allUnReadedMesseges.filter((item) => item !== userId);
+        state.unReadMsgsCount = state.unReadMsgsCount.filter((item) => item !== userId);
       }
       if (type === "REMOVE-ALL") {
-        state.allUnReadedMesseges = [];
+        state.unReadMsgsCount = [];
       }
     },
     updateActiveChatId(state, action: PayloadAction<string | null>) {
-      state.activeChatWithUserId = action.payload;
+      state.activeChatId = action.payload;
     },
   },
 });
@@ -128,5 +128,25 @@ export const {
   updateThisEntity,
   setPublicMsgRedPoint,
 } = appStateReducer.actions;
+
+const selectState = (state: RootState) => state.appState;
+
+export const selectCurrentUser = createSelector(selectState, ({ currentUser }) => currentUser);
+export const selectUserAuth = createSelector(selectState, ({ userAuth }) => userAuth);
+export const selectOnlineUsers = createSelector(selectState, ({ onlineUsers }) => onlineUsers);
+export const selectSocket = createSelector(selectState, ({ socket }) => socket);
+export const selectModal = createSelector(selectState, ({ modal }) => modal);
+export const selectIsSignInMode = createSelector(selectState, ({ isSignInMode }) => isSignInMode);
+export const selectIsChatOpen = createSelector(selectState, ({ isChatOpen }) => isChatOpen);
+export const selectToastNotify = createSelector(selectState, ({ toastNotify }) => toastNotify);
+export const selectActiveMusic = createSelector(selectState, ({ activeMusic }) => activeMusic);
+export const selectMusicIsPlaying = createSelector(selectState, ({ musicIsPlaying }) => musicIsPlaying);
+export const selectOpenMusicModal = createSelector(selectState, ({ openMusicModal }) => openMusicModal);
+export const selectActiveChatId = createSelector(selectState, ({ activeChatId }) => activeChatId);
+export const selectPublicMsgNotify = createSelector(selectState, ({ publicMsgNotify }) => publicMsgNotify);
+export const selectUnReadMsgsCount = createSelector(selectState, ({ unReadMsgsCount }) => unReadMsgsCount);
+export const selectHidenLiveStats = createSelector(selectState, ({ hideLiveStats }) => hideLiveStats);
+export const selectSidebarCollapsed = createSelector(selectState, ({ sidebarCollapsed }) => sidebarCollapsed);
+export const selectSmallScreen = createSelector(selectState, ({ smallScreen }) => smallScreen);
 
 export default appStateReducer.reducer;

@@ -1,15 +1,15 @@
 import { memo, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../context/hooks";
-import { resetPopup } from "../../../context/appStateSlice";
+import { resetPopup, selectToastNotify } from "../../../context/appStateSlice";
 import { BiErrorAlt } from "react-icons/bi";
 import { IoLockClosed } from "react-icons/io5";
 import Spinner from "./Spinner";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { cn } from "../../../utilities";
 
-const ToastNotify = memo(() => {
-  const ToastNotify = useAppSelector((state) => state.appState.ToastNotify);
-  const { type, message } = ToastNotify;
+const Toast = memo(() => {
+  const toastNotify = useAppSelector(selectToastNotify);
+  const { type, message } = toastNotify;
 
   const dispatch = useAppDispatch();
   const textNoWrap = message && message.length <= 45 ? "text-nowrap" : "";
@@ -49,4 +49,4 @@ const ToastNotify = memo(() => {
   );
 });
 
-export default ToastNotify;
+export default Toast;

@@ -5,9 +5,14 @@ import { v4 as uuId } from "uuid";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { RiBaseStationLine } from "react-icons/ri";
-import { IPublicChatItem } from "../../types/publicChatTypes";
-import { IUser } from "../../types/userTypes";
-import { openToast } from "../../context/appStateSlice";
+import type { IUser, IPublicChatItem } from "../../types";
+import {
+  openToast,
+  selectCurrentUser,
+  selectOnlineUsers,
+  selectSocket,
+  selectUserAuth,
+} from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPublicChatMessage } from "../../services";
 import { cn, handleApiError } from "../../utilities";
@@ -26,10 +31,10 @@ interface IProps {
 }
 
 const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const socket = useAppSelector((state) => state.appState.socket);
-  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const userAuth = useAppSelector(selectUserAuth);
+  const socket = useAppSelector(selectSocket);
+  const onlineUsers = useAppSelector(selectOnlineUsers);
   const [openMentionList, setOpenMentionList] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
@@ -211,7 +216,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       </div>
 
       <form className={"relative flex items-end justify-center"}>
-        {currentUserStatus !== "authenticated" && (
+        {userAuth !== "authenticated" && (
           <div className="absolute z-[1] flex h-full w-full items-center justify-start gap-x-3 px-5 backdrop-blur-[2.5px] backdrop-brightness-[0.7]">
             <FcLock className="text-2xl" />
             <span className="">Register To Unlock</span>

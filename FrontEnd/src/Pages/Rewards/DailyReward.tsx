@@ -4,7 +4,12 @@ import { useTranslation } from "react-i18next";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { openToast } from "../../context/appStateSlice";
+import {
+  openToast,
+  selectCurrentUser,
+  selectSidebarCollapsed,
+  selectUserAuth,
+} from "../../context/appStateSlice";
 import { axiosRequest, cn } from "../../utilities";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
@@ -12,9 +17,9 @@ import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
 import DailyStreakRewardCard from "./DailyStreakRewardCard";
 
 const DailyReward = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const userAuth = useAppSelector(selectUserAuth);
+  const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
 
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<string | null>(null);
   const [today, setToday] = useState("");
@@ -27,12 +32,12 @@ const DailyReward = () => {
     if (currentUser && nearstNexttDay) {
       setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
     }
-    if (currentUserStatus !== "pending" && !currentUser) {
+    if (userAuth !== "pending" && !currentUser) {
       const nextDay =
         new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split("T")[0] + "T00:00:00.000Z";
       setDayWhichTimmerIsLocated(nextDay);
     }
-  }, [currentUser, currentUserStatus]);
+  }, [currentUser, userAuth]);
 
   const handleUpdateNextTimerDay = useCallback(() => {
     const addOneDay = new Date(new Date().setDate(new Date().getDate() + 2)).toISOString();
@@ -105,10 +110,10 @@ const DailyReward = () => {
             sidebarCollapsed ? "lg:grid-cols-4" : "lg:grid-cols-3",
           )}
         >
-          {currentUserStatus === "pending" &&
+          {userAuth === "pending" &&
             [...Array(7).keys()].map((item) => <DailyStreakRewardCardSkeleton key={item} />)}
 
-          {currentUserStatus === "authenticated" &&
+          {userAuth === "authenticated" &&
             currentUser?.dailyReward.map((item) => (
               <DailyStreakRewardCard
                 key={item.day}
@@ -118,7 +123,7 @@ const DailyReward = () => {
               />
             ))}
 
-          {currentUserStatus === "unauthenticated" &&
+          {userAuth === "unauthenticated" &&
             [...Array(7).keys()].map((item) => {
               return (
                 <DailyStreakRewardCard

@@ -10,7 +10,7 @@ import { notikLogo, tapresearch, AdscendMediaGlow } from "../../assets";
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../../context/hooks";
 import { arrayoffers } from "../../helper/data";
-import { IFilterByPopularity, IFilterByDevice } from "../../types/earnTypes";
+import type { IFilterByPopularity, IFilterByDevice } from "../../types";
 import TaskDetail from "./TaskDetail";
 import AppSkeleton from "./TaskSkeleton";
 import ParnterCard from "./ParnterCard";
@@ -24,9 +24,10 @@ import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 import { useInfiniteTasks } from "../../tanstackQuery/queryFetch";
+import { selectSidebarCollapsed } from "../../context/appStateSlice";
 
 const Earn = () => {
-  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
+  const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const [translate, setTranslate] = useState("");
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] = useState(false);

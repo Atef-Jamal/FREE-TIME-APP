@@ -2,16 +2,16 @@ import { MouseEvent, useState } from "react";
 import { ImSpinner3 } from "react-icons/im";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { setCurrentUser, openToast } from "../../context/appStateSlice";
+import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { axiosRequest, handleApiError } from "../../utilities";
-import { IQuizTask } from "../../types/earnTypes";
+import type { IQuizTask } from "../../types";
 
 interface IProps {
   taskApp: IQuizTask;
 }
 
 const QuizTask = ({ taskApp }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [activeQuesition, setActiveQeustion] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [answers, setAnswers] = useState<string[]>([]);

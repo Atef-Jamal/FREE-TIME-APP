@@ -13,12 +13,12 @@ import { verifiedImage } from "../../assets";
 import { PublicUserProfileSkeleton } from "./PublicUserProfileSkeleton";
 import ActivitiesList from "./ActivitiesList";
 import UserImage from "../../components/Shared/Common/UserImage";
-import { updateActiveChatId } from "../../context/appStateSlice";
+import { selectUserAuth, updateActiveChatId } from "../../context/appStateSlice";
 import { useFetchUser, useFetchUserActivities } from "../../tanstackQuery/queryFetch";
 
 const PublicUserProfile = () => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const userAuth = useAppSelector(selectUserAuth);
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
@@ -47,10 +47,10 @@ const PublicUserProfile = () => {
   const numberOfReferredUser = activities?.filter((item) => item.type === "REFERRER").length;
 
   useEffect(() => {
-    if (currentUserStatus === "authenticated" && id && id !== currentUserId) {
+    if (userAuth === "authenticated" && id && id !== currentUserId) {
       mutate(id);
     }
-  }, [id, currentUserStatus, currentUserId, mutate]);
+  }, [id, userAuth, currentUserId, mutate]);
 
   if (status === "pending") {
     return <PublicUserProfileSkeleton />;
@@ -143,7 +143,7 @@ const PublicUserProfile = () => {
             onClick={() => {
               dispatch(updateActiveChatId(user._id));
             }}
-            className="block w-fit rounded-md bg-[#bbb55c] px-5 py-1 font-bold text-[#3a1f1f]"
+            className="block w-fit rounded-md bg-[#bbb55c] px-5 py-1 text-sm font-bold text-[#3f2828]"
           >
             Chat with {user.name}
           </Link>

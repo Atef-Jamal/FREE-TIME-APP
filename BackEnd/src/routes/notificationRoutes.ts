@@ -11,6 +11,6 @@ const router = express.Router();
 router.get("/my-notifications", protectedRoute, getNotifications);
 router.get("/:id", getUserActivities);
 router.patch("/", protectedRoute, markAsReaded);
-router.get("/collect/:id/:modelName", protectedRoute, collectReward);
+router.get("/collect/:id", protectedRoute, collectReward);
 
 export default router;

@@ -11,10 +11,10 @@ import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { openToast } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { login, handleSignInWithOauth, handleSendTestimonial } from "../../services";
 import { cn, formateDate, handleApiError, validateCredentials } from "../../utilities";
-import { IFormData } from "../../types/othersTypes";
+import type { IFormData } from "../../types";
 import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -28,7 +28,7 @@ import { useFetchTestimonials } from "../../tanstackQuery/queryFetch";
 import { addTestimonialCashe } from "../../tanstackQuery/queryCache";
 
 const Home = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [comment, setComment] = useState<string>("");

@@ -2,15 +2,21 @@ import { ChangeEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
-import { resetModel, setCurrentUser, openToast } from "../../../../context/appStateSlice";
+import {
+  resetModel,
+  setCurrentUser,
+  openToast,
+  selectSocket,
+  selectCurrentUser,
+} from "../../../../context/appStateSlice";
 import { changeUserName, changeUserPassword } from "../../../../services";
 import Spinner from "../../Common/Spinner";
 import { handleApiError } from "../../../../utilities";
 import VerifyEmailBox from "../../../../Pages/MyProfile/VerifyEmailBox";
 
 const ProfileSettings = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const socket = useAppSelector((state) => state.appState.socket);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const socket = useAppSelector(selectSocket);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");

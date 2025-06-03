@@ -2,6 +2,8 @@
 import { Server } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import http from "http";
+import User from "../models/user";
+// import { Types } from "mongoose";
 
 type TypeIO = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
@@ -13,12 +15,20 @@ export let io: TypeIO;
 const socketOperations = function (server: IServer) {
   io = new Server(server, { cors: { origin: "*" } });
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     const userId = socket.handshake.query.userId as string;
+
     if (userId && userId !== "undefined") {
       onLineUsers[userId] = socket.id;
+      try {
+        await User.findByIdAndUpdate(userId, { $set: { isOnline: true } });
+        const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
+        const onlineUsersIds = getOnlineUsers.map((user) => user._id);
+        io.emit("online-users", onlineUsersIds);
+      } catch (error) {
+        // console.log(error);
+      }
     }
-    io.emit("online-users", Object.keys(onLineUsers));
 
     const handleUserUpdated = (updatedUser: any) => {
       socket.broadcast.emit("user-updated", updatedUser);
@@ -54,10 +64,17 @@ const socketOperations = function (server: IServer) {
       socket.to(onLineUsers[data.reciever]).emit("conversation-readed", data);
     };
 
-    const handleDisconnect = () => {
-      if (userId) {
+    const handleDisconnect = async () => {
+      if (userId && userId !== "undefined") {
         delete onLineUsers[userId];
-        io.emit("online-users", Object.keys(onLineUsers));
+        try {
+          await User.findByIdAndUpdate(userId, { $set: { isOnline: false } });
+          const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
+          const onlineUsersIds = getOnlineUsers.map((user) => user._id);
+          io.emit("online-users", onlineUsersIds);
+        } catch (error) {
+          // console.log(error);
+        }
       }
       socket.off("user-updated", handleUserUpdated);
       socket.off("new-user-registered", handleNewUserRegistered);

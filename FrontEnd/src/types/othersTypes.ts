@@ -32,11 +32,6 @@ export interface ISearchResults {
   musics: ISearchItem[];
 }
 
-export interface IConversationReadedSocketData {
-  receiver: string;
-  sender: string;
-}
-
 export interface ITestimonial {
   _id: string;
   user: IUser;

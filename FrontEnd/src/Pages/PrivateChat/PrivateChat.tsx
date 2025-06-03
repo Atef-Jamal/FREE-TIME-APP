@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { updateSidebarUnReadedMsgCount } from "../../context/appStateSlice";
+import {
+  selectActiveChatId,
+  selectHidenLiveStats,
+  selectSmallScreen,
+  selectUnReadMsgsCount,
+  selectUserAuth,
+  updateSidebarUnReadedMsgCount,
+} from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn } from "../../utilities";
 import Welcome from "./Welcome";
@@ -8,11 +15,11 @@ import ChatBody from "./ChatBody";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const PrivateChat = () => {
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const allUnReadedMesseges = useAppSelector((state) => state.appState.allUnReadedMesseges);
-  const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
-  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
-  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
+  const userAuth = useAppSelector(selectUserAuth);
+  const unReadMsgsCount = useAppSelector(selectUnReadMsgsCount);
+  const activeChatId = useAppSelector(selectActiveChatId);
+  const hideLiveStats = useAppSelector(selectHidenLiveStats);
+  const smallScreen = useAppSelector(selectSmallScreen);
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
@@ -26,16 +33,16 @@ const PrivateChat = () => {
   };
 
   useEffect(() => {
-    if (allUnReadedMesseges.length > 0) {
+    if (unReadMsgsCount.length > 0) {
       dispatch(
         updateSidebarUnReadedMsgCount({
           type: "REMOVE-ALL",
         }),
       );
     }
-  }, [allUnReadedMesseges, dispatch]);
+  }, [unReadMsgsCount, dispatch]);
 
-  if (currentUserStatus === "pending") {
+  if (userAuth === "pending") {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <Spinner className="h-12 w-12" />
@@ -44,7 +51,7 @@ const PrivateChat = () => {
   }
 
   const height = {
-    height: hiddenLiveStats
+    height: hideLiveStats
       ? smallScreen
         ? `calc(100dvh - 115px)`
         : "calc(100dvh - 55px)"
@@ -64,8 +71,8 @@ const PrivateChat = () => {
         >
           <ChatSidebar openSidebar={openSidebar} toggleSidebar={toggleSidebar} />
         </div>
-        {activeChatWithUserId && <ChatBody activeChatWithUserId={activeChatWithUserId} />}
-        {!activeChatWithUserId && <Welcome handleOpenSidebar={handleOpenSidebar} />}
+        {activeChatId && <ChatBody activeChatId={activeChatId} />}
+        {!activeChatId && <Welcome handleOpenSidebar={handleOpenSidebar} />}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { openToast } from "../context/appStateSlice";
-import { IDispatch, ILoginProps, IRegisterProps } from "../types/reduxTypes";
+import type { IDispatch, ILoginProps, IRegisterProps } from "../types";
 import { axiosRequest, handleApiError } from "../utilities";
 
 export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {

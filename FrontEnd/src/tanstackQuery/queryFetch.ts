@@ -16,7 +16,7 @@ import {
   getUsers,
 } from "../services";
 
-import { IFilterByDevice, IFilterByPopularity } from "../types/earnTypes";
+import type { IFilterByDevice, IFilterByPopularity } from "../types";
 import { fetchUserActivities } from "../services/usersService";
 
 export const useInfiniteLiveStatsUsers = () => {
@@ -56,16 +56,16 @@ export const useInfiniteConversations = ({ userAuth }: { userAuth: boolean }) =>
 
 export const useInfiniteConversationMsgs = ({
   userAuth,
-  activeChatWithUserId,
+  activeChatId,
 }: {
   userAuth: boolean;
-  activeChatWithUserId: string | null;
+  activeChatId: string | null;
 }) => {
   return useInfiniteQuery({
-    queryKey: ["conversation-messages", activeChatWithUserId],
+    queryKey: ["conversation-messages", activeChatId],
     queryFn:
-      userAuth && activeChatWithUserId
-        ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatWithUserId })
+      userAuth && activeChatId
+        ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatId })
         : skipToken,
     initialPageParam: 1,
     getPreviousPageParam: (firstPage, _, pageParam) => {

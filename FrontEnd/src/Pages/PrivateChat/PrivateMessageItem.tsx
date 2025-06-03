@@ -2,9 +2,10 @@ import { RefObject } from "react";
 import { FcOk } from "react-icons/fc";
 import { BiCircle } from "react-icons/bi";
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp, IoCloseCircleOutline } from "react-icons/io5";
-import { IPrivateMessage } from "../../types/privateChatTypes";
+import type { IPrivateMessage } from "../../types";
 import { useAppSelector } from "../../context/hooks";
 import { cn, formateDate } from "../../utilities";
+import { selectCurrentUser } from "../../context/appStateSlice";
 
 interface IProps {
   messagesLength: number;
@@ -14,7 +15,7 @@ interface IProps {
 }
 
 const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const date = formateDate(message.createdAt);
 
   return (

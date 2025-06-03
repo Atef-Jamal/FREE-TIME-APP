@@ -1,15 +1,16 @@
 import { lazy, Suspense, useCallback, useState } from "react";
 import Navbare from "./Navbare/Navbare";
-import ToastNotify from "../components/Shared/Common/ToastNotify";
+import Toast from "../components/Shared/Common/Toast";
 import Modal from "../components/Shared/Modals/Modal";
 import ContentBody from "./ContentBody/ContentBody";
 import { useInitialization } from "../hooks/useInitialization";
 import { useAppSelector } from "../context/hooks";
+import { selectSmallScreen } from "../context/appStateSlice";
 
 const NavebareBottom = lazy(() => import("./Navbare/NavebareBottom"));
 
 const Layout = () => {
-  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
+  const smallScreen = useAppSelector(selectSmallScreen);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
 
   const handleCloseMobileSidebare = useCallback((open: boolean) => {
@@ -21,7 +22,7 @@ const Layout = () => {
   return (
     <main>
       <Modal />
-      <ToastNotify />
+      <Toast />
       <Navbare />
       <ContentBody
         openSidbareMobile={openSidbareMobile}

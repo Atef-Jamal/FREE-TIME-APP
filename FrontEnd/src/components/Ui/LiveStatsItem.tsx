@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../context/hooks";
-import { IUser } from "../../types/userTypes";
+import type { IUser } from "../../types";
 import { crown, verifiedImage } from "../../assets";
 import UserImage from "../Shared/Common/UserImage";
+import { selectCurrentUser, selectOnlineUsers } from "../../context/appStateSlice";
 
 interface IProps {
   user: IUser;
@@ -10,8 +11,8 @@ interface IProps {
 }
 
 const LiveStatsItem = ({ user, userHieghestPoints }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const onlineUsers = useAppSelector(selectOnlineUsers);
 
   const { _id, name, points, emailVerified } = user;
   const isOnline = onlineUsers.includes(_id);

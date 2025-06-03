@@ -28,5 +28,7 @@ const testimonialSchema: Schema<ITestimonial> = new mongoose.Schema<ITestimonial
   },
 );
 
+testimonialSchema.index({ user: 1 });
+
 const Testimonial: Model<ITestimonial> = mongoose.model<ITestimonial>("Testimonial", testimonialSchema);
 export default Testimonial;

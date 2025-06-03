@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { formateDate } from "../../utilities";
 import { useAppSelector } from "../../context/hooks";
-import { IPublicChatFreeTime } from "../../types/publicChatTypes";
+import type { IPublicChatFreeTime } from "../../types";
 import { verifiedImage } from "../../assets";
+import { selectCurrentUser } from "../../context/appStateSlice";
 
 interface IProps {
   singleMessage: IPublicChatFreeTime;
@@ -10,7 +11,7 @@ interface IProps {
 }
 
 const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const date = formateDate(singleMessage.createdAt);
   return (
     <div ref={lastMessageRef} className="space-y-2 rounded-md bg-[#2f2f4e88] p-2">

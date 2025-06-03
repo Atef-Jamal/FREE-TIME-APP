@@ -11,7 +11,7 @@ import { useAppDispatch } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
 import { axiosRequest, debounce, handleApiError } from "../../utilities";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
-import { IPublicChatMessage } from "../../types/publicChatTypes";
+import type { IPublicChatMessage } from "../../types";
 import { ChatModelDeletion } from "./ChatModelDeletion";
 import { useInfinitePublicChatMsges } from "../../tanstackQuery/queryFetch";
 

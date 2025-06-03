@@ -23,6 +23,10 @@ export interface ICashedLiveStatsUsers {
   pageParams: number[];
   pages: { users: IUser[]; userHighestPoints: string; hasMore: boolean }[];
 }
+export interface ICashedLeaderboardUsers {
+  users: IUser[];
+  allDataLength: number;
+}
 
 export interface IVisitor {
   _id: string;

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MdOutlineWeb } from "react-icons/md";
 import ResultText from "./ResultText";
-import { ISearchItem } from "../../../../types/othersTypes";
+import type { ISearchItem } from "../../../../types";
 import { resetModel, updateActiveChatId } from "../../../../context/appStateSlice";
 import { useAppDispatch } from "../../../../context/hooks";
 

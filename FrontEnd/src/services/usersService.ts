@@ -1,6 +1,5 @@
-import { IUser } from "../types/userTypes";
-import { IFrame } from "../types/frameTypes";
-import { INotifications } from "../types/notificationTypes";
+import type { IUser, IFrame, INotifications } from "../types";
+import { ICashedLeaderboardUsers } from "../types/userTypes";
 import { axiosRequest } from "../utilities";
 
 export const fetchUserById = async ({ userId }: { userId: string }): Promise<IUser> => {
@@ -77,7 +76,7 @@ export const getLeaderboardUsers = async ({
   pageParam,
 }: {
   pageParam: number;
-}): Promise<{ users: IUser[]; allDataLength: number }> => {
+}): Promise<ICashedLeaderboardUsers> => {
   const response = await axiosRequest.get(`/api/users/users-leaderboard?pageParam=${pageParam}`);
   const data = response.data;
   return data;

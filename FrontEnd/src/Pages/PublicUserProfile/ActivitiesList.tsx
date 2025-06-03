@@ -1,8 +1,7 @@
 import { FcBusinessman, FcFrame, FcMusic } from "react-icons/fc";
 import ActivityItem from "./ActivityItem";
 import { AiFillGift } from "react-icons/ai";
-import { IUser } from "../../types/userTypes";
-import { INotifications } from "../../types/notificationTypes";
+import type { IUser, INotifications } from "../../types";
 import { verifiedImage } from "../../assets";
 import Empty from "../../components/Shared/Common/Empty";
 
@@ -22,8 +21,8 @@ const ActivitiesList = ({ activities, user }: IProps) => {
               index={index}
               icon={<FcBusinessman className="text-2xl sm:text-xl" />}
               time={item.createdAt}
-              message={`${user?.name} successfully Referred his friend ${item.referredUser.name}`}
-              prize={item.prize}
+              message={`${user?.name} successfully Referred his friend ${item.metadata.referredUser.name}`}
+              prize={item.metadata.prize}
             />
           );
         if (item.type === "QUIZ-APP")
@@ -34,7 +33,7 @@ const ActivitiesList = ({ activities, user }: IProps) => {
               icon={<AiFillGift className="text-2xl sm:text-xl" />}
               time={item.createdAt}
               message="Quiz app completed"
-              prize={item.prize}
+              prize={item.metadata.prize}
             />
           );
         if (item.type === "BUY-FRAME") {
@@ -44,8 +43,8 @@ const ActivitiesList = ({ activities, user }: IProps) => {
               index={index}
               icon={<FcFrame className="text-2xl sm:text-xl" />}
               time={item.createdAt}
-              message={`Buyed ${item.frame.title}`}
-              price={item.frame.price}
+              message={`Buyed ${item.metadata.frame.title}`}
+              price={item.metadata.frame.price}
             />
           );
         }
@@ -57,7 +56,7 @@ const ActivitiesList = ({ activities, user }: IProps) => {
               icon={<AiFillGift className="text-2xl sm:text-xl" />}
               time={item.createdAt}
               message={"Guess Card Game Completed "}
-              prize={item.prize}
+              prize={item.metadata.prize}
             />
           );
         if (item.type === "EMAIL-VERIFIED")
@@ -68,7 +67,7 @@ const ActivitiesList = ({ activities, user }: IProps) => {
               icon={<img src={verifiedImage} alt="" className="h-6 w-6 object-cover sm:h-4 sm:w-4" />}
               time={item.createdAt}
               message="Verified His Email successfully"
-              prize={item.prize}
+              prize={item.metadata.prize}
             />
           );
         if (item.type === "MUSIC")
@@ -78,8 +77,8 @@ const ActivitiesList = ({ activities, user }: IProps) => {
               index={index}
               icon={<FcMusic className="text-2xl sm:text-xl" />}
               time={item.createdAt}
-              message={`Music ${item.musicTitle} purshased `}
-              price={item.price}
+              message={`Music ${item.metadata.musicTitle} purshased `}
+              price={item.metadata.price}
             />
           );
       })}

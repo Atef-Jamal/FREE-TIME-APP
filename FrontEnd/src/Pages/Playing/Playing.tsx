@@ -6,9 +6,10 @@ import QuizTask from "../../components/Tasks/QuizTask";
 import { BiErrorAlt } from "react-icons/bi";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useFetchTaskDetails } from "../../tanstackQuery/queryFetch";
+import { selectCurrentUser } from "../../context/appStateSlice";
 
 const Playing = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const { taskId } = useParams();
 
   const { data: taskApp, status: statusTaskApp, error: errorTaskApp } = useFetchTaskDetails({ taskId });

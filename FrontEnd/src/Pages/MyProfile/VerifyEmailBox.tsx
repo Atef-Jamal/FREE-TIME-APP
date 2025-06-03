@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { CgClose } from "react-icons/cg";
-import { resetModel, openToast } from "../../context/appStateSlice";
+import { resetModel, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import EnterVerificationCode from "./EnterVerificationCode";
 import { sendVerificationCode } from "../../services";
 import { handleApiError } from "../../utilities";
@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/Shared/Common/Spinner";
 
 const VerifyEmailBox = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [openEnterCode, setOpenEnterCode] = useState(false);
   const dispatch = useAppDispatch();
 

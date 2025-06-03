@@ -35,6 +35,6 @@ const framesSchema: Schema<IFrame> = new mongoose.Schema<IFrame>(
   },
   { timestamps: true },
 );
-
+framesSchema.index({ purshasedBy: 1 });
 const Frame: Model<IFrame> = mongoose.model<IFrame>("Frame", framesSchema);
 export default Frame;

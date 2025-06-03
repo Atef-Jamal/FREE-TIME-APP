@@ -4,8 +4,15 @@ import { useTranslation } from "react-i18next";
 import { FcGoogle } from "react-icons/fc";
 import { GrGithub } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
-import { IFormData } from "../../../../types/othersTypes";
-import { resetModel, openToast, updateThisEntity } from "../../../../context/appStateSlice";
+import type { IFormData } from "../../../../types";
+import {
+  resetModel,
+  openToast,
+  updateThisEntity,
+  selectUserAuth,
+  selectSocket,
+  selectIsSignInMode,
+} from "../../../../context/appStateSlice";
 import { useAppSelector, useAppDispatch } from "../../../../context/hooks";
 import { cn, handleApiError, validateCredentials } from "../../../../utilities";
 import { handleSignInWithOauth, login, register } from "../../../../services";
@@ -22,9 +29,9 @@ const initialValue = {
 };
 
 const RegisterationForm = () => {
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const socket = useAppSelector((state) => state.appState.socket);
-  const isSignInMode = useAppSelector((state) => state.appState.isSignInMode);
+  const userAuth = useAppSelector(selectUserAuth);
+  const socket = useAppSelector(selectSocket);
+  const isSignInMode = useAppSelector(selectIsSignInMode);
   const [formData, setFormData] = useState<IFormData>(initialValue);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submiting, setSubmiting] = useState(false);
@@ -45,7 +52,7 @@ const RegisterationForm = () => {
 
   const handleSubmite = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (currentUserStatus === "authenticated") return;
+    if (userAuth === "authenticated") return;
 
     setSubmiting(true);
 

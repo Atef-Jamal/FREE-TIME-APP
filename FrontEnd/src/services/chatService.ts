@@ -1,7 +1,5 @@
 import { axiosRequest } from "../utilities";
-import { IConversation, IPrivateMessage } from "../types/privateChatTypes";
-import { IPublicChatItem, IPublicChatMessage } from "../types/publicChatTypes";
-import { IUser } from "../types/userTypes";
+import type { IUser, IConversation, IPrivateMessage, IPublicChatItem, IPublicChatMessage } from "../types";
 
 type IPublicMsgFieldName = "loves" | "likes" | "dislikes";
 
@@ -65,16 +63,16 @@ export const fetchAllConversations = async ({
 
 export const fetchPrivateChatMessages = async ({
   pageParam,
-  activeChatWithUserId,
+  activeChatId,
 }: {
   pageParam: number;
-  activeChatWithUserId: string;
+  activeChatId: string;
 }): Promise<{
   messages: IPrivateMessage[];
   secondUser: IUser | null;
   hasOlder: boolean;
 }> => {
-  const response = await axiosRequest.get(`api/conversations/${activeChatWithUserId}?pageParam=${pageParam}`);
+  const response = await axiosRequest.get(`api/conversations/${activeChatId}?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };

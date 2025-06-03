@@ -1,15 +1,20 @@
 import { memo, useCallback, useEffect, useMemo } from "react";
 import { BsChatLeftText } from "react-icons/bs";
 import { cn } from "../../utilities";
-import { setPublicMsgRedPoint, updateThisEntity } from "../../context/appStateSlice";
+import {
+  selectIsChatOpen,
+  selectPublicMsgNotify,
+  setPublicMsgRedPoint,
+  updateThisEntity,
+} from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import ChatHeader from "./ChatHeader";
 import PublicChatBody from "./PublicChatBody";
 
 const DisktopChat = memo(() => {
-  const isChatOpen = useAppSelector((state) => state.appState.isChatOpen);
-  const publicMsgRedPoint = useAppSelector((state) => state.appState.publicMsgRedPoint);
+  const isChatOpen = useAppSelector(selectIsChatOpen);
+  const publicMsgNotify = useAppSelector(selectPublicMsgNotify);
   const dispatch = useAppDispatch();
 
   const handleRecievedMessage = useCallback(() => {
@@ -57,7 +62,7 @@ const DisktopChat = memo(() => {
         }}
         className="absolute -left-[42px] top-[47px] flex h-10 w-10 cursor-pointer items-center justify-center rounded-sm bg-[#513d80f8]"
       >
-        {publicMsgRedPoint && <span className="absolute left-3 top-2 h-4 w-4 rounded-full bg-red-500"></span>}
+        {publicMsgNotify && <span className="absolute left-3 top-2 h-4 w-4 rounded-full bg-red-500"></span>}
         <BsChatLeftText className="text-3xl" />
       </span>
       <ChatHeader />

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import Testimonial from "../models/testimonial";
+import { userExcludedFields } from "../constants";
 
 export const getAllTestimonials = async (_: Request, res: Response) => {
   try {
-    const allTestimonials = await Testimonial.find({}).populate("user", "-password");
+    const allTestimonials = await Testimonial.find({}).populate("user", userExcludedFields);
     return res.status(200).json(allTestimonials);
   } catch (error) {
     return res.status(404).json({ error: "Failed to Load all testimonials" });
@@ -24,7 +25,7 @@ export const createTestimonial = async (req: Request, res: Response) => {
     });
 
     const saved = await createOne.save();
-    const testimonial = await saved.populate("user", "-password");
+    const testimonial = await saved.populate("user", userExcludedFields);
     return res.status(200).json(testimonial);
   } catch (error) {
     return res.status(404).json({ error: "Failed to create testimonial" });

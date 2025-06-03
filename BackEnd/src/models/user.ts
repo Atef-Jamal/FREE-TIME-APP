@@ -17,6 +17,7 @@ export interface IUser extends Document {
   points: number;
   profilePicture: string;
   emailVerified: boolean;
+  isOnline: boolean;
   emailVerificationCode: { code: string; date: Date };
   completedTasks: Types.ObjectId[];
   mySongs: string[];
@@ -44,22 +45,24 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     googleId: {
       type: String,
-      unique: true,
     },
     githubId: {
       type: String,
-      unique: true,
     },
     password: {
       type: String,
     },
     profilePicture: {
       type: String,
-      default: "",
+      default: "https://res.cloudinary.com/dql5bc50n/image/upload/v1748778044/avatar_b4eoae.jpg",
     },
     points: {
       type: Number,
       default: 0,
+    },
+    isOnline: {
+      type: Boolean,
+      default: false,
     },
     week: { type: Number, default: 1 },
     dailyReward: [],
@@ -90,7 +93,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
   { timestamps: true },
 );
 
-userSchema.index({ points: -1 });
+userSchema.index({ isOnline: 1, points: -1, emailVerified: 1, createdAt: -1 });
 
 userSchema.pre("save", function (next) {
   if (this.isNew) {

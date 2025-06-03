@@ -4,9 +4,10 @@ import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { cn } from "../../utilities";
 import FrameItem from "./FrameItem";
 import { useFetchFrames } from "../../tanstackQuery/queryFetch";
+import { selectSidebarCollapsed } from "../../context/appStateSlice";
 
 const MarketPlace = () => {
-  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
+  const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
 
   const { data: frames = [], status, error } = useFetchFrames();
 

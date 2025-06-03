@@ -1,8 +1,7 @@
-import { INotificationModelName } from "../types/notificationTypes";
 import { axiosRequest } from "../utilities";
 
-export const collectReward = async (notificationId: string, modelName: INotificationModelName) => {
-  const response = await axiosRequest.get(`api/notifications/collect/${notificationId}/${modelName}`);
+export const collectReward = async (notificationId: string) => {
+  const response = await axiosRequest.get(`api/notifications/collect/${notificationId}`);
   return response.data;
 };
 

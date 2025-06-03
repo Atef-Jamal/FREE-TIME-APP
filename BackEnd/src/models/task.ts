@@ -83,5 +83,8 @@ const taskSchema: Schema<ITask> = new mongoose.Schema<ITask>(
   },
 );
 
+taskSchema.index({ prize: -1 });
+taskSchema.index({ rating: -1 });
+
 const Task: Model<ITask> = mongoose.model<ITask>("Task", taskSchema);
 export default Task;

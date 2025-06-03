@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { updateThisEntity } from "../../context/appStateSlice";
+import { selectHidenLiveStats, updateThisEntity } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
@@ -14,7 +14,7 @@ interface IProps {
 }
 
 const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
-  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
+  const hideLiveStats = useAppSelector(selectHidenLiveStats);
   const menuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -27,7 +27,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
   };
 
   const handleToggleLiveStats = () => {
-    dispatch(updateThisEntity({ entity: "hiddenLiveStats", value: !hiddenLiveStats }));
+    dispatch(updateThisEntity({ entity: "hideLiveStats", value: !hideLiveStats }));
   };
 
   return (
@@ -71,11 +71,11 @@ const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
           onClick={handleToggleLiveStats}
           className={cn(
             "flex h-5 w-12 items-center rounded-full p-[1px]",
-            hiddenLiveStats ? "bg-[#201a1a]" : "bg-[#362c2cf6]",
+            hideLiveStats ? "bg-[#201a1a]" : "bg-[#362c2cf6]",
           )}
         >
           <span
-            className={cn("h-6 w-6 rounded-full", hiddenLiveStats ? "ml-auto bg-[#53eb53]" : "bg-[#a0b1a0]")}
+            className={cn("h-6 w-6 rounded-full", hideLiveStats ? "ml-auto bg-[#53eb53]" : "bg-[#a0b1a0]")}
           ></span>
         </button>
       </span>

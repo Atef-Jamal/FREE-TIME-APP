@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MdOutlineMenu } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
-import { IPrivateMessage } from "../../types/privateChatTypes";
+import type { IPrivateMessage } from "../../types";
 import { useAppSelector } from "../../context/hooks";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import { debounce } from "../../utilities";
@@ -10,6 +10,7 @@ import ChatSidebarUserItemSkeleton from "./ChatSidebarUserItemSkeleton";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useInfiniteConversations } from "../../tanstackQuery/queryFetch";
+import { selectActiveChatId, selectOnlineUsers, selectUserAuth } from "../../context/appStateSlice";
 
 interface IProps {
   toggleSidebar: () => void;
@@ -17,15 +18,14 @@ interface IProps {
 }
 
 const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
-  const activeChatWithUserId = useAppSelector((state) => state.appState.activeChatWithUserId);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
-
+  const activeChatId = useAppSelector(selectActiveChatId);
+  const userAuth = useAppSelector(selectUserAuth);
+  const onlineUsers = useAppSelector(selectOnlineUsers);
   const [redPoint, setRedPoint] = useState(false);
   const conversationsListRef = useRef<HTMLDivElement>(null);
 
   const { data, error, status, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
-    useInfiniteConversations({ userAuth: currentUserStatus === "authenticated" });
+    useInfiniteConversations({ userAuth: userAuth === "authenticated" });
 
   const conversations = useMemo(() => {
     return data?.pages.map((page) => page.conversations).flat();
@@ -33,10 +33,10 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
 
   const handleNotify = useCallback(
     (data: IPrivateMessage) => {
-      const isChatWithUserOpen = data.sender._id === activeChatWithUserId;
+      const isChatWithUserOpen = data.sender._id === activeChatId;
       if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
     },
-    [openSidebar, activeChatWithUserId],
+    [openSidebar, activeChatId],
   );
 
   const events = useMemo(() => ["private-message"], []);
@@ -55,8 +55,9 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
     const container = conversationsListRef.current;
     if (!container) return;
     const onScroll = () => {
-      const reachToTheEnd = container.scrollTop + container.clientHeight >= container.scrollHeight;
-
+      const elementHeight = container.scrollTop + container.clientHeight + 25;
+      const elementScrollHeight = container.scrollHeight;
+      const reachToTheEnd = elementHeight >= elementScrollHeight;
       if (reachToTheEnd && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
@@ -79,8 +80,14 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
       <div className="h-8 w-full overflow-hidden">
         <SearchBar placeholder="Find Conversation" onChange={() => {}} />
       </div>
-      <div className="flex items-center justify-center gap-2 text-xs text-[#c9d1d8] sm:text-sm">
-        <span className="flex-1 border-t border-zinc-600"></span>Peoples
+      <div className="flex items-center justify-center gap-x-2 text-xs text-[#c9d1d8] sm:text-sm">
+        <span className="flex-1 border-t border-zinc-600"></span>
+        {isFetchingNextPage && (
+          <div className={"flex h-5 items-center justify-center bg-[#131129]"}>
+            <Spinner className="h-4 w-4 border-2 lg:border-[3px]" />
+          </div>
+        )}
+        Peoples
         <span className="flex-1 border-t border-zinc-600"></span>
       </div>
       <div ref={conversationsListRef} className="scrollbar-custom relative flex-1 overflow-y-auto">
@@ -96,34 +103,28 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
         )}
         {status === "pending" &&
           [...Array(10).keys()].map((skeleton) => <ChatSidebarUserItemSkeleton key={skeleton} />)}
-
-        {conversations
+        {/* {conversations
           ?.sort((a, b) => {
             if (a.lastMessage?.sender._id && b.lastMessage?.sender._id) {
               if (a.lastMessage.createdAt > b.lastMessage.createdAt) return -1;
               if (a.lastMessage.createdAt < b.lastMessage.createdAt) return 1;
             }
             return 0;
-          })
-          .map((conversation) => {
-            const isOnLine = onlineUsers.includes(conversation.secondUser._id);
-            const chatWithUserOpen = activeChatWithUserId === conversation.secondUser._id;
-            return (
-              <ChatSidebarUserItem
-                key={conversation._id}
-                conversation={conversation}
-                isOnLine={isOnLine}
-                chatWithUserOpen={chatWithUserOpen}
-              />
-            );
-          })}
+          }) */}
+        {conversations?.map((conversation) => {
+          const isOnLine = onlineUsers.includes(conversation.secondUser._id);
+          const chatWithUserOpen = activeChatId === conversation.secondUser._id;
+          return (
+            <ChatSidebarUserItem
+              key={conversation._id}
+              conversation={conversation}
+              isOnLine={isOnLine}
+              chatWithUserOpen={chatWithUserOpen}
+            />
+          );
+        })}
 
         {isFetchNextPageError && <p className="text-center text-xs text-[#d83d3d]">an Error occurred!</p>}
-        {isFetchingNextPage && (
-          <div className={"sticky bottom-0 flex h-9 items-center justify-center bg-[#131129]"}>
-            <Spinner />
-          </div>
-        )}
       </div>
     </div>
   );

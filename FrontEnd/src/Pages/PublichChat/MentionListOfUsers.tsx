@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { IUser } from "../../types/userTypes";
+import type { IUser } from "../../types";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import Empty from "../../components/Shared/Common/Empty";
 import { useFetchOnlineUsers } from "../../tanstackQuery/queryFetch";

@@ -1,9 +1,9 @@
 import { howItWorksLeft, affiliateExplained, howItWorksRight, affiliateBag } from "../../assets";
-import { showModal, updateThisEntity } from "../../context/appStateSlice";
+import { selectUserAuth, showModal, updateThisEntity } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 
 const Affiliates = () => {
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const userAuth = useAppSelector(selectUserAuth);
   const dispatch = useAppDispatch();
 
   const handleOpenRegisterModal = () => {
@@ -20,7 +20,7 @@ const Affiliates = () => {
         <p className="mt-4 text-center font-bold tracking-wide text-gray-300">
           We offer the most rewarding referral system in the market.
         </p>
-        {currentUserStatus === "unauthenticated" && (
+        {userAuth === "unauthenticated" && (
           <button
             onClick={handleOpenRegisterModal}
             className="mt-6 w-40 rounded-md bg-[#01D676] py-2 font-bold tracking-wider text-black"

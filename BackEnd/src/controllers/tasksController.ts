@@ -6,8 +6,8 @@ import PublicMessage from "../models/publicMessage";
 import { io } from "../socketIo/socketIo";
 import AppsReview from "../models/appsReview";
 import { onLineUsers } from "../socketIo/socketIo";
-import QuizeApp from "../models/notifications/quizeApp";
-import GuessCard from "../models/notifications/guessCard";
+import Notification from "../models/notification";
+import { userExcludedFields } from "../constants";
 
 type IFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
 type IFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
@@ -132,11 +132,13 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     task.completedBy.push(currentUserId);
     const savedTask = await task.save();
     await User.findByIdAndUpdate(currentUserId, { $push: { completedTasks: quizappId } }, { new: true });
-    const createNotification = new QuizeApp({
+    const createNotification = new Notification({
       type: "QUIZ-APP",
       belongsTo: currentUserId,
-      isCollected: false,
-      prize: savedTask.prize,
+      metadata: {
+        isCollected: false,
+        prize: savedTask.prize,
+      },
     });
     const createPublicMessage = new PublicMessage({
       type: "FREETIME",
@@ -145,7 +147,7 @@ export const completingQuizApp = async (req: Request, res: Response) => {
     });
     const savedNotification = await createNotification.save();
     const saveMessage = await createPublicMessage.save();
-    const populatedMessage = await saveMessage.populate("sender", "-password");
+    const populatedMessage = await saveMessage.populate("sender", userExcludedFields);
 
     io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);
     io.emit("public-message", populatedMessage);
@@ -185,11 +187,13 @@ export const completingGuessCard = async (req: Request, res: Response) => {
     task.completedBy.push(user.id);
     user.completedTasks.push(task.id);
 
-    const createNotification = new GuessCard({
+    const createNotification = new Notification({
       type: "GUESS-CARD",
       belongsTo: user._id,
-      isCollected: false,
-      prize: task.prize,
+      metadata: {
+        isCollected: false,
+        prize: task.prize,
+      },
     });
     const savedNotification = await createNotification.save();
     const createPublicMessage = new PublicMessage({
@@ -198,7 +202,7 @@ export const completingGuessCard = async (req: Request, res: Response) => {
       typeOfTask: "TASK",
     });
     const savePublicMessage = await createPublicMessage.save();
-    const populatedPublicMessage = await savePublicMessage.populate("sender", "-password");
+    const populatedPublicMessage = await savePublicMessage.populate("sender", userExcludedFields);
     io.to(onLineUsers[user.id.toString()]).emit("new-notification", savedNotification);
     io.emit("public-message", populatedPublicMessage);
     await user.save();

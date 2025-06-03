@@ -3,9 +3,10 @@ import { useScrollToElement } from "../../hooks/useScrollToElement";
 import MusicCard from "../../components/Ui/MusicCard";
 import Empty from "../../components/Shared/Common/Empty";
 import { useFetchMusics } from "../../tanstackQuery/queryFetch";
+import { selectCurrentUser } from "../../context/appStateSlice";
 
 const MyMusics = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const { data: musics = [], status } = useFetchMusics();
 

@@ -5,7 +5,12 @@ import { FaList } from "react-icons/fa";
 import { FaMusic } from "react-icons/fa6";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { setPublicMsgRedPoint } from "../../context/appStateSlice";
+import {
+  selectIsChatOpen,
+  selectOpenMusicModal,
+  selectPublicMsgNotify,
+  setPublicMsgRedPoint,
+} from "../../context/appStateSlice";
 import { mobileNavBottomItems } from "../../helper/data";
 import { cn } from "../../utilities";
 
@@ -15,9 +20,9 @@ interface IProps {
 }
 
 const NavebareBottom = ({ handleCloseMobileSidebare, openSidbareMobile }: IProps) => {
-  const publicMsgRedPoint = useAppSelector((state) => state.appState.publicMsgRedPoint);
-  const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
-  const isChatOpen = useAppSelector((state) => state.appState.isChatOpen);
+  const publicMsgNotify = useAppSelector(selectPublicMsgNotify);
+  const openMusicModal = useAppSelector(selectOpenMusicModal);
+  const isChatOpen = useAppSelector(selectIsChatOpen);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -82,7 +87,7 @@ const NavebareBottom = ({ handleCloseMobileSidebare, openSidbareMobile }: IProps
               )
             }
           >
-            {publicMsgRedPoint && item.path === "chat" && (
+            {publicMsgNotify && item.path === "chat" && (
               <span className="absolute left-[30%] top-[10%] h-3 w-3 rounded-full bg-[#f70606ee]"></span>
             )}
             {item.icon}

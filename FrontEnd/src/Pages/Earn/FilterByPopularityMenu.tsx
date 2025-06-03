@@ -1,6 +1,6 @@
 import { memo, useRef } from "react";
 import { CgClose } from "react-icons/cg";
-import { IFilterByPopularity } from "../../types/earnTypes";
+import type { IFilterByPopularity } from "../../types";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { useTranslation } from "react-i18next";
 import { filterByPopularMenuItems } from "../../helper/data";

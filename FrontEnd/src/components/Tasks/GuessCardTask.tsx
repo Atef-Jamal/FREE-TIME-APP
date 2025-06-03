@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { setCurrentUser } from "../../context/appStateSlice";
+import { selectCurrentUser, setCurrentUser } from "../../context/appStateSlice";
 import { BsCheck2Circle } from "react-icons/bs";
 import { axiosRequest, handleApiError } from "../../utilities";
 import { ImSpinner3 } from "react-icons/im";
-import { IGameTask } from "../../types/earnTypes";
+import type { IGameTask } from "../../types";
 
 interface IProps {
   taskApp: IGameTask;
 }
 
 const GuessCardTask = ({ taskApp }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
   const [score, setScore] = useState(0);

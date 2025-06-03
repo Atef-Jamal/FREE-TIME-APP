@@ -1,15 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import { IFrame } from "../../types/frameTypes";
-import { setCurrentUser, openToast } from "../../context/appStateSlice";
+import type { IFrame } from "../../types";
+import {
+  setCurrentUser,
+  openToast,
+  selectCurrentUser,
+  selectUserAuth,
+  selectSocket,
+} from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { changeMyPictureFrame, unselectMyPictureFrame } from "../../services";
 import { handleApiError } from "../../utilities";
 import Empty from "../../components/Shared/Common/Empty";
 
 const MyFrames = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const socket = useAppSelector((state) => state.appState.socket);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const userAuth = useAppSelector(selectUserAuth);
+  const socket = useAppSelector(selectSocket);
   const dispatch = useAppDispatch();
 
   const changeMutation = useMutation({
@@ -61,12 +67,12 @@ const MyFrames = () => {
   });
 
   const changeFrameHandler = (frameId: string) => {
-    if (currentUserStatus !== "authenticated") return;
+    if (userAuth !== "authenticated") return;
     changeMutation.mutate({ frameId });
   };
 
   const unselectFrameHandler = () => {
-    if (currentUserStatus !== "authenticated") return;
+    if (userAuth !== "authenticated") return;
     unselectMutation.mutate();
   };
 

@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
-import { openToast } from "../../context/appStateSlice";
+import { openToast, selectOnlineUsers, selectSocket, selectUserAuth } from "../../context/appStateSlice";
 import { axiosRequest, handleApiError } from "../../utilities";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
@@ -10,35 +10,35 @@ import UserImage from "../../components/Shared/Common/UserImage";
 import { useInfiniteConversationMsgs } from "../../tanstackQuery/queryFetch";
 import { updateConversationUnreadCountCache } from "../../tanstackQuery/queryCache";
 
-const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string }) => {
+const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
-  const onlineUsers = useAppSelector((state) => state.appState.onlineUsers);
-  const socket = useAppSelector((state) => state.appState.socket);
+  const userAuth = useAppSelector(selectUserAuth);
+  const onlineUsers = useAppSelector(selectOnlineUsers);
+  const socket = useAppSelector(selectSocket);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
   const { data, status, error, hasPreviousPage, fetchPreviousPage } = useInfiniteConversationMsgs({
-    userAuth: currentUserStatus === "authenticated",
-    activeChatWithUserId,
+    userAuth: userAuth === "authenticated",
+    activeChatId,
   });
 
   const messages = data?.pages.map((page) => page.messages).flat();
   const secondUser = data?.pages[0].secondUser;
 
   const markAsReaded = useCallback(async () => {
-    const isUnReadMsgs = messages?.some((msg) => !msg.isRead && msg.sender._id === activeChatWithUserId);
+    const isUnReadMsgs = messages?.some((msg) => !msg.isRead && msg.sender._id === activeChatId);
     if (messages?.length === 0 || !isUnReadMsgs) return;
 
     socket?.emit("conversation-readed", {
-      reciever: activeChatWithUserId,
+      reciever: activeChatId,
       sender: currentUserId,
     });
 
     try {
-      await axiosRequest.get(`api/conversations/${activeChatWithUserId}/mark-as-read`);
-      updateConversationUnreadCountCache({ queryClient, activeChatWithUserId });
+      await axiosRequest.get(`api/conversations/${activeChatId}/mark-as-read`);
+      updateConversationUnreadCountCache({ queryClient, activeChatId });
     } catch (error) {
       dispatch(
         openToast({
@@ -47,11 +47,11 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
         }),
       );
     }
-  }, [activeChatWithUserId, messages, queryClient, dispatch, socket, currentUserId]);
+  }, [activeChatId, messages, queryClient, dispatch, socket, currentUserId]);
 
   useEffect(() => {
     markAsReaded();
-  }, [activeChatWithUserId, markAsReaded]);
+  }, [activeChatId, markAsReaded]);
 
   useEffect(() => {
     const scrollToLastMessage = () => {
@@ -60,7 +60,7 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
 
     scrollToLastMessage();
   }, [messages]);
-  if (!activeChatWithUserId) return;
+  if (!activeChatId) return;
 
   if (status === "pending") {
     return (
@@ -87,7 +87,7 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
           </div>
           <span className="text-sm font-bold text-[#3785fa] md:text-base">{secondUser?.name}</span>
         </div>
-        {onlineUsers.includes(activeChatWithUserId) ? (
+        {onlineUsers.includes(activeChatId) ? (
           <span className="text-xs font-bold tracking-wide text-[#68e44a] md:text-sm">online</span>
         ) : (
           <span className="text-xs font-bold tracking-wide text-[#54724c] md:text-sm">offline</span>
@@ -114,7 +114,7 @@ const ChatBody = memo(({ activeChatWithUserId }: { activeChatWithUserId: string 
         ))}
       </div>
 
-      <SendMessagePrivateChat activeChatWithUserId={activeChatWithUserId} />
+      <SendMessagePrivateChat activeChatId={activeChatId} />
     </div>
   );
 });

@@ -2,12 +2,12 @@ import { useCallback, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { BsArrowDown } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
-import { showModal } from "../../context/appStateSlice";
+import { selectCurrentUser, selectUserAuth, showModal } from "../../context/appStateSlice";
 import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { IoMdNotifications } from "react-icons/io";
 import ProfileMenu from "./ProfileMenu";
-import { INotifications } from "../../types/notificationTypes";
+import type { INotifications } from "../../types";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import UserImage from "../Shared/Common/UserImage";
 import { useFetchNotifications } from "../../tanstackQuery/queryFetch";
@@ -16,15 +16,13 @@ import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
 const notifySound = new Audio(notificationSoundSrc);
 
 const NavProfileHeader = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const userAuth = useAppSelector(selectUserAuth);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
 
-  const userAuth = currentUserStatus === "authenticated";
-
-  const { data: notifications } = useFetchNotifications({ userAuth });
+  const { data: notifications } = useFetchNotifications({ userAuth: userAuth === "authenticated" });
 
   const numUnReaded = notifications?.filter((element) => element.isRead === false).length;
 
@@ -63,7 +61,7 @@ const NavProfileHeader = () => {
       </div>
       <div
         onClick={() => setOpenProfileMenu(!openProfileMenu)}
-        className="relative flex h-full cursor-pointer items-center gap-x-4 rounded-md bg-[#3a3e58b7] px-2 sm:px-4"
+        className="flex h-full cursor-pointer items-center gap-x-4 rounded-md bg-[#3a3e58b7] px-2 sm:px-4"
       >
         <div className="h-[25px] w-[30px] sm:h-[30px] sm:w-[35px]">
           <UserImage user={currentUser} />
@@ -73,7 +71,7 @@ const NavProfileHeader = () => {
         </span>
         <BsArrowDown className="text-sm sm:text-base" />
         {openProfileMenu && (
-          <div className="absolute left-0 top-[105%] z-[100] w-[205px] rounded-lg bg-[#32324c] sm:w-[270px]">
+          <div className="absolute left-0 top-[110%] z-[100] w-full rounded-lg bg-[#353552]">
             <ProfileMenu setOpenProfileMenu={setOpenProfileMenu} />
           </div>
         )}

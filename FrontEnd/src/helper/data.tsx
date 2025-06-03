@@ -46,7 +46,7 @@ import {
   csgoShopLogo,
   achShopLogo,
 } from "../assets";
-import { IFilterByDevice, IFilterByPopularity } from "../types/earnTypes";
+import type { IFilterByDevice, IFilterByPopularity } from "../types";
 import { VscExpandAll } from "react-icons/vsc";
 import { FaHeart, FaStar } from "react-icons/fa";
 

@@ -1,4 +1,4 @@
-import { IMusicDetail, ISearchResults, ITestimonial } from "../types/othersTypes";
+import type { IMusicDetail, ISearchResults, ITestimonial } from "../types";
 import { axiosRequest } from "../utilities";
 import { fetchMusics } from "./musicService";
 

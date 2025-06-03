@@ -7,9 +7,9 @@ import PublicMessage from "../models/publicMessage";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { onLineUsers } from "../socketIo/socketIo";
-import Referrer from "../models/notifications/referrer";
-import EmailVerfication from "../models/notifications/emailVerfication";
 import { cloudinary } from "../utils";
+import Notification from "../models/notification";
+import { userExcludedFields } from "../constants";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -31,7 +31,6 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture: "https://res.cloudinary.com/dql5bc50n/image/upload/v1748245424/avatar_kqektj.jpg",
     });
 
     if (req.file) {
@@ -58,15 +57,20 @@ export const register = async (req: Request, res: Response) => {
     if (referrerUser) {
       const existedUser = await User.findById(referrerUser);
       if (existedUser) {
-        const createNotification = new Referrer({
+        const createNotification = new Notification({
           type: "REFERRER",
           belongsTo: referrerUser,
-          isCollected: false,
-          referredUser: savedUser._id,
-          prize: 100,
+          metadata: {
+            isCollected: false,
+            referredUser: savedUser._id,
+            prize: 100,
+          },
         });
         const saveNotification = await createNotification.save();
-        const savedNotification = await saveNotification.populate("referredUser", "-password");
+        const savedNotification = await saveNotification.populate(
+          "metadata.referredUser",
+          userExcludedFields,
+        );
         const createPublicMessage = new PublicMessage({
           type: "FREETIME",
           typeOfTask: "REFERRER",
@@ -75,8 +79,8 @@ export const register = async (req: Request, res: Response) => {
         });
         const saveMessage = await createPublicMessage.save();
         const savedMessage = await saveMessage.populate([
-          { path: "sender", select: "-password" },
-          { path: "newUserReferred", select: "-password" },
+          { path: "sender", select: userExcludedFields },
+          { path: "newUserReferred", select: userExcludedFields },
         ]);
         io.emit("public-message", savedMessage);
         io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", savedNotification);
@@ -90,6 +94,7 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
+  // const { email } = req.body;
   const { email, password } = req.body;
 
   try {
@@ -217,11 +222,13 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     user.emailVerified = true;
     const savedUser = await user.save();
 
-    const createNotification = new EmailVerfication({
+    const createNotification = new Notification({
       type: "EMAIL-VERIFIED",
       belongsTo: currentUserId,
-      isCollected: false,
-      prize: 100,
+      metadata: {
+        isCollected: false,
+        prize: 100,
+      },
     });
     const savedNotification = await createNotification.save();
     const createPublicMessage = new PublicMessage({
@@ -230,7 +237,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
       type: "FREETIME",
     });
     const savePublicMessage = await createPublicMessage.save();
-    const populatedMessage = await savePublicMessage.populate("sender", "-password");
+    const populatedMessage = await savePublicMessage.populate("sender", userExcludedFields);
 
     io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);
 

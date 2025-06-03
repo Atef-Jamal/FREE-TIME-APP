@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import { cn } from "../../utilities";
 import LiveStats from "./LiveStats";
 import Footer from "./Footer";
+import { selectHidenLiveStats, selectSidebarCollapsed, selectSmallScreen } from "../../context/appStateSlice";
 
 const DisktopChat = lazy(() => import("../../Pages/PublichChat/DisktopChat"));
 
@@ -14,9 +15,9 @@ interface IProps {
 }
 
 const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IProps) => {
-  const hiddenLiveStats = useAppSelector((state) => state.appState.hiddenLiveStats);
-  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
-  const smallScreen = useAppSelector((state) => state.appState.smallScreen);
+  const hideLiveStats = useAppSelector(selectHidenLiveStats);
+  const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
+  const smallScreen = useAppSelector(selectSmallScreen);
 
   const handlClose = () => {
     handleCloseMobileSidebare(false);
@@ -50,7 +51,7 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
         style={{ width: contentWidth }}
         className="flex flex-col transition-all ease-in-out max-lg:mb-[60px]"
       >
-        {!hiddenLiveStats && <Suspense children={<LiveStats />} />}
+        {!hideLiveStats && <Suspense children={<LiveStats />} />}
         <div
           style={{ minHeight: smallScreen ? `calc(100dvh - 155px)` : `calc(100dvh - 102px)` }}
           className="flex-1"

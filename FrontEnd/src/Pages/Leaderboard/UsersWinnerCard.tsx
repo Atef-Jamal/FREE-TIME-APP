@@ -1,5 +1,5 @@
 import { leaderboard_place1_winnings, leaderboard_place3_winnings, crown } from "../../assets";
-import { IUser } from "../../types/userTypes";
+import type { IUser } from "../../types";
 import { cn } from "../../utilities";
 
 interface IProps {

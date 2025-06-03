@@ -7,7 +7,7 @@ import { AiFillSetting } from "react-icons/ai";
 import { RiNumbersFill } from "react-icons/ri";
 import { FcOk } from "react-icons/fc";
 import { rank1Desktop, rank2Desktop, rank3Desktop, verifiedImage } from "../../assets";
-import { showModal, openToast } from "../../context/appStateSlice";
+import { showModal, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import Statistics from "./Statistics";
 import WhoVisitProfile from "./WhoVisitProfile";
@@ -16,7 +16,7 @@ import MyMusics from "./MyMusics";
 import UserImage from "../../components/Shared/Common/UserImage";
 
 const MyProfile = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const queryParam = searchParams.get("to");

@@ -1,4 +1,4 @@
-import { ISearchItem } from "../../../../types/othersTypes";
+import type { ISearchItem } from "../../../../types";
 import { cn } from "../../../../utilities";
 
 interface IProps {

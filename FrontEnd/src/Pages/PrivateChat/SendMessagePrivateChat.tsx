@@ -2,7 +2,7 @@ import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
 import { IoMdSend } from "react-icons/io";
-import { openToast } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser, selectSocket } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPrivateChatMessage } from "../../services";
 import { handleApiError } from "../../utilities";
@@ -13,12 +13,12 @@ import {
 } from "../../tanstackQuery/queryCache";
 
 interface IProps {
-  activeChatWithUserId: string;
+  activeChatId: string;
 }
 
-const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const socket = useAppSelector((state) => state.appState.socket);
+const SendMessagePrivateChat = ({ activeChatId }: IProps) => {
+  const currentUser = useAppSelector(selectCurrentUser);
+  const socket = useAppSelector(selectSocket);
   const [message, setMessage] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -36,7 +36,7 @@ const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
   const mutation = useMutation({
     mutationFn: sendPrivateChatMessage,
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["conversation-messages", activeChatWithUserId] });
+      await queryClient.cancelQueries({ queryKey: ["conversation-messages", activeChatId] });
       const uniqeIdForRollback = uuId();
 
       const optimisticMsg = {
@@ -50,7 +50,7 @@ const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
         isRead: false,
         isSended: "PENDING",
       };
-      addPendingPrivateMsgCache({ queryClient, activeChatWithUserId, optimisticMsg });
+      addPendingPrivateMsgCache({ queryClient, activeChatId, optimisticMsg });
 
       setMessage("");
       inputRef.current?.focus();
@@ -60,17 +60,17 @@ const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
     onSuccess: (data, _, context) => {
       addSuccessPrivateMsgCache({
         queryClient,
-        activeChatWithUserId,
+        activeChatId,
         data,
         uniqeIdForRollback: context.uniqeIdForRollback,
       });
-      socket?.emit("private-message", { to: activeChatWithUserId, data: data });
+      socket?.emit("private-message", { to: activeChatId, data: data });
     },
     onError: (error, _, context) => {
       if (context)
         addFailedPrivateMsgCache({
           queryClient,
-          activeChatWithUserId,
+          activeChatId,
           uniqeIdForRollback: context.uniqeIdForRollback,
         });
       dispatch(
@@ -93,7 +93,7 @@ const SendMessagePrivateChat = ({ activeChatWithUserId }: IProps) => {
       );
       return;
     }
-    mutation.mutate({ message, receiver: activeChatWithUserId });
+    mutation.mutate({ message, receiver: activeChatId });
   };
 
   return (

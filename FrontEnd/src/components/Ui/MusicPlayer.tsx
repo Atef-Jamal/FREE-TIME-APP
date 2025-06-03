@@ -4,15 +4,21 @@ import { IoPlaySkipBackSharp } from "react-icons/io5";
 import { IoPlaySkipForward } from "react-icons/io5";
 import { memo, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { handleCloseMusic, updateThisEntity } from "../../context/appStateSlice";
+import {
+  handleCloseMusic,
+  selectActiveMusic,
+  selectMusicIsPlaying,
+  selectSidebarCollapsed,
+  updateThisEntity,
+} from "../../context/appStateSlice";
 import { MdClose } from "react-icons/md";
 import { cn } from "../../utilities";
 
 const MusicPlayer = memo(() => {
   const [trackValue, setTrackValue] = useState(0);
-  const activeMusic = useAppSelector((state) => state.appState.activeMusic);
-  const musicIsPlaying = useAppSelector((state) => state.appState.musicIsPlaying);
-  const sidebarCollapsed = useAppSelector((state) => state.appState.sidebarCollapsed);
+  const activeMusic = useAppSelector(selectActiveMusic);
+  const musicIsPlaying = useAppSelector(selectMusicIsPlaying);
+  const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const dispatch = useAppDispatch();
 
   const formatTime = (timeInSeconds: number) => {
@@ -79,7 +85,7 @@ const MusicPlayer = memo(() => {
           </span>
           <span
             onClick={() => {
-audioElement.src= "" 
+              audioElement.src = "";
               dispatch(handleCloseMusic());
               dispatch(updateThisEntity({ entity: "openMusicModal", value: false }));
             }}

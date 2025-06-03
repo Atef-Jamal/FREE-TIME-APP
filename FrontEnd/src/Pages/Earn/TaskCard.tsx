@@ -3,9 +3,10 @@ import { AiFillAndroid } from "react-icons/ai";
 import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/hooks";
-import { ITask } from "../../types/earnTypes";
+import type { ITask } from "../../types";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../utilities";
+import { selectCurrentUser } from "../../context/appStateSlice";
 
 interface IProps {
   taskDetail: ITask;
@@ -14,7 +15,7 @@ interface IProps {
 }
 
 const AppCard = ({ taskDetail, index, setTaskId }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const { t } = useTranslation("earn");
   const { _id, description, image, prize, title, isAvailable, devices } = taskDetail;

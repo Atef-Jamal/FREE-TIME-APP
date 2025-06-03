@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { resetModel } from "../../../../context/appStateSlice";
+import { resetModel, selectCurrentUser } from "../../../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import SearchSkeleton from "./SearchSkeleton";
 import ResultElement from "./ResultElement";
@@ -9,7 +9,7 @@ import Empty from "../../Common/Empty";
 import { useGetSearchResult } from "../../../../tanstackQuery/queryFetch";
 
 const Search = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useAppDispatch();
 

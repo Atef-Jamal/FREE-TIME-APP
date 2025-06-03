@@ -4,9 +4,19 @@ import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useLocation } from "react-router-dom";
 import { purshaseMusic } from "../../services";
 import { cn, handleApiError } from "../../utilities";
-import { IMusicDetail } from "../../types/othersTypes";
+import type { IMusicDetail } from "../../types";
 import { useMutation } from "@tanstack/react-query";
-import { handleAddMusic, setCurrentUser, openToast, updateThisEntity } from "../../context/appStateSlice";
+import {
+  handleAddMusic,
+  setCurrentUser,
+  openToast,
+  updateThisEntity,
+  selectCurrentUser,
+  selectActiveMusic,
+  selectMusicIsPlaying,
+  selectOpenMusicModal,
+  selectUserAuth,
+} from "../../context/appStateSlice";
 import Spinner from "../Shared/Common/Spinner";
 
 interface IProps {
@@ -14,11 +24,11 @@ interface IProps {
 }
 
 const MusicCard = ({ songDetails }: IProps) => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
-  const activeMusic = useAppSelector((state) => state.appState.activeMusic);
-  const musicIsPlaying = useAppSelector((state) => state.appState.musicIsPlaying);
-  const openMusicModal = useAppSelector((state) => state.appState.openMusicModal);
-  const currentUserStatus = useAppSelector((state) => state.appState.currentUserStatus);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const activeMusic = useAppSelector(selectActiveMusic);
+  const musicIsPlaying = useAppSelector(selectMusicIsPlaying);
+  const openMusicModal = useAppSelector(selectOpenMusicModal);
+  const userAuth = useAppSelector(selectUserAuth);
   const isAlreadyPurshased = !!currentUser?.mySongs.includes(songDetails.id.toString());
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -118,12 +128,12 @@ const MusicCard = ({ songDetails }: IProps) => {
           <span className="truncate text-xs font-bold text-gray-300">10 Points</span>
         </div>
       </div>
-      {currentUserStatus === "pending" && (
+      {userAuth === "pending" && (
         <button className="flex h-[29px] w-full items-center justify-center rounded-md bg-[#5de768] text-center font-bold text-blue-800">
           <Spinner color="blue" />
         </button>
       )}
-      {!isAlreadyPurshased && currentUserStatus !== "pending" && (
+      {!isAlreadyPurshased && userAuth !== "pending" && (
         <button
           onClick={handlePurshase}
           className="flex h-[29px] w-full items-center justify-center rounded-md bg-[#5de768] text-center font-bold text-blue-800"
@@ -131,7 +141,7 @@ const MusicCard = ({ songDetails }: IProps) => {
           {mutation.isPending ? <Spinner color="blue" /> : "Buy"}
         </button>
       )}
-      {isAlreadyPurshased && currentUserStatus !== "pending" && (
+      {isAlreadyPurshased && userAuth !== "pending" && (
         <>
           {musicIsPlaying && activeMusic?.id === songDetails.id.toString() && (
             <button

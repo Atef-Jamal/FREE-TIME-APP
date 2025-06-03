@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import PublicMessage from "../models/publicMessage";
 import { io } from "../socketIo/socketIo";
 import { onLineUsers } from "../socketIo/socketIo";
-import Mention from "../models/notifications/mention";
-import MessageInteraction from "../models/notifications/messageInteraction";
+import Notification from "../models/notification";
+import { userExcludedFields } from "../constants";
 
 export const getAllPublicMessages = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
@@ -17,9 +17,9 @@ export const getAllPublicMessages = async (req: Request, res: Response) => {
       .skip(skip)
       .limit(limit)
       .populate([
-        { path: "sender", select: "-password" },
-        { path: "mentionedUsers", select: "-password" },
-        { path: "newUserReferred", select: "-password" },
+        { path: "sender", select: userExcludedFields },
+        { path: "mentionedUsers", select: userExcludedFields },
+        { path: "newUserReferred", select: userExcludedFields },
       ]);
 
     const count = await PublicMessage.countDocuments();
@@ -45,28 +45,30 @@ export const createPublicMessage = async (req: Request, res: Response) => {
 
     const saveMessage = await message.save();
     const savedMessage = await saveMessage.populate([
-      { path: "sender", select: "-password" },
-      { path: "mentionedUsers", select: "-password" },
-      { path: "newUserReferred", select: "-password" },
+      { path: "sender", select: userExcludedFields },
+      { path: "mentionedUsers", select: userExcludedFields },
+      { path: "newUserReferred", select: userExcludedFields },
     ]);
 
     if (mentionedUsers.length > 0) {
       const newNotifications: any[] = [];
       mentionedUsers.forEach((userId: any) => {
-        const newNotification = new Mention({
+        const newNotification = new Notification({
           type: "MENTION",
           belongsTo: userId,
-          mentionedUser: currentUserId,
-          messageLocation: saveMessage._id,
+          metadata: {
+            mentionedUser: currentUserId,
+            messageLocation: saveMessage._id,
+          },
         });
         newNotifications.push(newNotification);
       });
 
-      const saveNotifications = await Mention.insertMany(newNotifications);
+      const saveNotifications = await Notification.insertMany(newNotifications);
       const ids = saveNotifications.map((item) => item._id);
-      const getCreatedNotifications = await Mention.find({ _id: { $in: ids } }).populate(
-        "mentionedUser",
-        "-password",
+      const getCreatedNotifications = await Notification.find({ _id: { $in: ids } }).populate(
+        "metadata.mentionedUser",
+        userExcludedFields,
       );
       getCreatedNotifications.forEach((notify) => {
         io.to(onLineUsers[notify.belongsTo.toString()]).emit("new-notification", notify);
@@ -88,7 +90,7 @@ export const deletePublicMessage = async (req: Request, res: Response) => {
         isDeleted: true,
       },
       { new: true },
-    ).populate("sender", "-password");
+    ).populate("sender", userExcludedFields);
     return res.status(200).json(deletedMessage);
   } catch (error) {
     return res.status(404).json({ error: "can't delete message" });
@@ -99,8 +101,8 @@ export const getSingleMessage = async (req: Request, res: Response) => {
   const { messageId } = req.params;
   try {
     const message = await PublicMessage.findById(messageId).populate([
-      { path: "sender", select: "-password" },
-      { path: "mentionedUsers", select: "-password" },
+      { path: "sender", select: userExcludedFields },
+      { path: "mentionedUsers", select: userExcludedFields },
     ]);
     if (!message) {
       return res.status(404).json({ error: "Message Not Found" });
@@ -135,19 +137,22 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
       message[fieldName].splice(index, 1);
     } else {
       message[fieldName].push(currentUserId);
-      const interactedWithMessageBefore = await MessageInteraction.findOne({
+      const interactedWithMessageBefore = await Notification.findOne({
         belongsTo: message.sender._id,
-        interactedUser: currentUserId,
-        messageLocation: message._id,
+        "metadata.interactedUser": currentUserId,
+        "metadata.messageLocation": message._id,
       });
 
-      if (interactedWithMessageBefore && interactedWithMessageBefore.typeOfInteraction !== fieldName) {
-        interactedWithMessageBefore.typeOfInteraction = fieldName;
+      if (
+        interactedWithMessageBefore &&
+        interactedWithMessageBefore.metadata.typeOfInteraction !== fieldName
+      ) {
+        interactedWithMessageBefore.metadata.typeOfInteraction = fieldName;
         interactedWithMessageBefore.isRead = false;
 
         const savedNotification = await (
           await interactedWithMessageBefore.save()
-        ).populate("interactedUser", "_id name profilePicture activeFrame");
+        ).populate("metadata.interactedUser", userExcludedFields);
 
         io.to(onLineUsers[savedNotification.belongsTo.toString()]).emit(
           "new-notification",
@@ -156,17 +161,19 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
       }
 
       if (!interactedWithMessageBefore && message.sender._id.toString() !== currentUserId.toString()) {
-        const createNotification = new MessageInteraction({
+        const createNotification = new Notification({
           type: "INTERACT-WITH-MESSAGE",
           belongsTo: message.sender._id,
-          interactedUser: currentUserId,
-          messageLocation: message._id,
-          typeOfInteraction: fieldName,
+          metadata: {
+            interactedUser: currentUserId,
+            messageLocation: message._id,
+            typeOfInteraction: fieldName,
+          },
         });
 
         const savedNotification = await (
           await createNotification.save()
-        ).populate("interactedUser", "_id name profilePicture activeFrame");
+        ).populate("metadata.interactedUser", userExcludedFields);
 
         io.to(onLineUsers[savedNotification.belongsTo.toString()]).emit(
           "new-notification",
@@ -187,8 +194,8 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
 
     const saveMessage = await message.save();
     const savedMessage = await saveMessage.populate([
-      { path: "sender", select: "-password" },
-      { path: "mentionedUsers", select: "-password" },
+      { path: "sender", select: userExcludedFields },
+      { path: "mentionedUsers", select: userExcludedFields },
     ]);
 
     return res.status(200).json(savedMessage);

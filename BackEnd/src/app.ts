@@ -46,12 +46,14 @@ passport.use(
           googleId: profile.id,
           email: profile.emails[0].value,
           name: profile.displayName,
-          profilePicture:
-            profile.photos?.[0].value ||
-            "https://res.cloudinary.com/dql5bc50n/image/upload/v1748245424/avatar_kqektj.jpg",
         });
-        await newUser.save();
-        return done(null, newUser);
+
+        if (profile.photos?.[0].value) {
+          newUser.profilePicture = profile.photos?.[0].value;
+        }
+
+        const savedUser = await newUser.save();
+        return done(null, savedUser);
       } catch (error) {
         console.log(error);
         done("Fail to Login with google - server error");
@@ -87,13 +89,14 @@ passport.use(
           githubId: profile.id,
           name: profile.displayName,
           email: `${profile.username}@users.noreply.github.com`,
-          profilePicture:
-            profile.photos?.[0].value ||
-            "https://res.cloudinary.com/dql5bc50n/image/upload/v1748245424/avatar_kqektj.jpg",
         });
 
-        await newUser.save();
-        return done(null, newUser);
+        if (profile.photos?.[0].value) {
+          newUser.profilePicture = profile.photos?.[0].value;
+        }
+
+        const savedUser = await newUser.save();
+        return done(null, savedUser);
       } catch (error) {
         console.log(error);
         done("Fail to Login with github - server error");

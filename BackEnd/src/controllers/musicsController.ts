@@ -3,7 +3,8 @@ import User from "../models/user";
 import { io } from "../socketIo/socketIo";
 import PublicMessage from "../models/publicMessage";
 import { onLineUsers } from "../socketIo/socketIo";
-import Music from "../models/notifications/music";
+import Notification from "../models/notification";
+import { userExcludedFields } from "../constants";
 
 export const buyMusic = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
@@ -29,12 +30,14 @@ export const buyMusic = async (req: Request, res: Response) => {
     user.points = user.points - 10;
     user.mySongs.push(songId);
 
-    const createNotification = new Music({
-      belongsTo: currentUserId,
+    const createNotification = new Notification({
       type: "MUSIC",
-      price: 10,
-      musicTitle,
-      musicId: songId,
+      belongsTo: currentUserId,
+      metadata: {
+        price: 10,
+        musicTitle,
+        musicId: songId,
+      },
     });
 
     const createPublicMessage = new PublicMessage({
@@ -45,7 +48,7 @@ export const buyMusic = async (req: Request, res: Response) => {
     });
     const savedNotification = await createNotification.save();
     const savedPublicMessage = await createPublicMessage.save();
-    const populatedMessage = await savedPublicMessage.populate("sender", "-password");
+    const populatedMessage = await savedPublicMessage.populate("sender", userExcludedFields);
     const updatedUser = await user.save();
 
     io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);

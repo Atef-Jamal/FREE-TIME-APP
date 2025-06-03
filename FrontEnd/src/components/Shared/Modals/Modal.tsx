@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { resetModel } from "../../../context/appStateSlice";
+import { resetModel, selectModal } from "../../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../context/hooks";
 import Spinner from "../Common/Spinner";
 
@@ -10,7 +10,7 @@ const Search = lazy(() => import("./SearchModal/Search"));
 const ProfileSettings = lazy(() => import("./ProfileSettingModal/ProfileSettings"));
 
 const Modal = () => {
-  const modal = useAppSelector((state) => state.appState.modal);
+  const modal = useAppSelector(selectModal);
   const dispatch = useAppDispatch();
 
   const closeModel = () => dispatch(resetModel());

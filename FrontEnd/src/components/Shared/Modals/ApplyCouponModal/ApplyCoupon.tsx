@@ -7,14 +7,14 @@ import { FaHandsHelping } from "react-icons/fa";
 import { CgPushDown } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
-import { resetModel, setCurrentUser, openToast } from "../../../../context/appStateSlice";
+import { resetModel, setCurrentUser, openToast, selectCurrentUser } from "../../../../context/appStateSlice";
 import bonusImage from "../../../../assets/images/Bonus-Code.png";
 import { applyCode } from "../../../../services";
 import { cn, handleApiError } from "../../../../utilities";
 import Spinner from "../../Common/Spinner";
 
 const ApplyCoupon = () => {
-  const currentUser = useAppSelector((state) => state.appState.currentUser);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [code, setCode] = useState<string>("");
   const [openHelp, setOpenHelp] = useState<boolean>(false);
   const navigate = useNavigate();
