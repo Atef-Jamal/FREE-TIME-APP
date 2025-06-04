@@ -96,8 +96,7 @@ const initializeSocket = function (server: IServer) {
 
   io.on("connection", async (socket) => {
     await updateUserStatus(socket, true);
-    const getOnlineUsers = Object.keys(onLineUsers);
-    io.emit("online-users", getOnlineUsers);
+    emitOnlineUsers()
 
     const handleDisconnect = async () => {
       await updateUserStatus(socket, false);
