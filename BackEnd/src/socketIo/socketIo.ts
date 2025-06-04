@@ -17,18 +17,18 @@ const socketOperations = function (server: IServer) {
 
   io.on("connection", async (socket) => {
     const userId = socket.handshake.query.userId as string;
-
+    let onlineUsersIds;
     if (userId && userId !== "undefined") {
       onLineUsers[userId] = socket.id;
       try {
         await User.findByIdAndUpdate(userId, { $set: { isOnline: true } });
         const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
-        const onlineUsersIds = getOnlineUsers.map((user) => user._id);
-        io.emit("online-users", onlineUsersIds);
+        onlineUsersIds = getOnlineUsers.map((user) => user._id);
       } catch (error) {
         // console.log(error);
       }
     }
+    io.emit("online-users", onlineUsersIds);
 
     const handleUserUpdated = (updatedUser: any) => {
       socket.broadcast.emit("user-updated", updatedUser);

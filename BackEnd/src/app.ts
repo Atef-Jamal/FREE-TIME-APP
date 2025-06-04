@@ -10,6 +10,7 @@ import socketOperations from "./socketIo/socketIo";
 import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
 import { Strategy as GithubStrategy, Profile } from "passport-github2";
 import User from "./models/user";
+
 dotenv.config();
 
 const app = express();
