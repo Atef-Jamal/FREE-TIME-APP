@@ -2,8 +2,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/user";
-import PrivateMessage from "../models/privateMessage";
-import { Types } from "mongoose";
 
 declare module "express" {
   interface Request {
@@ -36,14 +34,7 @@ const protectedRoute = async (req: Request, res: Response, next: NextFunction) =
 
     return next();
   } catch (error) {
-    const err = JSON.stringify(error);
-    await PrivateMessage.create({
-      conversationId: new Types.ObjectId(),
-      message: err,
-      sender: new Types.ObjectId(),
-      receiver: new Types.ObjectId(),
-    });
-    return res.status(500).json({ error: "Internal Server Error, log in with your credentials" });
+    return res.status(500).json({ error: "Internal Server Error, protected route" });
   }
 };
 

@@ -17,17 +17,16 @@ const socketOperations = function (server: IServer) {
 
   io.on("connection", async (socket) => {
     const userId = socket.handshake.query.userId as string;
-    let onlineUsersIds;
     if (userId && userId !== "undefined") {
       onLineUsers[userId] = socket.id;
       try {
         await User.findByIdAndUpdate(userId, { $set: { isOnline: true } });
-        const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
-        onlineUsersIds = getOnlineUsers.map((user) => user._id);
       } catch (error) {
         // console.log(error);
       }
     }
+    const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
+    const onlineUsersIds = getOnlineUsers.map((user) => user._id);
     io.emit("online-users", onlineUsersIds);
 
     const handleUserUpdated = (updatedUser: any) => {
@@ -69,13 +68,13 @@ const socketOperations = function (server: IServer) {
         delete onLineUsers[userId];
         try {
           await User.findByIdAndUpdate(userId, { $set: { isOnline: false } });
-          const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
-          const onlineUsersIds = getOnlineUsers.map((user) => user._id);
-          io.emit("online-users", onlineUsersIds);
         } catch (error) {
           // console.log(error);
         }
       }
+      const getOnlineUsers = await User.find({ isOnline: true }).select("_id");
+      const onlineUsersIds = getOnlineUsers.map((user) => user._id);
+      io.emit("online-users", onlineUsersIds);
       socket.off("user-updated", handleUserUpdated);
       socket.off("new-user-registered", handleNewUserRegistered);
       socket.off("public-message", handleNewPublicMessage);
