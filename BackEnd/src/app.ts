@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import passport from "passport";
 import { connecteToMongodb } from "./db/connectToMongodb";
+import initializeSocket from "./socketIo";
 import routes from "./routes/routes";
-import socketOperations from "./socketIo/socketIo";
 import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
 import { Strategy as GithubStrategy, Profile } from "passport-github2";
 import User from "./models/user";
@@ -112,7 +112,7 @@ connecteToMongodb();
 
 const server = http.createServer(app);
 
-socketOperations(server);
+initializeSocket(server);
 
 app.use("/uploads", express.static(path.resolve("src/uploads")));
 

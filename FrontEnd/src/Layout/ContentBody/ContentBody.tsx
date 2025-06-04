@@ -7,7 +7,7 @@ import LiveStats from "./LiveStats";
 import Footer from "./Footer";
 import { selectHidenLiveStats, selectSidebarCollapsed, selectSmallScreen } from "../../context/appStateSlice";
 
-const DisktopChat = lazy(() => import("../../Pages/PublichChat/DisktopChat"));
+const DisktopChat = lazy(() => import("../../pages/PublichChat/DisktopChat"));
 
 interface IProps {
   openSidbareMobile: boolean;

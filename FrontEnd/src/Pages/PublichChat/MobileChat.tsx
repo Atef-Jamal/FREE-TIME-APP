@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { selectHidenLiveStats, setPublicMsgRedPoint } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import PublicChatBody from "./PublicChatBody";
+import PublicChatBody from "./ChatBody";
 
-const PublicChatMobile = () => {
+const MobileChat = () => {
   const hideLiveStats = useAppSelector(selectHidenLiveStats);
   const dispatch = useAppDispatch();
 
@@ -23,4 +23,4 @@ const PublicChatMobile = () => {
   );
 };
 
-export default PublicChatMobile;
+export default MobileChat;

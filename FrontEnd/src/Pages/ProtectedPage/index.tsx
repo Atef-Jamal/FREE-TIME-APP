@@ -1,7 +1,7 @@
-import { useAppSelector } from "../../../context/hooks";
-import LockedPage from "../../Errors/LockedPage";
-import BigLoading from "../../../Pages/BigLoading/BigLoading";
-import { selectUserAuth } from "../../../context/appStateSlice";
+import { useAppSelector } from "../../context/hooks";
+import { selectUserAuth } from "../../context/appStateSlice";
+import BigLoading from "../BigLoading";
+import LockedPage from "../LockedPage";
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => {
   const userAuth = useAppSelector(selectUserAuth);

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Frame from "../models/frame";
 import User from "../models/user";
 import PublicMessage from "../models/publicMessage";
-import { io, onLineUsers } from "../socketIo/socketIo";
+import { io, onLineUsers } from "../socketIo";
 import Notification from "../models/notification";
 import { userExcludedFields } from "../constants";
 

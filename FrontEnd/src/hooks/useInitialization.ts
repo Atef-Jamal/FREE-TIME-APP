@@ -16,7 +16,7 @@ import {
   updateSidebarUnReadedMsgCount,
   selectActiveChatId,
   selectUserAuth,
-  selectCurrentUser,
+  // selectCurrentUser,
 } from "../context/appStateSlice";
 import { useListenToSocketEvents } from "./useListenToSocketEvents";
 import { axiosRequest, debounce, handleApiError } from "../utilities";
@@ -37,7 +37,7 @@ import {
 export const useInitialization = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChatId = useAppSelector(selectActiveChatId);
-  const currentUser = useAppSelector(selectCurrentUser);
+  // const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -182,15 +182,22 @@ export const useInitialization = () => {
 
   useEffect(() => {
     if (userAuth === "pending") return;
+    let token = localStorage.getItem("token");
 
+    if (!token) {
+      const googleAuthToken = searchParams.get("token");
+      if (googleAuthToken) {
+        token = searchParams.get("token");
+      }
+    }
     const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-      query: { userId: currentUser?._id },
+      auth: { token: token },
     });
     dispatch(setSocket(socket));
     return () => {
       dispatch(disconnectSocket());
     };
-  }, [userAuth, currentUser?._id, dispatch]);
+  }, [userAuth, searchParams, dispatch]);
 
   useEffect(() => {
     if (refQuery && userAuth === "unauthenticated") {

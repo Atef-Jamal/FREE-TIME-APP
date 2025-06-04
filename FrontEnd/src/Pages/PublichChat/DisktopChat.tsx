@@ -10,7 +10,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import ChatHeader from "./ChatHeader";
-import PublicChatBody from "./PublicChatBody";
+import PublicChatBody from "./ChatBody";
 
 const DisktopChat = memo(() => {
   const isChatOpen = useAppSelector(selectIsChatOpen);

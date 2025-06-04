@@ -8,12 +8,13 @@ export const getNotifications = async (req: Request, res: Response) => {
   try {
     const notifications = await Notification.find({ belongsTo: userId })
       .populate([
-        { path: "referredUser", select: userExcludedFields },
-        { path: "mentionedUser", select: userExcludedFields },
-        { path: "interactedUser", select: userExcludedFields },
-        { path: "frame" },
+        { path: "metadata.referredUser", select: userExcludedFields },
+        { path: "metadata.mentionedUser", select: userExcludedFields },
+        { path: "metadata.interactedUser", select: userExcludedFields },
+        { path: "metadata.frame" },
       ])
       .sort({ createdAt: -1 });
+
     return res.status(200).json(notifications);
   } catch (error) {
     console.log(error);

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import User from "../models/user";
-import { io } from "../socketIo/socketIo";
+import { io } from "../socketIo";
 import PublicMessage from "../models/publicMessage";
-import { onLineUsers } from "../socketIo/socketIo";
+import { onLineUsers } from "../socketIo";
 import Notification from "../models/notification";
 import { userExcludedFields } from "../constants";
 

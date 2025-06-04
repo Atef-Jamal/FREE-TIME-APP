@@ -1,11 +1,10 @@
 import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import BigLoading from "./Pages/BigLoading/BigLoading";
-// import Layout from "./Layout/Layout";
+import BigLoading from "./pages/BigLoading";
 
-import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, PublicChatMobile } from "./Pages";
-import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./Pages";
-import { ProtectedPage, PageNotFound, AppError } from "./Pages";
+import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, MobileChat } from "./pages";
+import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./pages";
+import { ProtectedPage, PageNotFound, AppError } from "./pages";
 
 export const router = createBrowserRouter(
   [
@@ -62,7 +61,7 @@ export const router = createBrowserRouter(
         },
         {
           path: "chat",
-          element: <Suspense fallback={<BigLoading />} children={<PublicChatMobile />} />,
+          element: <Suspense fallback={<BigLoading />} children={<MobileChat />} />,
         },
         {
           path: "privatechat",
