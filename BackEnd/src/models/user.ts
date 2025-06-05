@@ -93,7 +93,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
   { timestamps: true },
 );
 
-userSchema.index({ isOnline: 1, points: -1, emailVerified: 1, createdAt: -1 });
+userSchema.index({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 });
 
 userSchema.pre("save", function (next) {
   if (this.isNew) {

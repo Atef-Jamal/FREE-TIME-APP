@@ -127,7 +127,6 @@ const Home = () => {
             <h1 className="mb-4 w-full text-center text-4xl font-bold text-[#af5a5a] md:text-6xl">
               {t("Get Paid For")}
             </h1>
-
             <p className="mt-2 text-balance text-center text-sm md:text-base lg:text-lg">
               Opening Bank Account, Refer Your Friend Through your Referal Link, complete Tasks and apps,
               offers and much more. Opening Bank Account, Refer Your Friend Through your Referal Link,

@@ -11,6 +11,7 @@ import type {
   INotifications,
   IPrivateMessage,
   ITestimonial,
+  IConversation,
 } from "../types";
 
 import { v4 as uuidV4 } from "uuid";
@@ -282,18 +283,49 @@ export const addSuccessPrivateMsgCache = ({
     ["conversations"],
     (previous: ICashedConversations): ICashedConversations | undefined => {
       if (!previous) return;
+      const isConversationExistOnTheList = previous.pages
+        .map((page) => page.conversations)
+        .flat()
+        .find((conv) => conv.secondUser._id === data.receiver._id);
+      if (isConversationExistOnTheList)
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations
+                .map((conv) => {
+                  if (conv.secondUser._id === data.receiver._id) {
+                    return { ...conv, lastMessage: data };
+                  }
+                  return conv;
+                })
+                .sort((a, b) => {
+                  if (a.lastMessage && b.lastMessage) {
+                    return a.lastMessage.createdAt > b.lastMessage.createdAt ? -1 : 1;
+                  }
+                  return 0;
+                }),
+            };
+          }),
+        };
       return {
         ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            conversations: page.conversations.map((conv) => {
-              if (conv.secondUser._id === activeChatId) {
-                return { ...conv, lastMessage: data };
-              }
-              return conv;
-            }),
+        pages: previous.pages.map((page, i) => {
+          const isFirstPage = i === 0;
+          const newConversation: IConversation = {
+            _id: data.conversationId,
+            lastMessage: data,
+            secondUser: data.receiver,
+            unReadCount: 0,
           };
+          if (isFirstPage) {
+            return {
+              ...page,
+              conversations: [newConversation, ...page.conversations],
+            };
+          }
+          return page;
         }),
       };
     },
@@ -319,17 +351,24 @@ export const addNewPrivateMsgCache = ({
         pages: previous.pages.map((page) => {
           return {
             ...page,
-            conversations: page.conversations.map((conv) => {
-              const isConversationWithUserOpen = conv.secondUser._id === activeChatId;
-              if (conv.secondUser._id === newMessage.sender._id) {
-                return {
-                  ...conv,
-                  lastMessage: newMessage,
-                  unReadCount: isConversationWithUserOpen ? conv.unReadCount : conv.unReadCount + 1,
-                };
-              }
-              return conv;
-            }),
+            conversations: page.conversations
+              .map((conv) => {
+                const isConversationWithUserOpen = conv.secondUser._id === activeChatId;
+                if (conv.secondUser._id === newMessage.sender._id) {
+                  return {
+                    ...conv,
+                    lastMessage: newMessage,
+                    unReadCount: isConversationWithUserOpen ? conv.unReadCount : conv.unReadCount + 1,
+                  };
+                }
+                return conv;
+              })
+              .sort((a, b) => {
+                if (a.lastMessage && b.lastMessage) {
+                  return a.lastMessage.createdAt > b.lastMessage.createdAt ? -1 : 1;
+                }
+                return 0;
+              }),
           };
         }),
       };
@@ -342,16 +381,14 @@ export const addNewPrivateMsgCache = ({
           _id: newMessage.conversationId,
           lastMessage: newMessage,
           secondUser: newMessage.sender,
-          unReadCount: 1,
+          unReadCount: newMessage.sender._id === activeChatId ? 0 : 1,
         };
-        if (firstPage) {
+        if (firstPage)
           return {
             ...page,
             conversations: [newConversation, ...page.conversations],
           };
-        } else {
-          return page;
-        }
+        return page;
       }),
     };
   });

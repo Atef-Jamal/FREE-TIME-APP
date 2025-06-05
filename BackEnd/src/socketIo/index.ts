@@ -94,18 +94,18 @@ const initializeSocket = function (server: IServer) {
     io.emit("online-users", onlineUsers);
   };
 
+  const handleDisconnect = async (socket: Socket) => {
+    await updateUserStatus(socket, false);
+    emitOnlineUsers();
+    socket.removeAllListeners();
+  };
+
   io.on("connection", async (socket) => {
     await updateUserStatus(socket, true);
     emitOnlineUsers();
-
-    const handleDisconnect = async () => {
-      await updateUserStatus(socket, false);
-      emitOnlineUsers();
-      socket.removeAllListeners();
-    };
     setupPublicHandlers(socket);
     setupPrivateHandlers(socket);
-    socket.on("disconnect", handleDisconnect);
+    socket.on("disconnect", () => handleDisconnect(socket));
     socket.on("error", (err) => {
       console.log("Socket Error", err);
     });

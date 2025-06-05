@@ -70,14 +70,14 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
               )}
             </>
           ) : (
-            <p className="italic tracking-wide text-[#bb8a8a]">
+            <p className="italic tracking-wide text-[#bb8a8ad8]">
               start chating with {conversation.secondUser.name}
             </p>
           )}
         </span>
         {conversation.unReadCount > 0 ? (
-          <span className="absolute right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#e63636] text-xs font-bold transition-all">
-            {conversation.unReadCount}
+          <span className="absolute -top-3 right-0 h-4 w-4 rounded-full bg-[#da4949] text-center text-xs font-bold transition-all">
+            <span> {conversation.unReadCount}</span>
           </span>
         ) : undefined}
       </div>
