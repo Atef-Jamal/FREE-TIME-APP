@@ -16,7 +16,6 @@ import {
   updateSidebarUnReadedMsgCount,
   selectActiveChatId,
   selectUserAuth,
-  // selectCurrentUser,
 } from "../context/appStateSlice";
 import { useListenToSocketEvents } from "./useListenToSocketEvents";
 import { axiosRequest, debounce, handleApiError } from "../utilities";
@@ -37,7 +36,6 @@ import {
 export const useInitialization = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChatId = useAppSelector(selectActiveChatId);
-  // const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();

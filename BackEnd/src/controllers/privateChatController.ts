@@ -5,7 +5,6 @@ import User, { IUser } from "../models/user";
 import PrivateMessage from "../models/privateMessage";
 import mongoose, { Types } from "mongoose";
 import { userExcludedFields } from "../constants";
-// import { onLineUsers } from "../socketIo/socketIo";
 
 export const getAllConversations = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;

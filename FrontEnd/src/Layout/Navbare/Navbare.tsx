@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useTranslation } from "react-i18next";
 import { selectUserAuth, showModal } from "../../context/appStateSlice";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-// import Search from "../../components/Shared/Modals/SearchModal/Search";
 import NavRegisterButtons from "../../components/Ui/NavRegisterButtons";
 import NavProfileHeaderSkeleton from "../../components/Ui/NavProfileHeaderSkeleton";
 import NavProfileHeader from "../../components/Ui/NavProfileHeader";

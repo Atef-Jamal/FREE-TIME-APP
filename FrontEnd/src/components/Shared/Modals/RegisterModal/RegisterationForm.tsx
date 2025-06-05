@@ -123,12 +123,7 @@ const RegisterationForm = () => {
       </div>
       <div className="flex gap-x-3">
         <div className="hidden w-[40%] md:block">
-          <LeftSide
-            isSignInMode={isSignInMode}
-            formData={formData}
-            setFormData={setFormData}
-            // setImageIsUploading={setImageIsUploading}
-          />
+          <LeftSide isSignInMode={isSignInMode} formData={formData} setFormData={setFormData} />
         </div>
         <div className="flex-1">
           {!isSignInMode && (

@@ -94,7 +94,6 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  // const { email } = req.body;
   const { email, password } = req.body;
 
   try {

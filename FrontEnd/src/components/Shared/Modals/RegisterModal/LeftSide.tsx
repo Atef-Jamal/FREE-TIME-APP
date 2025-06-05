@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 interface IProps {
   formData: IFormData;
   setFormData: React.Dispatch<SetStateAction<IFormData>>;
-  // setImageIsUploading: React.Dispatch<SetStateAction<boolean>>;
   isSignInMode: boolean;
 }
 const LeftSide = ({ formData, setFormData, isSignInMode }: IProps) => {

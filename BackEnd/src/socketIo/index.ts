@@ -85,7 +85,7 @@ const initializeSocket = function (server: IServer) {
     try {
       await User.findByIdAndUpdate(socket.userId, { $set: { isOnline: online } });
     } catch (error) {
-      // console.log(error);
+      console.log("can not update user status (online - offline)");
     }
   };
 
@@ -96,7 +96,7 @@ const initializeSocket = function (server: IServer) {
 
   io.on("connection", async (socket) => {
     await updateUserStatus(socket, true);
-    emitOnlineUsers()
+    emitOnlineUsers();
 
     const handleDisconnect = async () => {
       await updateUserStatus(socket, false);
@@ -106,8 +106,8 @@ const initializeSocket = function (server: IServer) {
     setupPublicHandlers(socket);
     setupPrivateHandlers(socket);
     socket.on("disconnect", handleDisconnect);
-    socket.on("error", (d) => {
-      console.log("Error", d);
+    socket.on("error", (err) => {
+      console.log("Socket Error", err);
     });
   });
 };
