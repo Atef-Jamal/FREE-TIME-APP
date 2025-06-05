@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import BigLoading from "./pages/BigLoading/index";
+import BigLoading from "./Pages/BigLoading";
 
-import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, MobileChat } from "./pages/index";
-import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./pages/index";
-import { ProtectedPage, PageNotFound, AppError } from "./pages/index";
+import { Layout, Home, Earn, Affiliates, MarketPlace, LeaderBoard, CashOut, MobileChat } from "./Pages";
+import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./Pages";
+import { ProtectedPage, PageNotFound, AppError } from "./Pages";
 
 export const router = createBrowserRouter(
   [

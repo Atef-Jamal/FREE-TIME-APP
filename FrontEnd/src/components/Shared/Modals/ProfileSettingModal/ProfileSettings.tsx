@@ -12,7 +12,7 @@ import {
 import { changeUserName, changeUserPassword } from "../../../../services";
 import Spinner from "../../Common/Spinner";
 import { handleApiError } from "../../../../utilities";
-import VerifyEmailBox from "../../../../pages/MyProfile/VerifyEmailBox";
+import VerifyEmailBox from "../../../../Pages/MyProfile/VerifyEmailBox";
 
 const ProfileSettings = () => {
   const currentUser = useAppSelector(selectCurrentUser);
