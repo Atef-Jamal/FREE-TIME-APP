@@ -1,6 +1,6 @@
 import { lazy } from "react";
 
-export const Layout = lazy(() => import("../layout/Layout"));
+export const Layout = lazy(() => import("../Layout/Layout"));
 export const Home = lazy(() => import("./Home"));
 export const MyProfile = lazy(() => import("./MyProfile"));
 export const PublicUserProfile = lazy(() => import("./PublicUserProfile"));
