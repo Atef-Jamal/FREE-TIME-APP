@@ -38,7 +38,6 @@ export interface IInitialState {
   activeMusic: IMusicInfo | null;
   socket: Socket | null;
   onlineUsers: string[];
-  unReadMsgsCount: string[];
   activeChatId: string | null;
   modal: IModal;
   publicMsgNotify: boolean;

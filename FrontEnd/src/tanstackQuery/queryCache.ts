@@ -1,8 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
+import { v4 as uuidV4 } from "uuid";
 import type {
   IUser,
   ICashedLiveStatsUsers,
   ICashedPublicChat,
+  IUpdatePrivateMsgsCacheParams,
   ICashedConversations,
   ICashedSingleConversation,
   ICashedNotificaions,
@@ -12,9 +14,39 @@ import type {
   IPrivateMessage,
   ITestimonial,
   IConversation,
+  IUnreadPrivateMsgsCache,
 } from "../types";
 
-import { v4 as uuidV4 } from "uuid";
+export const updateCurrentUserCache = ({
+  queryClient,
+  currentUser,
+}: {
+  queryClient: QueryClient;
+  currentUser: IUser;
+}) => {
+  queryClient.setQueryData(
+    ["live-stats-users"],
+    (previous: ICashedLiveStatsUsers): ICashedLiveStatsUsers | undefined => {
+      if (!previous) return;
+      return {
+        ...previous,
+        pages: previous.pages.map((page) => {
+          return {
+            ...page,
+            users: page.users.map((user) => {
+              if (user._id === currentUser._id) {
+                return currentUser;
+              }
+              return user;
+            }),
+          };
+        }),
+      };
+    },
+  );
+  queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
+  return;
+};
 
 export const updateUserCache = ({
   queryClient,
@@ -163,35 +195,31 @@ export const revalidateConversationsCache = ({ queryClient }: { queryClient: Que
   return queryClient.invalidateQueries({ queryKey: ["conversations"] });
 };
 
-export const updateCurrentUserCache = ({
+export const updateAllUnreadPrivateMsgsCache = ({
   queryClient,
-  currentUser,
-}: {
-  queryClient: QueryClient;
-  currentUser: IUser;
-}) => {
-  queryClient.setQueryData(
-    ["live-stats-users"],
-    (previous: ICashedLiveStatsUsers): ICashedLiveStatsUsers | undefined => {
+  type,
+  userId,
+}: IUpdatePrivateMsgsCacheParams) => {
+  return queryClient.setQueryData(
+    ["unread-private-messages-count"],
+    (previous: IUnreadPrivateMsgsCache): IUnreadPrivateMsgsCache | undefined => {
       if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            users: page.users.map((user) => {
-              if (user._id === currentUser._id) {
-                return currentUser;
-              }
-              return user;
-            }),
-          };
-        }),
-      };
+      switch (type) {
+        case "add-one":
+          return { senderIds: userId ? [...previous.senderIds, userId] : [...previous.senderIds] };
+          break;
+        case "remove-one":
+          return { senderIds: previous.senderIds.filter((i) => i !== userId) };
+          break;
+        case "remove-all":
+          return { senderIds: [] };
+          break;
+        default:
+          return previous;
+          break;
+      }
     },
   );
-  queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
-  return;
 };
 
 export const updateConversationUnreadCountCache = ({

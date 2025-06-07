@@ -38,6 +38,8 @@ export type {
   ICashedSingleConversation,
   IConversation,
   IPrivateMessage,
+  IUnreadPrivateMsgsCache,
+  IUpdatePrivateMsgsCacheParams,
 } from "./privateChatTypes";
 
 export type { IBounusCode, IDailyReward } from "./rewardsTypes";

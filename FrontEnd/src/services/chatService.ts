@@ -1,5 +1,12 @@
 import { axiosRequest } from "../utilities";
-import type { IUser, IConversation, IPrivateMessage, IPublicChatItem, IPublicChatMessage } from "../types";
+import type {
+  IUser,
+  IConversation,
+  IPrivateMessage,
+  IPublicChatItem,
+  IPublicChatMessage,
+  IUnreadPrivateMsgsCache,
+} from "../types";
 
 type IPublicMsgFieldName = "loves" | "likes" | "dislikes";
 
@@ -49,6 +56,11 @@ export const handleMessageReaction = async ({
   const response = await axiosRequest.get(`api/publicchat/${messageId}/${fieldName}`);
   const updatedMessage = response.data;
   return updatedMessage;
+};
+
+export const fetchUnreadPrivateMessages = async (): Promise<IUnreadPrivateMsgsCache> => {
+  const response = await axiosRequest.get("api/conversations/all/all-unreaded-count");
+  return response.data;
 };
 
 export const fetchAllConversations = async ({

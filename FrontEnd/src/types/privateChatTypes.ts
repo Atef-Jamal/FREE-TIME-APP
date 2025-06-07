@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import { IUser } from "./userTypes";
 
 export interface IPrivateMessage {
@@ -10,6 +11,16 @@ export interface IPrivateMessage {
   createdAt: Date;
   updatedAt: Date;
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
+}
+
+export interface IUnreadPrivateMsgsCache {
+  senderIds: string[];
+}
+
+export interface IUpdatePrivateMsgsCacheParams {
+  queryClient: QueryClient;
+  type: "add-one" | "remove-one" | "remove-all";
+  userId?: string;
 }
 
 export interface IConversation {

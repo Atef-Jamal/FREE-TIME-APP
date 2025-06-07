@@ -13,7 +13,6 @@ import {
   setCurrentUser,
   updateCurrentUserStatus,
   disconnectSocket,
-  updateSidebarUnReadedMsgCount,
   selectActiveChatId,
   selectUserAuth,
 } from "../context/appStateSlice";
@@ -21,6 +20,7 @@ import { useListenToSocketEvents } from "./useListenToSocketEvents";
 import { axiosRequest, debounce, handleApiError } from "../utilities";
 import messageSoundSrc from "../assets/images/messageSound.mp3";
 import {
+  useFetchUnreadPrivateMsgs,
   useInfiniteConversationMsgs,
   useInfiniteConversations,
   useInfinitePublicChatMsges,
@@ -29,6 +29,7 @@ import {
   addNewPrivateMsgCache,
   addNewPublicMsgCache,
   revalidateConversationsCache,
+  updateAllUnreadPrivateMsgsCache,
   updateConversationReadCache,
   updateUserCache,
 } from "../tanstackQuery/queryCache";
@@ -63,12 +64,7 @@ export const useInitialization = () => {
   const handleNewPrivateMessage = useCallback(
     (newMessage: IPrivateMessage) => {
       if (!isPrivateChatPageOpen) {
-        dispatch(
-          updateSidebarUnReadedMsgCount({
-            type: "ADD-ONE",
-            userId: newMessage.sender._id,
-          }),
-        );
+        updateAllUnreadPrivateMsgsCache({ queryClient, type: "add-one", userId: newMessage.sender._id });
         new Audio(messageSoundSrc).play();
       }
 
@@ -80,7 +76,7 @@ export const useInitialization = () => {
 
       addNewPrivateMsgCache({ queryClient, activeChatId, isConversationExist, newMessage });
     },
-    [queryClient, activeChatId, dispatch, isPrivateChatPageOpen],
+    [queryClient, activeChatId, isPrivateChatPageOpen],
   );
 
   const handleUserUpdated = useCallback(
@@ -103,6 +99,7 @@ export const useInitialization = () => {
 
   //prefetch chats
   useInfinitePublicChatMsges();
+  useFetchUnreadPrivateMsgs({ userAuth: userAuth === "authenticated" });
   useInfiniteConversations({ userAuth: userAuth === "authenticated" });
   useInfiniteConversationMsgs({ userAuth: userAuth === "authenticated", activeChatId });
 

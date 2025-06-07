@@ -1,11 +1,9 @@
+import { lazy, memo, Suspense } from "react";
 import { BiMenu } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 import {
   showModal,
   updateThisEntity,
-  openToast,
-  updateSidebarUnReadedMsgCount,
-  selectUnReadMsgsCount,
   selectUserAuth,
   selectSidebarCollapsed,
   selectOpenMusicModal,
@@ -14,48 +12,29 @@ import {
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sidebareItems } from "../../helper/data";
 import { NavLink } from "react-router-dom";
-import { memo, useEffect } from "react";
-import { axiosRequest, cn, handleApiError } from "../../utilities";
+import { cn } from "../../utilities";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-import MusicPlayer from "../../components/Ui/MusicPlayer";
+import { useQueryClient } from "@tanstack/react-query";
+import { IUnreadPrivateMsgsCache } from "../../types";
+
+const MusicPlayer = lazy(() => import("../../components/Ui/MusicPlayer"));
 
 const Sidebar = memo(() => {
-  const unReadMsgsCount = useAppSelector(selectUnReadMsgsCount);
   const userAuth = useAppSelector(selectUserAuth);
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const openMusicModal = useAppSelector(selectOpenMusicModal);
   const smallScreen = useAppSelector(selectSmallScreen);
-  const { t } = useTranslation("sidebar");
+  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation("sidebar");
+
+  const data: IUnreadPrivateMsgsCache | undefined = queryClient.getQueryData([
+    "unread-private-messages-count",
+  ]);
 
   const handleCollaps = () => {
     dispatch(updateThisEntity({ entity: "sidebarCollapsed", value: !sidebarCollapsed }));
   };
-
-  useEffect(() => {
-    const getAllUnReadedMsgs = async () => {
-      try {
-        const response = await axiosRequest.get("api/conversations/all/all-unreaded-count");
-        dispatch(
-          updateSidebarUnReadedMsgCount({
-            type: "ADD-ALL",
-            userId: response.data,
-          }),
-        );
-      } catch (error) {
-        dispatch(
-          openToast({
-            message: handleApiError(error),
-            type: "ERROR_GENERAL",
-          }),
-        );
-      }
-    };
-
-    if (userAuth === "authenticated") {
-      getAllUnReadedMsgs();
-    }
-  }, [userAuth, dispatch]);
 
   return (
     <div
@@ -73,7 +52,7 @@ const Sidebar = memo(() => {
         <SearchBar placeholder={t("search Everything")} onChange={() => {}} readOnly />
       </div>
 
-      {openMusicModal && <MusicPlayer />}
+      {openMusicModal && <Suspense children={<MusicPlayer />} fallback="" />}
 
       <ul className="flex w-full flex-col gap-1">
         {sidebareItems.map((item, index) => {
@@ -96,10 +75,11 @@ const Sidebar = memo(() => {
                   {t(item.title)}
                 </span>
                 {userAuth === "authenticated" &&
-                  unReadMsgsCount.length > 0 &&
-                  item.path === "privatechat" && (
+                  item.path === "privatechat" &&
+                  data &&
+                  data.senderIds.length > 0 && (
                     <span className="absolute right-1 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#e23e32] text-xs font-bold">
-                      {unReadMsgsCount.length}
+                      {data.senderIds.length}
                     </span>
                   )}
               </NavLink>

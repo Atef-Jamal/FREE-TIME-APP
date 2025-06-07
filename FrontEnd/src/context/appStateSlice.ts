@@ -11,7 +11,6 @@ const initialState: IInitialState = {
   socket: null,
   smallScreen: window.innerWidth < 1024,
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
-  unReadMsgsCount: [],
   activeChatId: localStorage.getItem("active-converstaion") || null,
   publicMsgNotify: false,
   openMusicModal: false,
@@ -33,11 +32,6 @@ interface ITogglActionPayload {
     | "openMusicModal"
     | "musicIsPlaying";
   value: boolean;
-}
-
-interface ISidbareUnreadedMsgs {
-  type: "ADD-ALL" | "ADD-ONE" | "REMOVE-ALL" | "REMOVE-ONE";
-  userId?: string | string[];
 }
 
 const appStateReducer = createSlice({
@@ -90,21 +84,6 @@ const appStateReducer = createSlice({
     setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
       state.publicMsgNotify = action.payload;
     },
-    updateSidebarUnReadedMsgCount(state, action: PayloadAction<ISidbareUnreadedMsgs>) {
-      const { type, userId } = action.payload;
-      if (type === "ADD-ALL") {
-        state.unReadMsgsCount = userId as string[];
-      }
-      if (type === "ADD-ONE") {
-        state.unReadMsgsCount.push(userId as string);
-      }
-      if (type === "REMOVE-ONE") {
-        state.unReadMsgsCount = state.unReadMsgsCount.filter((item) => item !== userId);
-      }
-      if (type === "REMOVE-ALL") {
-        state.unReadMsgsCount = [];
-      }
-    },
     updateActiveChatId(state, action: PayloadAction<string | null>) {
       state.activeChatId = action.payload;
     },
@@ -121,7 +100,6 @@ export const {
   setSocket,
   disconnectSocket,
   setOnlineUsers,
-  updateSidebarUnReadedMsgCount,
   updateActiveChatId,
   showModal,
   resetModel,
@@ -144,7 +122,6 @@ export const selectMusicIsPlaying = createSelector(selectState, ({ musicIsPlayin
 export const selectOpenMusicModal = createSelector(selectState, ({ openMusicModal }) => openMusicModal);
 export const selectActiveChatId = createSelector(selectState, ({ activeChatId }) => activeChatId);
 export const selectPublicMsgNotify = createSelector(selectState, ({ publicMsgNotify }) => publicMsgNotify);
-export const selectUnReadMsgsCount = createSelector(selectState, ({ unReadMsgsCount }) => unReadMsgsCount);
 export const selectHidenLiveStats = createSelector(selectState, ({ hideLiveStats }) => hideLiveStats);
 export const selectSidebarCollapsed = createSelector(selectState, ({ sidebarCollapsed }) => sidebarCollapsed);
 export const selectSmallScreen = createSelector(selectState, ({ smallScreen }) => smallScreen);

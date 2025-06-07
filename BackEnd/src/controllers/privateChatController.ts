@@ -271,17 +271,10 @@ export const createMessage = async (req: Request, res: Response) => {
 
 export const getAllUnReadedMessages = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
-
   try {
     const messages = await PrivateMessage.find({ receiver: currentUserId, isRead: false });
-
-    const usersIds: Types.ObjectId[] = [];
-
-    messages.forEach((msg) => {
-      usersIds.push(msg.sender);
-    });
-
-    return res.status(200).json(usersIds);
+    const usersIds = messages.map((msg) => msg.sender);
+    return res.status(200).json({ senderIds: usersIds });
   } catch (error) {
     return res.status(404).json({ error: "can't Load unreaded messages" });
   }

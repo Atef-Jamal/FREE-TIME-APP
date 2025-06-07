@@ -129,10 +129,7 @@ const Home = () => {
             </h1>
             <p className="mt-2 text-balance text-center text-sm md:text-base lg:text-lg">
               Opening Bank Account, Refer Your Friend Through your Referal Link, complete Tasks and apps,
-              offers and much more. Opening Bank Account, Refer Your Friend Through your Referal Link,
-              complete Tasks and apps, offers and much more. Opening Bank Account, Refer Your Friend Through
-              your Referal Link, complete Tasks and apps, offers and much more. Opening Bank Account, Refer
-              Your Friend Through your Referal Link, complete Tasks and apps, offers and much more.
+              offers and much more.
             </p>
             <p className="mt-2 w-full text-center text-sm text-[#95afff] md:text-base lg:text-lg">
               {t("Earn up to $2.05 per offer 20 Offers available See our 33,225 reviews on Trustpilot")}

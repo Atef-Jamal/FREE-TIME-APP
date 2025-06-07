@@ -3,25 +3,25 @@ import {
   selectActiveChatId,
   selectHidenLiveStats,
   selectSmallScreen,
-  selectUnReadMsgsCount,
   selectUserAuth,
-  updateSidebarUnReadedMsgCount,
 } from "../../context/appStateSlice";
-import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { useAppSelector } from "../../context/hooks";
 import { cn } from "../../utilities";
 import Welcome from "./Welcome";
 import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
 import Spinner from "../../components/Shared/Common/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
+import { updateAllUnreadPrivateMsgsCache } from "../../tanstackQuery/queryCache";
+import type { IUnreadPrivateMsgsCache } from "../../types";
 
 const PrivateChat = () => {
   const userAuth = useAppSelector(selectUserAuth);
-  const unReadMsgsCount = useAppSelector(selectUnReadMsgsCount);
   const activeChatId = useAppSelector(selectActiveChatId);
   const hideLiveStats = useAppSelector(selectHidenLiveStats);
   const smallScreen = useAppSelector(selectSmallScreen);
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
-  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const toggleSidebar = useCallback(() => {
     setOpenSidebar((prev) => !prev);
@@ -33,14 +33,13 @@ const PrivateChat = () => {
   };
 
   useEffect(() => {
-    if (unReadMsgsCount.length > 0) {
-      dispatch(
-        updateSidebarUnReadedMsgCount({
-          type: "REMOVE-ALL",
-        }),
-      );
+    const unReadMsgsCount: IUnreadPrivateMsgsCache | undefined = queryClient.getQueryData([
+      "unread-private-messages-count",
+    ]);
+    if (unReadMsgsCount && unReadMsgsCount.senderIds.length > 0) {
+      updateAllUnreadPrivateMsgsCache({ queryClient, type: "remove-all" });
     }
-  }, [unReadMsgsCount, dispatch]);
+  }, [queryClient]);
 
   if (userAuth === "pending") {
     return (

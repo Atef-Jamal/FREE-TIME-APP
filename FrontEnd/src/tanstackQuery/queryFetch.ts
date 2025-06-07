@@ -18,6 +18,7 @@ import {
 
 import type { IFilterByDevice, IFilterByPopularity } from "../types";
 import { fetchUserActivities } from "../services/usersService";
+import { fetchUnreadPrivateMessages } from "../services/chatService";
 
 export const useInfiniteLiveStatsUsers = () => {
   return useInfiniteQuery({
@@ -40,6 +41,14 @@ export const useInfinitePublicChatMsges = () => {
       return firstPage.hasOlder ? pageParam + 1 : undefined;
     },
     getNextPageParam: () => undefined,
+    staleTime: 60 * 60 * 1000,
+  });
+};
+
+export const useFetchUnreadPrivateMsgs = ({ userAuth }: { userAuth: boolean }) => {
+  return useQuery({
+    queryKey: ["unread-private-messages-count"],
+    queryFn: userAuth ? () => fetchUnreadPrivateMessages() : skipToken,
     staleTime: 60 * 60 * 1000,
   });
 };

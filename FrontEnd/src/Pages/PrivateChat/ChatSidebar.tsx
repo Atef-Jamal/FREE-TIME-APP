@@ -103,14 +103,6 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
         )}
         {status === "pending" &&
           [...Array(10).keys()].map((skeleton) => <ChatSidebarUserItemSkeleton key={skeleton} />)}
-        {/* {conversations
-          ?.sort((a, b) => {
-            if (a.lastMessage?.sender._id && b.lastMessage?.sender._id) {
-              if (a.lastMessage.createdAt > b.lastMessage.createdAt) return -1;
-              if (a.lastMessage.createdAt < b.lastMessage.createdAt) return 1;
-            }
-            return 0;
-          }) */}
         {conversations?.map((conversation) => {
           const isOnLine = onlineUsers.includes(conversation.secondUser._id);
           const chatWithUserOpen = activeChatId === conversation.secondUser._id;
