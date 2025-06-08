@@ -55,6 +55,15 @@ import verifiedIcon from "./images/verified-icon.png";
 import verifiedImage from "./images/verified.png";
 import dailybg from "./images/dailybg.jpg";
 
+import time from "./images/timewall-logo.png";
+import lootably from "./images/lootably-logo.png";
+import ayetLogo from "./images/ayetLogo.webp";
+import revu from "./images/revu-logo-white.svg";
+import AdGemGlow from "./images/AdGemGlow.webp";
+import offertoroLogo from "./images/offertoroLogo.webp";
+import AdGatemediaGlow from "./images/AdGatemediaGlow.png";
+import monlixLogo from "./images/monlix-logo.svg";
+
 export {
   paypalShopLogo,
   amazonShopLogo,
@@ -111,4 +120,12 @@ export {
   empty,
   verifiedImage,
   dailybg,
+  time,
+  lootably,
+  ayetLogo,
+  revu,
+  AdGemGlow,
+  offertoroLogo,
+  AdGatemediaGlow,
+  monlixLogo,
 };

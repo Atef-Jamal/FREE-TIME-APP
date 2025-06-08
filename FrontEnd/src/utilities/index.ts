@@ -153,3 +153,7 @@ export const debounce = <T extends (...args: any[]) => void>(
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const displaySound = (src: string) => {
+  new Audio(src).play();
+};

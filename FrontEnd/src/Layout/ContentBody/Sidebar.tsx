@@ -14,8 +14,7 @@ import { sidebareItems } from "../../helper/data";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utilities";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-import { useQueryClient } from "@tanstack/react-query";
-import { IUnreadPrivateMsgsCache } from "../../types";
+import { useFetchUnreadPrivateMsgs } from "../../tanstackQuery/queryFetch";
 
 const MusicPlayer = lazy(() => import("../../components/Ui/MusicPlayer"));
 
@@ -24,17 +23,14 @@ const Sidebar = memo(() => {
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const openMusicModal = useAppSelector(selectOpenMusicModal);
   const smallScreen = useAppSelector(selectSmallScreen);
-  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const { t } = useTranslation("sidebar");
-
-  const data: IUnreadPrivateMsgsCache | undefined = queryClient.getQueryData([
-    "unread-private-messages-count",
-  ]);
 
   const handleCollaps = () => {
     dispatch(updateThisEntity({ entity: "sidebarCollapsed", value: !sidebarCollapsed }));
   };
+
+  const { data } = useFetchUnreadPrivateMsgs({ userAuth: userAuth === "authenticated" });
 
   return (
     <div

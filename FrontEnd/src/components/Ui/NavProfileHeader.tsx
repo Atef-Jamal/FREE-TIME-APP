@@ -12,8 +12,7 @@ import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import UserImage from "../Shared/Common/UserImage";
 import { useFetchNotifications } from "../../tanstackQuery/queryFetch";
 import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
-
-const notifySound = new Audio(notificationSoundSrc);
+import { displaySound } from "../../utilities";
 
 const NavProfileHeader = () => {
   const currentUser = useAppSelector(selectCurrentUser);
@@ -29,7 +28,7 @@ const NavProfileHeader = () => {
   const handleAddNewNotification = useCallback(
     (newNotification: INotifications) => {
       addNewNotificationCache({ queryClient, newNotification });
-      notifySound.play();
+      displaySound(notificationSoundSrc);
     },
     [queryClient],
   );

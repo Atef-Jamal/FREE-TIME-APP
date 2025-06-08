@@ -15,12 +15,13 @@ import {
   disconnectSocket,
   selectActiveChatId,
   selectUserAuth,
+  selectCurrentUser,
+  selectSocket,
 } from "../context/appStateSlice";
 import { useListenToSocketEvents } from "./useListenToSocketEvents";
-import { axiosRequest, debounce, handleApiError } from "../utilities";
+import { axiosRequest, debounce, displaySound, handleApiError } from "../utilities";
 import messageSoundSrc from "../assets/images/messageSound.mp3";
 import {
-  useFetchUnreadPrivateMsgs,
   useInfiniteConversationMsgs,
   useInfiniteConversations,
   useInfinitePublicChatMsges,
@@ -31,12 +32,15 @@ import {
   revalidateConversationsCache,
   updateAllUnreadPrivateMsgsCache,
   updateConversationReadCache,
+  updateConversationUnreadCountCache,
   updateUserCache,
 } from "../tanstackQuery/queryCache";
 
 export const useInitialization = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChatId = useAppSelector(selectActiveChatId);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const socket = useAppSelector(selectSocket);
   const userAuth = useAppSelector(selectUserAuth);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -61,22 +65,44 @@ export const useInitialization = () => {
     [queryClient],
   );
 
+  const markAsReaded = useCallback(async () => {
+    if (!currentUser) return;
+    socket?.emit("conversation-readed", {
+      reciever: activeChatId,
+      sender: currentUser._id,
+    });
+    try {
+      await axiosRequest.get(`api/conversations/${activeChatId}/markAsRead`);
+      updateConversationUnreadCountCache({ queryClient, activeChatId });
+    } catch (error) {
+      dispatch(
+        openToast({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
+        }),
+      );
+    }
+  }, [activeChatId, currentUser, queryClient, dispatch, socket]);
+
   const handleNewPrivateMessage = useCallback(
     (newMessage: IPrivateMessage) => {
-      if (!isPrivateChatPageOpen) {
-        updateAllUnreadPrivateMsgsCache({ queryClient, type: "add-one", userId: newMessage.sender._id });
-        new Audio(messageSoundSrc).play();
-      }
-
       const allConversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
-
       const isConversationExist = allConversations?.pages.some((page) =>
         page.conversations.some((conv) => conv.secondUser._id === newMessage.sender._id),
       );
 
       addNewPrivateMsgCache({ queryClient, activeChatId, isConversationExist, newMessage });
+
+      if (isPrivateChatPageOpen && activeChatId === newMessage.sender._id && currentUser) {
+        markAsReaded();
+      }
+
+      if (!isPrivateChatPageOpen) {
+        updateAllUnreadPrivateMsgsCache({ queryClient, type: "add-one", userId: newMessage.sender._id });
+        displaySound(messageSoundSrc);
+      }
     },
-    [queryClient, activeChatId, isPrivateChatPageOpen],
+    [queryClient, activeChatId, isPrivateChatPageOpen, currentUser, markAsReaded],
   );
 
   const handleUserUpdated = useCallback(
@@ -99,7 +125,6 @@ export const useInitialization = () => {
 
   //prefetch chats
   useInfinitePublicChatMsges();
-  useFetchUnreadPrivateMsgs({ userAuth: userAuth === "authenticated" });
   useInfiniteConversations({ userAuth: userAuth === "authenticated" });
   useInfiniteConversationMsgs({ userAuth: userAuth === "authenticated", activeChatId });
 

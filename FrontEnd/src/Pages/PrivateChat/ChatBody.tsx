@@ -1,7 +1,13 @@
-import { memo, useCallback, useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
-import { openToast, selectOnlineUsers, selectSocket, selectUserAuth } from "../../context/appStateSlice";
+import {
+  openToast,
+  selectCurrentUser,
+  selectOnlineUsers,
+  selectSocket,
+  selectUserAuth,
+} from "../../context/appStateSlice";
 import { axiosRequest, handleApiError } from "../../utilities";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
@@ -11,7 +17,7 @@ import { useInfiniteConversationMsgs } from "../../tanstackQuery/queryFetch";
 import { updateConversationUnreadCountCache } from "../../tanstackQuery/queryCache";
 
 const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
-  const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
+  const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
   const onlineUsers = useAppSelector(selectOnlineUsers);
   const socket = useAppSelector(selectSocket);
@@ -27,31 +33,30 @@ const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
   const messages = data?.pages.map((page) => page.messages).flat();
   const secondUser = data?.pages[0].secondUser;
 
-  const markAsReaded = useCallback(async () => {
-    const isUnReadMsgs = messages?.some((msg) => !msg.isRead && msg.sender._id === activeChatId);
-    if (messages?.length === 0 || !isUnReadMsgs) return;
-
-    socket?.emit("conversation-readed", {
-      reciever: activeChatId,
-      sender: currentUserId,
-    });
-
-    try {
-      await axiosRequest.get(`api/conversations/${activeChatId}/mark-as-read`);
-      updateConversationUnreadCountCache({ queryClient, activeChatId });
-    } catch (error) {
-      dispatch(
-        openToast({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        }),
-      );
-    }
-  }, [activeChatId, messages, queryClient, dispatch, socket, currentUserId]);
+  const isUnReadMsgs = Boolean(messages?.some((msg) => !msg.isRead && msg.sender._id === activeChatId));
 
   useEffect(() => {
+    if (!isUnReadMsgs || !currentUser?._id) return;
+    const markAsReaded = async () => {
+      socket?.emit("conversation-readed", {
+        reciever: activeChatId,
+        sender: currentUser._id,
+      });
+      try {
+        await axiosRequest.get(`api/conversations/${activeChatId}/markAsRead`);
+        updateConversationUnreadCountCache({ queryClient, activeChatId });
+      } catch (error) {
+        dispatch(
+          openToast({
+            type: "ERROR_GENERAL",
+            message: handleApiError(error),
+          }),
+        );
+      }
+    };
+
     markAsReaded();
-  }, [activeChatId, markAsReaded]);
+  }, [isUnReadMsgs, activeChatId, socket, currentUser?._id, dispatch, queryClient]);
 
   useEffect(() => {
     const scrollToLastMessage = () => {

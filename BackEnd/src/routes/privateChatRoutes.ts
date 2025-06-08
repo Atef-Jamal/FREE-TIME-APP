@@ -4,7 +4,7 @@ import {
   getConversationMessages,
   createMessage,
   markAsReaded,
-  getAllUnReadedMessages,
+  getUnreadConversationsCount,
   getAllConversations,
 } from "../controllers/privateChatController";
 
@@ -13,7 +13,7 @@ const router = express.Router();
 router.get("/", protectedRoute, getAllConversations);
 router.get("/:secondUserId", protectedRoute, getConversationMessages);
 router.post("/", protectedRoute, createMessage);
-router.get("/all/all-unreaded-count", protectedRoute, getAllUnReadedMessages);
-router.get("/:secondUserId/mark-as-read", protectedRoute, markAsReaded);
+router.get("/unread/count", protectedRoute, getUnreadConversationsCount);
+router.get("/:secondUserId/markAsRead", protectedRoute, markAsReaded);
 
 export default router;

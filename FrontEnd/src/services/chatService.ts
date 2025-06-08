@@ -59,7 +59,7 @@ export const handleMessageReaction = async ({
 };
 
 export const fetchUnreadPrivateMessages = async (): Promise<IUnreadPrivateMsgsCache> => {
-  const response = await axiosRequest.get("api/conversations/all/all-unreaded-count");
+  const response = await axiosRequest.get("api/conversations/unread/count");
   return response.data;
 };
 

@@ -269,7 +269,7 @@ export const createMessage = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllUnReadedMessages = async (req: Request, res: Response) => {
+export const getUnreadConversationsCount = async (req: Request, res: Response) => {
   const currentUserId = req.currentUser._id;
   try {
     const messages = await PrivateMessage.find({ receiver: currentUserId, isRead: false });

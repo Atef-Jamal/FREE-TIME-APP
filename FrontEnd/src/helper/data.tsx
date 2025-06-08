@@ -1,11 +1,3 @@
-import time from "../assets/images/timewall-logo.png";
-import lootably from "../assets/images/lootably-logo.png";
-import ayetLogo from "../assets/images/ayetLogo.webp";
-import revu from "../assets/images/revu-logo-white.svg";
-import AdGemGlow from "../assets/images/AdGemGlow.webp";
-import offertoroLogo from "../assets/images/offertoroLogo.webp";
-import AdGatemediaGlow from "../assets/images/AdGatemediaGlow.png";
-import monlixLogo from "../assets/images/monlix-logo.svg";
 import { RiMoneyPoundBoxFill } from "react-icons/ri";
 import { GiWantedReward } from "react-icons/gi";
 import { MdLeaderboard } from "react-icons/md";
@@ -45,6 +37,14 @@ import {
   dogecoinShopLogo,
   csgoShopLogo,
   achShopLogo,
+  monlixLogo,
+  AdGatemediaGlow,
+  offertoroLogo,
+  AdGemGlow,
+  revu,
+  ayetLogo,
+  lootably,
+  time,
 } from "../assets";
 import type { IFilterByDevice, IFilterByPopularity } from "../types";
 import { VscExpandAll } from "react-icons/vsc";
