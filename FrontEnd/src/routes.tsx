@@ -41,6 +41,7 @@ export const router = createBrowserRouter(
         {
           path: "rewards",
           element: <Suspense fallback={<BigLoading />} children={<Rewards />} />,
+          errorElement: <Suspense children={<div>reward page error </div>} />,
         },
         {
           path: "myprofile",

@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
-import { useAppDispatch, useAppSelector } from "../../context/hooks";
+import { useAppSelector } from "../../context/hooks";
 import {
-  openToast,
+  // openToast,
   selectCurrentUser,
   selectSidebarCollapsed,
   selectUserAuth,
 } from "../../context/appStateSlice";
-import { axiosRequest, cn } from "../../utilities";
+import { cn } from "../../utilities";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";
 import DailyStreakRewardCardSkeleton from "./DailyStreakRewardCardSkeleton";
@@ -22,8 +22,8 @@ const DailyReward = () => {
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
 
   const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<string | null>(null);
-  const [today, setToday] = useState("");
-  const dispatch = useAppDispatch();
+  // const [today, setToday] = useState("");
+  // const dispatch = useAppDispatch();
   const { t } = useTranslation("rewards");
 
   useEffect(() => {
@@ -46,17 +46,17 @@ const DailyReward = () => {
     setDayWhichTimmerIsLocated(nextTimerDay);
   }, []);
 
-  useEffect(() => {
-    const getDate = async () => {
-      try {
-        const response = await axiosRequest.get("api/date");
-        setToday(response.data);
-      } catch (error) {
-        dispatch(openToast({ message: "an error occured!", type: "ERROR_GENERAL" }));
-      }
-    };
-    getDate();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const getDate = async () => {
+  //     try {
+  //       const response = await axiosRequest.get("api/date");
+  //       setToday(response.data);
+  //     } catch (error) {
+  //       dispatch(openToast({ message: "an error occured!", type: "ERROR_GENERAL" }));
+  //     }
+  //   };
+  //   getDate();
+  // }, [dispatch]);
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -98,10 +98,7 @@ const DailyReward = () => {
         <p className="text-center text-sm text-[#5fadec]">
           {t("Earn 1,000 or more points within 24 hours to keep you streak")}
           {t("according to your timezoon the day beginning at")}{" "}
-          <span className="ml-1 font-bold text-[#9ead54]">
-            {new Date(today).toLocaleTimeString().split(" ")[0].slice(0, -3)}{" "}
-            {t(new Date(today).toLocaleTimeString().split(" ")[1].toLocaleLowerCase())}
-          </span>
+          <span className="ml-1 font-bold text-[#9ead54]">12 : 00 AM</span>
         </p>
         <div
           id={!currentUser ? "daily-reward" : undefined}
