@@ -21,7 +21,6 @@ root.render(
       <QueryClientProvider client={queryClient}>
         <App />
         <SpeedInsights debug={false} />
-        <Analytics />
       </QueryClientProvider>
     </Provider>
   </StrictMode>,
