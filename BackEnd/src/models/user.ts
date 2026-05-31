@@ -45,9 +45,13 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     googleId: {
       type: String,
+      unique: true,
+      sparse: true,
     },
     githubId: {
       type: String,
+      unique: true,
+      sparse: true,
     },
     password: {
       type: String,

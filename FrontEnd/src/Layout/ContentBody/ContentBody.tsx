@@ -19,7 +19,7 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const smallScreen = useAppSelector(selectSmallScreen);
 
-  const handlClose = () => {
+  const handleClose = () => {
     handleCloseMobileSidebare(false);
   };
 
@@ -43,8 +43,8 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
   return (
     <section className="flex">
       <div style={{ height: sidebarHeigh, width: sidebarWidth }} className={sidebarClassName}>
-        <div onClick={handlClose} className={"h-full w-full backdrop-blur-sm"}>
-          <Sidebar />
+        <div onClick={handleClose} className={"h-full w-full backdrop-blur-sm"}>
+          <Sidebar handleClose={handleClose} />
         </div>
       </div>
       <div

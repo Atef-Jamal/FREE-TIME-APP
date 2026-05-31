@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/user";
+import { verifyJwtToken } from "../services/authServices";
 
 declare module "express" {
   interface Request {
@@ -18,10 +18,10 @@ const protectedRoute = async (req: Request, res: Response, next: NextFunction) =
       return res.status(401).json({ error: "UnAuthorized Request, Log in with your credientials" });
     }
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY!);
+    const decoded = verifyJwtToken(token);
 
     if (!decoded) {
-      return res.status(404).json({ error: "UnAuthorized, Invalid credientials" });
+      return res.status(401).json({ error: "UnAuthorized, Invalid credientials" });
     }
 
     const user = await User.findById(decoded.userId).select("-password");

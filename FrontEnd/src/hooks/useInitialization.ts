@@ -132,12 +132,12 @@ export const useInitialization = () => {
     let token = localStorage.getItem("token");
 
     if (!token) {
-      const googleAuthToken = searchParams.get("token");
+      const googleAuthToken = searchParams.get("providerToken");
       if (googleAuthToken) {
-        token = searchParams.get("token");
+        token = googleAuthToken;
         localStorage.setItem("token", googleAuthToken);
         setSearchParams(() => {
-          searchParams.delete("token");
+          searchParams.delete("providerToken");
           return searchParams;
         });
       }
@@ -205,11 +205,9 @@ export const useInitialization = () => {
     let token = localStorage.getItem("token");
 
     if (!token) {
-      const googleAuthToken = searchParams.get("token");
-      if (googleAuthToken) {
-        token = searchParams.get("token");
-      }
+      token = searchParams.get("providerToken");
     }
+
     const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
       auth: { token: token },
     });

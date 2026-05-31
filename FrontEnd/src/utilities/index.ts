@@ -18,8 +18,8 @@ interface IValidationResult {
 let token = localStorage.getItem("token");
 
 if (!token) {
-  const tokenFromUrl = new URLSearchParams(location.search);
-  if (tokenFromUrl) token = tokenFromUrl.get("token");
+  const params = new URLSearchParams(location.search);
+  token = params.get("providerToken");
 }
 
 export const axiosRequest = axios.create({

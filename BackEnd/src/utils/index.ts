@@ -1,15 +1,24 @@
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
+// import { CloudinaryStorage, createCloudinaryStorage } from "multer-storage-cloudinary";
+// import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 const storage = multer.memoryStorage();
 
-const upload = multer({ storage });
+const uploadCloud = multer({
+  storage,
+  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE!) },
+});
 
 const generateNewWeekRewards = (startDay?: Date) => {
   const newWeekRewards = [...Array(7).keys()].map((item) => {
@@ -35,4 +44,4 @@ const generateNewWeekRewards = (startDay?: Date) => {
   return newWeekRewards;
 };
 
-export { cloudinary, upload, generateNewWeekRewards };
+export { cloudinary, uploadCloud, generateNewWeekRewards };

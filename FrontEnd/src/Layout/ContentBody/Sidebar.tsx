@@ -18,7 +18,7 @@ import { useFetchUnreadPrivateMsgs } from "../../tanstackQuery/queryFetch";
 
 const MusicPlayer = lazy(() => import("../../components/Ui/MusicPlayer"));
 
-const Sidebar = memo(() => {
+const Sidebar = memo(({ handleClose }: { handleClose: () => void }) => {
   const userAuth = useAppSelector(selectUserAuth);
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const openMusicModal = useAppSelector(selectOpenMusicModal);
@@ -56,7 +56,7 @@ const Sidebar = memo(() => {
             if (item.path === "leaderboard" || item.path === "earn" || item.path === "rewards") return;
           }
           return (
-            <li key={index}>
+            <li key={index} onClick={handleClose}>
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>

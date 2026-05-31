@@ -11,11 +11,11 @@ export interface ITask extends Document {
   isAvailable: "AVAILABLE" | "UNAVAILABLE";
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   quizes: IQuiz[];
-  reviews: Types.ObjectId[];
   title: string;
   image: string;
   prize: number;
   rating: number;
+  reviews: Types.ObjectId[];
   completedBy: Types.ObjectId[];
   description: string;
   createdAt: Date;

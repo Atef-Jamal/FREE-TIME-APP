@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
-import jwt from "jsonwebtoken";
 import { io } from "../socketIo";
 import PublicMessage from "../models/publicMessage";
-import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
+
 import { onLineUsers } from "../socketIo";
-import { cloudinary } from "../utils";
 import Notification from "../models/notification";
 import { userExcludedFields } from "../constants";
+import { sendEmail, sendRewardToUser, SignJwtToken, uploadImageToCloudinary } from "../services/authServices";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;
-  const referrerUser = req.query.referrerUser;
+  const referrerUser = req.query.referrerUser as string;
 
   if (!name || !email || !password || !confirmPassword) {
     return res.status(404).json({ error: "all field required" });
@@ -34,57 +32,16 @@ export const register = async (req: Request, res: Response) => {
     });
 
     if (req.file) {
-      try {
-        const base64String = req.file.buffer.toString("base64");
-        const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${base64String}`, {
-          folder: "nice",
-        });
-        console.log(result);
-        newUser.profilePicture = result.secure_url;
-      } catch (error) {
-        console.log("this error here", error);
-      }
+      const result = await uploadImageToCloudinary(req.file, newUser.name, newUser.id);
+      newUser.profilePicture = result.secure_url;
     }
 
     const savedUser = await newUser.save();
 
-    if (!process.env.JWT_SECRET_KEY) {
-      return res.status(404).json({ error: "an Error occurred, try again later" });
-    }
-
-    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET_KEY);
+    const token = SignJwtToken(savedUser.id);
 
     if (referrerUser) {
-      const existedUser = await User.findById(referrerUser);
-      if (existedUser) {
-        const createNotification = new Notification({
-          type: "REFERRER",
-          belongsTo: referrerUser,
-          metadata: {
-            isCollected: false,
-            referredUser: savedUser._id,
-            prize: 100,
-          },
-        });
-        const saveNotification = await createNotification.save();
-        const savedNotification = await saveNotification.populate(
-          "metadata.referredUser",
-          userExcludedFields,
-        );
-        const createPublicMessage = new PublicMessage({
-          type: "FREETIME",
-          typeOfTask: "REFERRER",
-          sender: referrerUser,
-          newUserReferred: savedUser._id,
-        });
-        const saveMessage = await createPublicMessage.save();
-        const savedMessage = await saveMessage.populate([
-          { path: "sender", select: userExcludedFields },
-          { path: "newUserReferred", select: userExcludedFields },
-        ]);
-        io.emit("public-message", savedMessage);
-        io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", savedNotification);
-      }
+      await sendRewardToUser(referrerUser, savedUser.id);
     }
 
     return res.status(201).json({ token });
@@ -103,15 +60,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User Not Found" });
     }
 
-    if (user.googleId) {
-      return res.status(404).json({ error: "try Login with google" });
-    }
-
-    if (user.githubId) {
-      return res.status(404).json({ error: "try Login with github" });
-    }
-
-    if (!user.password) return;
+    if (!user.password) return res.status(404).json({ error: "try Login with social providers" });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -119,7 +68,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Invalid Password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY!);
+    const token = SignJwtToken(user.id);
 
     return res.status(200).json({ token });
   } catch (error) {
@@ -129,8 +78,8 @@ export const login = async (req: Request, res: Response) => {
 
 export const signInWithProvider = async (req: Request, res: Response) => {
   try {
-    const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET_KEY!);
-    return res.redirect(`${process.env.CLIENT_BASE_URL}/?token=${token}`);
+    const token = SignJwtToken(req.user?.id);
+    return res.redirect(`${process.env.CLIENT_BASE_URL}/?providerToken=${token}`);
   } catch (error) {
     return res.status(404).json({ error: "failed to sign in with provider" });
   }
@@ -138,7 +87,7 @@ export const signInWithProvider = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   try {
-    const currentUser = await User.findById(req.currentUser._id).select("-password").populate("myFrames");
+    const currentUser = await User.findById(req.currentUser?._id).select("-password").populate("myFrames");
     if (!currentUser) {
       return res.status(404).json({ error: "User Not found" });
     }
@@ -149,7 +98,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 export const sendEmailVerificationCode = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.currentUser?._id;
   try {
     const user = await User.findById(currentUserId);
 
@@ -167,27 +116,16 @@ export const sendEmailVerificationCode = async (req: Request, res: Response) => 
 
     user.emailVerificationCode = {
       code: generateCode.toString(),
-      date: new Date(Date.now()),
+      date: new Date(),
     };
 
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.NODEMAILER_USER_EMAIL,
-        pass: process.env.NODEMAILER_USER_PASSWORD,
-      },
-    });
-
-    const options: Mail.Options = {
-      from: process.env.NODEMAILER_USER_EMAIL,
+    await sendEmail({
       to: user.email,
       subject: "Verify Your Email Adress",
       text: `Verification code : ${generateCode}`,
-    };
-
-    await transporter.sendMail(options);
+    });
 
     return res.status(200).json({ message: "success" });
   } catch (error) {
@@ -198,7 +136,7 @@ export const sendEmailVerificationCode = async (req: Request, res: Response) => 
 };
 
 export const verifyEmailCode = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.currentUser?.id;
   const enteredCode = req.body.enteredCode;
   try {
     const user = await User.findById(currentUserId);
@@ -252,7 +190,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
 };
 
 export const changePassword = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.currentUser?._id;
   const { enterdOldPass, newPass } = req.body;
   try {
     const user = await User.findById(currentUserId);
@@ -283,7 +221,7 @@ export const changePassword = async (req: Request, res: Response) => {
 };
 
 export const changeName = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.currentUser?._id;
   const { newName } = req.body;
   try {
     const user = await User.findById(currentUserId);

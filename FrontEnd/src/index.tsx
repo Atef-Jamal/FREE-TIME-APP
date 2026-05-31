@@ -20,6 +20,7 @@ root.render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <App />
+        <Analytics />
         <SpeedInsights debug={false} />
       </QueryClientProvider>
     </Provider>

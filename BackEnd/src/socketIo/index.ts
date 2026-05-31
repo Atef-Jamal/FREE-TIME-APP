@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Server, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { DefaultEventsMap, Server, Socket } from "socket.io";
 import http from "http";
 import User from "../models/user";
 import { Types } from "mongoose";

@@ -12,11 +12,11 @@ import {
 import passport from "passport";
 
 import protectedRoute from "../middleware";
-import { upload } from "../utils";
+import { uploadCloud } from "../utils";
 
 const router = express.Router();
 
-router.post("/register", upload.single("profilePicture"), register);
+router.post("/register", uploadCloud.single("profilePicture"), register);
 router.post("/login", login);
 
 router.get(
@@ -35,14 +35,17 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
+    failureRedirect: `${process.env.CLIENT_BASE_URL}`,
     session: false,
     prompt: "select_account",
   }),
   signInWithProvider,
 );
+
 router.get(
   "/github/callback",
   passport.authenticate("github", {
+    failureRedirect: `${process.env.CLIENT_BASE_URL}`,
     session: false,
     prompt: "select_account",
   }),

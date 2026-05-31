@@ -3,13 +3,10 @@ import http from "http";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import passport from "passport";
 import { connecteToMongodb } from "./db/connectToMongodb";
 import initializeSocket from "./socketIo";
 import routes from "./routes/routes";
-import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
-import { Strategy as GithubStrategy, Profile } from "passport-github2";
-import User from "./models/user";
+import passport from "./services/passport";
 
 dotenv.config();
 
@@ -18,93 +15,6 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: `${process.env.SERVER_BASE_URL}/api/auth/google/callback`,
-    },
-    async (_accessToken, _refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ googleId: profile.id });
-
-        if (user) {
-          return done(null, user);
-        }
-        user = await User.findOne({ email: profile.emails?.[0].value });
-
-        if (user) {
-          user.googleId = profile.id;
-          await user.save();
-          return done(null, user);
-        }
-
-        if (!profile.emails) return done("google email does not exist");
-
-        const newUser = new User({
-          googleId: profile.id,
-          email: profile.emails[0].value,
-          name: profile.displayName,
-        });
-
-        if (profile.photos?.[0].value) {
-          newUser.profilePicture = profile.photos?.[0].value;
-        }
-
-        const savedUser = await newUser.save();
-        return done(null, savedUser);
-      } catch (error) {
-        console.log(error);
-        done("Fail to Login with google - server error");
-      }
-    },
-  ),
-);
-
-passport.use(
-  new GithubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      callbackURL: `${process.env.SERVER_BASE_URL}/api/auth/github/callback`,
-    },
-    async (_accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) => {
-      try {
-        let user = await User.findOne({ githubId: profile.id });
-
-        if (user) {
-          return done(null, user);
-        }
-
-        user = await User.findOne({ email: profile.emails?.[0].value });
-
-        if (user) {
-          user.githubId = profile.id;
-          await user.save();
-          return done(null, user);
-        }
-
-        const newUser = new User({
-          githubId: profile.id,
-          name: profile.displayName,
-          email: `${profile.username}@users.noreply.github.com`,
-        });
-
-        if (profile.photos?.[0].value) {
-          newUser.profilePicture = profile.photos?.[0].value;
-        }
-
-        const savedUser = await newUser.save();
-        return done(null, savedUser);
-      } catch (error) {
-        console.log(error);
-        done("Fail to Login with github - server error");
-      }
-    },
-  ),
-);
 
 app.use(passport.initialize());
 
