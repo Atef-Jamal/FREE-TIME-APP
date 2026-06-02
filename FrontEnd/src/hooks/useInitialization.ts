@@ -47,6 +47,7 @@ export const useInitialization = () => {
   const location = useLocation();
 
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
+  const loggedInWithProvider = searchParams.get("provider-authenticated");
   const redirectQuery = searchParams.get("redirectedfrom");
   const refQuery = searchParams.get("referrerUser");
 
@@ -129,53 +130,46 @@ export const useInitialization = () => {
   useInfiniteConversationMsgs({ userAuth: userAuth === "authenticated", activeChatId });
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
-
-    if (!token) {
-      const googleAuthToken = searchParams.get("providerToken");
-      if (googleAuthToken) {
-        token = googleAuthToken;
-        localStorage.setItem("token", googleAuthToken);
-        setSearchParams(() => {
-          searchParams.delete("providerToken");
-          return searchParams;
-        });
-      }
+    if (loggedInWithProvider) {
+      localStorage.setItem("isLoggedIn", "true");
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete("provider-authenticated");
+        return prevSearchParams;
+      });
     }
+  }, [loggedInWithProvider, setSearchParams]);
+
+  useEffect(() => {
+    const isLoggedIn = !!localStorage.getItem("isLoggedIn");
 
     const getCurrentUser = async () => {
       try {
-        if (token) {
-          const response = await axiosRequest.get("api/auth/currentuser");
-          dispatch(setCurrentUser(response.data));
-          dispatch(updateCurrentUserStatus("authenticated"));
-        } else {
-          dispatch(updateCurrentUserStatus("unauthenticated"));
-        }
+        const response = await axiosRequest.get("api/auth/currentuser");
+        dispatch(setCurrentUser(response.data));
+        dispatch(updateCurrentUserStatus("authenticated"));
       } catch (error) {
         dispatch(updateCurrentUserStatus("unauthenticated"));
-        dispatch(
-          openToast({
-            type: "ERROR_GENERAL",
-            message: handleApiError(error),
-          }),
-        );
+        if (isLoggedIn)
+          dispatch(
+            openToast({
+              type: "ERROR_GENERAL",
+              message: handleApiError(error),
+            }),
+          );
       }
     };
     getCurrentUser();
-  }, [searchParams, setSearchParams, dispatch]);
+  }, [dispatch]);
 
-  const events = useMemo(
-    () => [
-      "online-users",
-      "public-message",
-      "private-message",
-      "user-updated",
-      "conversation-readed",
-      "new-user-registered",
-    ],
-    [],
-  );
+  const events = [
+    "online-users",
+    "public-message",
+    "private-message",
+    "user-updated",
+    "conversation-readed",
+    "new-user-registered",
+  ];
+
   const handlers = useMemo(
     () => [
       handleUpdateOnlineUsers,
@@ -202,14 +196,9 @@ export const useInitialization = () => {
 
   useEffect(() => {
     if (userAuth === "pending") return;
-    let token = localStorage.getItem("token");
-
-    if (!token) {
-      token = searchParams.get("providerToken");
-    }
 
     const socket = io(import.meta.env.VITE_SERVER_BASE_URL, {
-      auth: { token: token },
+      withCredentials: true,
     });
     dispatch(setSocket(socket));
     return () => {
@@ -242,13 +231,13 @@ export const useInitialization = () => {
             type: "SUCESS",
           }),
         );
-        setSearchParams(() => {
-          searchParams.delete("redirectedfrom", redirectQuery);
-          return searchParams;
+        setSearchParams((prevSearchParams) => {
+          prevSearchParams.delete("redirectedfrom");
+          return prevSearchParams;
         });
       }
     }
-  }, [redirectQuery, searchParams, setSearchParams, dispatch]);
+  }, [redirectQuery, setSearchParams, dispatch]);
 
   useEffect(() => {
     const handleNetworkOnline = () => {

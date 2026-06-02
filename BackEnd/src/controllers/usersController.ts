@@ -3,7 +3,7 @@ import User from "../models/user";
 import Frame from "../models/frame";
 import ProfileVisits from "../models/profileVisits";
 import { userExcludedFields } from "../constants";
-import { Types } from "mongoose";
+import { redisClient } from "../lib/redis";
 
 export const allUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
@@ -11,26 +11,23 @@ export const allUsers = async (req: Request, res: Response) => {
   const skip = (pageParam - 1) * limit;
 
   try {
-    let users = [];
-    const getOnlineUsers = await User.find({ isOnline: true })
+    let users = await User.find({ isOnline: true })
       .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select(userExcludedFields);
 
-    users = [...getOnlineUsers];
+    if (users.length < limit) {
+      limit = limit - users.length;
+      const excludedIds = users.map((u) => u._id);
 
-    if (getOnlineUsers.length < limit) {
-      limit = limit - getOnlineUsers.length;
-      const excludedIds = getOnlineUsers.map((u) => u._id);
-
-      const getUsers = await User.find({ _id: { $nin: excludedIds } })
+      const moreUsers = await User.find({ _id: { $nin: excludedIds } })
         .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .select(userExcludedFields);
 
-      users = [...users, ...getUsers];
+      users = [...users, ...moreUsers];
     }
 
     const findUserHighestPoints = await User.findOne()
@@ -52,7 +49,7 @@ export const allUsers = async (req: Request, res: Response) => {
 };
 
 export const getOnlineUsers = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id || new Types.ObjectId();
+  const currentUserId = req.user._id;
   try {
     const users = await User.find({ _id: { $ne: currentUserId }, isOnline: true })
       .sort({ points: -1, createdAt: 1 })
@@ -85,14 +82,22 @@ export const getUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId).select(userExcludedFields);
+    const userCacheKey = `users:details:${userId}`;
+    const cachedUser = await redisClient.get(userCacheKey);
+
+    if (cachedUser) {
+      return res.status(200).json(JSON.parse(cachedUser));
+    }
+
+    const user = await User.findById(userId).select(userExcludedFields).populate("myFrames");
 
     if (!user) {
       return res.status(404).json({ error: "User Not Found" });
     }
-    const populatedUser = await user.populate("myFrames");
 
-    return res.status(200).json(populatedUser);
+    await redisClient.set(userCacheKey, JSON.stringify(user));
+
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(404).json({
       error: "somthing went wrong ",
@@ -101,7 +106,7 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const userVisited = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   const userVisitedId = req.params.userId;
   try {
     const userVisited = await User.findById(userVisitedId);
@@ -123,7 +128,7 @@ export const userVisited = async (req: Request, res: Response) => {
 
 export const changeUserPhotoFrame = async (req: Request, res: Response) => {
   const { frameId } = req.params;
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   try {
     const frame = await Frame.findById(frameId);
 
@@ -148,7 +153,7 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
 };
 
 export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   try {
     await User.findByIdAndUpdate(currentUserId, {
       activeFrame: null,
@@ -160,27 +165,26 @@ export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
 };
 
 export const getWhoVisitMe = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
   try {
-    const user = await User.findById(currentUserId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
-
-    if (user.points < 5) {
+    if (req.user.points < 5) {
       return res.status(404).json({ error: "your points is not Enough" });
     }
 
-    user.points = user.points - 5;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $inc: { points: -5 },
+      },
+      { new: true },
+    );
+
+    if (!user) return res.status(404).json({ error: "an error occurred" });
 
     const visitors = await ProfileVisits.find({
-      visited: currentUserId,
+      visited: req.user._id,
     }).populate("visitor", userExcludedFields);
 
-    const savedUser = await user.save();
-
-    return res.status(200).json({ users: visitors, points: savedUser.points });
+    return res.status(200).json({ users: visitors, points: user.points });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
   }

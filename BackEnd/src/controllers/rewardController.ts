@@ -1,19 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import User from "../models/user";
 import { generateNewWeekRewards } from "../utils";
+import User from "../models/user";
 
-export const collectReward = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+export const collectRewardController = async (req: Request, res: Response) => {
   const targetDay = Number(req.body.day);
-
   try {
-    const user = await User.findById(currentUserId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
-
-    const day = user.dailyReward.find((item) => item.day === targetDay);
+    const day = req.user.dailyReward.find((item: any) => item.day === targetDay);
 
     if (!day) {
       return res.status(404).json({ error: "an error occurred" });
@@ -35,8 +28,7 @@ export const collectReward = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "an error occurred" });
     }
 
-    user.points = user.points + day.reward;
-    user.dailyReward = user.dailyReward.map((item) => {
+    const updatedDailyRewards = req.user.dailyReward.map((item: any) => {
       if (item.day === day.day) {
         return { ...item, isCollected: true };
       } else {
@@ -44,18 +36,35 @@ export const collectReward = async (req: Request, res: Response) => {
       }
     });
 
-    const isAllRewardOfWeekCollected = user.dailyReward.every((day) => day.isCollected === true);
+    let updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $inc: { points: day.reward },
+        dailyReward: updatedDailyRewards,
+      },
+      { new: true },
+    );
 
-    if (isAllRewardOfWeekCollected) {
-      const lastDate = user.dailyReward[user.dailyReward.length - 1].availableAt;
-
-      const newWeekRewards = generateNewWeekRewards(lastDate);
-
-      user.week = user.week + 1;
-      user.dailyReward = newWeekRewards;
+    if (!updatedUser) {
+      return res.status(404).json({ error: "can't collect reward" });
     }
 
-    const updatedUser = await user.save();
+    const isAllRewardOfWeekCollected = updatedUser.dailyReward.every((day) => day.isCollected === true);
+
+    if (isAllRewardOfWeekCollected) {
+      const lastDate = updatedUser.dailyReward[updatedUser.dailyReward.length - 1].availableAt;
+
+      const newWeekRewards = generateNewWeekRewards(lastDate);
+      updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $inc: { week: 1 },
+          dailyReward: newWeekRewards,
+        },
+        { new: true },
+      );
+    }
+
     return res.status(200).json(updatedUser);
   } catch (error) {
     return res.status(404).json({ error: "can not collect daily Reward" });

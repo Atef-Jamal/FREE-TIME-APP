@@ -1,9 +1,9 @@
 import express from "express";
 import protectedRoute from "../middleware";
-import { collectReward } from "../controllers/rewardController";
+import { collectRewardController } from "../controllers/rewardController";
 
 const router = express.Router();
 
-router.post("/daily-reward/collect", protectedRoute, collectReward);
+router.post("/daily-reward/collect", protectedRoute, collectRewardController);
 
 export default router;

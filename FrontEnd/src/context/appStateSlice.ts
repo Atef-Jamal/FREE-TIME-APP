@@ -3,9 +3,11 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import type { IUser, IInitialState, IModal, IMusicInfo, IToast } from "../types";
 import { RootState } from "./store";
 
+const hasAccessToken = !!localStorage.getItem("isLoggedIn");
+
 const initialState: IInitialState = {
   currentUser: null,
-  userAuth: "pending",
+  userAuth: hasAccessToken ? "pending" : "unauthenticated",
   isSignInMode: false,
   onlineUsers: [],
   socket: null,

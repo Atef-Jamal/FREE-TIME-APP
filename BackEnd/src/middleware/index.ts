@@ -1,40 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
-import User, { IUser } from "../models/user";
-import { verifyJwtToken } from "../services/authServices";
-
-declare module "express" {
-  interface Request {
-    currentUser?: IUser | any;
-    user?: IUser | any;
-  }
-}
+import User from "../models/user";
+import { verifyAccessToken } from "../services/authServices";
 
 const protectedRoute = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers["authorization"]?.split(" ")[1];
+    const token = req.cookies.accessToken;
+    if (!token) return res.status(401).json({ message: "Not authenticated" });
 
-    if (!token) {
-      return res.status(401).json({ error: "UnAuthorized Request, Log in with your credientials" });
-    }
+    const decoded: any = verifyAccessToken(token);
 
-    const decoded = verifyJwtToken(token);
+    const userData = await User.findById(decoded.userId).select("-password");
 
-    if (!decoded) {
-      return res.status(401).json({ error: "UnAuthorized, Invalid credientials" });
-    }
+    if (!userData) return res.status(404).json({ error: "User Not Found" });
 
-    const user = await User.findById(decoded.userId).select("-password");
-
-    if (!user) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
-
-    req.currentUser = user;
+    req.user = userData;
 
     return next();
-  } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error, protected route" });
+  } catch (error: any) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        message: "Access token has expired",
+      });
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid access token",
+      });
+    }
+    return res.status(500).json({ error: "authentication error" });
   }
 };
 

@@ -7,7 +7,7 @@ import Frame from "../models/frame";
 export const searchController = async (req: Request, res: Response) => {
   const searchTerm = req.query.q as string;
   try {
-    if (!searchTerm) {
+    if (!searchTerm || searchTerm.trim() === "") {
       return res.status(404).json({ error: "Enter search term" });
     }
     const regex = new RegExp(searchTerm, "gi");
@@ -16,16 +16,19 @@ export const searchController = async (req: Request, res: Response) => {
       .filter((item) => item.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
       .slice(0, 12);
 
-    const getUsers = await User.find({
+    const getUsersPromise = User.find({
       name: regex,
     })
       .sort({ points: -1, createdAt: -1 })
       .limit(12)
       .select("_id name profilePicture");
-    const getApps = await Task.find({ title: regex }).limit(12);
-    const getFrames = await Frame.find({ title: regex }).limit(12);
 
-    const usersResult = getUsers.map((user) => ({
+    const getOffersPromise = Task.find({ title: regex }).limit(12);
+    const getFramesPromise = Frame.find({ title: regex }).limit(12);
+
+    const [users, offers, frames] = await Promise.all([getUsersPromise, getOffersPromise, getFramesPromise]);
+
+    const usersResult = users.map((user) => ({
       _id: user._id,
       description: "",
       title: user.name,
@@ -33,7 +36,7 @@ export const searchController = async (req: Request, res: Response) => {
       link: `/user/${user._id}`,
     }));
 
-    const appsResults = getApps.map((app) => ({
+    const offersResults = offers.map((app) => ({
       _id: app._id,
       description: app.description,
       title: app.title,
@@ -41,7 +44,7 @@ export const searchController = async (req: Request, res: Response) => {
       link: `/earn?to=${app._id}`,
     }));
 
-    const framesResults = getFrames.map((frame) => ({
+    const framesResults = frames.map((frame) => ({
       _id: frame._id,
       description: frame.description,
       title: frame.title,
@@ -52,7 +55,7 @@ export const searchController = async (req: Request, res: Response) => {
     return res.status(200).json({
       features: getFeatures,
       users: usersResult,
-      apps: appsResults,
+      apps: offersResults,
       frames: framesResults,
     });
   } catch (error) {

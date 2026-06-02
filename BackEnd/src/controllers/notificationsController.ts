@@ -2,10 +2,18 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import Notification from "../models/notification";
 import { userExcludedFields } from "../constants";
+import { redisClient } from "../lib/redis";
 
 export const getNotifications = async (req: Request, res: Response) => {
-  const userId = req.currentUser._id;
+  const userId = req.user._id;
   try {
+    const cacheKey = `notifications:list:${userId}`;
+    const cachedNotifications = await redisClient.get(cacheKey);
+
+    if (cachedNotifications) {
+      return res.status(200).json(JSON.parse(cachedNotifications));
+    }
+
     const notifications = await Notification.find({ belongsTo: userId })
       .populate([
         { path: "metadata.referredUser", select: userExcludedFields },
@@ -14,6 +22,8 @@ export const getNotifications = async (req: Request, res: Response) => {
         { path: "metadata.frame" },
       ])
       .sort({ createdAt: -1 });
+
+    await redisClient.set(cacheKey, JSON.stringify(notifications));
 
     return res.status(200).json(notifications);
   } catch (error) {
@@ -37,7 +47,7 @@ export const getUserActivities = async (req: Request, res: Response) => {
 };
 
 export const markAsReaded = async (req: Request, res: Response) => {
-  const userId = req.currentUser._id;
+  const userId = req.user._id;
   try {
     await Notification.updateMany(
       { belongsTo: userId, isRead: false },
@@ -52,9 +62,9 @@ export const markAsReaded = async (req: Request, res: Response) => {
   }
 };
 
-export const collectReward = async (req: Request, res: Response) => {
+export const collectNotificationReward = async (req: Request, res: Response) => {
   const notificationId = req.params.id;
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
 
   try {
     const notify = await Notification.findById(notificationId);

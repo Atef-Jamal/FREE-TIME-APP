@@ -7,7 +7,7 @@ import mongoose, { Types } from "mongoose";
 import { userExcludedFields } from "../constants";
 
 export const getAllConversations = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   const pageParam = Number(req.query.pageParam) || 1;
   let limit = 15;
   const skip = (pageParam - 1) * limit;
@@ -194,7 +194,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
 };
 
 export const getConversationMessages = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   const { secondUserId } = req.params;
   const secondUserIdObjId = new mongoose.Types.ObjectId(secondUserId);
   const pageParam = Number(req.query.pageParam) || 1;
@@ -229,7 +229,7 @@ export const getConversationMessages = async (req: Request, res: Response) => {
 };
 
 export const createMessage = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   const { messageText, receiver } = req.body;
 
   try {
@@ -270,7 +270,7 @@ export const createMessage = async (req: Request, res: Response) => {
 };
 
 export const getUnreadConversationsCount = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   try {
     const messages = await PrivateMessage.find({ receiver: currentUserId, isRead: false });
     const usersIds = messages.map((msg) => msg.sender);
@@ -281,7 +281,7 @@ export const getUnreadConversationsCount = async (req: Request, res: Response) =
 };
 
 export const markAsReaded = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
+  const currentUserId = req.user._id;
   const { secondUserId } = req.params;
   try {
     const conversation = await Conversation.findOne({

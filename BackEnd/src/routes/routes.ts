@@ -27,7 +27,7 @@ router.use("/notifications", notificationRoute);
 
 router.use("/tasks", taskRoute);
 
-router.use("/songs", musicsRoutes);
+router.use("/musics", musicsRoutes);
 
 router.use("/frames", frameRoute);
 

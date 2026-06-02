@@ -1,47 +1,17 @@
-import { v2 as cloudinary } from "cloudinary";
-import multer from "multer";
-// import { CloudinaryStorage, createCloudinaryStorage } from "multer-storage-cloudinary";
-// import path from "path";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
-
-const storage = multer.memoryStorage();
-
-const uploadCloud = multer({
-  storage,
-  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE!) },
-});
-
-const generateNewWeekRewards = (startDay?: Date) => {
+const generateNewWeekRewards = (startDay = new Date()) => {
   const newWeekRewards = [...Array(7).keys()].map((item) => {
-    if (startDay) {
-      return {
-        day: item + 1,
-        availableAt: new Date(
-          new Date(new Date().setHours(0, 0, 0, 0)).setDate(startDay.getDate() + item + 1),
-        ),
-        isCollected: false,
-        reward: 50 * (item + 1),
-      };
-    } else {
-      return {
-        day: item + 1,
-        availableAt: new Date(new Date(new Date().setHours(0, 0, 0, 0)).setDate(new Date().getDate() + item)),
-        isCollected: false,
-        reward: 50 * (item + 1),
-      };
-    }
+    const clonedDate = new Date(startDay);
+    clonedDate.setHours(0, 0, 0, 0);
+    clonedDate.setDate(clonedDate.getDate() + item + 1);
+    return {
+      day: item + 1,
+      availableAt: clonedDate,
+      isCollected: false,
+      reward: 50 * (item + 1),
+    };
   });
 
   return newWeekRewards;
 };
 
-export { cloudinary, uploadCloud, generateNewWeekRewards };
+export { generateNewWeekRewards };

@@ -1,10 +1,7 @@
+import User from "../models/user";
 import passport from "passport";
 import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
 import { Strategy as GithubStrategy, Profile } from "passport-github2";
-import User from "../models/user";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 passport.serializeUser((user: any, done) => {
@@ -40,7 +37,6 @@ passport.use(
         if (user) {
           user.googleId = profile.id;
           user.emailVerified = true;
-          if (profile.photos?.[0].value) user.profilePicture = profile.photos[0].value;
           await user.save();
           return done(null, user);
         }
@@ -87,7 +83,6 @@ passport.use(
         if (user) {
           user.githubId = profile.id;
           user.emailVerified = true;
-          if (profile.photos?.[0].value) user.profilePicture = profile.photos[0].value;
           await user.save();
           return done(null, user);
         }

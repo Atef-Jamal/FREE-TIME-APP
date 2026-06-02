@@ -13,7 +13,7 @@ const Navbare = memo(() => {
   const { t } = useTranslation("navbar");
   const dispatch = useAppDispatch();
 
-  const token = localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("isLoggedIn");
 
   return (
     <div className="sticky top-0 z-[6] flex h-[55px] items-center justify-between border-b border-[#f8d3d32a] bg-[#22162c] px-1 sm:px-3">
@@ -32,7 +32,7 @@ const Navbare = memo(() => {
 
         {userAuth === "unauthenticated" && <NavRegisterButtons />}
 
-        {token && userAuth === "pending" && <NavProfileHeaderSkeleton />}
+        {isLoggedIn && userAuth === "pending" && <NavProfileHeaderSkeleton />}
 
         {userAuth === "authenticated" && <NavProfileHeader />}
       </div>

@@ -8,21 +8,26 @@ import {
   verifyEmailCode,
   changeName,
   signInWithProvider,
+  refreshToken,
+  logOut,
 } from "../controllers/authController";
 import passport from "passport";
 
 import protectedRoute from "../middleware";
-import { uploadCloud } from "../utils";
+import { uploadCloud } from "../lib/multer";
 
 const router = express.Router();
 
 router.post("/register", uploadCloud.single("profilePicture"), register);
 router.post("/login", login);
+router.post("/refresh-token", refreshToken);
+router.post("/logout", logOut);
 
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"], session: false, prompt: "select_account" }),
 );
+
 router.get(
   "/github",
   passport.authenticate("github", {

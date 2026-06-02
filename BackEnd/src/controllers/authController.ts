@@ -1,13 +1,21 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
-import { io } from "../socketIo";
 import PublicMessage from "../models/publicMessage";
-
 import { onLineUsers } from "../socketIo";
 import Notification from "../models/notification";
 import { userExcludedFields } from "../constants";
-import { sendEmail, sendRewardToUser, SignJwtToken, uploadImageToCloudinary } from "../services/authServices";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  sendEmail,
+  setTokenCookies,
+  verifyRefreshToken,
+} from "../services/authServices";
+import { sendRewardToUser } from "../services/userServices";
+import { io } from "../app";
+import { uploadImageToCloudinary } from "../services/others";
+import { redisClient } from "../lib/redis";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -38,13 +46,16 @@ export const register = async (req: Request, res: Response) => {
 
     const savedUser = await newUser.save();
 
-    const token = SignJwtToken(savedUser.id);
-
     if (referrerUser) {
       await sendRewardToUser(referrerUser, savedUser.id);
     }
 
-    return res.status(201).json({ token });
+    const accessToken = generateAccessToken({ userId: savedUser.id });
+    const refreshToken = generateRefreshToken({ userId: savedUser.id });
+
+    setTokenCookies({ accessToken, refreshToken, res });
+
+    return res.status(201).json({ status: "success" });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again Later" });
   }
@@ -68,26 +79,60 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Invalid Password" });
     }
 
-    const token = SignJwtToken(user.id);
+    const accessToken = generateAccessToken({ userId: user.id });
+    const refreshToken = generateRefreshToken({ userId: user.id });
 
-    return res.status(200).json({ token });
+    setTokenCookies({ accessToken, refreshToken, res });
+
+    return res.status(200).json({ status: "success" });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again later" });
   }
 };
 
 export const signInWithProvider = async (req: Request, res: Response) => {
+  const accessToken = generateAccessToken({ userId: req.user.id });
+  const refreshToken = generateRefreshToken({ userId: req.user.id });
+  setTokenCookies({ accessToken, refreshToken, res });
+  return res.redirect(`${process.env.CLIENT_BASE_URL!}?provider-authenticated=true`);
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
   try {
-    const token = SignJwtToken(req.user?.id);
-    return res.redirect(`${process.env.CLIENT_BASE_URL}/?providerToken=${token}`);
-  } catch (error) {
-    return res.status(404).json({ error: "failed to sign in with provider" });
+    const token = req.cookies.refreshToken;
+    if (!token) return res.status(401).json({ message: "No refresh token" });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded: any = verifyRefreshToken(token);
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) return res.status(403).json({ message: "Invalid session" });
+
+    const newAccessToken = generateAccessToken({ userId: user.id });
+
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    return res.status(200).json({ message: "Token refreshed" });
+  } catch (err) {
+    return res.status(403).json({ error: "Invalid or expired refresh token" });
   }
+};
+
+export const logOut = async (_req: Request, res: Response) => {
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  return res.status(200).json({ message: "Logged out successfully" });
 };
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   try {
-    const currentUser = await User.findById(req.currentUser?._id).select("-password").populate("myFrames");
+    const currentUser = await User.findById(req.user?._id).select("-password").populate("myFrames");
     if (!currentUser) {
       return res.status(404).json({ error: "User Not found" });
     }
@@ -98,7 +143,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 export const sendEmailVerificationCode = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser?._id;
+  const currentUserId = req.user?._id;
   try {
     const user = await User.findById(currentUserId);
 
@@ -136,7 +181,7 @@ export const sendEmailVerificationCode = async (req: Request, res: Response) => 
 };
 
 export const verifyEmailCode = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser?.id;
+  const currentUserId = req.user?.id;
   const enteredCode = req.body.enteredCode;
   try {
     const user = await User.findById(currentUserId);
@@ -168,6 +213,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
       },
     });
     const savedNotification = await createNotification.save();
+    await redisClient.del(`notifications:list:${currentUserId}`);
     const createPublicMessage = new PublicMessage({
       sender: currentUserId,
       typeOfTask: "EMAIL-VERIFIED",
@@ -177,7 +223,6 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
     const populatedMessage = await savePublicMessage.populate("sender", userExcludedFields);
 
     io.to(onLineUsers[currentUserId]).emit("new-notification", savedNotification);
-
     io.emit("public-message", populatedMessage);
     io.emit("user-updated", savedUser);
 
@@ -190,7 +235,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
 };
 
 export const changePassword = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser?._id;
+  const currentUserId = req.user?._id;
   const { enterdOldPass, newPass } = req.body;
   try {
     const user = await User.findById(currentUserId);
@@ -221,7 +266,7 @@ export const changePassword = async (req: Request, res: Response) => {
 };
 
 export const changeName = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser?._id;
+  const currentUserId = req.user?._id;
   const { newName } = req.body;
   try {
     const user = await User.findById(currentUserId);

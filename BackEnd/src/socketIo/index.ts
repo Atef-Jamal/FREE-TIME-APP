@@ -1,50 +1,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DefaultEventsMap, Server, Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import http from "http";
 import User from "../models/user";
-import { Types } from "mongoose";
-import jwt from "jsonwebtoken";
+import { verifyAccessToken } from "../services/authServices";
+import * as cookie from "cookie";
 
-declare module "socket.io" {
-  interface Socket {
-    isAuthenticated: boolean;
-    userId?: Types.ObjectId;
-  }
-}
-
-interface IDecodedToken {
-  userId: string;
-  iat?: number;
-}
-
-type TypeIO = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 
 export const onLineUsers: { [key: string]: string } = {};
 
-export let io: TypeIO;
-
 const initializeSocket = function (server: IServer) {
-  io = new Server(server, { cors: { origin: "*" } });
+  const io = new Server(server, { cors: { origin: process.env.CLIENT_BASE_URL, credentials: true } });
 
-  io.use((socket, next) => {
-    const token = socket.handshake.auth.token;
+  io.use(async (socket, next) => {
+    const reqCookie = socket.handshake.headers.cookie;
+
+    if (!reqCookie) {
+      socket.isAuthenticated = false;
+      return next();
+    }
+
+    const cookies = cookie.parse(reqCookie);
+    const token = cookies.accessToken;
+
     if (!token) {
       socket.isAuthenticated = false;
       return next();
     }
+
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY!) as IDecodedToken;
-      socket.userId = new Types.ObjectId(decoded.userId);
+      const decoded: any = verifyAccessToken(token);
+      socket.userId = decoded.userId;
       socket.isAuthenticated = true;
-      next();
+      return next();
     } catch (error) {
       socket.isAuthenticated = false;
-      next();
+      return next();
     }
   });
 
-  const setupPublicHandlers = (socket: Socket) => {
+  const updateUserStatus = async (socket: Socket, online: boolean) => {
+    if (!socket.userId) return;
+    if (online === true) onLineUsers[socket.userId] = socket.id;
+    if (online === false) delete onLineUsers[socket.userId];
+    try {
+      await User.findByIdAndUpdate(socket.userId, { $set: { isOnline: online } });
+      io.emit("online-users", Object.keys(onLineUsers));
+    } catch {
+      return;
+    }
+  };
+
+  io.on("connection", async (socket) => {
+    await updateUserStatus(socket, true);
+
     socket.on("new-user-registered", () => {
       socket.broadcast.emit("new-user-registered");
     });
@@ -63,52 +72,28 @@ const initializeSocket = function (server: IServer) {
     socket.on("public-message-interaction", (updatedMessage: any) => {
       socket.broadcast.emit("public-message-interaction", updatedMessage);
     });
-  };
 
-  const setupPrivateHandlers = (socket: Socket) => {
+    socket.on("disconnect", async () => await updateUserStatus(socket, false));
+
+    socket.on("error", (err) => {
+      console.log("Socket Error", err);
+    });
+
+    // authenticated sockets
     if (!socket.isAuthenticated || !socket.userId) return;
+
     socket.on("private-message", (message: any) => {
       if (!onLineUsers[message.to]) return;
       socket.to(onLineUsers[message.to]).emit("private-message", message.data);
     });
+
     socket.on("conversation-readed", (data: any) => {
       if (!onLineUsers[data.reciever]) return;
       socket.to(onLineUsers[data.reciever]).emit("conversation-readed", data);
     });
-  };
-
-  const updateUserStatus = async (socket: Socket, online: boolean) => {
-    if (!socket.userId) return;
-    if (online === true) onLineUsers[socket.userId.toString()] = socket.id;
-    if (online === false) delete onLineUsers[socket.userId.toString()];
-    try {
-      await User.findByIdAndUpdate(socket.userId, { $set: { isOnline: online } });
-    } catch (error) {
-      console.log("can not update user status (online - offline)");
-    }
-  };
-
-  const emitOnlineUsers = () => {
-    const onlineUsers = Object.keys(onLineUsers).map((id) => new Types.ObjectId(id));
-    io.emit("online-users", onlineUsers);
-  };
-
-  const handleDisconnect = async (socket: Socket) => {
-    await updateUserStatus(socket, false);
-    emitOnlineUsers();
-    socket.removeAllListeners();
-  };
-
-  io.on("connection", async (socket) => {
-    await updateUserStatus(socket, true);
-    emitOnlineUsers();
-    setupPublicHandlers(socket);
-    setupPrivateHandlers(socket);
-    socket.on("disconnect", () => handleDisconnect(socket));
-    socket.on("error", (err) => {
-      console.log("Socket Error", err);
-    });
   });
+
+  return io;
 };
 
 export default initializeSocket;

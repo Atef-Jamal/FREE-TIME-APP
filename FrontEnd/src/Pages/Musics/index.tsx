@@ -5,7 +5,7 @@ import Skeleton from "../../components/Shared/Common/Skeleton";
 import { useFetchMusics } from "../../tanstackQuery/queryFetch";
 
 const Musics = () => {
-  const { data: musics = [], status } = useFetchMusics();
+  const { data, status } = useFetchMusics();
 
   useScrollToElement({ startScroll: status === "success" });
 
@@ -31,9 +31,7 @@ const Musics = () => {
             </div>
           ))}
 
-        {musics.map((song) => (
-          <MusicCard key={song.id} songDetails={song} />
-        ))}
+        {data?.map((music) => <MusicCard key={music.id} songDetails={music} />)}
       </div>
       {status === "error" && <div className="mx-auto my-8 text-center">an error occurred !</div>}
     </div>

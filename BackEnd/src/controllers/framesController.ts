@@ -2,9 +2,12 @@ import { Request, Response } from "express";
 import Frame from "../models/frame";
 import User from "../models/user";
 import PublicMessage from "../models/publicMessage";
-import { io, onLineUsers } from "../socketIo";
+import { onLineUsers } from "../socketIo";
+import { io } from "../app";
+
 import Notification from "../models/notification";
 import { userExcludedFields } from "../constants";
+import { redisClient } from "../lib/redis";
 
 export const getAllFrames = async (_: Request, res: Response) => {
   try {
@@ -16,7 +19,7 @@ export const getAllFrames = async (_: Request, res: Response) => {
 };
 
 export const buyFrame = async (req: Request, res: Response) => {
-  const { points, myFrames, _id } = req.currentUser;
+  const { points, myFrames, _id } = req.user;
   const { frameId } = req.params;
 
   try {
@@ -62,6 +65,7 @@ export const buyFrame = async (req: Request, res: Response) => {
     });
 
     const saveNotification = await createNotification.save();
+    await redisClient.del(`notifications:list:${_id}`);
     const savedNotification = await saveNotification.populate("metadata.frame");
 
     io.to(onLineUsers[_id]).emit("new-notification", savedNotification);

@@ -98,7 +98,6 @@ const Earn = () => {
     callback: goToAppDetailSection,
   });
   const allTasks = data?.pages.map((page) => page.tasks).flat();
-  console.log(allTasks);
 
   return (
     <div className="flex flex-col gap-4 bg-[#21223a] p-2 md:p-4">

@@ -15,20 +15,13 @@ export const getCoupon = async (_: Request, res: Response) => {
 };
 
 export const applyCoupon = async (req: Request, res: Response) => {
-  const currentUserId = req.currentUser._id;
   const { code } = req.body;
   try {
-    const user = await User.findById(currentUserId);
-
-    if (!user) {
-      return res.status(404).json({ error: "an Error Occurred, User must be Log In" });
-    }
-
     if (code.trim() === "") {
       return res.status(404).json({ error: "Enter Code" });
     }
 
-    if (user.coupons.includes(code.toString())) {
+    if (req.user.coupons.includes(code.toString())) {
       return res.status(404).json({
         error: "Already Consummed, stay up to date for upcoming New Bounus code",
       });
@@ -50,13 +43,20 @@ export const applyCoupon = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "sorry, code is Expired" });
     }
 
-    user.coupons.push(coupon.code);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $inc: { points: coupon.prize },
+        coupons: [...req.user.coupons, coupon.code],
+      },
+      { new: true },
+    );
 
-    user.points += coupon.prize;
+    if (!updatedUser) {
+      return res.status(404).json({ error: "can't apply coupon, try again" });
+    }
 
-    const savedUser = await user.save();
-
-    return res.status(200).json({ points: savedUser.points });
+    return res.status(200).json({ points: updatedUser.points });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, try again" });
   }

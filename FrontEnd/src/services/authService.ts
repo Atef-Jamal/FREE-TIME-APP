@@ -15,8 +15,10 @@ export const register = async ({ formData, dispatch, referrerUser }: IRegisterPr
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-  localStorage.setItem("token", response.data.token);
-  window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
+  if (response.status === 201) {
+    localStorage.setItem("isLoggedIn", "true");
+    window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
+  }
 };
 
 export const login = async ({ formData, dispatch }: ILoginProps) => {
@@ -31,8 +33,10 @@ export const login = async ({ formData, dispatch }: ILoginProps) => {
     email,
     password,
   });
-  localStorage.setItem("token", response.data.token);
-  window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+  if (response.status === 200) {
+    localStorage.setItem("isLoggedIn", "true");
+    window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+  }
 };
 
 export const handleSignInWithOauth = async (provider: "google" | "github", dispatch: IDispatch) => {
@@ -52,4 +56,10 @@ export const handleSignInWithOauth = async (provider: "google" | "github", dispa
       }),
     );
   }
+};
+
+export const logOut = async () => {
+  localStorage.removeItem("isLoggedIn");
+  await axiosRequest.post("api/auth/logout");
+  window.location.href = `${window.location.origin}/?redirectedfrom=logout`;
 };

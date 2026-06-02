@@ -8,6 +8,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import { useRef } from "react";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { cn } from "../../utilities";
+import { logOut } from "../../services/authService";
 
 interface IProps {
   setOpenProfileMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,9 +22,9 @@ const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
   useClickOutside(menuRef, () => setOpenProfileMenu(false));
 
   const handleLogOut = async () => {
-    localStorage.clear();
+    localStorage.removeItem("isLoggedIn");
     setOpenProfileMenu((previos) => !previos);
-    window.location.href = `${window.location.origin}/?redirectedfrom=logout`;
+    return await logOut();
   };
 
   const handleToggleLiveStats = () => {

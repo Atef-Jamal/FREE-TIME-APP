@@ -19,13 +19,13 @@ import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
+import Input from "../../components/Shared/Common/Input";
+import { useFetchTestimonials } from "../../tanstackQuery/queryFetch";
+import { addTestimonialCashe } from "../../tanstackQuery/queryCache";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import Input from "../../components/Shared/Common/Input";
-import { useFetchTestimonials } from "../../tanstackQuery/queryFetch";
-import { addTestimonialCashe } from "../../tanstackQuery/queryCache";
 
 const Home = () => {
   const currentUser = useAppSelector(selectCurrentUser);
@@ -38,7 +38,7 @@ const Home = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation("home");
 
-  const token = !!localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("isLoggedIn");
 
   const { data: testimonials, status, error } = useFetchTestimonials();
 
@@ -122,8 +122,8 @@ const Home = () => {
   return (
     <div className="bg-[#222339] py-6 lg:py-12">
       <div className="mx-auto w-[90%] max-w-7xl space-y-16">
-        <div className={!token ? "flex flex-col justify-between gap-y-6 md:flex-row" : ""}>
-          <div className={cn("h-full w-full", !token && "md:w-[48%]")}>
+        <div className={!isLoggedIn ? "flex flex-col justify-between gap-y-6 md:flex-row" : ""}>
+          <div className={cn("h-full w-full", !isLoggedIn && "md:w-[48%]")}>
             <h1 className="mb-4 w-full text-center text-4xl font-bold text-[#af5a5a] md:text-6xl">
               {t("Get Paid For")}
             </h1>
@@ -143,7 +143,7 @@ const Home = () => {
             </div>
           </div>
 
-          {!token && (
+          {!isLoggedIn && (
             <div className="flex w-full flex-col gap-y-2 rounded-md border border-gray-600 bg-[#33334c] p-2 md:w-[48%] md:p-4">
               <div className="rounded-md bg-[#18193fb4] py-3 text-center">
                 <h1 className="text-2xl font-bold tracking-wider text-white">{t("Sign Up For Free")}</h1>

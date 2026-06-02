@@ -58,7 +58,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     profilePicture: {
       type: String,
-      default: "https://res.cloudinary.com/dql5bc50n/image/upload/v1748778044/avatar_b4eoae.jpg",
+      default: "https://res.cloudinary.com/dql5bc50n/image/upload/v1780306060/avatar_uogqav.jpg",
     },
     points: {
       type: Number,
