@@ -6,7 +6,7 @@ import { useFetchMusics } from "../../tanstackQuery/queryFetch";
 
 const Musics = () => {
   const { data, status } = useFetchMusics();
-
+  console.log(data);
   useScrollToElement({ startScroll: status === "success" });
 
   return (

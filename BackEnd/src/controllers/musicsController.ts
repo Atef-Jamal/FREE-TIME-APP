@@ -79,7 +79,7 @@ export const getMusics = async (_req: Request, res: Response) => {
     };
     const response = await fetch(url, options);
     const data = await response.json();
-    await redisClient.set(cacheKey, JSON.stringify(data));
+    await redisClient.set(cacheKey, JSON.stringify(data.data));
     return res.status(200).json(data);
   } catch (error) {
     return res.status(404).json({ error: "can't load musics." });
