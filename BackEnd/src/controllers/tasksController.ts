@@ -36,10 +36,10 @@ export const getAllTasks = async (req: Request, res: Response) => {
 
     if (cachedTasks && cachedAllTasksCount) {
       const hasMore = pageParam * limitedPerPage < JSON.parse(cachedAllTasksCount);
-      console.log("readed from redis cache");
+
       return res.status(200).json({ tasks: JSON.parse(cachedTasks), hasMore });
     }
-    console.log("oustide cache");
+
     const tasks = await Task.find(query).skip(skip).limit(limitedPerPage);
     const allTasksCount = await Task.countDocuments(query);
 
