@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import Conversation from "../models/conversation";
-import User, { IUser } from "../models/user";
-import PrivateMessage from "../models/privateMessage";
-import mongoose, { Types } from "mongoose";
-import { userExcludedFields } from "../constants";
+import UserModel, { IUser } from "../models/userModel.js";
+import { Types } from "mongoose";
+import { userExcludedFields } from "../constants/index.js";
+import ConversationModel from "../models/conversationModel.js";
+import PrivateMessageModel from "../models/privateMessageModel.js";
 
 export const getAllConversations = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
+
   const pageParam = Number(req.query.pageParam) || 1;
   let limit = 15;
   const skip = (pageParam - 1) * limit;
 
   try {
-    const conversations = await Conversation.aggregate([
+    let conversations = await ConversationModel.aggregate([
       {
-        $match: { participants: currentUserId },
+        $match: { participants: req.user._id },
       },
       {
         $addFields: {
@@ -23,7 +24,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
             $filter: {
               input: "$participants",
               as: "userId",
-              cond: { $ne: ["$$userId", currentUserId] },
+              cond: { $ne: ["$$userId", req.user._id] },
             },
           },
         },
@@ -99,7 +100,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
         $lookup: {
           from: "privatemessages",
           localField: "_id",
-          foreignField: "conversationId",
+          foreignField: "conversation",
           let: { secondUserId: "$secondUserId" },
           as: "messages",
           pipeline: [
@@ -119,7 +120,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
           secondUser: "$secondUserData",
           lastMessage: {
             _id: "$lastMessageDetails._id",
-            conversationId: "$lastMessageDetails.conversationId",
+            conversation: "$lastMessageDetails.conversation",
             sender: "$lastMessageSenderDetails",
             receiver: "$lastMessageReceveiverDetails",
             message: "$lastMessageDetails.message",
@@ -135,19 +136,17 @@ export const getAllConversations = async (req: Request, res: Response) => {
       { $limit: limit },
     ]);
 
-    let newPotintialConversations: any[] = [];
-
     if (conversations.length < limit) {
       limit = limit - conversations.length;
-      const excludedUsersIds = await Conversation.aggregate([
-        { $match: { participants: currentUserId } },
+      const excludedUsersIds = await ConversationModel.aggregate([
+        { $match: { participants: req.user._id } },
         {
           $addFields: {
             userId: {
               $filter: {
                 input: "$participants",
                 as: "user",
-                cond: { $ne: ["$$user", currentUserId] },
+                cond: { $ne: ["$$user", req.user._id] },
               },
             },
           },
@@ -163,30 +162,25 @@ export const getAllConversations = async (req: Request, res: Response) => {
 
       const ids = excludedUsersIds.map((i) => i.userId);
 
-      const users: IUser[] = await User.find({ _id: { $nin: [...ids, currentUserId] } })
+      const users: IUser[] = await UserModel.find({ _id: { $nin: [...ids, req.user._id] } })
         .select(userExcludedFields)
         .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
         .skip(skip)
         .limit(limit);
 
-      const createPotintialConversations = users.map((user) => ({
+      const potintialConversations = users.map((user) => ({
         _id: new Types.ObjectId(),
         secondUser: user,
         lastMessage: null,
         unReadCount: 0,
       }));
-      newPotintialConversations = [...newPotintialConversations, ...createPotintialConversations];
+
+      conversations = [...conversations, ...potintialConversations];
     }
 
-    const allConversations = [...conversations, ...newPotintialConversations];
+    const hasMore = limit === conversations.length;
 
-    const countAllUsers = await User.countDocuments({
-      _id: { $ne: currentUserId },
-    });
-
-    const hasMore = pageParam * limit < countAllUsers;
-
-    return res.status(200).json({ conversations: allConversations, hasMore });
+    return res.status(200).json({ conversations, hasMore });
   } catch (error) {
     console.log(error);
     return res.status(404).json({ error: "can not load all conversations" });
@@ -194,85 +188,80 @@ export const getAllConversations = async (req: Request, res: Response) => {
 };
 
 export const getConversationMessages = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { secondUserId } = req.params;
-  const secondUserIdObjId = new mongoose.Types.ObjectId(secondUserId);
   const pageParam = Number(req.query.pageParam) || 1;
   const limit = 15;
   const skip = (pageParam - 1) * limit;
 
   try {
-    const secondUser = await User.findById(secondUserIdObjId).select(userExcludedFields);
+    const secondUser = await UserModel.findById(new Types.ObjectId(secondUserId)).select(userExcludedFields);
+    if (!secondUser) return res.status(404).json({ error: "user not found" });
 
-    if (!secondUser) {
-      return res.status(404).json({ error: "user not found" });
-    }
-
-    const messages = await PrivateMessage.find({
+    const messages = await PrivateMessageModel.find({
       $or: [
-        { sender: currentUserId, receiver: secondUserIdObjId },
-        { sender: secondUserIdObjId, receiver: currentUserId },
+        { sender: req.user._id, receiver: secondUser._id },
+        { sender: secondUser._id, receiver: req.user._id },
       ],
     })
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)
-      .populate("sender", userExcludedFields)
-      .populate("receiver", userExcludedFields);
+      .populate([
+        { path: "sender", select: userExcludedFields },
+        { path: "receiver", select: userExcludedFields },
+      ]);
 
     const reversedMessages = messages.reverse();
-    const hasOlder = pageParam * limit <= messages.length;
-    return res.status(200).json({ messages: reversedMessages, secondUser, hasOlder });
+    const hasMore = limit === messages.length;
+    return res.status(200).json({ messages: reversedMessages, hasMore });
   } catch (error) {
     return res.status(404).json({ error: "can't Load Chat" });
   }
 };
 
 export const createMessage = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { messageText, receiver } = req.body;
 
   try {
-    let conversation = await Conversation.findOne({ participants: { $all: [currentUserId, receiver] } });
+    let conversation = await ConversationModel.findOne({ participants: { $all: [req.user._id, receiver] } });
 
     if (!conversation) {
-      conversation = new Conversation({
-        participants: [currentUserId, receiver],
+      conversation = new ConversationModel({
+        participants: [req.user._id, receiver],
       });
-      await conversation.save();
     }
 
-    const newMessage = new PrivateMessage({
-      conversationId: conversation._id,
-      sender: currentUserId,
+    const newMessage = await PrivateMessageModel.create({
+      conversation: conversation._id,
+      sender: req.user._id,
       receiver: receiver,
       message: messageText,
     });
 
-    await newMessage.save();
-
-    conversation.lastMessage = newMessage.id;
+    conversation.lastMessage = newMessage._id;
 
     await conversation.save();
 
-    const message = await PrivateMessage.findById(newMessage._id)
+    const message = await PrivateMessageModel.findById(newMessage._id)
       .populate("sender", userExcludedFields)
       .populate("receiver", userExcludedFields);
 
-    if (!message) {
-      return res.status(404).json({ error: "can't create message, an Error occurred" });
-    }
+    if (!message) return res.status(404).json({ error: "can't create message, an Error occurred" });
+
     return res.status(200).json(message);
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "can't create message, an Error occurred" });
   }
 };
 
 export const getUnreadConversationsCount = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   try {
-    const messages = await PrivateMessage.find({ receiver: currentUserId, isRead: false });
+    const messages = await PrivateMessageModel.find({ receiver: req.user._id, isRead: false }).select(
+      "sender",
+    );
     const usersIds = messages.map((msg) => msg.sender);
     return res.status(200).json({ senderIds: usersIds });
   } catch (error) {
@@ -281,16 +270,16 @@ export const getUnreadConversationsCount = async (req: Request, res: Response) =
 };
 
 export const markAsReaded = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { secondUserId } = req.params;
   try {
-    const conversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, secondUserId] },
+    const conversation = await ConversationModel.findOne({
+      participants: { $all: [req.user._id, secondUserId] },
     }).select("_id");
 
     if (conversation) {
-      await PrivateMessage.updateMany(
-        { conversationId: conversation._id, receiver: currentUserId, isRead: false },
+      await PrivateMessageModel.updateMany(
+        { conversation: conversation._id, receiver: req.user._id, isRead: false },
         { isRead: true },
       );
       return res.status(200).json({ message: "success" });

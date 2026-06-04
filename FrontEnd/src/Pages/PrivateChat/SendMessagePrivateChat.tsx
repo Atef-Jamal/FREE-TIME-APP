@@ -41,7 +41,7 @@ const SendMessagePrivateChat = ({ activeChatId }: IProps) => {
 
       const optimisticMsg = {
         _id: uniqeIdForRollback,
-        conversationId: uniqeIdForRollback.toString().slice(0, -1),
+        conversation: uniqeIdForRollback.toString().slice(0, -1),
         sender: currentUser,
         message,
         receiver: uniqeIdForRollback.toString().slice(0, -3),

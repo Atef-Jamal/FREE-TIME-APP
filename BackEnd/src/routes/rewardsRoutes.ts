@@ -1,6 +1,6 @@
 import express from "express";
-import protectedRoute from "../middleware";
-import { collectRewardController } from "../controllers/rewardController";
+import protectedRoute from "../middleware/index.js";
+import { collectRewardController } from "../controllers/rewardController.js";
 
 const router = express.Router();
 

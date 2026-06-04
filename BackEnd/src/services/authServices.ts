@@ -1,8 +1,9 @@
 import { Response } from "express";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
+import Mail from "nodemailer/lib/mailer/index.js";
 import dotenv from "dotenv";
+import { Types } from "mongoose";
 
 dotenv.config();
 
@@ -30,11 +31,11 @@ export const setTokenCookies = ({
   });
 };
 
-export const generateAccessToken = ({ userId }: { userId: string }) => {
+export const generateAccessToken = ({ userId }: { userId: Types.ObjectId }) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET_KEY!, { expiresIn: "15m" });
 };
 
-export const generateRefreshToken = ({ userId }: { userId: string }) => {
+export const generateRefreshToken = ({ userId }: { userId: Types.ObjectId }) => {
   return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET_KEY!, { expiresIn: "7d" });
 };
 

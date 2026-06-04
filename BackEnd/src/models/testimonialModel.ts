@@ -1,18 +1,20 @@
-import mongoose, { Document, Model, Schema, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
+import { IUser } from "./userModel.js";
 
 export interface ITestimonial extends Document {
-  user: Types.ObjectId;
+  user: Types.ObjectId | IUser;
   content: string;
   stars: number;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const testimonialSchema: Schema<ITestimonial> = new mongoose.Schema<ITestimonial>(
+const testimonialSchema = new Schema<ITestimonial>(
   {
     user: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "UserModel",
     },
     content: {
       type: String,
@@ -30,5 +32,5 @@ const testimonialSchema: Schema<ITestimonial> = new mongoose.Schema<ITestimonial
 
 testimonialSchema.index({ user: 1 });
 
-const Testimonial: Model<ITestimonial> = mongoose.model<ITestimonial>("Testimonial", testimonialSchema);
-export default Testimonial;
+const TestimonialModel = model<ITestimonial>("TestimonialModel", testimonialSchema);
+export default TestimonialModel;

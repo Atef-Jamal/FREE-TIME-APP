@@ -1,17 +1,17 @@
 import express, { Router } from "express";
-import authRouter from "./authRoutes";
-import usersRouter from "./usersRoutes";
-import conversationsRoute from "./privateChatRoutes";
-import notificationRoute from "./notificationRoutes";
-import publicChatRoute from "./publicChatRoutes";
-import musicsRoutes from "./musicsRoutes";
-import taskRoute from "./tasksRoutes";
-import frameRoute from "./frameRoutes";
-import testimonialRoute from "./testimonialRoutes";
-import couponRoute from "./couponRoutes";
-import searchRoute from "./searchRoute";
-import rewardsRoutes from "./rewardsRoutes";
-import dateRoutes from "./dateRoutes";
+import authRouter from "./authRoutes.js";
+import usersRouter from "./usersRoutes.js";
+import conversationsRoute from "./privateChatRoutes.js";
+import notificationRoute from "./notificationRoutes.js";
+import publicChatRoute from "./publicChatRoutes.js";
+import musicsRoutes from "./musicsRoutes.js";
+import taskRoute from "./tasksRoutes.js";
+import frameRoute from "./frameRoutes.js";
+import testimonialRoute from "./testimonialRoutes.js";
+import couponRoute from "./couponRoutes.js";
+import searchRoute from "./searchRoute.js";
+import rewardsRoutes from "./rewardsRoutes.js";
+import dateRoutes from "./dateRoutes.js";
 
 const router = express.Router();
 

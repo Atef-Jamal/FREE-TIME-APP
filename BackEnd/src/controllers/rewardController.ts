@@ -1,22 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import { generateNewWeekRewards } from "../utils";
-import User from "../models/user";
+import { generateNewWeekRewards } from "../utils/index.js";
+import User, { IDailyReward } from "../models/userModel.js";
 
 export const collectRewardController = async (req: Request, res: Response) => {
-  const targetDay = Number(req.body.day);
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
+  const targetDay = req.body.day;
   try {
-    const day = req.user.dailyReward.find((item: any) => item.day === targetDay);
+    const day = req.user.dailyReward.find((item: IDailyReward) => item.day === targetDay);
 
-    if (!day) {
-      return res.status(404).json({ error: "an error occurred" });
-    }
+    if (!day) return res.status(404).json({ error: "an error occurred" });
 
-    const alreadyCollected = day.isCollected === true;
-
-    if (alreadyCollected) {
-      return res.status(404).json({ error: "sorry, already collected" });
-    }
+    if (day.isCollected === true) return res.status(404).json({ error: "sorry, already collected" });
 
     const today = new Date();
 
@@ -42,12 +37,10 @@ export const collectRewardController = async (req: Request, res: Response) => {
         $inc: { points: day.reward },
         dailyReward: updatedDailyRewards,
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
-    if (!updatedUser) {
-      return res.status(404).json({ error: "can't collect reward" });
-    }
+    if (!updatedUser) return res.status(404).json({ error: "can't collect reward" });
 
     const isAllRewardOfWeekCollected = updatedUser.dailyReward.every((day) => day.isCollected === true);
 
@@ -61,7 +54,7 @@ export const collectRewardController = async (req: Request, res: Response) => {
           $inc: { week: 1 },
           dailyReward: newWeekRewards,
         },
-        { new: true },
+        { returnDocument: "after" },
       );
     }
 

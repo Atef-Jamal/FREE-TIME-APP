@@ -38,6 +38,7 @@ export interface ITestimonial {
   content: string;
   stars: number;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IMusicDetail {

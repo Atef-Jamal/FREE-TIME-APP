@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import Task from "../models/task";
-import User from "../models/user";
-import PublicMessage from "../models/publicMessage";
-import { io } from "../app";
-import AppsReview from "../models/appsReview";
-import { onLineUsers } from "../socketIo";
-import Notification from "../models/notification";
-import { userExcludedFields } from "../constants";
-import { redisClient } from "../lib/redis";
+import Task, { IOffer } from "../models/offerModel.js";
+import User from "../models/userModel.js";
+import { io } from "../app.js";
+import { onLineUsers } from "../socketIo/index.js";
+import { userExcludedFields } from "../constants/index.js";
+import { redisClient } from "../lib/redis.js";
+import { Types } from "mongoose";
+import NotificationModel from "../models/notificationModel.js";
+import PublicMessageModel from "../models/publicMessageModel.js";
+import OfferReviewModel from "../models/offerReviewModel.js";
 
 type IFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
 type IFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
@@ -29,24 +29,17 @@ export const getAllTasks = async (req: Request, res: Response) => {
     };
 
     const tasksCacheKey = `tasks:list:${JSON.stringify({ query, skip, limitedPerPage })}`;
-    const allTasksCountCacheKey = `tasks:list:count:${JSON.stringify(query)}`;
-
     const cachedTasks = await redisClient.get(tasksCacheKey);
-    const cachedAllTasksCount = await redisClient.get(allTasksCountCacheKey);
 
-    if (cachedTasks && cachedAllTasksCount) {
-      const hasMore = pageParam * limitedPerPage < JSON.parse(cachedAllTasksCount);
-
+    if (cachedTasks) {
+      const hasMore = limitedPerPage === JSON.parse(cachedTasks).length;
       return res.status(200).json({ tasks: JSON.parse(cachedTasks), hasMore });
     }
 
     const tasks = await Task.find(query).skip(skip).limit(limitedPerPage);
-    const allTasksCount = await Task.countDocuments(query);
-
     await redisClient.set(tasksCacheKey, JSON.stringify(tasks));
-    await redisClient.set(allTasksCountCacheKey, JSON.stringify(allTasksCount));
 
-    const hasMore = pageParam * limitedPerPage < allTasksCount;
+    const hasMore = limitedPerPage === tasks.length;
     return res.status(200).json({ tasks, hasMore });
   } catch (error) {
     return res.status(404).json({ error: "can't Load apps and offers" });
@@ -60,15 +53,11 @@ export const getTaskDetails = async (req: Request, res: Response) => {
 
     const cachedTask = await redisClient.get(taskDetailsCacheKey);
 
-    if (cachedTask) {
-      return res.status(200).json(JSON.parse(cachedTask));
-    }
+    if (cachedTask) return res.status(200).json(JSON.parse(cachedTask));
 
     const task = await Task.findById(taskId);
 
-    if (!task) {
-      return res.status(404).json({ error: "offer not found" });
-    }
+    if (!task) return res.status(404).json({ error: "Offer not found" });
 
     await redisClient.set(taskDetailsCacheKey, JSON.stringify(task));
 
@@ -111,7 +100,7 @@ export const publicTaskDetails = async (req: Request, res: Response) => {
 };
 
 export const completingQuizApp = async (req: Request, res: Response) => {
-  const currentUserId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const completedTasks = req.user.completedTasks;
   const { quizappId } = req.params;
   const { answers } = req.body;
@@ -129,19 +118,17 @@ export const completingQuizApp = async (req: Request, res: Response) => {
       if (task) await redisClient.set(taskCacheKey, JSON.stringify(task));
     }
 
-    if (!task) {
-      return res.status(404).json({ error: "App Not Found" });
-    }
+    if (!task) return res.status(404).json({ error: "App Not Found" });
 
     if (task.isAvailable === "UNAVAILABLE") {
       return res.status(404).json({ error: "sorry, this app is not available" });
     }
 
-    const isCompletedBefore = task.completedBy.includes(currentUserId) || completedTasks.includes(quizappId);
+    const isAlreadyCompleted =
+      task.completedBy.includes(req.user._id) || completedTasks.includes(new Types.ObjectId(quizappId));
 
-    if (isCompletedBefore) {
+    if (isAlreadyCompleted)
       return res.status(404).json({ error: "sorry, offer already completed, try another" });
-    }
 
     let corrects = 0;
     let wrongs = 0;
@@ -162,28 +149,34 @@ export const completingQuizApp = async (req: Request, res: Response) => {
       });
     }
 
-    task.completedBy.push(currentUserId);
+    task.completedBy.push(req.user._id);
     const savedTask = await task.save();
-    await User.findByIdAndUpdate(currentUserId, { $push: { completedTasks: quizappId } }, { new: true });
-    const notification = new Notification({
+
+    await User.findByIdAndUpdate(req.user._id, { $push: { completedTasks: quizappId } }, { new: true });
+
+    const newNotification = await NotificationModel.create({
       type: "QUIZ-APP",
-      belongsTo: currentUserId,
+      belongsTo: req.user._id,
       metadata: {
         isCollected: false,
         prize: savedTask.prize,
       },
     });
-    const newPublicMessage = new PublicMessage({
+    const newMessage = await PublicMessageModel.create({
       type: "FREETIME",
       typeOfTask: "TASK",
-      sender: currentUserId,
+      sender: req.user._id,
     });
-    await notification.save();
-    await redisClient.del(`notifications:list:${currentUserId}`);
-    const savedMessage = await newPublicMessage.save();
-    const publicMessage = await savedMessage.populate("sender", userExcludedFields);
-    io.to(onLineUsers[currentUserId]).emit("new-notification", notification);
-    io.emit("public-message", publicMessage);
+
+    const populatedMessage = PublicMessageModel.findById(newMessage._id).populate(
+      "sender",
+      userExcludedFields,
+    );
+
+    await redisClient.del(`notifications:list:${req.user._id}`);
+
+    io.to(onLineUsers[req.user._id.toString()]).emit("new-notification", newNotification);
+    io.emit("public-message", populatedMessage);
 
     return res.status(200).json({ corrects, wrongs, message: "successfully completed" });
   } catch (error) {
@@ -192,9 +185,10 @@ export const completingQuizApp = async (req: Request, res: Response) => {
 };
 
 export const completingGuessCard = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { guessCardAppId } = req.params;
   const completedTasks = req.user.completedTasks;
-  const currentUserId = req.user._id;
+
   try {
     const taskCacheKey = `tasks:details:${guessCardAppId}`;
 
@@ -209,46 +203,47 @@ export const completingGuessCard = async (req: Request, res: Response) => {
       if (task) await redisClient.set(taskCacheKey, JSON.stringify(task));
     }
 
-    if (!task) {
-      return res.status(404).json({ error: "Game Not Found" });
-    }
+    if (!task) return res.status(404).json({ error: "Game Not Found" });
 
     if (task.isAvailable === "UNAVAILABLE") {
       return res.status(404).json({ error: "sorry, this app is not available" });
     }
 
     const isCompletedBefore =
-      task.completedBy.includes(currentUserId) || completedTasks.includes(guessCardAppId);
+      task.completedBy.includes(req.user._id) || completedTasks.includes(new Types.ObjectId(guessCardAppId));
 
     if (isCompletedBefore) {
       return res.status(404).json({ error: "sorry, offer already completed, try another" });
     }
 
-    task.completedBy.push(currentUserId);
+    task.completedBy.push(req.user._id);
     await task.save();
-    await User.findByIdAndUpdate(currentUserId, { $push: { completedTasks: guessCardAppId } }, { new: true });
 
-    const notification = new Notification({
+    await User.findByIdAndUpdate(req.user._id, { $push: { completedTasks: guessCardAppId } }, { new: true });
+
+    const newNotification = await NotificationModel.create({
       type: "GUESS-CARD",
-      belongsTo: currentUserId,
+      belongsTo: req.user._id,
       metadata: {
         isCollected: false,
         prize: task.prize,
       },
     });
-    await notification.save();
-    await redisClient.del(`notifications:list:${currentUserId}`);
-    const newPublicMessage = new PublicMessage({
+    const newMessage = await PublicMessageModel.create({
       type: "FREETIME",
-      sender: currentUserId,
       typeOfTask: "TASK",
+      sender: req.user._id,
     });
 
-    const savedMessage = await newPublicMessage.save();
-    const publicMessage = await savedMessage.populate("sender", userExcludedFields);
+    const populatedMessage = PublicMessageModel.findById(newMessage._id).populate(
+      "sender",
+      userExcludedFields,
+    );
 
-    io.to(onLineUsers[currentUserId]).emit("new-notification", notification);
-    io.emit("public-message", publicMessage);
+    await redisClient.del(`notifications:list:${req.user._id}`);
+
+    io.to(onLineUsers[req.user._id.toString()]).emit("new-notification", newNotification);
+    io.emit("public-message", populatedMessage);
 
     return res.status(200).json({ message: "passed sucessfully" });
   } catch (error) {
@@ -257,14 +252,14 @@ export const completingGuessCard = async (req: Request, res: Response) => {
 };
 
 export const handleAddReview = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { appId } = req.params;
-  const currentUserId = req.user._id;
   const { comment } = req.body;
 
   try {
     const taskCacheKey = `tasks:details:${appId}`;
 
-    let task;
+    let task: IOffer | null;
 
     const cachedTask = await redisClient.get(taskCacheKey);
 
@@ -275,17 +270,20 @@ export const handleAddReview = async (req: Request, res: Response) => {
       if (task) await redisClient.set(taskCacheKey, JSON.stringify(task));
     }
 
-    if (!task) {
-      return res.status(404).json({ error: "offer Not Found" });
-    }
+    if (!task) return res.status(404).json({ error: "offer Not Found" });
 
-    const newReview = new AppsReview({ appId, user: currentUserId, comment });
+    const newOfferReview = await OfferReviewModel.create({ offer: task._id, user: req.user._id, comment });
+    const populatedOfferReview = await OfferReviewModel.findById(newOfferReview._id).populate(
+      "user",
+      userExcludedFields,
+    );
 
-    const savedReview = await newReview.save();
-    const populated = await savedReview.populate("user");
-    task.reviews.push(savedReview.id);
+    if (!populatedOfferReview) return res.status(404).json({ error: "an error occurred" });
+
+    task.reviews.push(populatedOfferReview._id);
     await task.save();
-    return res.status(200).json(populated);
+
+    return res.status(200).json(populatedOfferReview);
   } catch (error) {
     return res.status(404).json({ error: "can not add review" });
   }

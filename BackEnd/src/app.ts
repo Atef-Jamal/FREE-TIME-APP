@@ -4,27 +4,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import initializeSocket from "./socketIo";
-import routes from "./routes/routes";
-import { IUser } from "./models/user";
-import { connectToRedis } from "./lib/redis";
-import passport from "./lib/passport";
-import { connecteToMongodb } from "./lib/db";
-
-declare module "express" {
-  interface Request {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    user?: IUser | any;
-  }
-}
-
-declare module "socket.io" {
-  interface Socket {
-    isAuthenticated: boolean;
-    userId?: string;
-  }
-}
-
+import initializeSocket from "./socketIo/index.js";
+import routes from "./routes/routes.js";
+import { connectToRedis } from "./lib/redis.js";
+import passport from "./lib/passport.js";
+import { connecteToMongodb } from "./lib/db.js";
 dotenv.config();
 
 const app = express();

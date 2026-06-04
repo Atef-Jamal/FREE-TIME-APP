@@ -1,5 +1,5 @@
 import express from "express";
-import { getDate } from "../controllers/dateController";
+import { getDate } from "../controllers/dateController.js";
 
 const router = express.Router();
 

@@ -1,15 +1,14 @@
 import { Request, Response } from "express";
-import User from "../models/user";
-import Task from "../models/task";
-import { features } from "../data/data";
-import Frame from "../models/frame";
+import User from "../models/userModel.js";
+import Task from "../models/offerModel.js";
+import { features } from "../data/data.js";
+import Frame from "../models/frameModel.js";
 
 export const searchController = async (req: Request, res: Response) => {
   const searchTerm = req.query.q as string;
   try {
-    if (!searchTerm || searchTerm.trim() === "") {
-      return res.status(404).json({ error: "Enter search term" });
-    }
+    if (searchTerm.trim() === "") return res.status(404).json({ error: "Enter search term" });
+
     const regex = new RegExp(searchTerm, "gi");
 
     const getFeatures = features

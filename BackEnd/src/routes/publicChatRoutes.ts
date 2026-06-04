@@ -1,12 +1,12 @@
 import express from "express";
-import protectedRoute from "../middleware";
+import protectedRoute from "../middleware/index.js";
 import {
   getAllPublicMessages,
   createPublicMessage,
   reactToPublicMessage,
   getSingleMessage,
   deletePublicMessage,
-} from "../controllers/publicChatController";
+} from "../controllers/publicChatController.js";
 
 const router = express.Router();
 

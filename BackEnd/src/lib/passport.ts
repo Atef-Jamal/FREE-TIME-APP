@@ -1,4 +1,4 @@
-import User from "../models/user";
+import User from "../models/userModel.js";
 import passport from "passport";
 import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
 import { Strategy as GithubStrategy, Profile } from "passport-github2";

@@ -1,13 +1,14 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
 export interface ICoupon extends Document {
   code: string;
   expirationDate: Date;
   prize: number;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const couponSchema: Schema<ICoupon> = new mongoose.Schema<ICoupon>(
+const couponSchema = new Schema<ICoupon>(
   {
     code: {
       type: String,
@@ -25,5 +26,5 @@ const couponSchema: Schema<ICoupon> = new mongoose.Schema<ICoupon>(
   { timestamps: true },
 );
 
-const Coupon: Model<ICoupon> = mongoose.model<ICoupon>("Coupon", couponSchema);
+const Coupon = model<ICoupon>("Coupon", couponSchema);
 export default Coupon;

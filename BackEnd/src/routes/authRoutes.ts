@@ -10,11 +10,11 @@ import {
   signInWithProvider,
   refreshToken,
   logOut,
-} from "../controllers/authController";
+} from "../controllers/authController.js";
 import passport from "passport";
 
-import protectedRoute from "../middleware";
-import { uploadCloud } from "../lib/multer";
+import protectedRoute from "../middleware/index.js";
+import { uploadCloud } from "../lib/multer.js";
 
 const router = express.Router();
 

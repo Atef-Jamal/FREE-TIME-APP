@@ -55,7 +55,7 @@ export type IDispatch = ThunkDispatch<
 export interface IRegisterProps {
   formData: IFormData;
   dispatch: IDispatch;
-  referrerUser?: string | null;
+  referrerUser?: string;
 }
 
 export interface ILoginProps {

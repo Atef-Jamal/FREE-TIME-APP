@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
-import User from "../models/user";
-import Notification from "../models/notification";
-import { userExcludedFields } from "../constants";
-import { redisClient } from "../lib/redis";
+import { userExcludedFields } from "../constants/index.js";
+import { redisClient } from "../lib/redis.js";
+import NotificationModel from "../models/notificationModel.js";
+import UserModel from "../models/userModel.js";
 
 export const getNotifications = async (req: Request, res: Response) => {
-  const userId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   try {
-    const cacheKey = `notifications:list:${userId}`;
+    const cacheKey = `notifications:list:${req.user._id.toString()}`;
     const cachedNotifications = await redisClient.get(cacheKey);
 
     if (cachedNotifications) {
       return res.status(200).json(JSON.parse(cachedNotifications));
     }
 
-    const notifications = await Notification.find({ belongsTo: userId })
+    const notifications = await NotificationModel.find({ belongsTo: req.user._id })
       .populate([
         { path: "metadata.referredUser", select: userExcludedFields },
         { path: "metadata.mentionedUser", select: userExcludedFields },
@@ -33,13 +33,12 @@ export const getNotifications = async (req: Request, res: Response) => {
 };
 
 export const getUserActivities = async (req: Request, res: Response) => {
+  const userId = req.params.id;
   try {
-    const userId = req.params.id;
-    const types = ["GUESS-CARD", "EMAIL-VERIFIED", "MUSIC", "REFERRER", "QUIZ-APP", "BUY-FRAME"];
-    const notifications = await Notification.find({ belongsTo: userId, type: { $in: types } }).populate([
-      { path: "metadata.referredUser", select: userExcludedFields },
-      { path: "frame" },
-    ]);
+    const notifications = await NotificationModel.find({
+      belongsTo: userId,
+      type: { $in: ["GUESS-CARD", "EMAIL-VERIFIED", "MUSIC", "REFERRER", "QUIZ-APP", "BUY-FRAME"] },
+    }).populate([{ path: "metadata.referredUser", select: userExcludedFields }, { path: "frame" }]);
     return res.status(200).json(notifications);
   } catch (error) {
     return res.status(404).json({ error: "can't get user Activities" });
@@ -47,45 +46,47 @@ export const getUserActivities = async (req: Request, res: Response) => {
 };
 
 export const markAsReaded = async (req: Request, res: Response) => {
-  const userId = req.user._id;
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   try {
-    await Notification.updateMany(
-      { belongsTo: userId, isRead: false },
+    const readNotificationsPromise = await NotificationModel.updateMany(
+      { belongsTo: req.user._id, isRead: false },
       {
         $set: { isRead: true },
       },
     );
-
-    return res.status(200).json([]);
+    const deleteRedisCachePromise = redisClient.del(`notifications:list:${req.user._id.toString()}`);
+    await Promise.all([readNotificationsPromise, deleteRedisCachePromise]);
+    return res.status(200).json({ message: "ok" });
   } catch (error) {
     return res.status(404).json({ error: "an unexpected Error happened" });
   }
 };
 
 export const collectNotificationReward = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const notificationId = req.params.id;
-  const currentUserId = req.user._id;
-
   try {
-    const notify = await Notification.findById(notificationId);
+    const notification = await NotificationModel.findById(notificationId);
+    if (!notification) return res.status(404).json({ error: "Reward Not Found" });
 
-    if (!notify) {
-      return res.status(404).json({ error: "Reward Not Found" });
-    }
+    const isCollectedBefore = notification.metadata.isCollected;
+    if (isCollectedBefore) return res.status(404).json({ error: "Reward Already collected" });
 
-    const isCollectedBefore = notify.metadata.isCollected;
-
-    if (isCollectedBefore) {
-      return res.status(404).json({ error: "Reward Already collected" });
-    }
-
-    await User.findByIdAndUpdate(currentUserId, {
-      $inc: { points: notify.metadata.prize },
+    const updateUserPromise = UserModel.findByIdAndUpdate(req.user._id, {
+      $inc: { points: notification.metadata.prize },
     });
 
-    notify.metadata.isCollected = true;
-    const saveNotify = await notify.save();
-    return res.status(200).json(saveNotify);
+    const updateNotificationPromise = NotificationModel.findByIdAndUpdate(
+      notification._id,
+      {
+        "metadata.isCollected": true,
+      },
+      { returnDocument: "after" },
+    );
+
+    const [updatedNotification] = await Promise.all([updateNotificationPromise, updateUserPromise]);
+
+    return res.status(200).json(updatedNotification);
   } catch (error) {
     return res.status(404).json({ error: "can't collect a Reward, an error occurred" });
   }

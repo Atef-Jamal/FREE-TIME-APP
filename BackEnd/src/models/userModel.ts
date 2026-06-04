@@ -1,5 +1,6 @@
-import mongoose, { Document, Model, Schema, Types } from "mongoose";
-import { generateNewWeekRewards } from "../utils";
+import { Document, model, Schema, Types } from "mongoose";
+import { IFrame } from "./frameModel.js";
+import { IOffer } from "./offerModel.js";
 
 export interface IDailyReward {
   day: number;
@@ -19,17 +20,18 @@ export interface IUser extends Document {
   emailVerified: boolean;
   isOnline: boolean;
   emailVerificationCode: { code: string; date: Date };
-  completedTasks: Types.ObjectId[];
+  completedTasks: (Types.ObjectId | IOffer)[];
   mySongs: string[];
-  myFrames: Types.ObjectId[];
-  activeFrame: Types.ObjectId | null;
+  myFrames: (Types.ObjectId | IFrame)[];
+  activeFrame?: Types.ObjectId | IFrame;
   coupons: string[];
   week: number;
   dailyReward: IDailyReward[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const userSchema: Schema<IUser> = new Schema<IUser>(
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -77,20 +79,20 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       default: false,
     },
     emailVerificationCode: {
-      code: { type: String, default: "" },
-      date: { type: Date, default: "" },
+      code: String,
+      date: Date,
     },
-    activeFrame: { type: Schema.Types.ObjectId, default: null },
+    activeFrame: { type: Schema.Types.ObjectId, ref: "FrameModel" },
     myFrames: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Frame",
+        ref: "FrameModel",
       },
     ],
     completedTasks: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Task",
+        ref: "OfferModel",
       },
     ],
   },
@@ -99,13 +101,5 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
 
 userSchema.index({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 });
 
-userSchema.pre("save", function (next) {
-  if (this.isNew) {
-    const newWeek = generateNewWeekRewards();
-    this.dailyReward = newWeek;
-  }
-  next();
-});
-
-const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
-export default User;
+const UserModel = model<IUser>("UserModel", userSchema);
+export default UserModel;

@@ -9,7 +9,7 @@ export interface IBounusCode {
 
 export interface IDailyReward {
   day: number;
-  availableAt: string;
+  availableAt: Date;
   reward: number;
   isCollected: boolean;
 }

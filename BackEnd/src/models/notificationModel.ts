@@ -1,4 +1,7 @@
-import mongoose, { Document, Model, Schema, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
+import { IUser } from "./userModel.js";
+import { IFrame } from "./frameModel.js";
+import { IPublicChatItem } from "./publicMessageModel.js";
 
 export interface INotification extends Document {
   type:
@@ -11,26 +14,27 @@ export interface INotification extends Document {
     | "EMAIL-VERIFIED"
     | "GUESS-CARD"
     | "ANNOUNCEMENT";
-  belongsTo: Types.ObjectId;
+  belongsTo: Types.ObjectId | IUser;
   isRead: boolean;
   metadata: {
     isCollected?: boolean;
     prize?: number;
-    referredUser?: Types.ObjectId;
+    referredUser?: Types.ObjectId | IUser;
     musicId?: string;
     musicTitle?: string;
     price?: number;
     typeOfInteraction?: "loves" | "likes" | "dislikes";
-    interactedUser?: Types.ObjectId;
-    messageLocation?: Types.ObjectId;
-    mentionedUser?: Types.ObjectId;
-    frame?: Types.ObjectId;
+    interactedUser?: Types.ObjectId | IUser;
+    messageLocation?: Types.ObjectId | IPublicChatItem;
+    mentionedUser?: Types.ObjectId | IUser;
+    frame?: Types.ObjectId | IFrame;
     announceContent?: string;
   };
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const notificationSchema = new mongoose.Schema<INotification>(
+const notificationSchema = new Schema<INotification>(
   {
     type: {
       type: String,
@@ -49,7 +53,7 @@ const notificationSchema = new mongoose.Schema<INotification>(
     belongsTo: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "UserModel",
     },
     isRead: {
       type: Boolean,
@@ -64,7 +68,7 @@ const notificationSchema = new mongoose.Schema<INotification>(
       },
       referredUser: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "UserModel",
       },
       price: {
         type: Number,
@@ -78,11 +82,11 @@ const notificationSchema = new mongoose.Schema<INotification>(
       },
       interactedUser: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "UserModel",
       },
       messageLocation: {
         type: Schema.Types.ObjectId,
-        ref: "PublicMessage",
+        ref: "PublicMessageModel",
       },
       typeOfInteraction: {
         type: String,
@@ -90,11 +94,11 @@ const notificationSchema = new mongoose.Schema<INotification>(
       },
       mentionedUser: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "UserModel",
       },
       frame: {
         type: Schema.Types.ObjectId,
-        ref: "Frame",
+        ref: "FrameModel",
       },
       announceContent: {
         type: String,
@@ -106,6 +110,6 @@ const notificationSchema = new mongoose.Schema<INotification>(
 
 notificationSchema.index({ belongsTo: 1 });
 
-const Notification: Model<INotification> = mongoose.model<INotification>("Notification", notificationSchema);
+const NotificationModel = model<INotification>("NotificationModel", notificationSchema);
 
-export default Notification;
+export default NotificationModel;

@@ -1,4 +1,4 @@
-const generateNewWeekRewards = (startDay = new Date()) => {
+export const generateNewWeekRewards = (startDay = new Date()) => {
   const newWeekRewards = [...Array(7).keys()].map((item) => {
     const clonedDate = new Date(startDay);
     clonedDate.setHours(0, 0, 0, 0);
@@ -13,5 +13,3 @@ const generateNewWeekRewards = (startDay = new Date()) => {
 
   return newWeekRewards;
 };
-
-export { generateNewWeekRewards };

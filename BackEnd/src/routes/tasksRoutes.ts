@@ -6,8 +6,8 @@ import {
   completingGuessCard,
   handleAddReview,
   publicTaskDetails,
-} from "../controllers/tasksController";
-import protectedRoute from "../middleware";
+} from "../controllers/tasksController.js";
+import protectedRoute from "../middleware/index.js";
 const router = express.Router();
 
 router.get("/", getAllTasks);

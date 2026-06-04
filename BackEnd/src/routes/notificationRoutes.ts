@@ -1,11 +1,11 @@
 import express from "express";
-import protectedRoute from "../middleware";
+import protectedRoute from "../middleware/index.js";
 import {
   getNotifications,
   markAsReaded,
   getUserActivities,
   collectNotificationReward,
-} from "../controllers/notificationsController";
+} from "../controllers/notificationsController.js";
 const router = express.Router();
 
 router.get("/my-notifications", protectedRoute, getNotifications);

@@ -1,4 +1,6 @@
-import mongoose, { Document, Model, Schema, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
+import { IOfferReview } from "./offerReviewModel.js";
+import { IUser } from "./userModel.js";
 
 interface IQuiz {
   question: string;
@@ -6,7 +8,7 @@ interface IQuiz {
   correctAnswer: string;
 }
 
-export interface ITask extends Document {
+export interface IOffer extends Document {
   type: "QUIZ_APP" | "GAME_APP";
   isAvailable: "AVAILABLE" | "UNAVAILABLE";
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
@@ -15,13 +17,14 @@ export interface ITask extends Document {
   image: string;
   prize: number;
   rating: number;
-  reviews: Types.ObjectId[];
-  completedBy: Types.ObjectId[];
+  reviews: (Types.ObjectId | IOfferReview)[];
+  completedBy: (Types.ObjectId | IUser)[];
   description: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const taskSchema: Schema<ITask> = new mongoose.Schema<ITask>(
+const offerSchema = new Schema<IOffer>(
   {
     type: {
       type: String,
@@ -57,17 +60,17 @@ const taskSchema: Schema<ITask> = new mongoose.Schema<ITask>(
     completedBy: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "UserModel",
       },
     ],
     rating: {
       type: Number,
-      default: 5,
+      default: 0,
     },
     reviews: [
       {
         type: Schema.Types.ObjectId,
-        ref: "AppsReview",
+        ref: "OfferReviewModel",
       },
     ],
     quizes: [
@@ -83,8 +86,8 @@ const taskSchema: Schema<ITask> = new mongoose.Schema<ITask>(
   },
 );
 
-taskSchema.index({ prize: -1 });
-taskSchema.index({ rating: -1 });
+offerSchema.index({ prize: -1 });
+offerSchema.index({ rating: -1 });
 
-const Task: Model<ITask> = mongoose.model<ITask>("Task", taskSchema);
-export default Task;
+const OfferModel = model<IOffer>("OfferModel", offerSchema);
+export default OfferModel;

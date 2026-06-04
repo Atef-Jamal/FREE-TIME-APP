@@ -3,14 +3,14 @@ import { IUser } from "./userTypes";
 
 export interface IPrivateMessage {
   _id: string;
-  conversationId: string;
+  conversation: string;
   sender: IUser;
   receiver: IUser;
   message: string;
   isRead: boolean;
+  isSended?: "PENDING" | "SUCCESS" | "FAILED";
   createdAt: Date;
   updatedAt: Date;
-  isSended?: "PENDING" | "SUCCESS" | "FAILED";
 }
 
 export interface IUnreadPrivateMsgsCache {
@@ -26,13 +26,13 @@ export interface IUpdatePrivateMsgsCacheParams {
 export interface IConversation {
   _id: string;
   secondUser: IUser;
-  lastMessage: IPrivateMessage | null;
+  lastMessage?: IPrivateMessage;
   unReadCount: number;
 }
 
 export interface ICashedSingleConversation {
   pageParams: number[];
-  pages: { secondUser: IUser; messages: IPrivateMessage[]; hasMore: boolean }[];
+  pages: { messages: IPrivateMessage[]; hasMore: boolean }[];
 }
 
 export interface ICashedConversations {

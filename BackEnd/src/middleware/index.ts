@@ -1,7 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
-import User from "../models/user";
-import { verifyAccessToken } from "../services/authServices";
+import User, { IUser } from "../models/userModel.js";
+import { verifyAccessToken } from "../services/authServices.js";
+
+declare global {
+  // eslint-disable-next-line no-unused-vars
+  namespace Express {
+    // eslint-disable-next-line no-unused-vars
+    interface User extends IUser {}
+  }
+}
 
 const protectedRoute = async (req: Request, res: Response, next: NextFunction) => {
   try {

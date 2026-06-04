@@ -6,22 +6,22 @@ export interface IUser {
   name: string;
   email: string;
   profilePicture: string;
-  createdAt: Date;
   emailVerified: boolean;
   points: number;
   copouns: string[];
-  activeFrame: IFrame | null;
   myFrames: IFrame[];
+  activeFrame?: IFrame;
   mySongs: string[];
   completedTasks: string[];
-  week: number;
   dailyReward: IDailyReward[];
-  usersVisitedMe: IUser[];
+  week: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ICashedLiveStatsUsers {
   pageParams: number[];
-  pages: { users: IUser[]; userHighestPoints: string; hasMore: boolean }[];
+  pages: { users: IUser[]; hasMore: boolean }[];
 }
 export interface ICashedLeaderboardUsers {
   users: IUser[];
@@ -30,8 +30,8 @@ export interface ICashedLeaderboardUsers {
 
 export interface IVisitor {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
   visitor: IUser;
   visited: string;
+  updatedAt: Date;
+  createdAt: Date;
 }

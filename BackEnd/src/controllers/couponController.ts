@@ -1,6 +1,6 @@
-import Coupon from "../models/coupon";
+import Coupon from "../models/couponModel.js";
 import { Request, Response } from "express";
-import User from "../models/user";
+import User from "../models/userModel.js";
 
 export const getCoupon = async (_: Request, res: Response) => {
   try {
@@ -15,6 +15,7 @@ export const getCoupon = async (_: Request, res: Response) => {
 };
 
 export const applyCoupon = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { code } = req.body;
   try {
     if (code.trim() === "") {
@@ -33,7 +34,7 @@ export const applyCoupon = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "sorry, an Error occurred" });
     }
 
-    if (coupon.code !== code.toString()) {
+    if (coupon.code !== code) {
       return res.status(404).json({ error: "sorry, Invalid code" });
     }
 
@@ -49,12 +50,10 @@ export const applyCoupon = async (req: Request, res: Response) => {
         $inc: { points: coupon.prize },
         coupons: [...req.user.coupons, coupon.code],
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
-    if (!updatedUser) {
-      return res.status(404).json({ error: "can't apply coupon, try again" });
-    }
+    if (!updatedUser) return res.status(404).json({ error: "can't apply coupon, try again" });
 
     return res.status(200).json({ points: updatedUser.points });
   } catch (error) {

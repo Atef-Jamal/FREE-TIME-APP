@@ -8,8 +8,8 @@ import {
   userVisited,
   getOnlineUsers,
   getLeaderboardUsers,
-} from "../controllers/usersController";
-import protectedRoute from "../middleware";
+} from "../controllers/usersController.js";
+import protectedRoute from "../middleware/index.js";
 const router = express.Router();
 
 router.get("/live-stats-users", allUsers);

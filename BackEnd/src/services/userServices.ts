@@ -1,41 +1,44 @@
-import { onLineUsers } from "../socketIo";
-import Notification from "../models/notification";
-import { userExcludedFields } from "../constants";
-import User from "../models/user";
-import { io } from "../app";
-import PublicMessage from "../models/publicMessage";
-import { redisClient } from "../lib/redis";
+import { onLineUsers } from "../socketIo/index.js";
+import { userExcludedFields } from "../constants/index.js";
+import User from "../models/userModel.js";
+import { io } from "../app.js";
+import { redisClient } from "../lib/redis.js";
+import { Types } from "mongoose";
+import NotificationModel from "../models/notificationModel.js";
+import PublicMessageModel from "../models/publicMessageModel.js";
 
-export const sendRewardToUser = async (referrerUser: string, currentNewUserId: string) => {
+export const sendRewardToUser = async (referrerUser: Types.ObjectId, newUserId: Types.ObjectId) => {
   const existedUser = await User.findById(referrerUser);
   if (!existedUser) throw new Error("Referrer user not found");
 
-  const createNotification = new Notification({
+  const newNotification = await NotificationModel.create({
     type: "REFERRER",
     belongsTo: referrerUser,
     metadata: {
       isCollected: false,
-      referredUser: currentNewUserId,
+      referredUser: newUserId,
       prize: 100,
     },
   });
-  const saveNotification = await createNotification.save();
+
+  const populatedNotification = await NotificationModel.findById(newNotification._id).populate(
+    "metadata.referredUser",
+    userExcludedFields,
+  );
 
   await redisClient.del(`notifications:list:${referrerUser}`);
 
-  const savedNotification = await saveNotification.populate("metadata.referredUser", userExcludedFields);
-
-  const createPublicMessage = new PublicMessage({
+  const newMessage = await PublicMessageModel.create({
     type: "FREETIME",
     typeOfTask: "REFERRER",
     sender: referrerUser,
-    newUserReferred: currentNewUserId,
+    newUserReferred: newUserId,
   });
-  const saveMessage = await createPublicMessage.save();
-  const savedMessage = await saveMessage.populate([
+  const populatedMessage = await PublicMessageModel.findById(newMessage._id).populate([
     { path: "sender", select: userExcludedFields },
     { path: "newUserReferred", select: userExcludedFields },
   ]);
-  io.emit("public-message", savedMessage);
-  io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", savedNotification);
+
+  io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", populatedNotification);
+  io.emit("public-message", populatedMessage);
 };

@@ -1,14 +1,17 @@
-import mongoose, { Document, Model, Schema, Types } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
+import { IUser } from "./userModel.js";
 
 export interface IFrame extends Document {
   title: string;
   image: string;
   price: number;
   description: string;
-  purshasedBy: Types.ObjectId[];
+  purshasedBy: (Types.ObjectId | IUser)[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const framesSchema: Schema<IFrame> = new mongoose.Schema<IFrame>(
+const framesSchema = new Schema<IFrame>(
   {
     description: {
       type: String,
@@ -28,13 +31,13 @@ const framesSchema: Schema<IFrame> = new mongoose.Schema<IFrame>(
     },
     purshasedBy: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        type: Schema.Types.ObjectId,
+        ref: "UserModel",
       },
     ],
   },
   { timestamps: true },
 );
 framesSchema.index({ purshasedBy: 1 });
-const Frame: Model<IFrame> = mongoose.model<IFrame>("Frame", framesSchema);
-export default Frame;
+const FrameModel = model<IFrame>("FrameModel", framesSchema);
+export default FrameModel;

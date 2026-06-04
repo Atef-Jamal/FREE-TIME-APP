@@ -1,6 +1,6 @@
 import express from "express";
-import protectedRoute from "../middleware";
-import { buyMusic, getMusics } from "../controllers/musicsController";
+import protectedRoute from "../middleware/index.js";
+import { buyMusic, getMusics } from "../controllers/musicsController.js";
 
 const router = express.Router();
 

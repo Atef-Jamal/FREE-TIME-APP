@@ -3,8 +3,9 @@ import { IUser } from "./userTypes";
 
 interface INotificationBase {
   _id: string;
-  createdAt: Date;
   isRead: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IMentionNotify extends INotificationBase {

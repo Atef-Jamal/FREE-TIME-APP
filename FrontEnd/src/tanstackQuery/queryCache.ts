@@ -342,7 +342,7 @@ export const addSuccessPrivateMsgCache = ({
         pages: previous.pages.map((page, i) => {
           const isFirstPage = i === 0;
           const newConversation: IConversation = {
-            _id: data.conversationId,
+            _id: data.conversation,
             lastMessage: data,
             secondUser: data.receiver,
             unReadCount: 0,
@@ -406,7 +406,7 @@ export const addNewPrivateMsgCache = ({
       pages: previous.pages.map((page, index) => {
         const firstPage = index === 0;
         const newConversation = {
-          _id: newMessage.conversationId,
+          _id: newMessage.conversation,
           lastMessage: newMessage,
           secondUser: newMessage.sender,
           unReadCount: newMessage.sender._id === activeChatId ? 0 : 1,

@@ -1,7 +1,8 @@
 import { UploadApiResponse } from "cloudinary";
-import cloudinary from "../lib/cloudinary";
+import cloudinary from "../lib/cloudinary.js";
 
 export const uploadImageToCloudinary = async (
+  // eslint-disable-next-line no-undef
   file: Express.Multer.File,
   userName: string,
   userId: string,

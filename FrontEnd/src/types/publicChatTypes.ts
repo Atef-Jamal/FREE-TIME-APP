@@ -3,16 +3,16 @@ import { IUser } from "./userTypes";
 export interface IPublicChatMessage {
   _id: string;
   type: "MESSAGE";
-  createdAt: Date;
-  updatedAt: Date;
   sender: IUser;
   message: string;
-  isDeleted: boolean;
   likes: string[];
   dislikes: string[];
   loves: string[];
   mentionedUsers: Set<IUser>;
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
+  isDeleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IPublicChatFreeTime {
@@ -30,5 +30,5 @@ export type IPublicChatItem = IPublicChatMessage | IPublicChatFreeTime;
 
 export interface ICashedPublicChat {
   pageParams: number[];
-  pages: { messages: IPublicChatItem[]; hasOlder: boolean }[];
+  pages: { messages: IPublicChatItem[]; hasMore: boolean }[];
 }
