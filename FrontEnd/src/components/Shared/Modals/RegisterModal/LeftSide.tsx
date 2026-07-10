@@ -1,21 +1,51 @@
-import { SetStateAction } from "react";
-import UploadImage from "../../Common/UploadImage";
-import type { IFormData } from "../../../../types";
+// import UploadImage from "../../Common/UploadImage";
+// import type { IFormData } from "../../../../types";
 import { useTranslation } from "react-i18next";
+import UploadIcon from "../../../../assets/images/upload-icon.png";
+import { AuthFormValues, cn } from "../../../../utilities";
+import { UseFormRegister } from "react-hook-form";
+import { ChangeEvent, RefObject } from "react";
 
 interface IProps {
-  formData: IFormData;
-  setFormData: React.Dispatch<SetStateAction<IFormData>>;
+  register: UseFormRegister<AuthFormValues>;
+  previewUrl: string | null;
+  inputUploadRef: RefObject<HTMLInputElement | null>;
+  handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   isSignInMode: boolean;
 }
-const LeftSide = ({ formData, setFormData, isSignInMode }: IProps) => {
+const LeftSide = ({ isSignInMode, inputUploadRef, handleFileChange, register, previewUrl }: IProps) => {
   const { t } = useTranslation("register");
 
   return (
     <div className="flex h-full flex-col gap-y-2">
       {!isSignInMode && (
         <div className="flex w-full items-center justify-center p-1">
-          <UploadImage formData={formData} setFormData={setFormData} />
+          <div
+            onClick={() => {
+              inputUploadRef.current?.click();
+            }}
+            className="relative h-[100px] w-[100px] lg:h-[110px] lg:w-[110px]"
+          >
+            <input
+              id="imageUploadInput2"
+              type="file"
+              className="hidden h-full w-full"
+              {...(register("profilePicture"),
+              {
+                ref: (element) => {
+                  register("profilePicture").ref(element);
+                  inputUploadRef.current = element;
+                },
+              })}
+              onChange={handleFileChange}
+            />
+            <img
+              src={previewUrl || UploadIcon}
+              alt=""
+              className={cn("h-full w-full object-fill", previewUrl && "border")}
+            />
+          </div>
+          {/* <UploadImage formData={formData} setFormData={setFormData} /> */}
         </div>
       )}
       <div className="relative flex items-center justify-center">

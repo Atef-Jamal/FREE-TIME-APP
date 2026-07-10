@@ -36,11 +36,6 @@ const UploadImage = ({ formData, setFormData }: IProps) => {
 
   return (
     <div onClick={handleClick} className="relative h-[100px] w-[100px] lg:h-[110px] lg:w-[110px]">
-      {/* {percentage !== 0 && (
-        <div className="absolute left-0 top-0 h-2 w-full bg-white">
-          <div style={{ width: percentage }} className="h-[95%] border-y border-l bg-red-800"></div>
-        </div>
-      )} */}
       <input ref={inputRef} type="file" className="hidden h-full w-full" onChange={handleChange} />
       <img
         src={imagePreview || UploadIcon}

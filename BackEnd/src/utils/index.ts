@@ -13,3 +13,7 @@ export const generateNewWeekRewards = (startDay = new Date()) => {
 
   return newWeekRewards;
 };
+
+export const getActiveConversationKey = (firstUserId: string, secondUserId: string) => {
+  return firstUserId > secondUserId ? `${firstUserId}-${secondUserId}` : `${secondUserId}-${firstUserId}`;
+};

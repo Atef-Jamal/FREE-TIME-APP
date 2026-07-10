@@ -1,50 +1,77 @@
 import { memo, useEffect, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
-import {
-  openToast,
-  selectCurrentUser,
-  selectOnlineUsers,
-  selectSocket,
-  selectUserAuth,
-} from "../../context/appStateSlice";
-import { axiosRequest, handleApiError } from "../../utilities";
+import { openToast, selectCurrentUser, selectSocket, selectUserAuth } from "../../context/appStateSlice";
+import { handleApiError } from "../../utilities";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import PrivateMessageItem from "./PrivateMessageItem";
 import UserImage from "../../components/Shared/Common/UserImage";
-import { useInfiniteConversationMsgs } from "../../tanstackQuery/queryFetch";
-import { updateConversationUnreadCountCache } from "../../tanstackQuery/queryCache";
+import { useFetchUser, useInfiniteConversationMsgs } from "../../tanstackQuery/queryFetch";
+import { conversationRead } from "../../services/chatService";
+import { ICashedConversations } from "../../types";
+import { updateTotalUnReadPrivateMsgsCache } from "../../tanstackQuery/queryCache";
 
-const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
+const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const userAuth = useAppSelector(selectUserAuth);
-  const onlineUsers = useAppSelector(selectOnlineUsers);
   const socket = useAppSelector(selectSocket);
+  const userAuth = useAppSelector(selectUserAuth);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
   const { data, status, error, hasPreviousPage, fetchPreviousPage } = useInfiniteConversationMsgs({
     userAuth: userAuth === "authenticated",
-    activeChatId,
+    secondUserId,
   });
 
-  const messages = data?.pages.map((page) => page.messages).flat();
-  const secondUser = data?.pages[0].secondUser;
+  const { data: secondUser } = useFetchUser({ userId: secondUserId });
 
-  const isUnReadMsgs = Boolean(messages?.some((msg) => !msg.isRead && msg.sender._id === activeChatId));
+  const { data: onlineUsers } = useQuery<string[]>({ queryKey: ["onlines-users-ids"] });
+
+  const messages = data?.pages.map((page) => page.messages).flat();
+
+  const unreadMessagesExists = messages?.some(
+    (msg) => msg.sender._id === secondUserId && msg.isRead === false,
+  );
 
   useEffect(() => {
-    if (!isUnReadMsgs || !currentUser?._id) return;
-    const markAsReaded = async () => {
-      socket?.emit("conversation-readed", {
-        reciever: activeChatId,
-        sender: currentUser._id,
-      });
+    if (!currentUser?._id) return;
+
+    const handleReadConversation = async () => {
       try {
-        await axiosRequest.get(`api/conversations/${activeChatId}/markAsRead`);
-        updateConversationUnreadCountCache({ queryClient, activeChatId });
+        const res = await conversationRead({ secondUserId });
+        if (res.status === 200)
+          queryClient.setQueryData(
+            ["conversations"],
+            (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
+              if (!previous) return;
+              return {
+                ...previous,
+                pages: previous.pages.map((page) => {
+                  return {
+                    ...page,
+                    conversations: page.conversations.map((conv) => {
+                      if (conv.secondUser._id === secondUserId) {
+                        return {
+                          ...conv,
+                          unreadCounts: {
+                            ...conv.unreadCounts,
+                            [currentUser._id]: 0,
+                          },
+                        };
+                      }
+                      return conv;
+                    }),
+                  };
+                }),
+              };
+            },
+          );
+        updateTotalUnReadPrivateMsgsCache({
+          queryClient,
+          type: "remove-all",
+        });
       } catch (error) {
         dispatch(
           openToast({
@@ -55,30 +82,40 @@ const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
       }
     };
 
-    markAsReaded();
-  }, [isUnReadMsgs, activeChatId, socket, currentUser?._id, dispatch, queryClient]);
+    if (unreadMessagesExists) {
+      handleReadConversation();
+    }
+  }, [secondUserId, currentUser?._id, dispatch, queryClient, unreadMessagesExists]);
 
   useEffect(() => {
     const scrollToLastMessage = () => {
       lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-
     scrollToLastMessage();
   }, [messages]);
-  if (!activeChatId) return;
+
+  useEffect(() => {
+    if (secondUserId && currentUser?._id) {
+      socket?.emit("user_joined_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
+    }
+    return () => {
+      if (secondUserId && currentUser?._id) {
+        socket?.emit("user_leaved_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
+      }
+    };
+  }, [currentUser?._id, secondUserId, socket]);
+
+  if (!secondUserId || error)
+    return (
+      <div className="flex h-full items-center justify-center border border-x border-gray-700 bg-[#332342] px-5 text-center 2xl:flex-1">
+        select chat
+      </div>
+    );
 
   if (status === "pending") {
     return (
       <div className="flex h-full items-center justify-center border border-x border-gray-700 bg-[#332342] 2xl:flex-1">
         <ImSpinner3 className="animate-spin text-4xl md:text-6xl" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-full items-center justify-center border border-x border-gray-700 bg-[#332342] px-5 text-center text-[#f12828] 2xl:flex-1">
-        {error.response?.data.error}
       </div>
     );
   }
@@ -92,7 +129,7 @@ const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
           </div>
           <span className="text-sm font-bold text-[#3785fa] md:text-base">{secondUser?.name}</span>
         </div>
-        {onlineUsers.includes(activeChatId) ? (
+        {onlineUsers?.includes(secondUserId) ? (
           <span className="text-xs font-bold tracking-wide text-[#68e44a] md:text-sm">online</span>
         ) : (
           <span className="text-xs font-bold tracking-wide text-[#54724c] md:text-sm">offline</span>
@@ -113,13 +150,13 @@ const ChatBody = memo(({ activeChatId }: { activeChatId: string }) => {
             key={msg._id}
             messagesLength={messages.length}
             message={msg}
-            index={index}
             lastMessageRef={lastMessageRef}
+            index={index}
           />
         ))}
       </div>
 
-      <SendMessagePrivateChat activeChatId={activeChatId} />
+      <SendMessagePrivateChat secondUserId={secondUserId} />
     </div>
   );
 });

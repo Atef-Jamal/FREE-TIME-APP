@@ -1,16 +1,17 @@
-export { login, register, handleSignInWithOauth } from "./authService";
+export { login, registerUser, handleSignInWithOauth } from "./authService";
 export {
   changeUserName,
   fetchUserById,
-  getUsers,
+  fetchTopUser,
+  fetchLiveStatsUsers,
   fetchUserActivities,
   sendVerificationCode,
   verifyMyEmail,
   changeUserPassword,
   changeMyPictureFrame,
   fetchMyNotifications,
-  unselectMyPictureFrame,
-  getOnlineUsers,
+  // fetchOnlineUsersIds,
+  fetchOnlineUsersData,
   userVisited,
   getLeaderboardUsers,
 } from "./usersService";
@@ -29,4 +30,4 @@ export { fetchAllFrames, purshaseFrame } from "./framesService";
 export { fetchMusics, purshaseMusic } from "./musicService";
 export { fetchTestimonials, getSearchResults, handleSendTestimonial } from "./otherService";
 export { applyCode, collectReward } from "./rewardService";
-export { fetchAllTasks, fetchAppDetails, handleAddReview } from "./tasksService";
+export { fetchAllOffers, fetchOfferDetails, handleCreateOfferReview } from "./offersService";

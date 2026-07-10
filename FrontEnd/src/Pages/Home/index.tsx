@@ -11,17 +11,18 @@ import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { openToast, selectCurrentUser } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser, selectUserAuth } from "../../context/appStateSlice";
 import { login, handleSignInWithOauth, handleSendTestimonial } from "../../services";
-import { cn, formateDate, handleApiError, validateCredentials } from "../../utilities";
-import type { IFormData } from "../../types";
+import { AuthFormValues, authSchema, cn, formateDate, handleApiError } from "../../utilities";
 import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
-import Input from "../../components/Shared/Common/Input";
 import { useFetchTestimonials } from "../../tanstackQuery/queryFetch";
 import { addTestimonialCashe } from "../../tanstackQuery/queryCache";
+import { FieldErrors, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { IoMdEye } from "react-icons/io";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -29,41 +30,48 @@ import "swiper/css/scrollbar";
 
 const Home = () => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const userAuth = useAppSelector(selectUserAuth);
+
   const [comment, setComment] = useState<string>("");
   const [stars, setStars] = useState<number>(1);
-
+  const [inputType, setInputType] = useState("password");
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const { t } = useTranslation("home");
+  const { data: testimonials, status, error } = useFetchTestimonials();
 
   const isLoggedIn = !!localStorage.getItem("isLoggedIn");
 
-  const { data: testimonials, status, error } = useFetchTestimonials();
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<AuthFormValues>({
+    resolver: zodResolver(authSchema),
+    defaultValues: {
+      mode: "login",
+    },
+  });
 
-  const handlaSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const result = validateCredentials({ email, password } as IFormData, true, true);
-
-    if (!result.isValid) {
-      dispatch(
-        openToast({
-          message: Object.values(result.errors).join(", "),
-          type: "ERROR_GENERAL",
-        }),
-      );
-      return;
+  const onInvalidSubmit = (fieldErrors: FieldErrors<AuthFormValues>) => {
+    let message = "";
+    if (fieldErrors.email?.message) {
+      message = fieldErrors.email.message;
+    } else if (fieldErrors.password?.message) {
+      message = fieldErrors.password.message;
     }
+    if (message) {
+      return dispatch(openToast({ message, type: "ERROR_GENERAL" }));
+    }
+  };
+
+  const onValidSubmit = async (data: AuthFormValues) => {
+    if (userAuth === "authenticated") return;
     try {
-      await login({ formData: { email, password }, dispatch });
+      dispatch(openToast({ message: "Logging In....", type: "LOADING" }));
+      await login({ data });
     } catch (error) {
-      dispatch(
-        openToast({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        }),
-      );
+      dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     }
   };
 
@@ -87,6 +95,10 @@ const Home = () => {
       addTestimonialCashe({ queryClient, newTestimonial });
     },
   });
+
+  const handleShowPassword = () => {
+    setInputType((prev) => (prev === "text" ? "password" : "text"));
+  };
 
   const addTestimonialHandler = (event: React.FormEvent) => {
     event.preventDefault();
@@ -172,29 +184,43 @@ const Home = () => {
                 <span>{t("OR")}</span>
                 <div className="h-[2px] flex-1 bg-gradient-to-r from-blue-300 to-[#322f44]"></div>
               </div>
-              <form className="flex flex-col gap-y-2">
-                <Input
-                  label={t("Email")}
-                  id={"hom-email"}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("Enter Your Email")}
-                  value={email}
-                  type={"email"}
-                  name={"email"}
-                />
-                <Input
-                  label={t("Password")}
-                  id={"home-password"}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t("Enter Your Password")}
-                  value={password}
-                  type={"password"}
-                  name={"password"}
-                />
+              <form onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)} className="flex flex-col gap-y-2">
+                <div className="flex w-full flex-col gap-1">
+                  <label htmlFor={"email"} className="tracking-wider text-[#6be8f8ee]">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={"email"}
+                      id={"email"}
+                      placeholder={t("Enter Your Email")}
+                      {...register("email")}
+                      className={`w-full rounded-md bg-[#0d0d22b9] px-4 py-2 text-sm text-[#7295f7] outline-none placeholder:opacity-50`}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex w-full flex-col gap-1">
+                  <label htmlFor={"password"} className="tracking-wider text-[#6be8f8ee]">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={inputType}
+                      id={"password"}
+                      placeholder={t("Enter Your Password")}
+                      {...register("password")}
+                      className={`w-full rounded-md bg-[#0d0d22b9] px-4 py-2 text-sm text-[#7295f7] outline-none placeholder:opacity-50`}
+                    />
+                    <button type="button" onClick={handleShowPassword} className="absolute right-2 top-[6px]">
+                      <IoMdEye className="text-xl" />
+                    </button>
+                  </div>
+                </div>
                 <div className="mt-4 text-center md:mt-6">
                   <button
                     type="submit"
-                    onClick={handlaSignIn}
+                    disabled={isSubmitting}
                     className="w-full rounded-md border-[0.2px] border-white bg-[#05BA6B] py-2 font-[600] text-black"
                   >
                     {t("Sign In")}
@@ -361,7 +387,7 @@ const Home = () => {
           </div>
           <div className="flex flex-col items-center gap-2 rounded-md bg-[#282942] py-9">
             <img alt={""} src={check} />
-            <span className="text-sm">{t("Verified task")}</span>
+            <span className="text-sm">{t("Verified offer")}</span>
           </div>
           <div className="flex flex-col items-center justify-center gap-2 rounded-md bg-[#282942]">
             <img alt={""} src={support} />
@@ -383,7 +409,7 @@ const Home = () => {
             <div className={"h-0 bg-[rgb(44,16,51)] px-4 transition-all"}>
               <p className="pb-4 text-sm tracking-wide">
                 {t(
-                  "Freetime.com works together with companies that want to advertise their apps, surveys and products. A task could be: Download an app and reach level 5 within 2 days to earn 4000 coins. To get started choose an offer or survey. We can recommend the featured offers at the top of the Earn page. These tasks are very simple and many people have already successfully completed them in the past . After you have completed a task you will get coins. 1000 coins equal $1.00. You can cashout the coins for PayPal, VISA cards, Bitcoin, CS:GO Skins Amazon gift cards and multiple other types of gift cards",
+                  "Freetime.com works together with companies that want to advertise their apps, surveys and products. A offer could be: Download an app and reach level 5 within 2 days to earn 4000 coins. To get started choose an offer or survey. We can recommend the featured offers at the top of the Earn page. These offers are very simple and many people have already successfully completed them in the past . After you have completed a offer you will get coins. 1000 coins equal $1.00. You can cashout the coins for PayPal, VISA cards, Bitcoin, CS:GO Skins Amazon gift cards and multiple other types of gift cards",
                 )}
               </p>
             </div>
@@ -400,7 +426,7 @@ const Home = () => {
             <div className={"h-0 bg-[#2c1033] px-4 transition-all"}>
               <p className="pb-4 text-sm tracking-wide">
                 {t(
-                  "Users complete tasks from advertisers Advertisers provide various tasks for users, including downloading an app, signing up for a website, watching videos, reaching a certain in-game level and much more. Advertisers pay Freetime for promotion For every completed task, advertisers pay Freetime a commission. Freetime sends user payouts After completing all task requirements, Freetime will send the user a payout",
+                  "Users complete offers from advertisers Advertisers provide various offers for users, including downloading an app, signing up for a website, watching videos, reaching a certain in-game level and much more. Advertisers pay Freetime for promotion For every completed offer, advertisers pay Freetime a commission. Freetime sends user payouts After completing all offer requirements, Freetime will send the user a payout",
                 )}
               </p>
             </div>

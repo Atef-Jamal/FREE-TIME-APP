@@ -21,42 +21,32 @@ const DailyReward = () => {
   const userAuth = useAppSelector(selectUserAuth);
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
 
-  const [dayWhichTimmerIsLocated, setDayWhichTimmerIsLocated] = useState<string | null>(null);
-  // const [today, setToday] = useState("");
-  // const dispatch = useAppDispatch();
+  const [nextRewardDay, setNextRewardDay] = useState<Date | null>(null);
+
   const { t } = useTranslation("rewards");
 
   useEffect(() => {
     const today = new Date();
-    const nearstNexttDay = currentUser?.dailyReward.find((item) => new Date(item.availableAt) > today);
-    if (currentUser && nearstNexttDay) {
-      setDayWhichTimmerIsLocated(nearstNexttDay.availableAt);
-    }
-    if (userAuth !== "pending" && !currentUser) {
-      const nextDay =
-        new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split("T")[0] + "T00:00:00.000Z";
-      setDayWhichTimmerIsLocated(nextDay);
+
+    if (currentUser) {
+      const nearstNexttDay = currentUser.dailyReward.find(
+        (item) => new Date(item.availableAt).getTime() > today.getTime(),
+      );
+      if (nearstNexttDay) setNextRewardDay(new Date(nearstNexttDay.availableAt));
+    } else {
+      const nextDay = new Date();
+      nextDay.setHours(0, 0, 0, 0);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setNextRewardDay(nextDay);
     }
   }, [currentUser, userAuth]);
 
   const handleUpdateNextTimerDay = useCallback(() => {
-    const addOneDay = new Date(new Date().setDate(new Date().getDate() + 2)).toISOString();
-    const datePart = addOneDay.split("T")[0];
-    const nextTimerDay = datePart + "T00:00:00.000Z";
-    setDayWhichTimmerIsLocated(nextTimerDay);
+    const nextDay = new Date();
+    nextDay.setHours(0, 0, 0, 0);
+    nextDay.setDate(nextDay.getDate() + 2);
+    setNextRewardDay(nextDay);
   }, []);
-
-  // useEffect(() => {
-  //   const getDate = async () => {
-  //     try {
-  //       const response = await axiosRequest.get("api/date");
-  //       setToday(response.data);
-  //     } catch (error) {
-  //       dispatch(openToast({ message: "an error occured!", type: "ERROR_GENERAL" }));
-  //     }
-  //   };
-  //   getDate();
-  // }, [dispatch]);
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -114,26 +104,29 @@ const DailyReward = () => {
             currentUser?.dailyReward.map((item) => (
               <DailyStreakRewardCard
                 key={item.day}
-                dayInfo={item}
-                dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                dayInfo={{ ...item, availableAt: new Date(item.availableAt) }}
+                nextRewardDay={nextRewardDay}
                 handleUpdateNextTimerDay={handleUpdateNextTimerDay}
               />
             ))}
 
           {userAuth === "unauthenticated" &&
             [...Array(7).keys()].map((item) => {
+              const availableAt = new Date();
+              availableAt.setHours(0, 0, 0, 0);
+              availableAt.setDate(new Date().getDate() + item);
+              availableAt.toISOString();
+
               return (
                 <DailyStreakRewardCard
                   key={item + 1}
                   dayInfo={{
                     day: item + 1,
-                    availableAt:
-                      new Date(new Date().setDate(new Date().getDate() + item)).toISOString().split("T")[0] +
-                      "T00:00:00.000Z",
+                    availableAt,
                     reward: 50 * (item + 1),
                     isCollected: false,
                   }}
-                  dayWhichTimmerIsLocated={dayWhichTimmerIsLocated}
+                  nextRewardDay={nextRewardDay}
                   handleUpdateNextTimerDay={handleUpdateNextTimerDay}
                 />
               );

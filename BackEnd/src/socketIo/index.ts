@@ -1,106 +1,157 @@
-import { Server, Socket } from "socket.io";
 import http from "http";
-import User from "../models/userModel.js";
+import { Server } from "socket.io";
+import User, { IUser } from "../models/user.js";
 import { verifyAccessToken } from "../services/authServices.js";
 import * as cookie from "cookie";
+import { IPublicChatItem } from "../models/publicMessage.js";
+import { INotification } from "../models/notification.js";
+import { IPrivateMessage } from "../models/privateMessage.js";
+import { getActiveConversationKey } from "../utils/index.js";
 
-declare module "socket.io" {
-  // eslint-disable-next-line no-unused-vars
-  interface Socket {
-    isAuthenticated: boolean;
-    userId?: string;
-  }
+interface ServerToClientEvents {
+  connected_guests: (h: number) => void;
+  public_chat_typing_start: () => void;
+  public_chat_typing_stop: () => void;
+  public_chat_message: (publicMessage: IPublicChatItem) => void;
+  online_users: (usersIds: string[]) => void;
+  user_registered: (newUser: IUser) => void;
+  user_updated: (updatedUser: IUser) => void;
+  notification: (updatedUser: INotification) => void;
+  public_chat_message_reaction: (publicMessage: IPublicChatItem) => void;
+  private_chat_message: (privateMessage: IPrivateMessage) => void;
+  conversation_read: (data: { receiver: string; sender: string }) => void;
+}
+
+interface ClientToServerEvents {
+  public_chat_typing_start: () => void;
+  public_chat_typing_stop: () => void;
+  user_joined_conversation: (data: { firstParty: string; secondParty: string }) => void;
+  user_leaved_conversation: (data: { firstParty: string; secondParty: string }) => void;
+}
+
+interface SocketData {
+  userId: string;
 }
 
 type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 
-export const onLineUsers: { [key: string]: string } = {};
-
 const initializeSocket = function (server: IServer) {
-  const io = new Server(server, { cors: { origin: process.env.CLIENT_BASE_URL, credentials: true } });
+  let totalGuests = 0;
 
-  io.use(async (socket, next) => {
+  const onlineUsers = new Map<string, Set<string>>();
+
+  const activeConversations = new Map<string, Set<string>>();
+
+  const io = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>(server, {
+    cors: { origin: process.env.CLIENT_BASE_URL, credentials: true },
+  });
+
+  const trackUserConnection = (userId: string, socketId: string): void => {
+    if (!onlineUsers.has(userId)) {
+      onlineUsers.set(userId, new Set());
+    }
+    onlineUsers.get(userId)!.add(socketId);
+  };
+
+  const trackUserDisconnection = (userId: string, socketId: string): void => {
+    const userSockets = onlineUsers.get(userId);
+    if (userSockets) {
+      userSockets.delete(socketId);
+      if (userSockets.size === 0) {
+        onlineUsers.delete(userId);
+      }
+    }
+  };
+
+  io.use((socket, next) => {
     const reqCookie = socket.handshake.headers.cookie;
 
-    if (!reqCookie) {
-      socket.isAuthenticated = false;
-      return next();
-    }
+    if (!reqCookie) return next();
 
     const cookies = cookie.parse(reqCookie);
     const token = cookies.accessToken;
 
-    if (!token) {
-      socket.isAuthenticated = false;
-      return next();
-    }
-
+    if (!token) return next();
     try {
       const decoded: any = verifyAccessToken(token);
-      socket.userId = decoded.userId;
-      socket.isAuthenticated = true;
+      socket.data.userId = decoded.userId;
       return next();
     } catch (error) {
-      socket.isAuthenticated = false;
       return next();
     }
   });
 
-  const updateUserStatus = async (socket: Socket, online: boolean) => {
-    if (!socket.userId) return;
-    if (online === true) onLineUsers[socket.userId] = socket.id;
-    if (online === false) delete onLineUsers[socket.userId];
-    try {
-      await User.findByIdAndUpdate(socket.userId, { $set: { isOnline: online } });
-      io.emit("online-users", Object.keys(onLineUsers));
-    } catch {
-      return;
-    }
-  };
-
   io.on("connection", async (socket) => {
-    await updateUserStatus(socket, true);
+    const userId = socket.data.userId;
 
-    socket.on("new-user-registered", () => {
-      socket.broadcast.emit("new-user-registered");
-    });
-    socket.on("user-updated", (updatedUser: any) => {
-      socket.broadcast.emit("user-updated", updatedUser);
-    });
-    socket.on("public-message", (message: any) => {
-      socket.broadcast.emit("public-message", message);
-    });
-    socket.on("typing-public-message", () => {
-      socket.broadcast.emit("typing-public-message");
-    });
-    socket.on("stop-typing-public-message", () => {
-      socket.broadcast.emit("stop-typing-public-message");
-    });
-    socket.on("public-message-interaction", (updatedMessage: any) => {
-      socket.broadcast.emit("public-message-interaction", updatedMessage);
+    totalGuests += 1;
+    io.emit("connected_guests", totalGuests);
+    if (userId) {
+      try {
+        const updated = await User.findByIdAndUpdate(
+          userId,
+          { $set: { isOnline: true } },
+          { returnDocument: "after" },
+        ).select("isOnline");
+
+        if (updated) {
+          trackUserConnection(userId, socket.id);
+          io.emit("online_users", [...onlineUsers.keys()]);
+        }
+      } catch (error) {
+        console.log(`Failed to connect online status for userId: ${userId}`);
+      }
+
+      socket.on("user_joined_conversation", ({ firstParty, secondParty }) => {
+        const key = getActiveConversationKey(firstParty, secondParty);
+
+        if (!activeConversations.has(key)) {
+          activeConversations.set(key, new Set(firstParty));
+        } else activeConversations.get(key)!.add(firstParty);
+      });
+
+      socket.on("user_leaved_conversation", ({ firstParty, secondParty }) => {
+        const key = getActiveConversationKey(firstParty, secondParty);
+
+        activeConversations.get(key)?.delete(firstParty);
+        if (activeConversations.get(key)?.size === 0) {
+          activeConversations.delete(key);
+        }
+      });
+    }
+
+    socket.on("public_chat_typing_start", () => {
+      socket.broadcast.emit("public_chat_typing_start");
     });
 
-    socket.on("disconnect", async () => await updateUserStatus(socket, false));
-
-    socket.on("error", (err) => {
-      console.log("Socket Error", err);
+    socket.on("public_chat_typing_stop", () => {
+      socket.broadcast.emit("public_chat_typing_stop");
     });
 
-    // authenticated sockets
-    if (!socket.isAuthenticated || !socket.userId) return;
+    socket.on("disconnect", async () => {
+      totalGuests -= 1;
+      io.emit("connected_guests", totalGuests);
+      if (userId) {
+        try {
+          const updated = await User.findByIdAndUpdate(
+            userId,
+            { $set: { isOnline: false } },
+            {
+              returnDocument: "after",
+            },
+          ).select("isOnline");
 
-    socket.on("private-message", (message: any) => {
-      if (!onLineUsers[message.to]) return;
-      socket.to(onLineUsers[message.to]).emit("private-message", message.data);
-    });
-
-    socket.on("conversation-readed", (data: any) => {
-      if (!onLineUsers[data.reciever]) return;
-      socket.to(onLineUsers[data.reciever]).emit("conversation-readed", data);
+          if (updated) {
+            trackUserDisconnection(userId, socket.id);
+            io.emit("online_users", [...onlineUsers.keys()]);
+          }
+        } catch (error) {
+          console.log(`Failed to disconnect online status for userId: ${userId}`);
+        }
+      }
     });
   });
-
-  return io;
+  return { io, onlineUsers, activeConversations };
 };
 
 export default initializeSocket;

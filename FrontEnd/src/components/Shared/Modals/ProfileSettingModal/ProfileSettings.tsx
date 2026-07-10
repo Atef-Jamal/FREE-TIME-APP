@@ -2,13 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { IoClose } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
-import {
-  resetModel,
-  setCurrentUser,
-  openToast,
-  selectSocket,
-  selectCurrentUser,
-} from "../../../../context/appStateSlice";
+import { resetModel, setCurrentUser, openToast, selectCurrentUser } from "../../../../context/appStateSlice";
 import { changeUserName, changeUserPassword } from "../../../../services";
 import Spinner from "../../Common/Spinner";
 import { handleApiError } from "../../../../utilities";
@@ -16,7 +10,6 @@ import VerifyEmailBox from "../../../../Pages/MyProfile/VerifyEmailBox";
 
 const ProfileSettings = () => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const socket = useAppSelector(selectSocket);
   const [newName, setNewName] = useState<string | undefined>(currentUser?.name);
   const [oldPass, setOldPass] = useState<string>("");
   const [newPass, setNewPass] = useState<string>("");
@@ -38,17 +31,15 @@ const ProfileSettings = () => {
   const nameMutation = useMutation({
     mutationFn: changeUserName,
     onSuccess: (data) => {
-      if (currentUser) dispatch(setCurrentUser({ ...currentUser, name: data.name }));
-      dispatch(
-        openToast({
-          message: "Name changed successfully",
-          type: "SUCESS",
-        }),
-      );
-      socket?.emit("user-updated", {
-        ...currentUser,
-        name: data.name,
-      });
+      if (currentUser) {
+        dispatch(setCurrentUser({ ...currentUser, name: data.name }));
+        dispatch(
+          openToast({
+            message: "Name changed successfully",
+            type: "SUCESS",
+          }),
+        );
+      }
     },
     onError: (error) => {
       dispatch(

@@ -1,6 +1,6 @@
 import Skeleton from "../../components/Shared/Common/Skeleton";
 
-const AppDetailsSkeleton = () => {
+const OfferDetailsSkeleton = () => {
   return (
     <>
       <Skeleton className="mb-4 h-5 w-[40%]" />
@@ -13,4 +13,4 @@ const AppDetailsSkeleton = () => {
   );
 };
 
-export default AppDetailsSkeleton;
+export default OfferDetailsSkeleton;

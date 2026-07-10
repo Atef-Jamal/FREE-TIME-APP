@@ -1,5 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { IUser } from "./userModel.js";
+import { IUser } from "./user.js";
 
 export interface IFrame extends Document {
   title: string;
@@ -32,12 +32,12 @@ const framesSchema = new Schema<IFrame>(
     purshasedBy: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
     ],
   },
   { timestamps: true },
 );
 framesSchema.index({ purshasedBy: 1 });
-const FrameModel = model<IFrame>("FrameModel", framesSchema);
-export default FrameModel;
+const Frame = model<IFrame>("Frame", framesSchema);
+export default Frame;

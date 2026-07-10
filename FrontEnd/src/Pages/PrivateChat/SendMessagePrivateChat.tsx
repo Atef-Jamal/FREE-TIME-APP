@@ -2,7 +2,7 @@ import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
 import { IoMdSend } from "react-icons/io";
-import { openToast, selectCurrentUser, selectSocket } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPrivateChatMessage } from "../../services";
 import { handleApiError } from "../../utilities";
@@ -11,14 +11,14 @@ import {
   addSuccessPrivateMsgCache,
   addFailedPrivateMsgCache,
 } from "../../tanstackQuery/queryCache";
+import { IPrivateMessage, IUser } from "../../types";
 
 interface IProps {
-  activeChatId: string;
+  secondUserId: string;
 }
 
-const SendMessagePrivateChat = ({ activeChatId }: IProps) => {
+const SendMessagePrivateChat = ({ secondUserId }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const socket = useAppSelector(selectSocket);
   const [message, setMessage] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -36,41 +36,41 @@ const SendMessagePrivateChat = ({ activeChatId }: IProps) => {
   const mutation = useMutation({
     mutationFn: sendPrivateChatMessage,
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["conversation-messages", activeChatId] });
+      if (!currentUser) return;
+      await queryClient.cancelQueries({ queryKey: ["conversation-messages", secondUserId] });
       const uniqeIdForRollback = uuId();
 
-      const optimisticMsg = {
+      const optimisticMsg: IPrivateMessage = {
         _id: uniqeIdForRollback,
-        conversation: uniqeIdForRollback.toString().slice(0, -1),
+        conversation: uuId(),
         sender: currentUser,
+        receiver: {} as IUser,
         message,
-        receiver: uniqeIdForRollback.toString().slice(0, -3),
-        createdAt: new Date().toLocaleString("en-US"),
-        updatedAt: new Date().toLocaleString("en-US"),
         isRead: false,
         isSended: "PENDING",
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
-      addPendingPrivateMsgCache({ queryClient, activeChatId, optimisticMsg });
+      addPendingPrivateMsgCache({ queryClient, secondUserId, optimisticMsg });
 
       setMessage("");
       inputRef.current?.focus();
       inputRef.current!.style.height = "auto";
       return { uniqeIdForRollback };
     },
-    onSuccess: (data, _, context) => {
+    onSuccess: (newMessage, _, context) => {
       addSuccessPrivateMsgCache({
         queryClient,
-        activeChatId,
-        data,
+        secondUserId,
+        newMessage,
         uniqeIdForRollback: context.uniqeIdForRollback,
       });
-      socket?.emit("private-message", { to: activeChatId, data: data });
     },
     onError: (error, _, context) => {
       if (context)
         addFailedPrivateMsgCache({
           queryClient,
-          activeChatId,
+          secondUserId,
           uniqeIdForRollback: context.uniqeIdForRollback,
         });
       dispatch(
@@ -93,7 +93,7 @@ const SendMessagePrivateChat = ({ activeChatId }: IProps) => {
       );
       return;
     }
-    mutation.mutate({ message, receiver: activeChatId });
+    mutation.mutate({ message, receiver: secondUserId });
   };
 
   return (

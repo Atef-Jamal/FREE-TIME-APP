@@ -1,18 +1,17 @@
-import { memo, RefObject, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, RefObject, useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { BiCircle } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiTwotoneDislike } from "react-icons/ai";
-import { FcLike, FcOk } from "react-icons/fc";
-import { openToast, selectSocket, selectUserAuth } from "../../context/appStateSlice";
+import { FcLike } from "react-icons/fc";
+import { openToast, selectUserAuth } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { handleMessageReaction } from "../../services";
-import type { IUser, IPublicChatMessage } from "../../types";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
-import { formateDate, handleApiError } from "../../utilities";
+import type { IPublicChatItem, IPublicChatMessage } from "../../types";
+import { useSocketEvents } from "../../hooks/useSocketEvents";
+import { cn, formateDate, handleApiError } from "../../utilities";
 import { verifiedImage } from "../../assets";
 import UserImage from "../../components/Shared/Common/UserImage";
 import { updatePublicMsgCache } from "../../tanstackQuery/queryCache";
@@ -26,8 +25,7 @@ interface IProps {
 const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelete }: IProps) => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const userAuth = useAppSelector(selectUserAuth);
-  const socket = useAppSelector(selectSocket);
-  const [messageItem, setMessageItem] = useState<IPublicChatMessage>(singleMessage);
+  const [messageItem, setMessageItem] = useState(singleMessage);
   const [date, setDate] = useState(formateDate(messageItem.createdAt));
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -60,6 +58,9 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
       setMessageItem(updateMessage);
       return { previousMessage };
     },
+    onSuccess: (newMessage) => {
+      updatePublicMsgCache({ queryClient, newMessage });
+    },
     onError: (error, _, context) => {
       if (context) setMessageItem(context.previousMessage);
       dispatch(
@@ -69,10 +70,6 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
         }),
       );
     },
-    onSuccess: (newMessage) => {
-      updatePublicMsgCache({ queryClient, newMessage });
-      socket?.emit("public-message-interaction", newMessage);
-    },
   });
 
   const handleDelete = () => {
@@ -80,36 +77,16 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   const handleUpdateMessage = useCallback(
-    (updatedMessage: IPublicChatMessage) => {
-      if (updatedMessage._id === messageItem._id) {
+    (updatedMessage: IPublicChatItem) => {
+      if (updatedMessage._id === messageItem._id && updatedMessage.type === "MESSAGE") {
         setMessageItem(updatedMessage);
       }
     },
     [messageItem._id],
   );
 
-  const handleUpdateUser = useCallback(
-    (updatedUser: IUser) => {
-      if (messageItem.sender._id === updatedUser._id) {
-        setMessageItem((prevMessageItem) => ({
-          ...prevMessageItem,
-          sender: updatedUser,
-        }));
-      }
-    },
-    [messageItem.sender._id],
-  );
-
-  const events = useMemo(() => ["public-message-interaction", "user-updated"], []);
-
-  const handlers = useMemo(
-    () => [handleUpdateMessage, handleUpdateUser],
-    [handleUpdateMessage, handleUpdateUser],
-  );
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
+  useSocketEvents({
+    public_chat_message_reaction: handleUpdateMessage,
   });
 
   useEffect(() => {
@@ -174,7 +151,14 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   };
 
   return (
-    <div ref={lastMessageRef} id={messageItem._id} className={"space-y-1 rounded-md bg-[#2f2f4e88] p-[6px]"}>
+    <div
+      ref={lastMessageRef}
+      id={messageItem._id}
+      className={cn(
+        "space-y-1 rounded-md bg-[#2f2f4e88] p-[6px]",
+        messageItem.isSended === "PENDING" && "opacity-50",
+      )}
+    >
       <div className="relative flex w-full">
         <div className="h-[25px] w-[30px] md:h-[30px] md:w-[35px]">
           <UserImage user={messageItem.sender} />
@@ -215,10 +199,6 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
             {messageItem.message}
           </p>
           <div className="ml-auto flex w-full items-center justify-end gap-x-3">
-            {messageItem.isSended === "SUCCESS" && <FcOk className="mr-auto" />}
-
-            {messageItem.isSended === "PENDING" && <BiCircle className="mr-auto opacity-70" />}
-
             {messageItem.isSended === "FAILED" && <IoCloseCircleOutline className="mr-auto" />}
 
             <button onClick={handleLove} className="flex items-center gap-1">

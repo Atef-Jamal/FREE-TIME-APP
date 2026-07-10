@@ -1,7 +1,7 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { IUser } from "./userModel.js";
-import { IFrame } from "./frameModel.js";
-import { IPublicChatItem } from "./publicMessageModel.js";
+import { IUser } from "./user.js";
+import { IFrame } from "./frame.js";
+import { IPublicChatItem } from "./publicMessage.js";
 
 export interface INotification extends Document {
   type:
@@ -53,7 +53,7 @@ const notificationSchema = new Schema<INotification>(
     belongsTo: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "UserModel",
+      ref: "User",
     },
     isRead: {
       type: Boolean,
@@ -68,7 +68,7 @@ const notificationSchema = new Schema<INotification>(
       },
       referredUser: {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
       price: {
         type: Number,
@@ -82,11 +82,11 @@ const notificationSchema = new Schema<INotification>(
       },
       interactedUser: {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
       messageLocation: {
         type: Schema.Types.ObjectId,
-        ref: "PublicMessageModel",
+        ref: "PublicMessage",
       },
       typeOfInteraction: {
         type: String,
@@ -94,11 +94,11 @@ const notificationSchema = new Schema<INotification>(
       },
       mentionedUser: {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
       frame: {
         type: Schema.Types.ObjectId,
-        ref: "FrameModel",
+        ref: "Frame",
       },
       announceContent: {
         type: String,
@@ -110,6 +110,6 @@ const notificationSchema = new Schema<INotification>(
 
 notificationSchema.index({ belongsTo: 1 });
 
-const NotificationModel = model<INotification>("NotificationModel", notificationSchema);
+const Notification = model<INotification>("Notification", notificationSchema);
 
-export default NotificationModel;
+export default Notification;

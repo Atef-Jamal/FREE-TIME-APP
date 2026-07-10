@@ -22,7 +22,7 @@ const Notifications = memo(() => {
 
   const markNotificationasRead = useCallback(async () => {
     try {
-      const response = await axiosRequest.patch("api/notifications", { ddd: "ddd" });
+      const response = await axiosRequest.get("api/notifications");
       if (response.status === 200) {
         updateNotificationsIsReadCache({ queryClient });
       }

@@ -1,21 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import type { IFrame } from "../../types";
-import {
-  setCurrentUser,
-  openToast,
-  selectCurrentUser,
-  selectUserAuth,
-  selectSocket,
-} from "../../context/appStateSlice";
+import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { changeMyPictureFrame, unselectMyPictureFrame } from "../../services";
+import { changeMyPictureFrame } from "../../services";
 import { handleApiError } from "../../utilities";
 import Empty from "../../components/Shared/Common/Empty";
 
 const MyFrames = () => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const userAuth = useAppSelector(selectUserAuth);
-  const socket = useAppSelector(selectSocket);
   const dispatch = useAppDispatch();
 
   const changeMutation = useMutation({
@@ -29,10 +21,6 @@ const MyFrames = () => {
           type: "SUCESS",
         }),
       );
-      socket?.emit("user-updated", {
-        ...currentUser,
-        activeFrame: frame,
-      });
     },
     onError: (error) => {
       dispatch(
@@ -43,38 +31,6 @@ const MyFrames = () => {
       );
     },
   });
-  const unselectMutation = useMutation({
-    mutationFn: unselectMyPictureFrame,
-    onSuccess: () => {
-      if (!currentUser) return;
-      dispatch(setCurrentUser({ ...currentUser, activeFrame: null }));
-      dispatch(
-        openToast({
-          message: "Removed Successfully",
-          type: "SUCESS",
-        }),
-      );
-      socket?.emit("user-updated", { ...currentUser, activeFrame: null });
-    },
-    onError: (error) => {
-      dispatch(
-        openToast({
-          message: handleApiError(error),
-          type: "ERROR_GENERAL",
-        }),
-      );
-    },
-  });
-
-  const changeFrameHandler = (frameId: string) => {
-    if (userAuth !== "authenticated") return;
-    changeMutation.mutate({ frameId });
-  };
-
-  const unselectFrameHandler = () => {
-    if (userAuth !== "authenticated") return;
-    unselectMutation.mutate();
-  };
 
   return (
     <div
@@ -100,14 +56,14 @@ const MyFrames = () => {
               </div>
               {currentUser?.activeFrame?._id === item._id ? (
                 <button
-                  onClick={unselectFrameHandler}
+                  onClick={() => changeMutation.mutate({ frameId: item._id, action: "unselect" })}
                   className="mx-auto w-[95%] rounded-md bg-[#2d704ad8] py-1 text-center font-bold md:w-[80%]"
                 >
                   unselect
                 </button>
               ) : (
                 <button
-                  onClick={() => changeFrameHandler(item._id)}
+                  onClick={() => changeMutation.mutate({ frameId: item._id, action: "select" })}
                   className="mx-auto w-[95%] rounded-md bg-[#467cce71] py-1 text-center font-bold md:w-[80%]"
                 >
                   select

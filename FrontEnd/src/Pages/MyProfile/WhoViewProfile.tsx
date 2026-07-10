@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BiErrorAlt } from "react-icons/bi";
-import type { IVisitor } from "../../types";
+import type { IProfileView } from "../../types";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { axiosRequest, cn, formateDate, handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 
-const WhoVisitProfile = () => {
+const WhoViewProfile = () => {
   const currentUser = useAppSelector(selectCurrentUser);
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<IVisitor[]>([]);
+  const [usersVisitsMyProfile, setUsersVisitsMyProfile] = useState<IProfileView[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ const WhoVisitProfile = () => {
     }
     setIsLoading(true);
     try {
-      const response = await axiosRequest.get("/api/users/who-visit-me/me");
+      const response = await axiosRequest.get("/api/users/view-profile");
       const data = response.data;
       dispatch(setCurrentUser({ ...currentUser, points: data.points }));
       setUsersVisitsMyProfile(data.users);
@@ -78,10 +78,10 @@ const WhoVisitProfile = () => {
               >
                 <div className="flex items-center justify-center gap-3">
                   <div className="h-8 w-8 rounded-full">
-                    <img src={item.visitor.profilePicture} alt="" className="rounded-full object-contain" />
+                    <img src={item.viewer.profilePicture} alt="" className="rounded-full object-contain" />
                   </div>
                   <Link to={`/user/${item._id}`} className="text-sm text-[#8a84eb] underline">
-                    {item.visitor.name}
+                    {item.viewer.name}
                   </Link>
                 </div>
                 <span className="text-[#b38b8b] sm:text-sm">{formateDate(item.createdAt)}</span>
@@ -96,4 +96,4 @@ const WhoVisitProfile = () => {
   );
 };
 
-export default WhoVisitProfile;
+export default WhoViewProfile;

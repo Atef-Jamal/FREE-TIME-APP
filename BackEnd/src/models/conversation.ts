@@ -1,11 +1,11 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { IPrivateMessage } from "./privateMessageModel.js";
-import { IUser } from "./userModel.js";
+import { IUser } from "./user.js";
 
 export interface IConversation extends Document {
   conversationName: string;
   participants: (Types.ObjectId | IUser)[];
-  lastMessage?: IPrivateMessage;
+  lastMessage?: Types.ObjectId;
+  unreadCounts: Map<string, number>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,11 +19,15 @@ const conversationSchema = new Schema<IConversation>(
     participants: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
         required: true,
       },
     ],
-    lastMessage: { type: Schema.Types.ObjectId, ref: "PrivateMessageModel" },
+    lastMessage: { type: Schema.Types.ObjectId, ref: "PrivateMessage" },
+    unreadCounts: {
+      type: Map,
+      of: Number,
+    },
   },
   {
     timestamps: true,
@@ -32,5 +36,5 @@ const conversationSchema = new Schema<IConversation>(
 
 conversationSchema.index({ participants: 1 });
 
-const ConversationModel = model<IConversation>("ConversationModel", conversationSchema);
-export default ConversationModel;
+const Conversation = model<IConversation>("Conversation", conversationSchema);
+export default Conversation;

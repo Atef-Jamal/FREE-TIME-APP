@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import PublicMessage from "../models/publicMessageModel.js";
-import { io } from "../app.js";
-import { onLineUsers } from "../socketIo/index.js";
-import NotificationModel, { INotification } from "../models/notificationModel.js";
+import PublicMessage from "../models/publicMessage.js";
+import { io, onlineUsers } from "../app.js";
+import Notification, { INotification } from "../models/notification.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
-import PublicMessageModel from "../models/publicMessageModel.js";
 import { Types } from "mongoose";
 
 export const getAllPublicMessages = async (req: Request, res: Response) => {
@@ -38,14 +35,14 @@ export const createPublicMessage = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { messageText, type, mentionedUsers } = req.body;
   try {
-    const newMessage = await PublicMessageModel.create({
+    const newMessage = await PublicMessage.create({
       sender: req.user._id,
       message: messageText,
       mentionedUsers: mentionedUsers,
       type,
     });
 
-    const populatedMessage = await PublicMessageModel.findById(newMessage._id).populate([
+    const populatedMessage = await PublicMessage.findById(newMessage._id).populate([
       { path: "sender", select: userExcludedFields },
       { path: "mentionedUsers", select: userExcludedFields },
       { path: "newUserReferred", select: userExcludedFields },
@@ -56,7 +53,7 @@ export const createPublicMessage = async (req: Request, res: Response) => {
     if (mentionedUsers.length > 0) {
       const newNotifications: INotification[] = [];
       mentionedUsers.forEach((userId: Types.ObjectId) => {
-        const newNotification = new NotificationModel({
+        const newNotification = new Notification({
           type: "MENTION",
           belongsTo: userId,
           metadata: {
@@ -67,23 +64,33 @@ export const createPublicMessage = async (req: Request, res: Response) => {
         newNotifications.push(newNotification);
       });
 
-      const saveNotifications = await NotificationModel.insertMany(newNotifications);
+      const saveNotifications = await Notification.insertMany(newNotifications);
 
       const cacheKeys = mentionedUsers.map(
         (userId: Types.ObjectId) => `notifications:list:${userId.toString()}`,
       );
+
       await redisClient.del(cacheKeys);
 
       const ids = saveNotifications.map((item) => item._id);
 
-      const populatedNotifications = await NotificationModel.find({ _id: { $in: ids } }).populate(
+      const populatedNotifications = await Notification.find({ _id: { $in: ids } }).populate(
         "metadata.mentionedUser",
         userExcludedFields,
       );
       populatedNotifications.forEach((notify) => {
-        io.to(onLineUsers[notify.belongsTo.toString()]).emit("new-notification", notify);
+        const targetSockets = onlineUsers.get(notify.belongsTo.toString());
+        if (targetSockets) {
+          io.to([...targetSockets]).emit("notification", notify);
+        }
       });
     }
+    const currentUserSockets = onlineUsers.get(req.user._id.toString());
+    io.except(currentUserSockets ? [...currentUserSockets] : []).emit(
+      "public_chat_message",
+      populatedMessage,
+    );
+
     return res.status(200).json(populatedMessage);
   } catch (error) {
     return res.status(404).json({ error: "can't send your message, an Error occurred" });
@@ -127,8 +134,12 @@ export const deletePublicMessage = async (req: Request, res: Response) => {
       { returnDocument: "after" },
     )
       .populate("sender", userExcludedFields)
-      .select("-message");
+      .select("-message")
+      .lean();
+
     await redisClient.del(`publicMessages:list:${messageId}`);
+
+    if (deletedMessage) io.emit("public_chat_message_reaction", deletedMessage);
     return res.status(200).json(deletedMessage);
   } catch (error) {
     return res.status(404).json({ error: "can't delete message" });
@@ -159,7 +170,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
       message[fieldName].splice(index, 1);
     } else {
       message[fieldName].push(req.user._id);
-      const interactedWithMessageBefore = await NotificationModel.findOne({
+      const interactedWithMessageBefore = await Notification.findOne({
         belongsTo: message.sender._id,
         "metadata.interactedUser": req.user._id,
         "metadata.messageLocation": message._id,
@@ -176,14 +187,14 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
           await interactedWithMessageBefore.save()
         ).populate("metadata.interactedUser", userExcludedFields);
 
-        io.to(onLineUsers[savedNotification.belongsTo.toString()]).emit(
-          "new-notification",
-          savedNotification,
-        );
+        const targetSockets = onlineUsers.get(savedNotification.belongsTo.toString());
+        if (targetSockets) {
+          io.to([...targetSockets]).emit("notification", savedNotification);
+        }
       }
 
       if (!interactedWithMessageBefore && message.sender._id.toString() !== req.user._id.toString()) {
-        const newNotification = await NotificationModel.create({
+        const newNotification = await Notification.create({
           type: "INTERACT-WITH-MESSAGE",
           belongsTo: message.sender._id,
           metadata: {
@@ -195,17 +206,16 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
 
         await redisClient.del(`notifications:list:${message.sender._id}`);
 
-        const populatedNotification = await NotificationModel.findById(newNotification._id).populate(
+        const populatedNotification = await Notification.findById(newNotification._id).populate(
           "metadata.interactedUser",
           userExcludedFields,
         );
 
         if (!populatedNotification) return res.status(404).json({ error: "an error occurred" });
-
-        io.to(onLineUsers[populatedNotification.belongsTo.toString()]).emit(
-          "new-notification",
-          populatedNotification,
-        );
+        const targetSockets = onlineUsers.get(populatedNotification.belongsTo.toString());
+        if (targetSockets) {
+          io.to([...targetSockets]).emit("notification", populatedNotification);
+        }
       }
     }
 
@@ -220,13 +230,13 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
     }
 
     const saveMessage = await message.save();
-    const populatedMessage = await PublicMessageModel.findById(saveMessage._id).populate([
+    const populatedMessage = await PublicMessage.findById(saveMessage._id).populate([
       { path: "sender", select: userExcludedFields },
       { path: "mentionedUsers", select: userExcludedFields },
     ]);
 
     await redisClient.del(`publicMessages:list:${messageId}`);
-
+    if (populatedMessage) io.emit("public_chat_message_reaction", populatedMessage);
     return res.status(200).json(populatedMessage);
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again" });

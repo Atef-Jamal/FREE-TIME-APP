@@ -8,16 +8,16 @@ import { BsArrowDownCircle } from "react-icons/bs";
 import { openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn, handleApiError } from "../../utilities";
-import { handleAddReview } from "../../services";
-import AppDetailsSkeleton from "./TaskDetailsSkeleton";
+import { handleCreateOfferReview } from "../../services";
+import OfferDetailsSkeleton from "./OfferDetailsSkeleton";
 import Empty from "../../components/Shared/Common/Empty";
-import { useFetchTaskDetails } from "../../tanstackQuery/queryFetch";
+import { useFetchOfferDetails } from "../../tanstackQuery/queryFetch";
 
 interface IProps {
-  taskId: string;
+  offerId: string;
 }
 
-const TaskDetail = ({ taskId }: IProps) => {
+const OfferDetail = ({ offerId }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
@@ -29,20 +29,20 @@ const TaskDetail = ({ taskId }: IProps) => {
   let isCompleted;
   let notActiveStars;
 
-  const { data: taskDetails, status, error } = useFetchTaskDetails({ taskId });
+  const { data: offerDetails, status, error } = useFetchOfferDetails({ offerId });
 
-  if (taskDetails) {
-    isCompleted = currentUser?.completedTasks.includes(taskDetails?._id);
-    notActiveStars = 5 - taskDetails.rating;
+  if (offerDetails) {
+    isCompleted = currentUser?.completedOffers.includes(offerDetails?._id);
+    notActiveStars = 5 - offerDetails.rating;
   }
 
   const mutation = useMutation({
-    mutationFn: handleAddReview,
+    mutationFn: handleCreateOfferReview,
     onError: (error) => {
       dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["earn", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["earn", offerId] });
       setComment("");
     },
   });
@@ -53,10 +53,10 @@ const TaskDetail = ({ taskId }: IProps) => {
       dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
       return;
     }
-    mutation.mutate({ taskId, comment });
+    mutation.mutate({ offerId, comment });
   };
 
-  if (status === "pending") return <AppDetailsSkeleton />;
+  if (status === "pending") return <OfferDetailsSkeleton />;
 
   if (error) return <p className="py-16 text-center text-red-500">{error.response?.data.error}</p>;
 
@@ -65,21 +65,21 @@ const TaskDetail = ({ taskId }: IProps) => {
       <h1 className="mb-3 text-2xl font-bold text-[#78bd4f]">{t("Offer Details")}</h1>
       <img
         alt=""
-        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${taskDetails.image}`}
+        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${offerDetails.image}`}
         className="mb-3 h-[300px] w-full object-cover"
       />
 
       <div className="flex w-full flex-col items-center justify-center gap-1 md:gap-3">
         <span className="w-full text-sm text-[#537692]">
-          <span className="mr-2 text-base text-[#aebeb5]">{t("Name")} :</span> {taskDetails?.title}
+          <span className="mr-2 text-base text-[#aebeb5]">{t("Name")} :</span> {offerDetails?.title}
         </span>
         <span className="w-full text-sm text-[#537692]">
           <span className="mr-2 text-base text-[#aebeb5]">{t("Description")} :</span>
-          {taskDetails?.description}
+          {offerDetails?.description}
         </span>
         <span className="w-full text-sm text-[#537692]">
           <span className="mr-2 text-base text-[#aebeb5]">{t("available on")} :</span>
-          {taskDetails?.devices === "ALL" ? "ALL DEVICES" : taskDetails.devices}
+          {offerDetails?.devices === "ALL" ? "ALL DEVICES" : offerDetails.devices}
         </span>
         <div
           onClick={() => setExpandUsers((prev) => !prev)}
@@ -94,10 +94,10 @@ const TaskDetail = ({ taskId }: IProps) => {
             expandUsers ? "p-1" : "h-0 overflow-hidden p-0",
           )}
         >
-          {taskDetails.completedBy.length === 0 && <Empty text={t("no one complete this app before")} />}
+          {offerDetails.completedBy.length === 0 && <Empty text={t("no one complete this app before")} />}
 
-          {taskDetails.completedBy.length > 0 &&
-            taskDetails.completedBy.map((item) => (
+          {offerDetails.completedBy.length > 0 &&
+            offerDetails.completedBy.map((item) => (
               <Link key={item._id} to={`/user/${item._id}`} className="block text-sm text-gray-400 underline">
                 {item.name}
               </Link>
@@ -106,7 +106,7 @@ const TaskDetail = ({ taskId }: IProps) => {
         <span className="flex w-full items-center gap-3 text-[#aebeb5]">
           {t("Rating")} :
           <span className="flex items-center justify-center gap-1">
-            {[...Array(taskDetails.rating).keys()].map((item) => (
+            {[...Array(offerDetails.rating).keys()].map((item) => (
               <IoMdStar key={item} />
             ))}
             {[...Array(notActiveStars).keys()].map((item) => (
@@ -122,7 +122,7 @@ const TaskDetail = ({ taskId }: IProps) => {
           <BsArrowDownCircle className="text-xl opacity-50" />
         </span>
         <div className={cn("flex h-0 w-full flex-col items-center overflow-hidden", openReviews && "h-auto")}>
-          {taskDetails.reviews.map((review) => {
+          {offerDetails.reviews.map((review) => {
             return (
               <div
                 key={review._id}
@@ -140,7 +140,7 @@ const TaskDetail = ({ taskId }: IProps) => {
               </div>
             );
           })}
-          {taskDetails.reviews.length === 0 && <Empty text={t("Empty Reviews")} />}
+          {offerDetails.reviews.length === 0 && <Empty text={t("Empty Reviews")} />}
           <form onSubmit={addReviewHandler} className="w-full">
             <input
               placeholder="Write your opinion"
@@ -154,7 +154,7 @@ const TaskDetail = ({ taskId }: IProps) => {
         <span className="mb-2 flex w-full items-center gap-3 text-[#aebeb5]">
           {t("Reward")} :
           <span className="text-sm text-[#6676ff]">
-            {taskDetails.prize} {t("Points")}
+            {offerDetails.prize} {t("Points")}
           </span>
         </span>
         {isCompleted && (
@@ -164,15 +164,15 @@ const TaskDetail = ({ taskId }: IProps) => {
             Completed
           </button>
         )}
-        {!isCompleted && taskDetails.isAvailable === "AVAILABLE" && (
+        {!isCompleted && offerDetails.isAvailable === "AVAILABLE" && (
           <Link
-            to={`/playing/${taskDetails._id}`}
+            to={`/playing/${offerDetails._id}`}
             className={`w-full rounded-md bg-[#a4ec52cc] py-2 text-center text-sm font-bold`}
           >
             {t("START NOW")}
           </Link>
         )}
-        {taskDetails.isAvailable === "UNAVAILABLE" && (
+        {offerDetails.isAvailable === "UNAVAILABLE" && (
           <button className={`w-full rounded-md bg-[#528feccc] py-2 text-center text-sm font-bold`}>
             {t("Not Available")}
           </button>
@@ -182,4 +182,4 @@ const TaskDetail = ({ taskId }: IProps) => {
   );
 };
 
-export default TaskDetail;
+export default OfferDetail;

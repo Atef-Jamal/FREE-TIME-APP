@@ -3,7 +3,7 @@ import { BiMenu } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 import {
   showModal,
-  updateThisEntity,
+  updateStateField,
   selectUserAuth,
   selectSidebarCollapsed,
   selectOpenMusicModal,
@@ -22,15 +22,15 @@ const Sidebar = memo(({ handleClose }: { handleClose: () => void }) => {
   const userAuth = useAppSelector(selectUserAuth);
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
   const openMusicModal = useAppSelector(selectOpenMusicModal);
-  const smallScreen = useAppSelector(selectSmallScreen);
+  const mobileScreen = useAppSelector(selectSmallScreen);
   const dispatch = useAppDispatch();
   const { t } = useTranslation("sidebar");
 
   const handleCollaps = () => {
-    dispatch(updateThisEntity({ entity: "sidebarCollapsed", value: !sidebarCollapsed }));
+    dispatch(updateStateField({ entity: "sidebarCollapsed", value: !sidebarCollapsed }));
   };
 
-  const { data } = useFetchUnreadPrivateMsgs({ userAuth: userAuth === "authenticated" });
+  const { data, status } = useFetchUnreadPrivateMsgs({ userAuth: userAuth === "authenticated" });
 
   return (
     <div
@@ -52,7 +52,7 @@ const Sidebar = memo(({ handleClose }: { handleClose: () => void }) => {
 
       <ul className="flex w-full flex-col gap-1">
         {sidebareItems.map((item, index) => {
-          if (smallScreen) {
+          if (mobileScreen) {
             if (item.path === "leaderboard" || item.path === "earn" || item.path === "rewards") return;
           }
           return (
@@ -72,10 +72,10 @@ const Sidebar = memo(({ handleClose }: { handleClose: () => void }) => {
                 </span>
                 {userAuth === "authenticated" &&
                   item.path === "privatechat" &&
-                  data &&
-                  data.senderIds.length > 0 && (
+                  status === "success" &&
+                  data.counts > 0 && (
                     <span className="absolute right-1 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#e23e32] text-xs font-bold">
-                      {data.senderIds.length}
+                      {data.counts}
                     </span>
                   )}
               </NavLink>

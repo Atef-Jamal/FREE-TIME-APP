@@ -1,5 +1,5 @@
 import { howItWorksLeft, affiliateExplained, howItWorksRight, affiliateBag } from "../../assets";
-import { selectUserAuth, showModal, updateThisEntity } from "../../context/appStateSlice";
+import { selectUserAuth, showModal, updateStateField } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 
 const Affiliates = () => {
@@ -7,7 +7,7 @@ const Affiliates = () => {
   const dispatch = useAppDispatch();
 
   const handleOpenRegisterModal = () => {
-    dispatch(updateThisEntity({ entity: "isSignInMode", value: false }));
+    dispatch(updateStateField({ entity: "isSignInMode", value: false }));
     dispatch(showModal("register-modal"));
   };
   return (

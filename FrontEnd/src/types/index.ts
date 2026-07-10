@@ -1,7 +1,8 @@
-export type { IUser, ICashedLiveStatsUsers, IVisitor } from "./userTypes";
+export type { IUser, ICashedLiveStatsUsers, IProfileView } from "./userTypes";
 
 export type {
   IInitialState,
+  ITogglActionPayload,
   IRegisterProps,
   ILoginProps,
   IMusicInfo,
@@ -24,7 +25,14 @@ export type {
   INotifications,
 } from "./notificationTypes";
 
-export type { IFilterByDevice, IFilterByPopularity, IGameTask, IQuizTask, IReview, ITask } from "./earnTypes";
+export type {
+  IFilterByDevice,
+  IFilterByPopularity,
+  IGameOffer,
+  IQuizOffer,
+  IOfferReview,
+  IOffer,
+} from "./earnTypes";
 
 export type {
   ICashedPublicChat,
@@ -39,7 +47,6 @@ export type {
   IConversation,
   IPrivateMessage,
   IUnreadPrivateMsgsCache,
-  IUpdatePrivateMsgsCacheParams,
 } from "./privateChatTypes";
 
 export type { IBounusCode, IDailyReward } from "./rewardsTypes";

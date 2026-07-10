@@ -1,12 +1,15 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
 import { sendVerificationCode, verifyMyEmail } from "../../services";
-import { handleApiError } from "../../utilities";
+import { displaySound, handleApiError } from "../../utilities";
+import notificationSoundSrc from "../../assets/images/notificationSound.wav";
+import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
 
 const EnterVerificationCode = () => {
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
+  const queryClient = useQueryClient();
   const [reSending, setResending] = useState(false);
   const [first, setFirst] = useState("");
   const [second, setSecod] = useState("");
@@ -65,7 +68,9 @@ const EnterVerificationCode = () => {
 
   const mutation = useMutation({
     mutationFn: verifyMyEmail,
-    onSuccess: () => {
+    onSuccess: (emailVerifiedNotification) => {
+      addNewNotificationCache({ queryClient, newNotification: emailVerifiedNotification });
+      displaySound(notificationSoundSrc);
       setSuccessfullyVerified(true);
     },
     onError: (error) => {

@@ -1,46 +1,34 @@
-import { memo, Suspense, useEffect, useMemo, useState } from "react";
+import { memo, Suspense, useMemo, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
-import { useAppSelector } from "../../context/hooks";
+// import { useAppSelector } from "../../context/hooks";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useQueryClient } from "@tanstack/react-query";
+// import { useQueryClient } from "@tanstack/react-query";
 import LiveStatsItem from "../../components/Ui/LiveStatsItem";
 import LangMenu from "../../components/Ui/LangMenu";
 import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";
 import Spinner from "../../components/Shared/Common/Spinner";
-import { useInfiniteLiveStatsUsers } from "../../tanstackQuery/queryFetch";
-import { updateCurrentUserCache } from "../../tanstackQuery/queryCache";
-import { selectCurrentUser, selectOnlineUsers } from "../../context/appStateSlice";
+import { useFetchTopUser, useInfiniteLiveStatsUsers } from "../../tanstackQuery/queryFetch";
+// import { updateCurrentUserCache } from "../../tanstackQuery/queryCache";
+// import { selectCurrentUser } from "../../context/appStateSlice";
 
 const LiveStats = memo(() => {
-  const currentUser = useAppSelector(selectCurrentUser);
-  const onlineUsers = useAppSelector(selectOnlineUsers);
+  // const currentUser = useAppSelector(selectCurrentUser);
   const [openLangMenu, setOpenLangMenu] = useState(false);
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const { data, status, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
     useInfiniteLiveStatsUsers();
 
+  const { data: topUser } = useFetchTopUser();
+
   const users = data?.pages.map((page) => page.users).flat();
-  const userHieghestPoints = data?.pages[0].userHighestPoints;
-
-  useEffect(() => {
-    if (!currentUser) return;
-    updateCurrentUserCache({ queryClient, currentUser });
-  }, [currentUser, queryClient]);
-
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
-    }, 500);
-    return () => clearTimeout(timeOut);
-  }, [onlineUsers, queryClient]);
 
   const memomizedUsersList = useMemo(() => {
-    return users?.map((user) => (
-      <LiveStatsItem key={user._id} user={user} userHieghestPoints={userHieghestPoints} />
-    ));
-  }, [users, userHieghestPoints]);
+    return users?.map((user) => {
+      return <LiveStatsItem key={user._id} user={user} topUserId={topUser?.userId} />;
+    });
+  }, [users, topUser?.userId]);
 
   return (
     <div

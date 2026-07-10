@@ -1,16 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { RiCloseFill } from "react-icons/ri";
 import { FaList } from "react-icons/fa";
 import { FaMusic } from "react-icons/fa6";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
-import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import {
-  selectIsChatOpen,
-  selectOpenMusicModal,
-  selectPublicMsgNotify,
-  setPublicMsgRedPoint,
-} from "../../context/appStateSlice";
+import { useSocketEvents } from "../../hooks/useSocketEvents";
+import { useAppSelector } from "../../context/hooks";
+import { selectOpenMusicModal, selectPublicMsgNotify } from "../../context/appStateSlice";
 import { mobileNavBottomItems } from "../../helper/data";
 import { cn } from "../../utilities";
 
@@ -22,20 +17,17 @@ interface IProps {
 const NavebareBottom = ({ handleCloseMobileSidebare, openSidbareMobile }: IProps) => {
   const publicMsgNotify = useAppSelector(selectPublicMsgNotify);
   const openMusicModal = useAppSelector(selectOpenMusicModal);
-  const isChatOpen = useAppSelector(selectIsChatOpen);
   const [privateMsgRedPoint, setPrivateMsgRedPoint] = useState(false);
-
-  const dispatch = useAppDispatch();
 
   const handleToggleMobileSidbare = () => {
     handleCloseMobileSidebare(!openSidbareMobile);
   };
 
-  const handleNotifyNewPublicMessage = useCallback(() => {
-    if (location.pathname !== "/chat" && !isChatOpen) {
-      dispatch(setPublicMsgRedPoint(true));
+  useEffect(() => {
+    if (openSidbareMobile) {
+      setPrivateMsgRedPoint(false);
     }
-  }, [isChatOpen, dispatch]);
+  }, [openSidbareMobile, setPrivateMsgRedPoint]);
 
   const handleNotifyNewPrivateMessage = useCallback(() => {
     if (location.pathname !== "/privatechat" && !openSidbareMobile) {
@@ -43,22 +35,9 @@ const NavebareBottom = ({ handleCloseMobileSidebare, openSidbareMobile }: IProps
     }
   }, [openSidbareMobile]);
 
-  const events = useMemo(() => ["public-message", "private-message"], []);
-  const handlers = useMemo(
-    () => [handleNotifyNewPublicMessage, handleNotifyNewPrivateMessage],
-    [handleNotifyNewPublicMessage, handleNotifyNewPrivateMessage],
-  );
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
+  useSocketEvents({
+    private_chat_message: handleNotifyNewPrivateMessage,
   });
-
-  useEffect(() => {
-    if (openSidbareMobile) {
-      setPrivateMsgRedPoint(false);
-    }
-  }, [openSidbareMobile, setPrivateMsgRedPoint]);
 
   return (
     <ul className="fixed bottom-0 left-0 z-[10] flex h-[60px] w-full items-center justify-between gap-x-1 bg-[#2b2b55] lg:hidden">

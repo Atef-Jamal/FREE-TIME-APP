@@ -3,21 +3,19 @@ import Navbare from "./Navbare/Navbare";
 import Toast from "../components/Shared/Common/Toast";
 import Modal from "../components/Shared/Modals/Modal";
 import ContentBody from "./ContentBody/ContentBody";
-import { useInitialization } from "../hooks/useInitialization";
 import { useAppSelector } from "../context/hooks";
 import { selectSmallScreen } from "../context/appStateSlice";
+import { AppInitializer } from "./AppInitializer";
 
 const NavebareBottom = lazy(() => import("./Navbare/NavebareBottom"));
 
 const Layout = () => {
-  const smallScreen = useAppSelector(selectSmallScreen);
+  const mobileScreen = useAppSelector(selectSmallScreen);
   const [openSidbareMobile, setOpenSidbareMobile] = useState(false);
 
   const handleCloseMobileSidebare = useCallback((open: boolean) => {
     setOpenSidbareMobile(open);
   }, []);
-
-  useInitialization();
 
   return (
     <main>
@@ -28,7 +26,7 @@ const Layout = () => {
         openSidbareMobile={openSidbareMobile}
         handleCloseMobileSidebare={handleCloseMobileSidebare}
       />
-      {smallScreen && (
+      {mobileScreen && (
         <Suspense
           children={
             <NavebareBottom
@@ -38,6 +36,7 @@ const Layout = () => {
           }
         />
       )}
+      <AppInitializer />
       <audio src={undefined} id="audioElement" className="hidden" />
     </main>
   );

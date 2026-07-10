@@ -5,7 +5,7 @@ import conversationsRoute from "./privateChatRoutes.js";
 import notificationRoute from "./notificationRoutes.js";
 import publicChatRoute from "./publicChatRoutes.js";
 import musicsRoutes from "./musicsRoutes.js";
-import taskRoute from "./tasksRoutes.js";
+import taskRoute from "./offersRoutes.js";
 import frameRoute from "./frameRoutes.js";
 import testimonialRoute from "./testimonialRoutes.js";
 import couponRoute from "./couponRoutes.js";
@@ -25,7 +25,7 @@ router.use("/publicchat", publicChatRoute);
 
 router.use("/notifications", notificationRoute);
 
-router.use("/tasks", taskRoute);
+router.use("/offers", taskRoute);
 
 router.use("/musics", musicsRoutes);
 

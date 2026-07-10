@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import User from "../models/userModel.js";
-import Task from "../models/offerModel.js";
+import User from "../models/user.js";
+import Offer from "../models/offer.js";
 import { features } from "../data/data.js";
-import Frame from "../models/frameModel.js";
+import Frame from "../models/frame.js";
 
 export const searchController = async (req: Request, res: Response) => {
   const searchTerm = req.query.q as string;
@@ -22,7 +22,7 @@ export const searchController = async (req: Request, res: Response) => {
       .limit(12)
       .select("_id name profilePicture");
 
-    const getOffersPromise = Task.find({ title: regex }).limit(12);
+    const getOffersPromise = Offer.find({ title: regex }).limit(12);
     const getFramesPromise = Frame.find({ title: regex }).limit(12);
 
     const [users, offers, frames] = await Promise.all([getUsersPromise, getOffersPromise, getFramesPromise]);

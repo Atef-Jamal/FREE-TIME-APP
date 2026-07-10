@@ -1,28 +1,23 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { SetURLSearchParams } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuId } from "uuid";
 import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { RiBaseStationLine } from "react-icons/ri";
 import type { IUser, IPublicChatItem } from "../../types";
-import {
-  openToast,
-  selectCurrentUser,
-  selectOnlineUsers,
-  selectSocket,
-  selectUserAuth,
-} from "../../context/appStateSlice";
+import { openToast, selectCurrentUser, selectSocket, selectUserAuth } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPublicChatMessage } from "../../services";
 import { cn, handleApiError } from "../../utilities";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { useSocketEvents } from "../../hooks/useSocketEvents";
 import MentionListOfUsers from "./MentionListOfUsers";
 import {
   addFailedPublicMsgCache,
   addPendingPublicMsgCache,
   addSuccessPublicMsgCache,
 } from "../../tanstackQuery/queryCache";
+// import { useFetchOnlineUsersIds } from "../../tanstackQuery/queryFetch";
 
 interface IProps {
   stopScrolling: boolean;
@@ -34,8 +29,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
   const socket = useAppSelector(selectSocket);
-  const onlineUsers = useAppSelector(selectOnlineUsers);
-  const [openMentionList, setOpenMentionList] = useState<boolean>(false);
+  const [openMentionList, setOpenMentionList] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -44,6 +38,12 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+
+  const { data: totalGuests } = useQuery<number>({
+    queryKey: ["total-guests"],
+  });
+
+  // const { data: onlineUsers } = useFetchOnlineUsersIds();
 
   const mutation = useMutation({
     mutationFn: sendPublicChatMessage,
@@ -67,7 +67,6 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       };
 
       addPendingPublicMsgCache({ queryClient, optimisticMsg });
-
       setMessage("");
       inputRef.current?.focus();
       inputRef.current!.style.height = "auto";
@@ -75,7 +74,6 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     },
     onSuccess: (newMessage, _, context) => {
       addSuccessPublicMsgCache({ queryClient, uniqeIdForRollback: context.uniqeIdForRollback, newMessage });
-      socket?.emit("public-message", newMessage);
       if (mentionedUsers.size > 0) {
         setMentionedUsers(new Set());
       }
@@ -83,10 +81,10 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     onError: (error, _, context) => {
       if (context && currentUser) {
         const failedMessage: IPublicChatItem = {
-          _id: uuId(),
-          sender: currentUser,
+          _id: context.optimisticMsg._id,
+          sender: context.optimisticMsg.sender,
           type: "MESSAGE",
-          message,
+          message: context.optimisticMsg.message,
           loves: [],
           likes: [],
           dislikes: [],
@@ -142,7 +140,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     setMessage(textareaElement.value);
     if (!isTyping && textareaElement.value.trim() !== "") {
       setIsTyping(true);
-      socket?.emit("typing-public-message");
+      if (socket) socket.emit("public_chat_typing_start");
     }
     const lastTypingTime = new Date().getTime();
     const timmerLenth = 3000;
@@ -152,7 +150,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       const now = new Date().getTime();
       const timDifference = now - lastTypingTime;
       if (timDifference >= timmerLenth) {
-        socket?.emit("stop-typing-public-message");
+        if (socket) socket.emit("public_chat_typing_stop");
         setIsTyping(false);
       }
     }, timmerLenth);
@@ -162,20 +160,17 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     setOpenMentionList((prev) => !prev);
   };
 
-  const handleTyping = useCallback(() => {
+  const handleTypingStart = useCallback(() => {
     setIsTyping(true);
   }, []);
 
-  const handleStopTyping = useCallback(() => {
+  const handleTypingStop = useCallback(() => {
     setIsTyping(false);
   }, []);
 
-  const events = useMemo(() => ["typing-public-message", "stop-typing-public-message"], []);
-  const handlers = useMemo(() => [handleTyping, handleStopTyping], [handleTyping, handleStopTyping]);
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
+  useSocketEvents({
+    public_chat_typing_start: handleTypingStart,
+    public_chat_typing_stop: handleTypingStop,
   });
 
   return (
@@ -189,7 +184,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       <div className="flex items-center gap-x-1 bg-[#302d2dee] p-[2px] lg:px-2">
         <span className="flex items-center justify-center text-xs text-[#a5a760]">
           <RiBaseStationLine className="text-lg" />
-          <span className="mx-1 text-[#83db5a]">{onlineUsers.length}</span>
+          <span className="mx-1 text-[#83db5a]">{totalGuests}</span>
           Onlines
         </span>
 

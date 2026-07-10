@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { selectCurrentUser, setCurrentUser } from "../../context/appStateSlice";
 import { BsCheck2Circle } from "react-icons/bs";
-import { axiosRequest, handleApiError } from "../../utilities";
+import { axiosRequest, displaySound, handleApiError } from "../../utilities";
 import { ImSpinner3 } from "react-icons/im";
-import type { IGameTask } from "../../types";
+import type { IGameOffer } from "../../types";
+import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
+import notificationSoundSrc from "../../assets/images/notificationSound.wav";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
-  taskApp: IGameTask;
+  offer: IGameOffer;
 }
 
-const GuessCardTask = ({ taskApp }: IProps) => {
+const GuessCardOffer = ({ offer }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const cards = ["a", "b", "c", "b", "a", "c", "e", "g", "f", "e", "g", "f"];
   const [selected, setSelected] = useState<string>("");
@@ -20,6 +24,7 @@ const GuessCardTask = ({ taskApp }: IProps) => {
   const [error, setError] = useState("");
   const [completed, setCompleted] = useState(false);
   const allElements = document.querySelectorAll(".card-item");
+  const queryClient = useQueryClient();
 
   const dispatch = useAppDispatch();
 
@@ -60,33 +65,33 @@ const GuessCardTask = ({ taskApp }: IProps) => {
 
   useEffect(() => {
     const getReward = async () => {
-      if (!currentUser || score < 5) {
-        return;
-      }
+      if (!currentUser || score < 5) return;
       setError("");
       setIsLoading(true);
       try {
-        await axiosRequest.post(`api/tasks/complete-guesscard-app/${taskApp._id}`, {
+        const response = await axiosRequest.post(`api/offers/complete-guesscard-app/${offer._id}`, {
           example: "example",
         });
-        setCompleted(true);
         dispatch(
           setCurrentUser({
             ...currentUser,
-            completedTasks: [...currentUser.completedTasks, taskApp._id],
+            completedOffers: [...currentUser.completedOffers, offer._id],
           }),
         );
-        setIsLoading(false);
+        addNewNotificationCache({ queryClient, newNotification: response.data.notification });
+        displaySound(notificationSoundSrc);
+        setCompleted(true);
       } catch (error) {
         setError(handleApiError(error));
         setCompleted(false);
+      } finally {
         setIsLoading(false);
       }
     };
     if (score >= 5) {
       getReward();
     }
-  }, [score, dispatch, taskApp._id, currentUser]);
+  }, [score, dispatch, offer._id, currentUser, queryClient]);
 
   if (isLoading) {
     return (
@@ -150,4 +155,4 @@ const GuessCardTask = ({ taskApp }: IProps) => {
   );
 };
 
-export default GuessCardTask;
+export default GuessCardOffer;

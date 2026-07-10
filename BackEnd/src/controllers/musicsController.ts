@@ -1,20 +1,18 @@
 import { Request, Response } from "express";
-import User from "../models/userModel.js";
+import User from "../models/user.js";
 import { io } from "../app.js";
-import { onLineUsers } from "../socketIo/index.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
-import NotificationModel from "../models/notificationModel.js";
-import PublicMessageModel from "../models/publicMessageModel.js";
+import Notification from "../models/notification.js";
+import PublicMessage from "../models/publicMessage.js";
 
 export const getMusics = async (_req: Request, res: Response) => {
   try {
     const cacheKey = "musics:list";
     const cachedMusics = await redisClient.get(cacheKey);
 
-    if (cachedMusics) {
-      return res.status(200).json(JSON.parse(cachedMusics));
-    }
+    if (cachedMusics) return res.status(200).json(JSON.parse(cachedMusics));
+
     const url = process.env.DEEZER_MUSICS_URL!;
     const options = {
       method: "GET",
@@ -26,7 +24,7 @@ export const getMusics = async (_req: Request, res: Response) => {
     const response = await fetch(url, options);
     const data = await response.json();
     await redisClient.set(cacheKey, JSON.stringify(data.data));
-    return res.status(200).json(data);
+    return res.status(200).json(data.data);
   } catch (error) {
     return res.status(404).json({ error: "can't load musics." });
   }
@@ -55,9 +53,9 @@ export const buyMusic = async (req: Request, res: Response) => {
         mySongs: [...req.user.mySongs, musicId],
       },
       { new: true },
-    );
+    ).lean();
 
-    const newNotificationPromise = NotificationModel.create({
+    const newNotificationPromise = Notification.create({
       type: "MUSIC",
       belongsTo: req.user._id,
       metadata: {
@@ -67,7 +65,7 @@ export const buyMusic = async (req: Request, res: Response) => {
       },
     });
 
-    const newPublicMessagePromise = PublicMessageModel.create({
+    const newPublicMessagePromise = PublicMessage.create({
       type: "FREETIME",
       typeOfTask: "MUSIC",
       sender: req.user._id,
@@ -83,15 +81,13 @@ export const buyMusic = async (req: Request, res: Response) => {
 
     if (!updatedUser) return res.status(404).json({ error: "an error occurred" });
 
-    const populatedPublicMessage = await PublicMessageModel.findById(newPublicMessage._id).populate(
-      "sender",
-      userExcludedFields,
-    );
+    const populatedMessage = await PublicMessage.findById(newPublicMessage._id)
+      .populate("sender", userExcludedFields)
+      .lean();
 
-    io.to(onLineUsers[req.user._id.toString()]).emit("new-notification", newNotification);
-    io.emit("public-message", populatedPublicMessage);
+    if (populatedMessage) io.emit("public_chat_message", populatedMessage);
 
-    return res.status(200).json({ points: updatedUser.points, musicId });
+    return res.status(200).json({ points: updatedUser.points, musicId, notification: newNotification });
   } catch (error) {
     return res.status(404).json({ error: "can't buy this Musics, try again" });
   }

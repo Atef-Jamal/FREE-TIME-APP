@@ -25,7 +25,7 @@ const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
         </div>
         <span className="text-xs font-bold text-gray-500">{date}</span>
       </div>
-      {singleMessage.typeOfTask === "TASK" && (
+      {singleMessage.typeOfTask === "OFFER" && (
         <p className="mr-auto text-xs text-[#d9dfdb]">
           <Link
             to={
@@ -37,7 +37,7 @@ const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
           >
             {singleMessage.sender.name}
           </Link>
-          Completed Task Now
+          Completed Offer Now
         </p>
       )}
       {singleMessage.typeOfTask === "EMAIL-VERIFIED" && (

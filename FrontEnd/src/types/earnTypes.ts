@@ -6,14 +6,14 @@ interface IQuiz {
   correctAnswer: string;
 }
 
-export interface IGameTask {
+export interface IGameOffer {
   _id: string;
   type: "GAME_APP";
   isAvailable: "AVAILABLE" | "UNAVAILABLE";
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   title: string;
   image: string;
-  reviews: IReview[];
+  reviews: IOfferReview[];
   prize: number;
   rating: number;
   completedBy: IUser[];
@@ -21,13 +21,13 @@ export interface IGameTask {
   createdAt: Date;
 }
 
-export interface IQuizTask {
+export interface IQuizOffer {
   _id: string;
   type: "QUIZ_APP";
   isAvailable: "AVAILABLE" | "UNAVAILABLE";
   devices: "DESKTOP" | "ANDROID" | "MAC" | "ALL";
   quizes: IQuiz[];
-  reviews: IReview[];
+  reviews: IOfferReview[];
   title: string;
   image: string;
   prize: number;
@@ -37,11 +37,11 @@ export interface IQuizTask {
   createdAt: Date;
 }
 
-export type ITask = IQuizTask | IGameTask;
+export type IOffer = IQuizOffer | IGameOffer;
 
-export interface IReview {
+export interface IOfferReview {
   _id: string;
-  appId: string;
+  offerId: string;
   user: IUser;
   comment: string;
 }

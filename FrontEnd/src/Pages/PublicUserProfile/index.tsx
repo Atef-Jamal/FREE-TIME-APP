@@ -40,7 +40,7 @@ const PublicUserProfile = () => {
       item.type === "REFERRER",
   );
 
-  const numberOfCompletedTasks = activities?.filter(
+  const numberOfcompletedOffers = activities?.filter(
     (item) => item.type === "GUESS-CARD" || item.type === "QUIZ-APP" || "EMAIL-VERIFIED",
   ).length;
 
@@ -103,7 +103,7 @@ const PublicUserProfile = () => {
                   <BiTask className="h-[70%] w-[70%]" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-300">{numberOfCompletedTasks}</span>
+                  <span className="text-sm font-bold text-gray-300">{numberOfcompletedOffers}</span>
                   <span className="text-xs text-[#b1b07f]">completed offers</span>
                 </div>
               </div>

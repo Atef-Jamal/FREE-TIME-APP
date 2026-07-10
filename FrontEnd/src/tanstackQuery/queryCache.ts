@@ -2,9 +2,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { v4 as uuidV4 } from "uuid";
 import type {
   IUser,
-  ICashedLiveStatsUsers,
+  // ICashedLiveStatsUsers,
   ICashedPublicChat,
-  IUpdatePrivateMsgsCacheParams,
   ICashedConversations,
   ICashedSingleConversation,
   ICashedNotificaions,
@@ -17,36 +16,36 @@ import type {
   IUnreadPrivateMsgsCache,
 } from "../types";
 
-export const updateCurrentUserCache = ({
-  queryClient,
-  currentUser,
-}: {
-  queryClient: QueryClient;
-  currentUser: IUser;
-}) => {
-  queryClient.setQueryData(
-    ["live-stats-users"],
-    (previous: ICashedLiveStatsUsers): ICashedLiveStatsUsers | undefined => {
-      if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            users: page.users.map((user) => {
-              if (user._id === currentUser._id) {
-                return currentUser;
-              }
-              return user;
-            }),
-          };
-        }),
-      };
-    },
-  );
-  queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
-  return;
-};
+// export const updateCurrentUserCache = ({
+//   queryClient,
+//   updatedUser,
+// }: {
+//   queryClient: QueryClient;
+//   updatedUser: IUser;
+// }) => {
+//   queryClient.setQueryData(
+//     ["live-stats-users"],
+//     (previous: ICashedLiveStatsUsers | undefined): ICashedLiveStatsUsers | undefined => {
+//       if (!previous) return;
+//       return {
+//         ...previous,
+//         pages: previous.pages.map((page) => {
+//           return {
+//             ...page,
+//             users: page.users.map((user) => {
+//               if (user._id === updatedUser._id) {
+//                 return updatedUser;
+//               }
+//               return user;
+//             }),
+//           };
+//         }),
+//       };
+//     },
+//   );
+//   queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
+//   return;
+// };
 
 export const updateUserCache = ({
   queryClient,
@@ -55,12 +54,38 @@ export const updateUserCache = ({
   queryClient: QueryClient;
   updatedUser: IUser;
 }) => {
-  queryClient.invalidateQueries({ queryKey: ["user", updatedUser._id] });
   queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
   queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
+
+  queryClient.setQueryData(["user", updatedUser._id], () => {
+    return updatedUser;
+  });
+
+  queryClient.setQueryData(
+    ["public-chat-messages"],
+    (previous: ICashedPublicChat | undefined): ICashedPublicChat | undefined => {
+      if (!previous) return;
+      return {
+        ...previous,
+        pages: previous.pages.map((page) => ({
+          ...page,
+          messages: page.messages.map((message) => {
+            if (message.sender._id === updatedUser._id) {
+              return {
+                ...message,
+                sender: updatedUser,
+              };
+            }
+            return message;
+          }),
+        })),
+      };
+    },
+  );
+
   queryClient.setQueryData(
     ["conversations"],
-    (previous: ICashedConversations): ICashedConversations | undefined => {
+    (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
       if (!previous) return;
       return {
         ...previous,
@@ -78,35 +103,35 @@ export const updateUserCache = ({
       };
     },
   );
-  queryClient.setQueryData(
-    ["conversation-messages", updatedUser._id],
-    (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
-      if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return { ...page, secondUser: updatedUser };
-        }),
-      };
-    },
-  );
   return;
 };
 
-export const updateNotificationsCollectCache = ({
+export const updateTotalGuestsCache = ({
   queryClient,
-  notificationId,
+  totalGuests,
 }: {
   queryClient: QueryClient;
-  notificationId: string;
+  totalGuests: number;
+}) => {
+  queryClient.setQueryData(["total-guests"], () => {
+    return totalGuests;
+  });
+};
+
+export const updateNotificationsCache = ({
+  queryClient,
+  notification,
+}: {
+  queryClient: QueryClient;
+  notification: INotifications;
 }) => {
   return queryClient.setQueryData(
     ["notifications"],
-    (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
+    (previous: ICashedNotificaions | undefined): ICashedNotificaions | undefined => {
       if (!previous) return;
       return previous.map((item) => {
-        if (item._id === notificationId) {
-          return { ...item, isCollected: true };
+        if (item._id === notification._id) {
+          return notification;
         }
         return item;
       });
@@ -117,7 +142,7 @@ export const updateNotificationsCollectCache = ({
 export const updateNotificationsIsReadCache = ({ queryClient }: { queryClient: QueryClient }) => {
   return queryClient.setQueryData(
     ["notifications"],
-    (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
+    (previous: ICashedNotificaions | undefined): ICashedNotificaions | undefined => {
       if (!previous) return;
       return previous.map((notify) => {
         return { ...notify, isRead: true };
@@ -135,7 +160,7 @@ export const addNewNotificationCache = ({
 }) => {
   return queryClient.setQueryData(
     ["notifications"],
-    (previous: ICashedNotificaions): ICashedNotificaions | undefined => {
+    (previous: ICashedNotificaions | undefined): ICashedNotificaions | undefined => {
       if (!previous) return;
       return [newNotification, ...previous];
     },
@@ -169,50 +194,26 @@ export const addNewPublicMsgCache = ({
   );
 };
 
-export const updateConversationReadCache = ({
-  queryClient,
-  data,
-}: {
-  queryClient: QueryClient;
-  data: { sender: string; receiver: string };
-}) => {
-  return queryClient.setQueryData(
-    ["conversation-messages", data.sender],
-    (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
-      if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => ({
-          ...page,
-          messages: page.messages.map((msg) => ({ ...msg, isRead: true })),
-        })),
-      };
-    },
-  );
-};
-
-export const revalidateConversationsCache = ({ queryClient }: { queryClient: QueryClient }) => {
-  return queryClient.invalidateQueries({ queryKey: ["conversations"] });
-};
-
-export const updateAllUnreadPrivateMsgsCache = ({
+export const updateTotalUnReadPrivateMsgsCache = ({
   queryClient,
   type,
-  userId,
-}: IUpdatePrivateMsgsCacheParams) => {
+}: {
+  queryClient: QueryClient;
+  type: "add-one" | "remove-one" | "remove-all";
+}) => {
   return queryClient.setQueryData(
     ["unread-private-messages-count"],
-    (previous: IUnreadPrivateMsgsCache): IUnreadPrivateMsgsCache | undefined => {
+    (previous: IUnreadPrivateMsgsCache | undefined): IUnreadPrivateMsgsCache | undefined => {
       if (!previous) return;
       switch (type) {
         case "add-one":
-          return { senderIds: userId ? [...previous.senderIds, userId] : [...previous.senderIds] };
+          return { counts: previous.counts + 1 };
           break;
         case "remove-one":
-          return { senderIds: previous.senderIds.filter((i) => i !== userId) };
+          return { counts: previous.counts - 1 };
           break;
         case "remove-all":
-          return { senderIds: [] };
+          return { counts: 0 };
           break;
         default:
           return previous;
@@ -222,47 +223,17 @@ export const updateAllUnreadPrivateMsgsCache = ({
   );
 };
 
-export const updateConversationUnreadCountCache = ({
-  queryClient,
-  activeChatId,
-}: {
-  queryClient: QueryClient;
-  activeChatId: string | null;
-}) => {
-  return queryClient.setQueryData(
-    ["conversations"],
-    (previous: ICashedConversations): ICashedConversations | undefined => {
-      if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            conversations: page.conversations.map((conv) => {
-              if (conv.secondUser._id === activeChatId) {
-                return { ...conv, unReadCount: 0 };
-              }
-              return conv;
-            }),
-          };
-        }),
-      };
-    },
-  );
-};
-
 export const addPendingPrivateMsgCache = ({
   queryClient,
-  activeChatId,
+  secondUserId,
   optimisticMsg,
 }: {
   queryClient: QueryClient;
-  activeChatId: string | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  optimisticMsg: any;
+  secondUserId: string | null;
+  optimisticMsg: IPrivateMessage;
 }) => {
   return queryClient.setQueryData(
-    ["conversation-messages", activeChatId],
+    ["conversation-messages", secondUserId],
     (previous: ICashedSingleConversation): ICashedSingleConversation => {
       return {
         ...previous,
@@ -279,19 +250,18 @@ export const addPendingPrivateMsgCache = ({
 
 export const addSuccessPrivateMsgCache = ({
   queryClient,
-  activeChatId,
-  data,
+  secondUserId,
+  newMessage,
   uniqeIdForRollback,
 }: {
   queryClient: QueryClient;
-  data: IPrivateMessage;
-  activeChatId: string | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  newMessage: IPrivateMessage;
+  secondUserId: string | null;
   uniqeIdForRollback: string;
 }) => {
   queryClient.setQueryData(
-    ["conversation-messages", activeChatId],
-    (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
+    ["conversation-messages", secondUserId],
+    (previous: ICashedSingleConversation | undefined): ICashedSingleConversation | undefined => {
       if (!previous) return;
       return {
         ...previous,
@@ -299,7 +269,7 @@ export const addSuccessPrivateMsgCache = ({
           ...page,
           messages: page.messages.map((msg) => {
             if (msg._id === uniqeIdForRollback) {
-              return { ...data, isSended: "SUCCESS" };
+              return { ...newMessage, isSended: "SUCCESS" };
             }
             return msg;
           }),
@@ -307,47 +277,53 @@ export const addSuccessPrivateMsgCache = ({
       };
     },
   );
+
   queryClient.setQueryData(
     ["conversations"],
-    (previous: ICashedConversations): ICashedConversations | undefined => {
+    (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
       if (!previous) return;
-      const isConversationExistOnTheList = previous.pages
-        .map((page) => page.conversations)
-        .flat()
-        .find((conv) => conv.secondUser._id === data.receiver._id);
-      if (isConversationExistOnTheList)
+      const conversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
+      const flatedConversations = conversations?.pages.map((page) => page.conversations).flat();
+      const findedConversation = flatedConversations?.find(
+        (conv) => conv.secondUser._id === newMessage.receiver._id,
+      );
+
+      if (findedConversation)
         return {
           ...previous,
           pages: previous.pages.map((page) => {
             return {
               ...page,
-              conversations: page.conversations
-                .map((conv) => {
-                  if (conv.secondUser._id === data.receiver._id) {
-                    return { ...conv, lastMessage: data };
-                  }
-                  return conv;
-                })
-                .sort((a, b) => {
-                  if (a.lastMessage && b.lastMessage) {
-                    return a.lastMessage.createdAt > b.lastMessage.createdAt ? -1 : 1;
-                  }
-                  return 0;
-                }),
+              conversations: page.conversations.map((conv) => {
+                if (conv.secondUser._id === newMessage.receiver._id) {
+                  return {
+                    ...conv,
+                    lastMessage: newMessage,
+                    unreadCounts: {
+                      ...conv.unreadCounts,
+                      [newMessage.receiver._id]: conv.unreadCounts[newMessage.receiver._id] + 1,
+                    },
+                  };
+                }
+                return conv;
+              }),
             };
           }),
         };
       return {
         ...previous,
-        pages: previous.pages.map((page, i) => {
-          const isFirstPage = i === 0;
+        pages: previous.pages.map((page, index) => {
           const newConversation: IConversation = {
-            _id: data.conversation,
-            lastMessage: data,
-            secondUser: data.receiver,
-            unReadCount: 0,
+            _id: newMessage.conversation,
+            lastMessage: newMessage,
+            conversationName: "",
+            secondUser: newMessage.receiver,
+            unreadCounts: {
+              [newMessage.sender._id]: 0,
+              [newMessage.receiver._id]: 1,
+            },
           };
-          if (isFirstPage) {
+          if (index === 0) {
             return {
               ...page,
               conversations: [newConversation, ...page.conversations],
@@ -358,71 +334,24 @@ export const addSuccessPrivateMsgCache = ({
       };
     },
   );
-  return;
 };
 
-export const addNewPrivateMsgCache = ({
+export const addReceivedPrivateMsgCache = ({
   queryClient,
-  isConversationExist,
-  activeChatId,
+  isPrivateChatPageOpen,
+  currentUserId,
+  secondUserId,
   newMessage,
 }: {
   queryClient: QueryClient;
-  isConversationExist: boolean | undefined;
-  activeChatId: string | null;
+  isPrivateChatPageOpen: boolean;
+  currentUserId: string;
+  secondUserId: string | null;
   newMessage: IPrivateMessage;
 }) => {
-  queryClient.setQueryData(["conversations"], (previous: ICashedConversations): ICashedConversations => {
-    if (isConversationExist) {
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => {
-          return {
-            ...page,
-            conversations: page.conversations
-              .map((conv) => {
-                const isConversationWithUserOpen = conv.secondUser._id === activeChatId;
-                if (conv.secondUser._id === newMessage.sender._id) {
-                  return {
-                    ...conv,
-                    lastMessage: newMessage,
-                    unReadCount: isConversationWithUserOpen ? conv.unReadCount : conv.unReadCount + 1,
-                  };
-                }
-                return conv;
-              })
-              .sort((a, b) => {
-                if (a.lastMessage && b.lastMessage) {
-                  return a.lastMessage.createdAt > b.lastMessage.createdAt ? -1 : 1;
-                }
-                return 0;
-              }),
-          };
-        }),
-      };
-    }
-    return {
-      ...previous,
-      pages: previous.pages.map((page, index) => {
-        const firstPage = index === 0;
-        const newConversation = {
-          _id: newMessage.conversation,
-          lastMessage: newMessage,
-          secondUser: newMessage.sender,
-          unReadCount: newMessage.sender._id === activeChatId ? 0 : 1,
-        };
-        if (firstPage)
-          return {
-            ...page,
-            conversations: [newConversation, ...page.conversations],
-          };
-        return page;
-      }),
-    };
-  });
   queryClient.setQueryData(
     ["conversation-messages", newMessage.sender._id],
-    (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
+    (previous: ICashedSingleConversation | undefined): ICashedSingleConversation | undefined => {
       if (!previous) return;
       return {
         ...previous,
@@ -434,21 +363,77 @@ export const addNewPrivateMsgCache = ({
       };
     },
   );
-  return;
+  queryClient.setQueryData(
+    ["conversations"],
+    (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
+      if (!previous) return;
+      const conversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
+      const flatedConversations = conversations?.pages.map((page) => page.conversations).flat();
+      const findedConversation = flatedConversations?.find(
+        (conv) => conv.secondUser._id === newMessage.sender._id,
+      );
+
+      if (findedConversation) {
+        return {
+          ...previous,
+          pages: previous.pages.map((page) => {
+            return {
+              ...page,
+              conversations: page.conversations.map((conv) => {
+                const isConversationWithUserOpen =
+                  conv.secondUser._id === secondUserId && isPrivateChatPageOpen;
+                if (conv.secondUser._id === newMessage.sender._id) {
+                  return {
+                    ...conv,
+                    lastMessage: newMessage,
+                    unreadCounts: {
+                      ...conv.unreadCounts,
+                      [currentUserId]: isConversationWithUserOpen
+                        ? conv.unreadCounts[currentUserId]
+                        : conv.unreadCounts[currentUserId] + 1,
+                    },
+                  };
+                }
+                return conv;
+              }),
+            };
+          }),
+        };
+      }
+      return {
+        ...previous,
+        pages: previous.pages.map((page, index) => {
+          const count = newMessage.sender._id === secondUserId && isPrivateChatPageOpen ? 0 : 1;
+          const newConversation = {
+            _id: newMessage.conversation,
+            conversationName: "",
+            secondUser: newMessage.sender,
+            lastMessage: newMessage,
+            unreadCounts: {
+              [newMessage.receiver._id]: count,
+              [newMessage.sender._id]: 0,
+            },
+          };
+          if (index === 0) return { ...page, conversations: [newConversation, ...page.conversations] };
+          return page;
+        }),
+      };
+    },
+  );
 };
 
 export const addFailedPrivateMsgCache = ({
   queryClient,
-  activeChatId,
+  secondUserId,
   uniqeIdForRollback,
 }: {
   queryClient: QueryClient;
-  activeChatId: string | null;
+  secondUserId: string | null;
   uniqeIdForRollback: string;
 }) => {
   return queryClient.setQueryData(
-    ["conversation-messages", activeChatId],
-    (previous: ICashedSingleConversation): ICashedSingleConversation | undefined => {
+    ["conversation-messages", secondUserId],
+    (previous: ICashedSingleConversation | undefined): ICashedSingleConversation | undefined => {
       if (!previous) return;
       return {
         ...previous,
@@ -548,6 +533,7 @@ export const addPendingPublicMsgCache = ({
     },
   );
 };
+
 export const addSuccessPublicMsgCache = ({
   queryClient,
   uniqeIdForRollback,

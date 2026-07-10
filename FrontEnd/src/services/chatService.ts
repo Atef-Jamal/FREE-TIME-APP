@@ -1,12 +1,5 @@
 import { axiosRequest } from "../utilities";
-import type {
-  IUser,
-  IConversation,
-  IPrivateMessage,
-  IPublicChatItem,
-  IPublicChatMessage,
-  IUnreadPrivateMsgsCache,
-} from "../types";
+import type { IConversation, IPrivateMessage, IPublicChatItem, IPublicChatMessage } from "../types";
 
 type IPublicMsgFieldName = "loves" | "likes" | "dislikes";
 
@@ -16,7 +9,7 @@ export const fetchPublicChatMessages = async ({
 }: {
   pageParam: number;
   limit: number;
-}): Promise<{ messages: IPublicChatItem[]; hasOlder: boolean }> => {
+}): Promise<{ messages: IPublicChatItem[]; hasMore: boolean }> => {
   const response = await axiosRequest.get(`api/publicchat?pageParam=${pageParam}&limit=${limit}`);
   const data = response.data;
   return data;
@@ -35,6 +28,7 @@ export const sendPublicChatMessage = async ({
     mentionedUsers: mentionedUsers,
   });
   const messageData = response.data;
+
   return messageData;
 };
 
@@ -58,7 +52,7 @@ export const handleMessageReaction = async ({
   return updatedMessage;
 };
 
-export const fetchUnreadPrivateMessages = async (): Promise<IUnreadPrivateMsgsCache> => {
+export const fetchUnreadPrivateMessages = async (): Promise<{ counts: number }> => {
   const response = await axiosRequest.get("api/conversations/unread/count");
   return response.data;
 };
@@ -69,22 +63,20 @@ export const fetchAllConversations = async ({
   pageParam: number;
 }): Promise<{ conversations: IConversation[]; hasMore: boolean }> => {
   const response = await axiosRequest.get(`api/conversations?pageParam=${pageParam}`);
-  const data = response.data;
-  return data;
+  return response.data;
 };
 
 export const fetchPrivateChatMessages = async ({
   pageParam,
-  activeChatId,
+  secondUserId,
 }: {
   pageParam: number;
-  activeChatId: string;
+  secondUserId: string;
 }): Promise<{
   messages: IPrivateMessage[];
-  secondUser: IUser | null;
-  hasOlder: boolean;
+  hasMore: boolean;
 }> => {
-  const response = await axiosRequest.get(`api/conversations/${activeChatId}?pageParam=${pageParam}`);
+  const response = await axiosRequest.get(`api/conversations/${secondUserId}?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
@@ -96,10 +88,11 @@ export const sendPrivateChatMessage = async ({
   receiver: string;
   message: string;
 }): Promise<IPrivateMessage> => {
-  const response = await axiosRequest.post(`api/conversations`, {
-    messageText: message,
-    receiver,
-  });
-  const data = response.data;
-  return data;
+  const response = await axiosRequest.post(`api/conversations`, { messageText: message, receiver });
+  return response.data;
+};
+
+export const conversationRead = async ({ secondUserId }: { secondUserId: string }) => {
+  const response = await axiosRequest.get(`api/conversations/${secondUserId}/read`);
+  return response;
 };

@@ -1,5 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { IUser } from "./userModel.js";
+import { IUser } from "./user.js";
 
 export interface IPublicChatMessage extends Document {
   type: "MESSAGE";
@@ -21,7 +21,7 @@ export interface IPublicChatFreeTime extends Document {
   loves: (Types.ObjectId | IUser)[];
   message: string;
   isDeleted: boolean;
-  typeOfTask?: "REFERRER" | "TASK" | "MUSIC" | "FRAME" | "EMAIL-VERIFIED";
+  typeOfTask?: "REFERRER" | "OFFER" | "MUSIC" | "FRAME" | "EMAIL-VERIFIED";
   newUserReferred?: Types.ObjectId | IUser;
   mentionedUsers?: (Types.ObjectId | IUser)[];
   musicTitle?: string;
@@ -40,7 +40,7 @@ const publicMessageSchema = new Schema<IPublicChatItem>(
     },
     sender: {
       type: Schema.Types.ObjectId,
-      ref: "UserModel",
+      ref: "User",
       required: true,
     },
     message: {
@@ -49,37 +49,37 @@ const publicMessageSchema = new Schema<IPublicChatItem>(
     },
     newUserReferred: {
       type: Schema.Types.ObjectId,
-      ref: "UserModel",
+      ref: "User",
     },
     musicTitle: {
       type: String,
     },
     typeOfTask: {
       type: String,
-      enum: ["REFERRER", "TASK", "MUSIC", "FRAME", "EMAIL-VERIFIED"],
+      enum: ["REFERRER", "OFFER", "MUSIC", "FRAME", "EMAIL-VERIFIED"],
     },
     likes: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
     ],
     dislikes: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
     ],
     loves: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
     ],
     mentionedUsers: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
     ],
     isDeleted: {
@@ -90,5 +90,5 @@ const publicMessageSchema = new Schema<IPublicChatItem>(
   { timestamps: true },
 );
 
-const PublicMessageModel = model<IPublicChatItem>("PublicMessageModel", publicMessageSchema);
-export default PublicMessageModel;
+const PublicMessage = model<IPublicChatItem>("PublicMessage", publicMessageSchema);
+export default PublicMessage;

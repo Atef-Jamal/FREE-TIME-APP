@@ -1,49 +1,26 @@
-import { useCallback, useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { selectCurrentUser, selectUserAuth, showModal } from "../../context/appStateSlice";
-import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { IoMdNotifications } from "react-icons/io";
 import ProfileMenu from "./ProfileMenu";
-import type { INotifications } from "../../types";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
 import UserImage from "../Shared/Common/UserImage";
 import { useFetchNotifications } from "../../tanstackQuery/queryFetch";
-import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
-import { displaySound } from "../../utilities";
 
 const NavProfileHeader = () => {
   const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
-  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
 
   const { data: notifications } = useFetchNotifications({ userAuth: userAuth === "authenticated" });
 
   const numUnReaded = notifications?.filter((element) => element.isRead === false).length;
 
-  const handleAddNewNotification = useCallback(
-    (newNotification: INotifications) => {
-      addNewNotificationCache({ queryClient, newNotification });
-      displaySound(notificationSoundSrc);
-    },
-    [queryClient],
-  );
-
   const handleOpenNotificatioModal = () => {
     dispatch(showModal("notifications-modal"));
   };
-
-  const events = useMemo(() => ["new-notification"], []);
-  const handlers = useMemo(() => [handleAddNewNotification], [handleAddNewNotification]);
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
-  });
 
   return (
     <div className="relative flex h-full items-center gap-x-1 sm:gap-x-2">

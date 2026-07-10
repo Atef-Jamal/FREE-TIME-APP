@@ -1,17 +1,19 @@
-import { onLineUsers } from "../socketIo/index.js";
 import { userExcludedFields } from "../constants/index.js";
-import User from "../models/userModel.js";
-import { io } from "../app.js";
+import User from "../models/user.js";
+import { io, onlineUsers } from "../app.js";
 import { redisClient } from "../lib/redis.js";
 import { Types } from "mongoose";
-import NotificationModel from "../models/notificationModel.js";
-import PublicMessageModel from "../models/publicMessageModel.js";
+import Notification from "../models/notification.js";
+import PublicMessage from "../models/publicMessage.js";
 
-export const sendRewardToUser = async (referrerUser: Types.ObjectId, newUserId: Types.ObjectId) => {
+export const sendRewardToUser = async (
+  referrerUser: Types.ObjectId,
+  newUserId: Types.ObjectId,
+): Promise<void> => {
   const existedUser = await User.findById(referrerUser);
   if (!existedUser) throw new Error("Referrer user not found");
 
-  const newNotification = await NotificationModel.create({
+  const newNotification = await Notification.create({
     type: "REFERRER",
     belongsTo: referrerUser,
     metadata: {
@@ -21,24 +23,33 @@ export const sendRewardToUser = async (referrerUser: Types.ObjectId, newUserId: 
     },
   });
 
-  const populatedNotification = await NotificationModel.findById(newNotification._id).populate(
+  const populatedNotification = await Notification.findById(newNotification._id).populate(
     "metadata.referredUser",
     userExcludedFields,
   );
 
   await redisClient.del(`notifications:list:${referrerUser}`);
 
-  const newMessage = await PublicMessageModel.create({
+  const newMessage = await PublicMessage.create({
     type: "FREETIME",
     typeOfTask: "REFERRER",
     sender: referrerUser,
     newUserReferred: newUserId,
+    message: "referral system",
   });
-  const populatedMessage = await PublicMessageModel.findById(newMessage._id).populate([
-    { path: "sender", select: userExcludedFields },
-    { path: "newUserReferred", select: userExcludedFields },
-  ]);
 
-  io.to(onLineUsers[referrerUser.toString()]).emit("new-notification", populatedNotification);
-  io.emit("public-message", populatedMessage);
+  const populatedMessage = await PublicMessage.findById(newMessage._id)
+    .populate([
+      { path: "sender", select: userExcludedFields },
+      { path: "newUserReferred", select: userExcludedFields },
+    ])
+    .lean();
+
+  const targetSockets = onlineUsers.get(referrerUser.toString());
+
+  if (targetSockets && populatedNotification) {
+    io.to([...targetSockets]).emit("notification", populatedNotification);
+  }
+
+  if (populatedMessage) io.emit("public_chat_message", populatedMessage);
 };

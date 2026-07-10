@@ -11,10 +11,10 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useAppSelector } from "../../context/hooks";
 import { arrayoffers } from "../../helper/data";
 import type { IFilterByPopularity, IFilterByDevice } from "../../types";
-import TaskDetail from "./TaskDetail";
-import AppSkeleton from "./TaskSkeleton";
+import OfferDetails from "./OfferDetails";
+import OfferSkeleton from "./OfferSkeleton";
 import ParnterCard from "./ParnterCard";
-import TaskCard from "./TaskCard";
+import OfferCard from "./OfferCard";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { useSearchParams } from "react-router-dom";
 import FilterByDeviceMenu from "./FilterByDeviceMenu";
@@ -32,14 +32,14 @@ const Earn = () => {
   const [selectDevice, setSelectDevice] = useState(false);
   const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] = useState(false);
   const limitPerPage = 15;
-  const [taskId, setTaskId] = useState<string | null>(null);
+  const [offerId, setOfferId] = useState<string | null>(null);
   const [filterByPopularity, setFilterByPopularity] = useState<IFilterByPopularity>("ALL");
   const [filterByDevice, setFilterByDevice] = useState<IFilterByDevice>("ALL");
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation("earn");
 
   useEffect(() => {
-    if (!taskId) return;
+    if (!offerId) return;
     setTranslate("-translate-x-[50%]");
     const timout = setTimeout(() => {
       window.scrollTo({
@@ -47,7 +47,7 @@ const Earn = () => {
       });
     }, 500);
     return () => clearTimeout(timout);
-  }, [taskId]);
+  }, [offerId]);
 
   const selectApp = () => {
     setTranslate("-translate-x-[0%]");
@@ -71,7 +71,7 @@ const Earn = () => {
 
   const goToAppDetailSection = useCallback(() => {
     const appIdFromUrlSearchParam = searchParams.get("to");
-    setTaskId(appIdFromUrlSearchParam);
+    setOfferId(appIdFromUrlSearchParam);
     setTimeout(() => {
       setSearchParams((prev) => {
         prev.delete("to");
@@ -97,7 +97,7 @@ const Earn = () => {
     startScroll: status === "success",
     callback: goToAppDetailSection,
   });
-  const allTasks = data?.pages.map((page) => page.tasks).flat();
+  const allTasks = data?.pages.map((page) => page.offers).flat();
 
   return (
     <div className="flex flex-col gap-4 bg-[#21223a] p-2 md:p-4">
@@ -182,10 +182,15 @@ const Earn = () => {
                   : "lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8",
               )}
             >
-              {status === "pending" && [...Array(50).keys()].map((item) => <AppSkeleton key={item} />)}
+              {status === "pending" && [...Array(50).keys()].map((item) => <OfferSkeleton key={item} />)}
 
-              {allTasks?.map((taskDetail, inedx) => (
-                <TaskCard taskDetail={taskDetail} setTaskId={setTaskId} key={taskDetail._id} index={inedx} />
+              {allTasks?.map((offerDetails, inedx) => (
+                <OfferCard
+                  offerDetails={offerDetails}
+                  setOfferId={setOfferId}
+                  key={offerDetails._id}
+                  index={inedx}
+                />
               ))}
             </div>
 
@@ -200,7 +205,7 @@ const Earn = () => {
             )}
 
             {status === "success" && allTasks && allTasks.length === 0 && (
-              <Empty text={t("no tasks matches your Filter Query")} />
+              <Empty text={t("no offers matches your Filter Query")} />
             )}
 
             {!isFetchingNextPage && isFetchNextPageError && (
@@ -218,8 +223,8 @@ const Earn = () => {
           </div>
           <div className={`w-[50%] bg-[#1c1e31]`}>
             <div className="mx-auto w-full max-w-[500px] pr-4 lg:w-[50%]">
-              {taskId && <TaskDetail taskId={taskId} />}
-              {!taskId && (
+              {offerId && <OfferDetails offerId={offerId} />}
+              {!offerId && (
                 <button
                   onClick={selectApp}
                   className="mt-5 w-[90%] max-w-[500px] p-5 text-xl font-bold text-gray-500 underline"

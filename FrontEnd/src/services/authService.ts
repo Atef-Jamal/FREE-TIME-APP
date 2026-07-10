@@ -2,40 +2,28 @@ import { openToast } from "../context/appStateSlice";
 import type { IDispatch, ILoginProps, IRegisterProps } from "../types";
 import { axiosRequest, handleApiError } from "../utilities";
 
-export const register = async ({ formData, dispatch, referrerUser }: IRegisterProps) => {
-  dispatch(
-    openToast({
-      message: "Registering....",
-      type: "LOADING",
-    }),
-  );
+export const registerUser = async ({ data, referrerUser }: IRegisterProps) => {
   const query = referrerUser ? `?referrerUser=${referrerUser}` : "";
 
-  const response = await axiosRequest.post(`api/auth/register${query}`, formData, {
+  const response = await axiosRequest.post(`api/auth/register${query}`, data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
   if (response.status === 201) {
-    localStorage.setItem("isLoggedIn", "true");
-    window.location.href = `${window.location.origin}/?redirectedfrom=signup`;
+    localStorage.setItem("isLoggedIn", "ok");
+    window.location.href = `${window.location.origin}/?comeFrom=signup`;
   }
 };
 
-export const login = async ({ formData, dispatch }: ILoginProps) => {
-  dispatch(
-    openToast({
-      message: "Logging In....",
-      type: "LOADING",
-    }),
-  );
-  const { email, password } = formData;
+export const login = async ({ data }: ILoginProps) => {
+  const { email, password } = data;
   const response = await axiosRequest.post(`api/auth/login`, {
     email,
     password,
   });
   if (response.status === 200) {
-    localStorage.setItem("isLoggedIn", "true");
-    window.location.href = `${window.location.origin}/?redirectedfrom=login`;
+    localStorage.setItem("isLoggedIn", "ok");
+    window.location.href = `${window.location.origin}/?comeFrom=login`;
   }
 };
 
@@ -61,5 +49,5 @@ export const handleSignInWithOauth = async (provider: "google" | "github", dispa
 export const logOut = async () => {
   localStorage.removeItem("isLoggedIn");
   await axiosRequest.post("api/auth/logout");
-  window.location.href = `${window.location.origin}/?redirectedfrom=logout`;
+  window.location.href = `${window.location.origin}/?comeFrom=logout`;
 };

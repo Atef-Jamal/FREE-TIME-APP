@@ -3,7 +3,7 @@ import protectedRoute from "../middleware/index.js";
 import {
   getConversationMessages,
   createMessage,
-  markAsReaded,
+  conversationIsRead,
   getUnreadConversationsCount,
   getAllConversations,
 } from "../controllers/privateChatController.js";
@@ -14,6 +14,6 @@ router.get("/", protectedRoute, getAllConversations);
 router.get("/:secondUserId", protectedRoute, getConversationMessages);
 router.post("/", protectedRoute, createMessage);
 router.get("/unread/count", protectedRoute, getUnreadConversationsCount);
-router.get("/:secondUserId/markAsRead", protectedRoute, markAsReaded);
+router.get("/:secondUserId/read", protectedRoute, conversationIsRead);
 
 export default router;

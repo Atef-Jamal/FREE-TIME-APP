@@ -3,27 +3,25 @@ import { useAppSelector } from "../../context/hooks";
 import type { IUser } from "../../types";
 import { crown, verifiedImage } from "../../assets";
 import UserImage from "../Shared/Common/UserImage";
-import { selectCurrentUser, selectOnlineUsers } from "../../context/appStateSlice";
+import { selectCurrentUser } from "../../context/appStateSlice";
+import { useQuery } from "@tanstack/react-query";
 
 interface IProps {
   user: IUser;
-  userHieghestPoints: string | undefined;
+  topUserId: string | undefined;
 }
 
-const LiveStatsItem = ({ user, userHieghestPoints }: IProps) => {
+const LiveStatsItem = ({ user, topUserId }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const onlineUsers = useAppSelector(selectOnlineUsers);
-
   const { _id, name, points, emailVerified } = user;
-  const isOnline = onlineUsers.includes(_id);
-  const heighestUser = userHieghestPoints === _id;
+  const { data: onlineUsers } = useQuery<string[]>({ queryKey: ["onlines-users-ids"] });
 
   return (
     <Link
       to={currentUser?._id === _id ? "/myprofile" : `/user/${_id}`}
       className="relative flex h-[31px] min-w-[155px] items-center justify-between gap-x-1 rounded-sm bg-[#222339] px-1 text-sm text-gray-400 lg:h-[35px] lg:min-w-[190px] lg:px-2"
     >
-      {heighestUser && (
+      {topUserId === _id && (
         <span className="absolute -left-2 -top-2 h-5 w-5 -rotate-45">
           <img src={crown} alt="" />
         </span>
@@ -36,10 +34,10 @@ const LiveStatsItem = ({ user, userHieghestPoints }: IProps) => {
           {name}
         </span>
         <div className="flex items-center gap-8">
-          {isOnline && (
+          {onlineUsers?.includes(_id) && (
             <span className="text-[9px] font-bold tracking-wide text-[#68e44a] lg:text-[11px]">online</span>
           )}
-          {!isOnline && (
+          {!onlineUsers?.includes(_id) && (
             <span className="text-[9px] font-bold tracking-wide text-[#54724c] lg:text-[11px]">offline</span>
           )}
           {emailVerified && (

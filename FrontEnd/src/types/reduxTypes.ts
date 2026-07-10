@@ -1,7 +1,8 @@
 import { Socket } from "socket.io-client";
 import { IUser } from "./userTypes";
 import { Dispatch, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-import { IFormData } from "./othersTypes";
+import { ClientToServerEvents, ServerToClientEvents } from "./socket";
+import { AuthFormValues } from "../utilities";
 
 export interface IToast {
   type: "ERROR_GENERAL" | "ERROR_LOCK" | "SUCESS" | "LOADING" | null;
@@ -29,18 +30,31 @@ export interface IInitialState {
   currentUser: IUser | null;
   isChatOpen: boolean;
   isSignInMode: boolean;
-  smallScreen: boolean;
+  mobileScreen: boolean;
   toastNotify: IToast;
   sidebarCollapsed: boolean;
   hideLiveStats: boolean;
   openMusicModal: boolean;
   musicIsPlaying: boolean;
   activeMusic: IMusicInfo | null;
-  socket: Socket | null;
-  onlineUsers: string[];
-  activeChatId: string | null;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
+  secondUserId: string | null;
   modal: IModal;
   publicMsgNotify: boolean;
+}
+
+export interface ITogglActionPayload {
+  entity: keyof Pick<
+    IInitialState,
+    | "isSignInMode"
+    | "mobileScreen"
+    | "hideLiveStats"
+    | "isChatOpen"
+    | "sidebarCollapsed"
+    | "openMusicModal"
+    | "musicIsPlaying"
+  >;
+  value: boolean;
 }
 
 export type IDispatch = ThunkDispatch<
@@ -53,12 +67,10 @@ export type IDispatch = ThunkDispatch<
   Dispatch<UnknownAction>;
 
 export interface IRegisterProps {
-  formData: IFormData;
-  dispatch: IDispatch;
+  data: AuthFormValues;
   referrerUser?: string;
 }
 
 export interface ILoginProps {
-  formData: Omit<IFormData, "name" | "confirmPassword" | "profilePicture">;
-  dispatch: IDispatch;
+  data: Omit<AuthFormValues, "name" | "confirmPassword" | "profilePicture">;
 }

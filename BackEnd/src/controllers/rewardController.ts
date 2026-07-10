@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { generateNewWeekRewards } from "../utils/index.js";
-import User, { IDailyReward } from "../models/userModel.js";
+import User, { IDailyReward } from "../models/user.js";
+import { io } from "../app.js";
 
 export const collectRewardController = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
@@ -38,7 +38,7 @@ export const collectRewardController = async (req: Request, res: Response) => {
         dailyReward: updatedDailyRewards,
       },
       { returnDocument: "after" },
-    );
+    ).lean();
 
     if (!updatedUser) return res.status(404).json({ error: "can't collect reward" });
 
@@ -55,8 +55,12 @@ export const collectRewardController = async (req: Request, res: Response) => {
           dailyReward: newWeekRewards,
         },
         { returnDocument: "after" },
-      );
+      )
+        .populate("activeFrame")
+        .lean();
     }
+
+    if (updatedUser) io.emit("user_updated", updatedUser);
 
     return res.status(200).json(updatedUser);
   } catch (error) {

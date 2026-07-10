@@ -44,7 +44,7 @@ const ResultElement = ({ type, results, searchTerm }: IProps) => {
             <Link
               to={"/privatechat"}
               onClick={() => {
-                localStorage.setItem("active-converstaion", item._id);
+                localStorage.setItem("activeChatSecondUserId", item._id);
                 dispatch(updateActiveChatId(item._id));
                 dispatch(resetModel());
               }}

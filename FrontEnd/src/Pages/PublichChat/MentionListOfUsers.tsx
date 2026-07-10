@@ -2,7 +2,9 @@ import { useRef } from "react";
 import type { IUser } from "../../types";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import Empty from "../../components/Shared/Common/Empty";
-import { useFetchOnlineUsers } from "../../tanstackQuery/queryFetch";
+import { useFetchOnlineUsersData } from "../../tanstackQuery/queryFetch";
+import { useAppSelector } from "../../context/hooks";
+import { selectCurrentUser } from "../../context/appStateSlice";
 
 interface IProps {
   setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
@@ -11,11 +13,10 @@ interface IProps {
 
 const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
-
-  const { data: users = [], status, error } = useFetchOnlineUsers();
-
+  const currentUser = useAppSelector(selectCurrentUser);
+  const { data: users = [], status, error } = useFetchOnlineUsersData();
+  const excludeCurrentUser = users.filter((u) => u._id !== currentUser?._id);
   useClickOutside(menuRef, () => setOpenMentionList(false));
-
   return (
     <div
       ref={menuRef}
@@ -39,7 +40,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
           ))}
         </div>
       )}
-      {users.map((user: IUser) => {
+      {excludeCurrentUser.map((user: IUser) => {
         return (
           <div
             key={user._id}

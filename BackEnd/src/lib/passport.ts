@@ -1,9 +1,9 @@
-import User from "../models/userModel.js";
+import User from "../models/user.js";
 import passport from "passport";
 import { Strategy as GoogleStrategy, VerifyCallback } from "passport-google-oauth20";
 import { Strategy as GithubStrategy, Profile } from "passport-github2";
+import { generateNewWeekRewards } from "../utils/index.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 passport.serializeUser((user: any, done) => {
   done(null, user._id);
 });
@@ -48,6 +48,7 @@ passport.use(
           email: profile.emails[0].value,
           name: profile.displayName,
           emailVerified: true,
+          dailyReward: generateNewWeekRewards(),
         });
 
         if (profile.photos?.[0].value) {
@@ -92,6 +93,7 @@ passport.use(
           name: profile.displayName,
           email: `${profile.username}@users.noreply.github.com`,
           emailVerified: true,
+          dailyReward: generateNewWeekRewards(),
         });
 
         if (profile.photos?.[0].value) {

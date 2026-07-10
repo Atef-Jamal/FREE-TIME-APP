@@ -3,14 +3,18 @@ import { ImSpinner3 } from "react-icons/im";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
-import { axiosRequest, handleApiError } from "../../utilities";
-import type { IQuizTask } from "../../types";
+import { axiosRequest, displaySound, handleApiError } from "../../utilities";
+import type { IQuizOffer } from "../../types";
+import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
+import notificationSoundSrc from "../../assets/images/notificationSound.wav";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
-  taskApp: IQuizTask;
+  offer: IQuizOffer;
 }
 
-const QuizTask = ({ taskApp }: IProps) => {
+const QuizOffer = ({ offer }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const [activeQuesition, setActiveQeustion] = useState<number>(0);
   const [error, setError] = useState<string>("");
@@ -21,6 +25,8 @@ const QuizTask = ({ taskApp }: IProps) => {
     corrects: 0,
     wrongs: 0,
   });
+  const queryClient = useQueryClient();
+
   const dispatch = useAppDispatch();
 
   let selected = "";
@@ -50,29 +56,31 @@ const QuizTask = ({ taskApp }: IProps) => {
     });
   };
 
-  const handleSendRewardToUser = async () => {
+  const handleComplete = async () => {
     try {
-      if (!currentUser) {
-        return;
-      }
-      if (error) setError("");
-      if (!loading) setLoading(true);
-      const response = await axiosRequest.post(`api/tasks/complete-quiz-app/${taskApp._id}`, {
+      if (!currentUser) return;
+      setError("");
+      setLoading(true);
+      const response = await axiosRequest.post(`api/offers/complete-quiz-app/${offer._id}`, {
         answers: [...answers, selected],
       });
-      if (response.data.corrects > response.data.wrongs) {
-        dispatch(
-          setCurrentUser({
-            ...currentUser,
-            completedTasks: [...currentUser.completedTasks, taskApp._id],
-          }),
-        );
-      }
+
       setResults({
         status: true,
         corrects: response.data.corrects,
         wrongs: response.data.wrongs,
       });
+
+      if (response.data.wrongs === 0) {
+        dispatch(
+          setCurrentUser({
+            ...currentUser,
+            completedOffers: [...currentUser.completedOffers, offer._id],
+          }),
+        );
+        addNewNotificationCache({ queryClient, newNotification: response.data.notification });
+        displaySound(notificationSoundSrc);
+      }
     } catch (error) {
       setError(handleApiError(error));
       dispatch(
@@ -98,6 +106,13 @@ const QuizTask = ({ taskApp }: IProps) => {
     setError("");
   };
 
+  if (currentUser?.completedOffers.includes(offer._id))
+    return (
+      <div className="flex h-full min-h-[800px] items-center justify-center sm:min-h-[490px]">
+        is already completed
+      </div>
+    );
+
   return (
     <div className="flex h-full min-h-[800px] items-center justify-center sm:min-h-[490px]">
       {loading && (
@@ -109,16 +124,16 @@ const QuizTask = ({ taskApp }: IProps) => {
         </div>
       )}
 
-      {error && "Error Occurred" + error}
+      {error && error}
 
       {!error && !loading && !results.status && (
         <div className="mx-2 w-[500px] rounded-lg bg-[#3f3f4dee] p-6">
           <div className="flex w-full flex-col gap-5">
             <div className="border-b-2 border-gray-400 py-3 text-xl font-bold text-[#e79e9e] sm:text-lg">
-              {taskApp.quizes[activeQuesition].question}
+              {offer.quizes[activeQuesition].question}
             </div>
             <div id="choices" className="flex w-full flex-col gap-3">
-              {taskApp.quizes[activeQuesition].choises.map((item, index) => {
+              {offer.quizes[activeQuesition].choises.map((item, index) => {
                 return (
                   <span
                     key={index + item + new Date().getTime()}
@@ -131,7 +146,7 @@ const QuizTask = ({ taskApp }: IProps) => {
                   </span>
                 );
               })}
-              {taskApp.quizes.length - 1 !== activeQuesition && (
+              {offer.quizes.length - 1 !== activeQuesition && (
                 <button
                   onClick={() => handleNextBtn()}
                   className="rounded-md bg-[#63dd58] px-5 py-1 text-black"
@@ -139,11 +154,8 @@ const QuizTask = ({ taskApp }: IProps) => {
                   Next
                 </button>
               )}
-              {taskApp.quizes.length - 1 === activeQuesition && (
-                <button
-                  onClick={() => handleSendRewardToUser()}
-                  className="rounded-md bg-[#63dd58] px-5 py-1 text-black"
-                >
+              {offer.quizes.length - 1 === activeQuesition && (
+                <button onClick={handleComplete} className="rounded-md bg-[#63dd58] px-5 py-1 text-black">
                   Finish
                 </button>
               )}
@@ -153,7 +165,7 @@ const QuizTask = ({ taskApp }: IProps) => {
       )}
       {!loading && results.status === true && (
         <>
-          {results.corrects > results.wrongs && (
+          {results.wrongs === 0 && (
             <div className="mx-2 flex h-[150px] w-[400px] flex-col items-center justify-center gap-2 rounded-sm bg-[#422c75c5]">
               <div className="flex justify-center gap-1 md:gap-3">
                 <BsCheck2Circle className="text-3xl" />
@@ -177,7 +189,7 @@ const QuizTask = ({ taskApp }: IProps) => {
               </p>
             </div>
           )}
-          {results.corrects <= results.wrongs && (
+          {results.wrongs > 0 && (
             <div className="flex h-[150px] w-[400px] flex-col items-center justify-center gap-3 rounded-sm bg-[#422c75c5]">
               <div className="flex items-center justify-center gap-3">
                 <BsExclamationOctagonFill className="text-2xl opacity-50" />
@@ -207,4 +219,4 @@ const QuizTask = ({ taskApp }: IProps) => {
   );
 };
 
-export default QuizTask;
+export default QuizOffer;

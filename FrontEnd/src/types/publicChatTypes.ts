@@ -18,7 +18,7 @@ export interface IPublicChatMessage {
 export interface IPublicChatFreeTime {
   _id: string;
   type: "FREETIME";
-  typeOfTask: "REFERRER" | "TASK" | "MUSIC" | "FRAME" | "EMAIL-VERIFIED";
+  typeOfTask: "REFERRER" | "OFFER" | "MUSIC" | "FRAME" | "EMAIL-VERIFIED";
   sender: IUser;
   newUserReferred: IUser;
   musicTitle: string;

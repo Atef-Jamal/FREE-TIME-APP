@@ -12,8 +12,9 @@ export interface IUser {
   myFrames: IFrame[];
   activeFrame?: IFrame;
   mySongs: string[];
-  completedTasks: string[];
+  completedOffers: string[];
   dailyReward: IDailyReward[];
+  isOnline: boolean;
   week: number;
   createdAt: Date;
   updatedAt: Date;
@@ -28,10 +29,11 @@ export interface ICashedLeaderboardUsers {
   allDataLength: number;
 }
 
-export interface IVisitor {
+export interface IProfileView {
   _id: string;
-  visitor: IUser;
-  visited: string;
-  updatedAt: Date;
+  viewer: IUser;
+  profileOwner: IUser;
+  viewedAt: Date;
   createdAt: Date;
+  updatedAt: Date;
 }

@@ -3,33 +3,33 @@ import { AiFillAndroid } from "react-icons/ai";
 import { MdDesktopMac } from "react-icons/md";
 import { SiApple } from "react-icons/si";
 import { useAppSelector } from "../../context/hooks";
-import type { ITask } from "../../types";
+import type { IOffer } from "../../types";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../utilities";
 import { selectCurrentUser } from "../../context/appStateSlice";
 
 interface IProps {
-  taskDetail: ITask;
+  offerDetails: IOffer;
   index: number;
-  setTaskId: React.Dispatch<React.SetStateAction<string | null>>;
+  setOfferId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const AppCard = ({ taskDetail, index, setTaskId }: IProps) => {
+const OfferCard = ({ offerDetails, index, setOfferId }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const { t } = useTranslation("earn");
-  const { _id, description, image, prize, title, isAvailable, devices } = taskDetail;
-  const isCompleted = currentUser?.completedTasks.includes(_id);
+  const { _id, description, image, prize, title, isAvailable, devices } = offerDetails;
+  const isCompleted = currentUser?.completedOffers.includes(_id);
 
   return (
     <div
-      id={taskDetail._id}
-      onClick={() => setTaskId(taskDetail._id)}
+      id={offerDetails._id}
+      onClick={() => setOfferId(offerDetails._id)}
       className={cn(
         "relative flex h-[230px] flex-col justify-between overflow-hidden rounded-md border border-gray-700 bg-[#55539b3a] p-2",
         index === 0 && "col-span-2",
       )}
     >
-      {currentUser?.completedTasks.includes(_id) ? (
+      {currentUser?.completedOffers.includes(_id) ? (
         <div className="absolute -left-7 top-7 z-[1] flex -rotate-45 items-center justify-center gap-2 bg-[#9cf155] px-6 py-1">
           <BsCheckCircleFill />
           <span className="text-xs font-bold text-[#5e5656]">{t("Completed")}</span>
@@ -89,4 +89,4 @@ const AppCard = ({ taskDetail, index, setTaskId }: IProps) => {
   );
 };
 
-export default AppCard;
+export default OfferCard;

@@ -17,21 +17,21 @@ interface IProps {
 const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IProps) => {
   const hideLiveStats = useAppSelector(selectHidenLiveStats);
   const sidebarCollapsed = useAppSelector(selectSidebarCollapsed);
-  const smallScreen = useAppSelector(selectSmallScreen);
+  const mobileScreen = useAppSelector(selectSmallScreen);
 
   const handleClose = () => {
     handleCloseMobileSidebare(false);
   };
 
-  const sidebarHeigh = smallScreen ? `calc(100dvh - 115px)` : `calc(100dvh - 55px)`;
+  const sidebarHeigh = mobileScreen ? `calc(100dvh - 115px)` : `calc(100dvh - 55px)`;
 
   const sidebarWidth =
-    !smallScreen && sidebarCollapsed ? "65px" : !smallScreen && !sidebarCollapsed ? "250px" : "100%";
+    !mobileScreen && sidebarCollapsed ? "65px" : !mobileScreen && !sidebarCollapsed ? "250px" : "100%";
 
   const contentWidth =
-    !smallScreen && sidebarCollapsed
+    !mobileScreen && sidebarCollapsed
       ? `calc(100% - 65px)`
-      : !smallScreen && !sidebarCollapsed
+      : !mobileScreen && !sidebarCollapsed
         ? `calc(100% - 250px)`
         : "100%";
 
@@ -53,14 +53,14 @@ const ContentBody = memo(({ openSidbareMobile, handleCloseMobileSidebare }: IPro
       >
         {!hideLiveStats && <Suspense children={<LiveStats />} />}
         <div
-          style={{ minHeight: smallScreen ? `calc(100dvh - 155px)` : `calc(100dvh - 102px)` }}
+          style={{ minHeight: mobileScreen ? `calc(100dvh - 155px)` : `calc(100dvh - 102px)` }}
           className="flex-1"
         >
           <Outlet />
         </div>
         <Footer />
       </div>
-      {!smallScreen && <Suspense children={<DisktopChat />} />}
+      {!mobileScreen && <Suspense children={<DisktopChat />} />}
     </section>
   );
 });

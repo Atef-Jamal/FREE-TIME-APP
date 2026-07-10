@@ -10,7 +10,7 @@ import { rank1Desktop, rank2Desktop, rank3Desktop, verifiedImage } from "../../a
 import { showModal, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import Statistics from "./Statistics";
-import WhoVisitProfile from "./WhoVisitProfile";
+import WhoViewProfile from "./WhoViewProfile";
 import MyFrames from "./MyFrames";
 import MyMusics from "./MyMusics";
 import UserImage from "../../components/Shared/Common/UserImage";
@@ -114,7 +114,7 @@ const MyProfile = () => {
           <Statistics />
         </div>
         <div id="who-visite-profile">
-          <WhoVisitProfile />
+          <WhoViewProfile />
         </div>
         <div
           id={"my-referral-link"}

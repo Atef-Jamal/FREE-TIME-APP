@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { selectHidenLiveStats, updateThisEntity } from "../../context/appStateSlice";
+import { selectHidenLiveStats, updateStateField } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { MdOutlineDiversity3 } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
@@ -28,7 +28,7 @@ const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
   };
 
   const handleToggleLiveStats = () => {
-    dispatch(updateThisEntity({ entity: "hideLiveStats", value: !hideLiveStats }));
+    dispatch(updateStateField({ entity: "hideLiveStats", value: !hideLiveStats }));
   };
 
   return (

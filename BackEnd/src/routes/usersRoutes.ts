@@ -1,24 +1,25 @@
 import express from "express";
 import {
-  allUsers,
+  getLiveStatsUsers,
   getUser,
   changeUserPhotoFrame,
-  unselectUserPhotoFrame,
-  getWhoVisitMe,
-  userVisited,
-  getOnlineUsers,
+  getWhoViewMyProfile,
+  profileViewed,
+  getOnlineUsersData,
+  // getOnlineUsersIds,
   getLeaderboardUsers,
+  getTopUser,
 } from "../controllers/usersController.js";
 import protectedRoute from "../middleware/index.js";
 const router = express.Router();
 
-router.get("/live-stats-users", allUsers);
-router.get("/onlines", protectedRoute, getOnlineUsers);
+router.get("/live-stats-users", getLiveStatsUsers);
+router.get("/top-user", getTopUser);
+router.get("/onlines", getOnlineUsersData);
 router.get("/users-leaderboard", getLeaderboardUsers);
-router.get("/select-myphoto-frame/:frameId", protectedRoute, changeUserPhotoFrame);
-router.get("/unselect-myphoto-frame", protectedRoute, unselectUserPhotoFrame);
+router.get("/select-unselect-photoFrame/:frameId", protectedRoute, changeUserPhotoFrame);
+router.get("/profile-views", protectedRoute, getWhoViewMyProfile);
+router.get("/:userId/view-profile", protectedRoute, profileViewed);
 router.get("/:userId", getUser);
-router.get("/who-visit-me/me", protectedRoute, getWhoVisitMe);
-router.get("/:userId/visited", protectedRoute, userVisited);
 
 export default router;

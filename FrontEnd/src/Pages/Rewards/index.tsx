@@ -10,7 +10,6 @@ import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { dollarInHand } from "../../assets";
 import Ladder from "./Ladder";
 import DailyReward from "./DailyReward";
-import Spinner from "../../components/Shared/Common/Spinner";
 
 const Rewards = () => {
   const userAuth = useAppSelector(selectUserAuth);
@@ -86,9 +85,9 @@ const Rewards = () => {
             </span>
           </span>
           <MdCardGiftcard />
-          <span id="bonus-code" className="w-[120px] text-white">
-            {loading ? <Spinner color="blue" /> : t("Bonus Code")}
-          </span>
+          <div id="bonus-code" className="w-[120px] text-white">
+            {loading ? "Loading..." : t("Bonus Code")}
+          </div>
         </button>
       </div>
       <div className="flex flex-col gap-4 rounded-b-lg bg-[#242438] px-3 sm:rounded-none md:px-6 lg:flex-row">

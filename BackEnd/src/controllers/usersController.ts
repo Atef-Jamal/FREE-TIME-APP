@@ -1,53 +1,42 @@
 import { Request, Response } from "express";
-import UserModel from "../models/userModel.js";
-import FrameModel from "../models/frameModel.js";
-import ProfileVisitsModel from "../models/profileVisitsModel.js";
+import User from "../models/user.js";
+import Frame from "../models/frame.js";
+import ProfileView from "../models/ProfileView.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
+import { onlineUsers, io } from "../app.js";
 import { Types } from "mongoose";
 
-export const allUsers = async (req: Request, res: Response) => {
+export const getLiveStatsUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
-  let limit = 20;
+  const limit = 20;
   const skip = (pageParam - 1) * limit;
 
   try {
-    let users = await UserModel.find({ isOnline: true })
+    const users = await User.find({})
       .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .select(userExcludedFields);
-
-    if (users.length < limit) {
-      limit = limit - users.length;
-      const excludedIds = users.map((u) => u._id);
-
-      const moreUsers = await UserModel.find({ _id: { $nin: excludedIds } })
-        .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .select(userExcludedFields);
-
-      users = [...users, ...moreUsers];
-    }
+      .select(userExcludedFields)
+      .populate("activeFrame");
 
     const hasMore = limit === users.length;
-
     return res.status(200).json({ users, hasMore });
   } catch (error) {
     console.log(error);
-    return res.status(404).json({ error: "Can't Load all peoples" });
+    return res.status(404).json({ error: "Can't Load Live stats" });
   }
 };
 
-export const getOnlineUsers = async (req: Request, res: Response) => {
+export const getOnlineUsersData = async (_req: Request, res: Response) => {
   try {
-    const users = await UserModel.find({ _id: { $ne: req.user?._id }, isOnline: true })
-      .sort({ points: -1, emailVerified: 1, isOnline: -1, createdAt: 1 })
+    const usersIds = [...onlineUsers.keys()];
+    const users = await User.find({ _id: { $in: usersIds } })
+      .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: 1 })
       .select(userExcludedFields);
     return res.status(200).json(users);
   } catch (error) {
-    return res.status(404).json({ error: "Can't Load all peoples" });
+    return res.status(404).json({ error: "Can't Load online users data" });
   }
 };
 
@@ -56,13 +45,13 @@ export const getLeaderboardUsers = async (req: Request, res: Response) => {
   const limit = 100;
   const skip = (pageParam - 1) * limit;
   try {
-    const users = await UserModel.find({})
+    const users = await User.find({})
       .sort({ points: -1, emailVerified: 1, isOnline: -1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select(userExcludedFields);
 
-    const allDataLength = await UserModel.countDocuments();
+    const allDataLength = await User.countDocuments();
     return res.status(200).json({ users, allDataLength });
   } catch (error) {
     return res.status(404).json({ error: "Can't Load all peoples" });
@@ -78,7 +67,9 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (cachedUser) return res.status(200).json(JSON.parse(cachedUser));
 
-    const user = await UserModel.findById(userId).select(userExcludedFields).populate("myFrames");
+    const user = await User.findById(userId)
+      .select(userExcludedFields)
+      .populate([{ path: "myFrames" }, { path: "activeFrame" }]);
 
     if (!user) return res.status(404).json({ error: "User Not Found" });
 
@@ -92,14 +83,40 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
-export const userVisited = async (req: Request, res: Response) => {
-  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
-  const userVisitedId = req.params.userId;
+export const getTopUser = async (_req: Request, res: Response) => {
   try {
-    const userVisited = await UserModel.findById(userVisitedId);
-    if (!userVisited) return res.status(404).json({ error: "user not found" });
-    await ProfileVisitsModel.create({ visited: new Types.ObjectId(userVisitedId), visitor: req.user._id });
-    return res.status(200).json({ message: "sucess" });
+    const user = await User.findOne({}).sort({ points: -1, emailVerified: 1, createdAt: -1 }).select("_id");
+    if (!user) return res.status(404).json({ error: "User Not Found" });
+    return res.status(200).json({ userId: user._id });
+  } catch (error) {
+    return res.status(404).json({ error: "somthing went wrong " });
+  }
+};
+
+export const profileViewed = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
+  const targetUserId = req.params.userId;
+  try {
+    const user = await User.findById(targetUserId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (req.user._id.toString() !== targetUserId.toString()) {
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      const recentView = await ProfileView.findOne({
+        viewer: req.user._id,
+        profileOwner: targetUserId,
+        viewedAt: { $gte: oneHourAgo },
+      });
+
+      if (!recentView) {
+        await ProfileView.create({
+          viewer: req.user._id,
+          profileOwner: new Types.ObjectId(targetUserId),
+        });
+        return res.status(200).json({ message: "sucess" });
+      }
+    }
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred" });
   }
@@ -108,12 +125,32 @@ export const userVisited = async (req: Request, res: Response) => {
 export const changeUserPhotoFrame = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { frameId } = req.params;
+  const action = req.query.action as "select" | "unselect";
   try {
-    const frame = await FrameModel.findById(frameId);
-
+    const frame = await Frame.findById(frameId).lean();
     if (!frame) return res.status(404).json({ error: "Frame Not Found" });
 
-    await UserModel.findByIdAndUpdate(req.user._id, { activeFrame: frame }, { returnDocument: "after" });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        ...(action === "select" ? { activeFrame: frame._id } : {}),
+        ...(action === "unselect"
+          ? {
+              $unset: {
+                activeFrame: "",
+              },
+            }
+          : {}),
+      },
+      { returnDocument: "after" },
+    )
+      .populate("activeFrame")
+      .lean();
+
+    if (updatedUser) {
+      await redisClient.del(`users:details:${req.user._id.toString()}`);
+      io.emit("user_updated", updatedUser);
+    }
 
     return res.status(200).json(frame);
   } catch (error) {
@@ -121,22 +158,12 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
   }
 };
 
-export const unselectUserPhotoFrame = async (req: Request, res: Response) => {
-  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
-  try {
-    await UserModel.findByIdAndUpdate(req.user._id, { $unset: { activeFrame: "" } });
-    return res.status(200).json({ message: "suceess" });
-  } catch (error) {
-    return res.status(404).json({ error: "can't change your Frame" });
-  }
-};
-
-export const getWhoVisitMe = async (req: Request, res: Response) => {
+export const getWhoViewMyProfile = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   try {
     if (req.user.points < 5) return res.status(404).json({ error: "your points is not Enough" });
 
-    const user = await UserModel.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       req.user._id,
       {
         $inc: { points: -5 },
@@ -146,11 +173,11 @@ export const getWhoVisitMe = async (req: Request, res: Response) => {
 
     if (!user) return res.status(404).json({ error: "an error occurred" });
 
-    const visitors = await ProfileVisitsModel.find({
-      visited: req.user._id,
-    }).populate("visitor", userExcludedFields);
+    const viewers = await ProfileView.find({
+      profileOwner: req.user._id,
+    }).populate("viewer", userExcludedFields);
 
-    return res.status(200).json({ users: visitors, points: user.points });
+    return res.status(200).json({ users: viewers, points: user.points });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
   }

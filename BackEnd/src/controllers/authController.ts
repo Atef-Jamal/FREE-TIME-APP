@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import User from "../models/userModel.js";
-import { onLineUsers } from "../socketIo/index.js";
 import { userExcludedFields } from "../constants/index.js";
 import {
   generateAccessToken,
@@ -15,9 +13,9 @@ import { io } from "../app.js";
 import { uploadImageToCloudinary } from "../services/others.js";
 import { redisClient } from "../lib/redis.js";
 import { generateNewWeekRewards } from "../utils/index.js";
-import UserModel from "../models/userModel.js";
-import NotificationModel from "../models/notificationModel.js";
-import PublicMessageModel from "../models/publicMessageModel.js";
+import User from "../models/user.js";
+import Notification from "../models/notification.js";
+import PublicMessage from "../models/publicMessage.js";
 import { Types } from "mongoose";
 
 export const register = async (req: Request, res: Response) => {
@@ -44,11 +42,18 @@ export const register = async (req: Request, res: Response) => {
     });
 
     if (req.file) {
-      const result = await uploadImageToCloudinary(req.file, newUser.name, newUser.id);
+      const result = await uploadImageToCloudinary(req.file, newUser.name, newUser._id.toString());
       newUser.profilePicture = result.secure_url;
     }
 
-    const savedUser = await newUser.save();
+    const savedUser = (await newUser.save()).toObject({
+      transform: (_, ret: Record<string, any>) => {
+        delete ret.password;
+        delete ret.emailVerificationCode;
+        delete ret.email;
+        return ret;
+      },
+    });
 
     if (referrerUser) {
       await sendRewardToUser(new Types.ObjectId(referrerUser), savedUser._id);
@@ -59,8 +64,11 @@ export const register = async (req: Request, res: Response) => {
 
     setTokenCookies({ accessToken, refreshToken, res });
 
+    io.emit("user_registered", savedUser);
+
     return res.status(201).json({ status: "success" });
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "an Error occurred, Try again Later" });
   }
 };
@@ -71,11 +79,13 @@ export const login = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({ error: "User Not Found" });
-    }
+    if (!user) return res.status(404).json({ error: "User Not Found" });
 
-    if (!user.password) return res.status(404).json({ error: "try Login with social providers" });
+    if (!user.password) {
+      if (user.googleId) return res.status(404).json({ error: "Try to Login with google" });
+      if (user.githubId) return res.status(404).json({ error: "Try to Login with github" });
+      return res.status(404).json({ error: "Try to Login with social providers" });
+    }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -104,15 +114,14 @@ export const signInWithProvider = async (req: Request, res: Response) => {
 
 export const refreshToken = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.refreshToken;
-    if (!token) return res.status(401).json({ message: "No refresh token" });
+    const getRefreshToken = req.cookies.refreshToken;
+    if (!getRefreshToken) return res.status(401).json({ error: "No refresh token" });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decoded: any = verifyRefreshToken(token);
+    const decoded: any = verifyRefreshToken(getRefreshToken);
 
     const user = await User.findById(decoded.userId);
 
-    if (!user) return res.status(403).json({ message: "Invalid session" });
+    if (!user) return res.status(403).json({ error: "Invalid session, user not found" });
 
     const newAccessToken = generateAccessToken({ userId: user._id });
 
@@ -125,6 +134,8 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     return res.status(200).json({ message: "Token refreshed" });
   } catch (err) {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
     return res.status(403).json({ error: "Invalid or expired refresh token" });
   }
 };
@@ -137,7 +148,6 @@ export const logOut = async (_req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
-
   try {
     const currentUser = await User.findById(req.user._id)
       .select("-password")
@@ -163,7 +173,7 @@ export const sendEmailVerificationCode = async (req: Request, res: Response) => 
 
     const generateCode = Math.floor(Math.random() * 9000) + 1000;
 
-    await UserModel.findByIdAndUpdate(req.user._id, {
+    await User.findByIdAndUpdate(req.user._id, {
       emailVerificationCode: {
         code: generateCode.toString(),
         date: new Date(),
@@ -178,9 +188,7 @@ export const sendEmailVerificationCode = async (req: Request, res: Response) => 
 
     return res.status(200).json({ message: "success" });
   } catch (error) {
-    return res.status(404).json({
-      error: "Failed to send verification code, an error occurred",
-    });
+    return res.status(404).json({ error: "Failed to send verification code, an error occurred" });
   }
 };
 
@@ -199,17 +207,20 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Incorrect verification code" });
     }
 
-    const updatedUser = await UserModel.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
         emailVerified: true,
       },
       { returnDocument: "after" },
-    ).select(userExcludedFields);
+    )
+      .select(userExcludedFields)
+      .populate("activeFrame")
+      .lean();
 
     if (!updatedUser) return res.status(401).json({ error: "an error occurred" });
 
-    const newNotification = await NotificationModel.create({
+    const newNotification = await Notification.create({
       type: "EMAIL-VERIFIED",
       belongsTo: req.user._id,
       metadata: {
@@ -220,22 +231,19 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
 
     await redisClient.del(`notifications:list:${req.user._id.toString()}`);
 
-    const newPublicMessage = await PublicMessageModel.create({
+    const newPublicMessage = await PublicMessage.create({
       sender: req.user._id,
       typeOfTask: "EMAIL-VERIFIED",
       type: "FREETIME",
     });
 
-    const populatedMessage = await PublicMessageModel.findById(newPublicMessage._id).populate(
-      "sender",
-      userExcludedFields,
-    );
+    const populatedMessage = await PublicMessage.findById(newPublicMessage._id)
+      .populate("sender", userExcludedFields)
+      .lean();
 
-    io.to(onLineUsers[req.user._id.toString()]).emit("new-notification", newNotification);
-    io.emit("public-message", populatedMessage);
-    io.emit("user-updated", updatedUser);
-
-    return res.status(200).json({ message: "successfully verified" });
+    if (populatedMessage) io.emit("public_chat_message", populatedMessage);
+    io.emit("user_updated", updatedUser);
+    return res.status(200).json(newNotification);
   } catch (error) {
     return res.status(404).json({
       message: "Can't verify your email, an error occurred",
@@ -265,7 +273,7 @@ export const changePassword = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPass, salt);
 
-    await UserModel.findByIdAndUpdate(req.user._id, {
+    await User.findByIdAndUpdate(req.user._id, {
       password: hashedPassword,
     });
 
@@ -282,16 +290,18 @@ export const changeName = async (req: Request, res: Response) => {
     if (newName.trim() === "") {
       return res.status(404).json({ error: "please Enter Name" });
     }
-    const updatedUser = await UserModel.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
         name: newName,
       },
       { returnDocument: "after" },
-    ).select(userExcludedFields);
+    )
+      .select(userExcludedFields)
+      .populate("activeFrame");
 
     if (!updatedUser) return res.status(401).json({ error: "an error occurred" });
-    io.emit("user-updated", updatedUser);
+    io.emit("user_updated", updatedUser);
     return res.status(200).json({ name: updatedUser.name });
   } catch (error) {
     return res.status(404).json({ error: "Can't change name, an error occurred" });

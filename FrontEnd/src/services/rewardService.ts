@@ -1,6 +1,9 @@
+import { IEmailVerifiedNotify, IGuessCardTaskNotify, IQuizTaskNotify, IReferrerNotify } from "../types";
 import { axiosRequest } from "../utilities";
 
-export const collectReward = async (notificationId: string) => {
+export const collectReward = async (
+  notificationId: string,
+): Promise<IEmailVerifiedNotify | IReferrerNotify | IQuizTaskNotify | IGuessCardTaskNotify> => {
   const response = await axiosRequest.get(`api/notifications/collect/${notificationId}`);
   return response.data;
 };

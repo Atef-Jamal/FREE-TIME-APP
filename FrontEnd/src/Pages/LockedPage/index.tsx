@@ -1,6 +1,6 @@
 import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { showModal, updateThisEntity } from "../../context/appStateSlice";
+import { showModal, updateStateField } from "../../context/appStateSlice";
 import { useAppDispatch } from "../../context/hooks";
 
 const LockedPage = () => {
@@ -17,7 +17,7 @@ const LockedPage = () => {
         <div className="w-full">
           <button
             onClick={() => {
-              dispatch(updateThisEntity({ entity: "isSignInMode", value: true }));
+              dispatch(updateStateField({ entity: "isSignInMode", value: true }));
               dispatch(showModal("register-modal"));
             }}
             className="mb-2 w-full rounded-lg bg-[#1a4b68] py-1 text-lg font-bold text-[#95aeb9] md:py-2 lg:text-2xl"

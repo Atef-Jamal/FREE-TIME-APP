@@ -1,4 +1,4 @@
-import type { IUser, IFrame, INotifications } from "../types";
+import type { IUser, IFrame, INotifications, IEmailVerifiedNotify } from "../types";
 import { ICashedLeaderboardUsers } from "../types/userTypes";
 import { axiosRequest } from "../utilities";
 
@@ -8,21 +8,32 @@ export const fetchUserById = async ({ userId }: { userId: string }): Promise<IUs
   return data;
 };
 
+export const fetchTopUser = async (): Promise<{ userId: string }> => {
+  const response = await axiosRequest.get(`/api/users/top-user`);
+  const data = response.data;
+  return data;
+};
+
 export const sendVerificationCode = async (): Promise<void> => {
   await axiosRequest.get("api/auth/send-verification-email-code");
 };
 
-export const verifyMyEmail = async ({ enteredCode }: { enteredCode: string }): Promise<void> => {
-  await axiosRequest.post("api/auth/verifiyemail", { enteredCode });
+export const verifyMyEmail = async ({
+  enteredCode,
+}: {
+  enteredCode: string;
+}): Promise<IEmailVerifiedNotify> => {
+  const response = await axiosRequest.post("api/auth/verifiyemail", { enteredCode });
+  return response.data;
 };
 
 export const changeUserName = async ({ newName }: { newName: string }): Promise<{ name: string }> => {
   const response = await axiosRequest.post("api/auth/changename", {
     newName,
   });
-  const name = response.data;
-  return name;
+  return response.data;
 };
+
 export const changeUserPassword = async ({
   newPassword,
   oldPassword,
@@ -35,30 +46,33 @@ export const changeUserPassword = async ({
     enterdOldPass: oldPassword,
   });
 };
-export const changeMyPictureFrame = async ({ frameId }: { frameId: string }): Promise<IFrame> => {
-  const response = await axiosRequest.get(`api/users/select-myphoto-frame/${frameId}`);
+export const changeMyPictureFrame = async ({
+  frameId,
+  action,
+}: {
+  frameId: string;
+  action: "select" | "unselect";
+}): Promise<IFrame> => {
+  const response = await axiosRequest.get(`api/users/select-unselect-photoFrame/${frameId}?action=${action}`);
   const data = response.data;
   return data;
 };
 
-export const unselectMyPictureFrame = async (): Promise<void> => {
-  await axiosRequest.get("api/users/unselect-myphoto-frame");
-};
-export const getUsers = async ({
+export const fetchLiveStatsUsers = async ({
   pageParam,
 }: {
   pageParam: number;
 }): Promise<{
   users: IUser[];
-  userHighestPoints: string | undefined;
   hasMore: boolean;
 }> => {
   const response = await axiosRequest.get(`/api/users/live-stats-users?pageParam=${pageParam}`);
   const data = response.data;
   return data;
 };
+
 export const userVisited = async (visitedUserId: string): Promise<void> => {
-  await axiosRequest.get(`/api/users/${visitedUserId}/visited`);
+  await axiosRequest.get(`/api/users/${visitedUserId}/view-profile`);
 };
 
 export const fetchUserActivities = async ({ userId }: { userId: string }): Promise<INotifications[]> => {
@@ -67,11 +81,17 @@ export const fetchUserActivities = async ({ userId }: { userId: string }): Promi
   return data;
 };
 
-export const getOnlineUsers = async (): Promise<IUser[]> => {
+export const fetchOnlineUsersData = async (): Promise<IUser[]> => {
   const response = await axiosRequest.get(`/api/users/onlines`);
   const data = response.data;
   return data;
 };
+
+// export const fetchOnlineUsersIds = async (): Promise<string[]> => {
+//   const response = await axiosRequest.get(`/api/users/online-users-ids`);
+//   return response.data;
+// };
+
 export const getLeaderboardUsers = async ({
   pageParam,
 }: {

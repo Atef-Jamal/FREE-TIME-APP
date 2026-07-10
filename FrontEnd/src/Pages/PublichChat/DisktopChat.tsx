@@ -1,14 +1,14 @@
-import { memo, useCallback, useEffect, useMemo } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { BsChatLeftText } from "react-icons/bs";
 import { cn } from "../../utilities";
 import {
   selectIsChatOpen,
   selectPublicMsgNotify,
   setPublicMsgRedPoint,
-  updateThisEntity,
+  updateStateField,
 } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { useSocketEvents } from "../../hooks/useSocketEvents";
 import ChatHeader from "./ChatHeader";
 import PublicChatBody from "./ChatBody";
 
@@ -21,19 +21,22 @@ const DisktopChat = memo(() => {
     if (!isChatOpen) dispatch(setPublicMsgRedPoint(true));
   }, [isChatOpen, dispatch]);
 
-  const events = useMemo(() => ["public-message"], []);
-  const handlers = useMemo(() => [handleRecievedMessage], [handleRecievedMessage]);
+  // const events = useMemo(() => ["public_chat_message"], []);
+  // const handlers = useMemo(() => [handleRecievedMessage], [handleRecievedMessage]);
 
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
+  // useListenToSocketEvents({
+  //   eventsToListen: events,
+  //   handlers: handlers,
+  // });
+
+  useSocketEvents({
+    public_chat_message: handleRecievedMessage,
   });
-
   useEffect(() => {
     // initiallly open chat if user comes with url searchParam containing messageID
     const timeOut = setTimeout(() => {
       if (location.search.includes("messageId"))
-        if (!isChatOpen) dispatch(updateThisEntity({ entity: "isChatOpen", value: true }));
+        if (!isChatOpen) dispatch(updateStateField({ entity: "isChatOpen", value: true }));
     }, 1000);
     return () => clearTimeout(timeOut);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,8 +60,12 @@ const DisktopChat = memo(() => {
     >
       <span
         onClick={() => {
-          dispatch(updateThisEntity({ entity: "isChatOpen", value: !isChatOpen }));
-          localStorage.setItem("isDesktopChatOpen", isChatOpen ? "" : "open");
+          dispatch(updateStateField({ entity: "isChatOpen", value: !isChatOpen }));
+          if (isChatOpen) {
+            localStorage.removeItem("isDesktopChatOpen");
+          } else {
+            localStorage.setItem("isDesktopChatOpen", "open");
+          }
         }}
         className="absolute -left-[42px] top-[47px] flex h-10 w-10 cursor-pointer items-center justify-center rounded-sm bg-[#513d80f8]"
       >

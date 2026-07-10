@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import TestimonialModel from "../models/testimonialModel.js";
+import Testimonial from "../models/testimonial.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
 
@@ -11,7 +11,7 @@ export const getAllTestimonials = async (_req: Request, res: Response) => {
 
     if (cachedTestimonials) return res.status(200).json(JSON.parse(cachedTestimonials));
 
-    const allTestimonials = await TestimonialModel.find({}).populate("user", userExcludedFields);
+    const allTestimonials = await Testimonial.find({}).populate("user", userExcludedFields);
 
     await redisClient.set(cacheKey, JSON.stringify(allTestimonials));
 
@@ -25,13 +25,13 @@ export const createTestimonial = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const { content, stars } = req.body;
   try {
-    const newTestimonials = await TestimonialModel.create({
+    const newTestimonials = await Testimonial.create({
       user: req.user._id,
       content,
       stars,
     });
 
-    const populatedTestimonials = await TestimonialModel.findById(newTestimonials._id).populate(
+    const populatedTestimonials = await Testimonial.findById(newTestimonials._id).populate(
       "user",
       userExcludedFields,
     );

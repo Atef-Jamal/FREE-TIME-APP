@@ -1,8 +1,8 @@
 import { FcMusic } from "react-icons/fc";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
-import MusicCard from "../../components/Ui/MusicCard";
 import Skeleton from "../../components/Shared/Common/Skeleton";
 import { useFetchMusics } from "../../tanstackQuery/queryFetch";
+import MusicCard from "../../components/Ui/MusicCard";
 
 const Musics = () => {
   const { data, status } = useFetchMusics();

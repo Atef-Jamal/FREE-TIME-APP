@@ -1,6 +1,6 @@
 import Skeleton from "../../components/Shared/Common/Skeleton";
 
-const AppSkeleton = () => (
+const OfferSkeleton = () => (
   <div className="flex h-[250px] flex-col items-center justify-between rounded-md border border-gray-700 bg-[#2a244481] p-3">
     <Skeleton className="h-[120px] w-full" />
     <div className="flex w-full flex-col gap-1">
@@ -20,4 +20,4 @@ const AppSkeleton = () => (
   </div>
 );
 
-export default AppSkeleton;
+export default OfferSkeleton;

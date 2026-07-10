@@ -10,9 +10,8 @@ import {
   resetModel,
   setCurrentUser,
   openToast,
-  updateThisEntity,
+  updateStateField,
   selectCurrentUser,
-  selectSocket,
   selectSmallScreen,
   selectIsChatOpen,
 } from "../../../../context/appStateSlice";
@@ -21,15 +20,14 @@ import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import { cn, formateDate, handleApiError } from "../../../../utilities";
 import Spinner from "../../Common/Spinner";
 import { collectReward } from "../../../../services";
-import { updateNotificationsCollectCache } from "../../../../tanstackQuery/queryCache";
+import { updateNotificationsCache } from "../../../../tanstackQuery/queryCache";
 
 const NotificationItem = (notify: INotifications) => {
   // @ts-expect-error-isCollected does not exist on some notifications
-  const [isRewardCollected, setIsRewadCollected] = useState(notify.isCollected);
-  const smallScreen = useAppSelector(selectSmallScreen);
+  const [isRewardCollected, setIsRewadCollected] = useState(notify.metadata.isCollected);
+  const mobileScreen = useAppSelector(selectSmallScreen);
   const currentUser = useAppSelector(selectCurrentUser);
   const isChatOpen = useAppSelector(selectIsChatOpen);
-  const socket = useAppSelector(selectSocket);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -45,14 +43,14 @@ const NotificationItem = (notify: INotifications) => {
     setIsLoading(true);
     try {
       const response = await collectReward(notify._id);
-      updateNotificationsCollectCache({ queryClient, notificationId: notify._id });
-      setIsRewadCollected(response.isCollected);
-      const updatedUser = {
-        ...currentUser,
-        points: currentUser.points + response.prize,
-      };
-      dispatch(setCurrentUser(updatedUser));
-      socket?.emit("user-updated", updatedUser);
+      updateNotificationsCache({ queryClient, notification: response });
+      setIsRewadCollected(response.metadata.isCollected);
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          points: currentUser.points + response.metadata.prize,
+        }),
+      );
       dispatch(
         openToast({
           message: "collected successfully ",
@@ -142,14 +140,14 @@ const NotificationItem = (notify: INotifications) => {
       button = (
         <Link
           to={
-            smallScreen
+            mobileScreen
               ? `/chat?messageId=${notify.metadata.messageLocation}`
               : `${location.pathname}?messageId=${notify.metadata.messageLocation}`
           }
           onClick={() => {
             dispatch(resetModel());
-            if (!isChatOpen && !smallScreen) {
-              dispatch(updateThisEntity({ entity: "isChatOpen", value: true }));
+            if (!isChatOpen && !mobileScreen) {
+              dispatch(updateStateField({ entity: "isChatOpen", value: true }));
             }
           }}
           className="w-[90px] rounded-[4px] border border-gray-700 bg-[#364072ee] py-0.5 text-center text-sm text-[#eee] underline sm:py-1"
@@ -184,14 +182,14 @@ const NotificationItem = (notify: INotifications) => {
       button = (
         <Link
           to={
-            smallScreen
+            mobileScreen
               ? `/chat?messageId=${notify.metadata.messageLocation}`
               : `${location.pathname}?messageId=${notify.metadata.messageLocation}`
           }
           onClick={() => {
             dispatch(resetModel());
-            if (!isChatOpen && !smallScreen) {
-              dispatch(updateThisEntity({ entity: "isChatOpen", value: true }));
+            if (!isChatOpen && !mobileScreen) {
+              dispatch(updateStateField({ entity: "isChatOpen", value: true }));
             }
           }}
           className="w-[90px] rounded-[4px] border border-gray-700 bg-[#364072ee] py-0.5 text-center text-sm text-[#eee] underline sm:py-1"

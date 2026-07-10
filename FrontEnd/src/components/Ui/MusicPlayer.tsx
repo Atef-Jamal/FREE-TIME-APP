@@ -9,7 +9,7 @@ import {
   selectActiveMusic,
   selectMusicIsPlaying,
   selectSidebarCollapsed,
-  updateThisEntity,
+  updateStateField,
 } from "../../context/appStateSlice";
 import { MdClose } from "react-icons/md";
 import { cn } from "../../utilities";
@@ -33,11 +33,11 @@ const MusicPlayer = memo(() => {
   const handlePlayPauseMusic = () => {
     if (musicIsPlaying) {
       audioElement.pause();
-      dispatch(updateThisEntity({ entity: "musicIsPlaying", value: false }));
+      dispatch(updateStateField({ entity: "musicIsPlaying", value: false }));
     }
     if (!musicIsPlaying) {
       audioElement.play();
-      dispatch(updateThisEntity({ entity: "musicIsPlaying", value: true }));
+      dispatch(updateStateField({ entity: "musicIsPlaying", value: true }));
     }
   };
 
@@ -49,7 +49,7 @@ const MusicPlayer = memo(() => {
 
     const handleMusicEnded = () => {
       audioElement.pause();
-      dispatch(updateThisEntity({ entity: "musicIsPlaying", value: false }));
+      dispatch(updateStateField({ entity: "musicIsPlaying", value: false }));
       setTrackValue(0);
     };
 
@@ -87,7 +87,7 @@ const MusicPlayer = memo(() => {
             onClick={() => {
               audioElement.src = "";
               dispatch(handleCloseMusic());
-              dispatch(updateThisEntity({ entity: "openMusicModal", value: false }));
+              dispatch(updateStateField({ entity: "openMusicModal", value: false }));
             }}
             className="flex h-full w-[35px] items-center justify-center rounded-sm bg-[#c06262]"
           >

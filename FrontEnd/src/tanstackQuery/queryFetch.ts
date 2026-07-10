@@ -1,19 +1,22 @@
+/* eslint-disable @tanstack/query/exhaustive-deps */
 import { keepPreviousData, skipToken, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   fetchAllConversations,
   fetchAllFrames,
-  fetchAllTasks,
-  fetchAppDetails,
+  fetchAllOffers,
+  fetchOfferDetails,
   fetchMusics,
   fetchMyNotifications,
   fetchPrivateChatMessages,
   fetchPublicChatMessages,
   fetchTestimonials,
   fetchUserById,
+  fetchTopUser,
+  // fetchOnlineUsersIds,
+  fetchOnlineUsersData,
+  fetchLiveStatsUsers,
   getLeaderboardUsers,
-  getOnlineUsers,
   getSearchResults,
-  getUsers,
 } from "../services";
 
 import type { IFilterByDevice, IFilterByPopularity } from "../types";
@@ -23,7 +26,7 @@ import { fetchUnreadPrivateMessages } from "../services/chatService";
 export const useInfiniteLiveStatsUsers = () => {
   return useInfiniteQuery({
     queryKey: ["live-stats-users"],
-    queryFn: ({ pageParam }) => getUsers({ pageParam }),
+    queryFn: ({ pageParam }) => fetchLiveStatsUsers({ pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastpage, _, pageParam) => {
       return lastpage.hasMore ? pageParam + 1 : undefined;
@@ -38,7 +41,7 @@ export const useInfinitePublicChatMsges = () => {
     queryFn: ({ pageParam }) => fetchPublicChatMessages({ pageParam, limit: 15 }),
     initialPageParam: 1,
     getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
+      return firstPage.hasMore ? pageParam + 1 : undefined;
     },
     getNextPageParam: () => undefined,
     staleTime: 60 * 60 * 1000,
@@ -65,20 +68,20 @@ export const useInfiniteConversations = ({ userAuth }: { userAuth: boolean }) =>
 
 export const useInfiniteConversationMsgs = ({
   userAuth,
-  activeChatId,
+  secondUserId,
 }: {
   userAuth: boolean;
-  activeChatId: string | null;
+  secondUserId: string | null;
 }) => {
   return useInfiniteQuery({
-    queryKey: ["conversation-messages", activeChatId],
+    queryKey: ["conversation-messages", secondUserId],
     queryFn:
-      userAuth && activeChatId
-        ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, activeChatId })
+      userAuth && secondUserId
+        ? ({ pageParam }) => fetchPrivateChatMessages({ pageParam, secondUserId })
         : skipToken,
     initialPageParam: 1,
     getPreviousPageParam: (firstPage, _, pageParam) => {
-      return firstPage.hasOlder ? pageParam + 1 : undefined;
+      return firstPage.hasMore ? pageParam + 1 : undefined;
     },
     getNextPageParam: () => undefined,
     staleTime: 60 * 60 * 1000,
@@ -95,9 +98,9 @@ export const useInfiniteTasks = ({
   limitPerPage: number;
 }) => {
   return useInfiniteQuery({
-    queryKey: ["tasks", filterByDevice, filterByPopularity, limitPerPage],
+    queryKey: ["offers", filterByDevice, filterByPopularity, limitPerPage],
     queryFn: ({ pageParam }) =>
-      fetchAllTasks({
+      fetchAllOffers({
         filterByDevice,
         filterByPopularity,
         limitPerPage,
@@ -128,10 +131,10 @@ export const useFetchNotifications = ({ userAuth }: { userAuth: boolean }) => {
   });
 };
 
-export const useFetchTaskDetails = ({ taskId }: { taskId: string | undefined }) => {
+export const useFetchOfferDetails = ({ offerId }: { offerId: string | undefined }) => {
   return useQuery({
-    queryKey: ["tasks", taskId],
-    queryFn: taskId ? () => fetchAppDetails({ taskId }) : skipToken,
+    queryKey: ["offers", offerId],
+    queryFn: offerId ? () => fetchOfferDetails({ offerId }) : skipToken,
   });
 };
 
@@ -168,10 +171,11 @@ export const useFetchMusics = () => {
   });
 };
 
-export const useFetchOnlineUsers = () => {
+export const useFetchOnlineUsersData = () => {
   return useQuery({
-    queryKey: ["onlines-users"],
-    queryFn: getOnlineUsers,
+    queryKey: ["onlines-users-data"],
+    queryFn: fetchOnlineUsersData,
+    staleTime: 60 * 60 * 1000,
   });
 };
 
@@ -179,6 +183,14 @@ export const useFetchUser = ({ userId }: { userId: string | undefined }) => {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: userId ? () => fetchUserById({ userId }) : skipToken,
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useFetchTopUser = () => {
+  return useQuery({
+    queryKey: ["top-user"],
+    queryFn: fetchTopUser,
     staleTime: 10 * 60 * 1000,
   });
 };

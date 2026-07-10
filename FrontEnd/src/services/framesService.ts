@@ -1,4 +1,4 @@
-import type { IFrame } from "../types";
+import type { IBuyFrameNotify, IFrame } from "../types";
 import { axiosRequest } from "../utilities";
 
 export const fetchAllFrames = async (): Promise<IFrame[]> => {
@@ -11,7 +11,7 @@ export const purshaseFrame = async ({
   frameId,
 }: {
   frameId: string;
-}): Promise<{ points: number; savedFrame: IFrame }> => {
+}): Promise<{ points: number; frame: IFrame; notification: IBuyFrameNotify }> => {
   const response = await axiosRequest.get(`api/frames/${frameId}`);
   const data = response.data;
   return data;

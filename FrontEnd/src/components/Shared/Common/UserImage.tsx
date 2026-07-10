@@ -2,7 +2,7 @@ import type { IUser } from "../../../types";
 import { cn } from "../../../utilities";
 
 interface IProps {
-  user: IUser | null;
+  user: Pick<IUser, "profilePicture" | "activeFrame"> | null;
 }
 
 const UserImage = ({ user }: IProps) => {
@@ -18,7 +18,7 @@ const UserImage = ({ user }: IProps) => {
           user.activeFrame ? "left-[14%] top-[15%] h-[70%] w-[70%] rounded-sm" : "h-full w-full rounded-md",
         )}
         src={user.profilePicture}
-        alt=""
+        alt="user image"
       />
     </div>
   );

@@ -19,12 +19,15 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
   if (conversation.lastMessage) {
     date = formateDate(conversation.lastMessage.createdAt);
   }
+  if (!currentUser) return;
+
+  const unreadCounts = conversation.unreadCounts[currentUser._id];
 
   return (
     <div
       onClick={() => {
         dispatch(updateActiveChatId(conversation.secondUser._id));
-        localStorage.setItem("active-converstaion", conversation.secondUser._id);
+        localStorage.setItem("activeChatSecondUserId", conversation.secondUser._id);
       }}
       className={cn(
         "relative w-full space-y-1 rounded-md px-[6px] py-[3px] lg:space-y-2",
@@ -51,9 +54,9 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
       </div>
       <div className="relative flex items-center justify-between">
         <span className="flex-1 overflow-hidden truncate text-xs tracking-wide text-[#d3c5c5] md:text-sm">
-          {conversation.lastMessage?.sender?._id ? (
+          {conversation.lastMessage?.sender ? (
             <>
-              {conversation.lastMessage.sender?._id === currentUser?._id ? (
+              {conversation.lastMessage.sender._id === currentUser._id ? (
                 <>
                   <span className="text-[#8eac60]">
                     me <b className="mr-1"> : </b>
@@ -75,11 +78,11 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
             </p>
           )}
         </span>
-        {conversation.unReadCount > 0 ? (
+        {unreadCounts && unreadCounts > 0 ? (
           <span className="absolute -top-3 right-0 h-4 w-4 rounded-full bg-[#da4949] text-center text-xs font-bold transition-all">
-            <span> {conversation.unReadCount}</span>
+            <span> {unreadCounts}</span>
           </span>
-        ) : undefined}
+        ) : null}
       </div>
     </div>
   );

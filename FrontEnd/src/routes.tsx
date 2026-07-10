@@ -85,7 +85,7 @@ export const router = createBrowserRouter(
           path: "playing",
           children: [
             {
-              path: ":id",
+              path: ":offerId",
               element: (
                 <Suspense
                   fallback={<BigLoading />}

@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleDeleteMessage } from "../../services";
-import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { openToast, selectSocket } from "../../context/appStateSlice";
+import { useAppDispatch } from "../../context/hooks";
+import { openToast } from "../../context/appStateSlice";
 import { handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { deletePublicMsgCache } from "../../tanstackQuery/queryCache";
@@ -14,14 +14,12 @@ interface IProps {
 }
 
 export const ChatModelDeletion = ({ messageToDelete, setMessageToDelete, height }: IProps) => {
-  const socket = useAppSelector(selectSocket);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: handleDeleteMessage,
     onSuccess: (deletedMessage) => {
-      socket?.emit("public-message-interaction", deletedMessage);
       deletePublicMsgCache({ queryClient, deletedMessage });
     },
     onError: (error) => {

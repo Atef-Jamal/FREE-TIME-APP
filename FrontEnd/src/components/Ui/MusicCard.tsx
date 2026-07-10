@@ -3,14 +3,14 @@ import { IoIosPause } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useLocation } from "react-router-dom";
 import { purshaseMusic } from "../../services";
-import { cn, handleApiError } from "../../utilities";
+import { cn, displaySound, handleApiError } from "../../utilities";
 import type { IMusicDetail } from "../../types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   handleAddMusic,
   setCurrentUser,
   openToast,
-  updateThisEntity,
+  updateStateField,
   selectCurrentUser,
   selectActiveMusic,
   selectMusicIsPlaying,
@@ -18,6 +18,8 @@ import {
   selectUserAuth,
 } from "../../context/appStateSlice";
 import Spinner from "../Shared/Common/Spinner";
+import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
+import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 
 interface IProps {
   songDetails: IMusicDetail;
@@ -32,21 +34,16 @@ const MusicCard = ({ songDetails }: IProps) => {
   const isAlreadyPurshased = !!currentUser?.mySongs.includes(songDetails.id.toString());
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const audioElement = document.getElementById("audioElement") as HTMLAudioElement;
 
   const mutation = useMutation({
     mutationFn: purshaseMusic,
-    onError: (error) => {
-      dispatch(
-        openToast({
-          type: "ERROR_GENERAL",
-          message: handleApiError(error),
-        }),
-      );
-    },
     onSuccess: (data) => {
       if (!currentUser) return;
+      addNewNotificationCache({ queryClient, newNotification: data.notification });
+      displaySound(notificationSoundSrc);
       dispatch(
         setCurrentUser({
           ...currentUser,
@@ -58,6 +55,14 @@ const MusicCard = ({ songDetails }: IProps) => {
         openToast({
           type: "SUCESS",
           message: "successfully purshased",
+        }),
+      );
+    },
+    onError: (error) => {
+      dispatch(
+        openToast({
+          type: "ERROR_GENERAL",
+          message: handleApiError(error),
         }),
       );
     },
@@ -78,7 +83,7 @@ const MusicCard = ({ songDetails }: IProps) => {
 
   const handleAdd = () => {
     if (!openMusicModal) {
-      dispatch(updateThisEntity({ entity: "openMusicModal", value: true }));
+      dispatch(updateStateField({ entity: "openMusicModal", value: true }));
     }
     audioElement.src = songDetails.preview;
     audioElement.play();
@@ -147,7 +152,7 @@ const MusicCard = ({ songDetails }: IProps) => {
             <button
               onClick={() => {
                 audioElement.pause();
-                dispatch(updateThisEntity({ entity: "musicIsPlaying", value: false }));
+                dispatch(updateStateField({ entity: "musicIsPlaying", value: false }));
               }}
               className="flex h-[29px] w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] font-bold text-gray-300"
             >
@@ -159,7 +164,7 @@ const MusicCard = ({ songDetails }: IProps) => {
             <button
               onClick={() => {
                 audioElement.play();
-                dispatch(updateThisEntity({ entity: "musicIsPlaying", value: true }));
+                dispatch(updateStateField({ entity: "musicIsPlaying", value: true }));
               }}
               className="flex h-[29px] w-full items-center justify-center gap-2 rounded-md bg-[#4aa551] font-bold text-gray-300"
             >

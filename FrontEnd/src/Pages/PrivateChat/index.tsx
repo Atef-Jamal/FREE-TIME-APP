@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  selectActiveChatId,
+  selectActiveSecondUserId,
+  selectCurrentUser,
   selectHidenLiveStats,
   selectSmallScreen,
   selectUserAuth,
@@ -12,14 +13,14 @@ import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
-import { updateAllUnreadPrivateMsgsCache } from "../../tanstackQuery/queryCache";
-import type { IUnreadPrivateMsgsCache } from "../../types";
+import { updateTotalUnReadPrivateMsgsCache } from "../../tanstackQuery/queryCache";
 
 const PrivateChat = () => {
   const userAuth = useAppSelector(selectUserAuth);
-  const activeChatId = useAppSelector(selectActiveChatId);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const secondUserId = useAppSelector(selectActiveSecondUserId);
   const hideLiveStats = useAppSelector(selectHidenLiveStats);
-  const smallScreen = useAppSelector(selectSmallScreen);
+  const mobileScreen = useAppSelector(selectSmallScreen);
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const queryClient = useQueryClient();
 
@@ -31,14 +32,8 @@ const PrivateChat = () => {
     if (openSidebar) return;
     setOpenSidebar(true);
   };
-
   useEffect(() => {
-    const unReadMsgsCount: IUnreadPrivateMsgsCache | undefined = queryClient.getQueryData([
-      "unread-private-messages-count",
-    ]);
-    if (unReadMsgsCount && unReadMsgsCount.senderIds.length > 0) {
-      updateAllUnreadPrivateMsgsCache({ queryClient, type: "remove-all" });
-    }
+    updateTotalUnReadPrivateMsgsCache({ queryClient, type: "remove-all" });
   }, [queryClient]);
 
   if (userAuth === "pending") {
@@ -51,10 +46,10 @@ const PrivateChat = () => {
 
   const height = {
     height: hideLiveStats
-      ? smallScreen
+      ? mobileScreen
         ? `calc(100dvh - 115px)`
         : "calc(100dvh - 55px)"
-      : smallScreen
+      : mobileScreen
         ? `calc(100dvh - 155px)`
         : "calc(100dvh - 102px)",
   };
@@ -70,8 +65,8 @@ const PrivateChat = () => {
         >
           <ChatSidebar openSidebar={openSidebar} toggleSidebar={toggleSidebar} />
         </div>
-        {activeChatId && <ChatBody activeChatId={activeChatId} />}
-        {!activeChatId && <Welcome handleOpenSidebar={handleOpenSidebar} />}
+        {secondUserId && currentUser && <ChatBody secondUserId={secondUserId} />}
+        {!secondUserId && <Welcome handleOpenSidebar={handleOpenSidebar} />}
       </div>
     </div>
   );

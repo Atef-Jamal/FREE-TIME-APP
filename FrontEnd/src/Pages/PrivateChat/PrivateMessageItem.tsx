@@ -1,7 +1,6 @@
 import { RefObject } from "react";
-import { FcOk } from "react-icons/fc";
 import { BiCircle } from "react-icons/bi";
-import { IoCheckmarkDoneSharp, IoCheckmarkSharp, IoCloseCircleOutline } from "react-icons/io5";
+import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from "react-icons/io5";
 import type { IPrivateMessage } from "../../types";
 import { useAppSelector } from "../../context/hooks";
 import { cn, formateDate } from "../../utilities";
@@ -17,6 +16,13 @@ interface IProps {
 const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const date = formateDate(message.createdAt);
+
+  const isread = message.sender._id === currentUser?._id && message.isRead;
+  const isSending = message.sender._id === currentUser?._id && message.isSended === "PENDING";
+  const isunread =
+    message.sender._id === currentUser?._id &&
+    !message.isRead &&
+    (message.isSended === "SUCCESS" || message.isSended === undefined);
 
   return (
     <div
@@ -49,19 +55,28 @@ const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: 
             >
               {date}
             </span>
-            {message.isRead && message.sender._id === currentUser?._id && (
+            {isread && <IoCheckmarkDoneSharp className="font-bold" />}
+            {isSending && <BiCircle />}
+            {isunread && <IoCheckmarkSharp className="font-bold" />}
+            {/* {message.sender._id === currentUser?._id && message.isSended === "PENDING" && <BiCircle />}
+            {message.sender._id === currentUser?._id && message.isSended === "SUCCESS" && (
+              <span>
+                <IoCheckmarkSharp className="font-bold opacity-50" />
+              </span>
+            )} */}
+            {/* {conversationRead && message.sender._id === currentUser?._id && (
               <span>
                 <IoCheckmarkDoneSharp className="font-bold opacity-50" />
               </span>
             )}
-            {!message.isRead && message.sender._id === currentUser?._id && (
+            {!conversationRead && message.sender._id === currentUser?._id && (
               <span>
                 <IoCheckmarkSharp className="font-bold opacity-50" />
               </span>
-            )}
-            {message.isSended !== undefined && message.isSended === "PENDING" && <BiCircle />}
+            )} */}
+            {/* {message.isSended !== undefined && message.isSended === "PENDING" && <BiCircle />}
             {message.isSended !== undefined && message.isSended === "SUCCESS" && <FcOk />}
-            {message.isSended !== undefined && message.isSended === "FAILED" && <IoCloseCircleOutline />}
+            {message.isSended !== undefined && message.isSended === "FAILED" && <IoCloseCircleOutline />} */}
           </div>
         </div>
         <div className="max-w-full break-words pt-[2px] text-xs text-[#5fc1df] sm:text-sm">

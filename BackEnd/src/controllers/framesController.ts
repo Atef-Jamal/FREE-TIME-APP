@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import Frame from "../models/frameModel.js";
-import User from "../models/userModel.js";
-import { onLineUsers } from "../socketIo/index.js";
+import Frame from "../models/frame.js";
+import User from "../models/user.js";
 import { io } from "../app.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
-import FrameModel from "../models/frameModel.js";
-import NotificationModel from "../models/notificationModel.js";
-import PublicMessageModel from "../models/publicMessageModel.js";
+import Notification from "../models/notification.js";
+import PublicMessage from "../models/publicMessage.js";
 
 export const getAllFrames = async (_: Request, res: Response) => {
   try {
@@ -25,9 +23,7 @@ export const buyFrame = async (req: Request, res: Response) => {
   try {
     const frame = await Frame.findById(frameId);
 
-    if (!frame) {
-      return res.status(404).json("Frame not found");
-    }
+    if (!frame) return res.status(404).json("Frame not found");
 
     if (req.user.points < frame.price) {
       return res.status(404).json({ error: "sorry, your points is not Enough" });
@@ -44,17 +40,19 @@ export const buyFrame = async (req: Request, res: Response) => {
         $push: { myFrames: frame._id },
       },
       { returnDocument: "after" },
-    );
+    )
+      .populate("activeFrame")
+      .lean();
 
-    const updatedFramePromise = FrameModel.findByIdAndUpdate(
+    const updatedFramePromise = Frame.findByIdAndUpdate(
       frame._id,
       {
         $push: { purshasedBy: req.user._id },
       },
       { returnDocument: "after" },
-    );
+    ).lean();
 
-    const newNotificationPromise = NotificationModel.create({
+    const newNotificationPromise = Notification.create({
       type: "BUY-FRAME",
       belongsTo: req.user._id,
       metadata: {
@@ -63,10 +61,11 @@ export const buyFrame = async (req: Request, res: Response) => {
       },
     });
 
-    const newPublicMessagePromise = PublicMessageModel.create({
+    const newPublicMessagePromise = PublicMessage.create({
       type: "FREETIME",
       typeOfTask: "FRAME",
       sender: req.user._id,
+      message: "buying frame",
     });
 
     const [updatedUser, updatedFrame, newNotification, newPublicMessage] = await Promise.all([
@@ -78,25 +77,24 @@ export const buyFrame = async (req: Request, res: Response) => {
 
     if (!updatedUser || !updatedFrame) return res.status(404).json({ error: "an error occurred" });
 
-    const populatedNotificationPromise = NotificationModel.findById(newNotification._id).populate(
-      "metadata.frame",
-    );
+    const populatedNotificationPromise = Notification.findById(newNotification._id)
+      .populate("metadata.frame")
+      .lean();
 
-    const populatedPublicMessagePromise = PublicMessageModel.findById(newPublicMessage._id).populate(
-      "sender",
-      userExcludedFields,
-    );
+    const populatedPublicMessagePromise = PublicMessage.findById(newPublicMessage._id)
+      .populate("sender", userExcludedFields)
+      .lean();
 
     const [populatedNotification, populatedPublicMessage] = await Promise.all([
       populatedNotificationPromise,
       populatedPublicMessagePromise,
       redisClient.del(`notifications:list:${req.user._id.toString()}`),
     ]);
-
-    io.to(onLineUsers[req.user._id.toString()]).emit("new-notification", populatedNotification);
-    io.emit("public-message", populatedPublicMessage);
-
-    return res.status(200).json({ points: updatedUser.points, savedFrame: updatedFrame });
+    if (populatedPublicMessage) io.emit("public_chat_message", populatedPublicMessage);
+    io.emit("user_updated", updatedUser);
+    return res
+      .status(200)
+      .json({ points: updatedUser.points, frame: updatedFrame, notification: populatedNotification });
   } catch (error) {
     return res.status(404).json({ error: "can't buy Frame, an error occured" });
   }

@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { IOfferReview } from "./offerReviewModel.js";
-import { IUser } from "./userModel.js";
+import { IOfferReview } from "./offerReview.js";
+import { IUser } from "./user.js";
 
 interface IQuiz {
   question: string;
@@ -60,7 +60,7 @@ const offerSchema = new Schema<IOffer>(
     completedBy: [
       {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
       },
     ],
     rating: {
@@ -70,7 +70,7 @@ const offerSchema = new Schema<IOffer>(
     reviews: [
       {
         type: Schema.Types.ObjectId,
-        ref: "OfferReviewModel",
+        ref: "OfferReview",
       },
     ],
     quizes: [
@@ -89,5 +89,5 @@ const offerSchema = new Schema<IOffer>(
 offerSchema.index({ prize: -1 });
 offerSchema.index({ rating: -1 });
 
-const OfferModel = model<IOffer>("OfferModel", offerSchema);
-export default OfferModel;
+const Offer = model<IOffer>("Offer", offerSchema);
+export default Offer;

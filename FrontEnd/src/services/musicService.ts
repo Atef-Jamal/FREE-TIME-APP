@@ -1,4 +1,4 @@
-import type { IMusicDetail } from "../types";
+import type { IMusicDetail, IMusicNotify } from "../types";
 import { axiosRequest } from "../utilities";
 
 export const purshaseMusic = async ({
@@ -7,7 +7,7 @@ export const purshaseMusic = async ({
 }: {
   musicId: string;
   musicTitle: string;
-}): Promise<{ points: number; musicId: string }> => {
+}): Promise<{ points: number; musicId: string; notification: IMusicNotify }> => {
   const response = await axiosRequest.post(`api/musics/buy-music/${musicId}`, { musicTitle });
   const data = response.data;
   return data;

@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSearchParams } from "react-router-dom";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { useSocketEvents } from "../../hooks/useSocketEvents";
 import SendMessage from "./SendMessage";
 import Message from "./Message";
 import FreeTime from "./FreeTime";
@@ -100,12 +100,8 @@ const PublicChatBody = memo(() => {
     setStagingMessages(0);
   }, []);
 
-  const events = useMemo(() => ["public-message"], []);
-  const handler = useMemo(() => [handleRecievedMessage], [handleRecievedMessage]);
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handler,
+  useSocketEvents({
+    public_chat_message: handleRecievedMessage,
   });
 
   useScrollToElement({

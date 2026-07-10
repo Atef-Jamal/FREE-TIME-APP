@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import type { IUser, IInitialState, IModal, IMusicInfo, IToast } from "../types";
+import type { IUser, IInitialState, IModal, IMusicInfo, IToast, ITogglActionPayload } from "../types";
 import { RootState } from "./store";
 
 const hasAccessToken = !!localStorage.getItem("isLoggedIn");
@@ -9,11 +9,10 @@ const initialState: IInitialState = {
   currentUser: null,
   userAuth: hasAccessToken ? "pending" : "unauthenticated",
   isSignInMode: false,
-  onlineUsers: [],
   socket: null,
-  smallScreen: window.innerWidth < 1024,
+  mobileScreen: window.innerWidth < 1024,
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
-  activeChatId: localStorage.getItem("active-converstaion") || null,
+  secondUserId: localStorage.getItem("activeChatSecondUserId") || null,
   publicMsgNotify: false,
   openMusicModal: false,
   activeMusic: null,
@@ -23,18 +22,6 @@ const initialState: IInitialState = {
   toastNotify: { type: null, message: "" },
   modal: null,
 };
-
-interface ITogglActionPayload {
-  entity:
-    | "isSignInMode"
-    | "smallScreen"
-    | "hideLiveStats"
-    | "isChatOpen"
-    | "sidebarCollapsed"
-    | "openMusicModal"
-    | "musicIsPlaying";
-  value: boolean;
-}
 
 const appStateReducer = createSlice({
   name: "appState",
@@ -46,7 +33,7 @@ const appStateReducer = createSlice({
     setCurrentUser(state, action: PayloadAction<IUser>) {
       state.currentUser = action.payload;
     },
-    updateThisEntity(state, action: PayloadAction<ITogglActionPayload>) {
+    updateStateField(state, action: PayloadAction<ITogglActionPayload>) {
       const { entity, value } = action.payload;
       state[entity] = value;
     },
@@ -76,18 +63,28 @@ const appStateReducer = createSlice({
     setSocket(state, action: PayloadAction<any>) {
       state.socket = action.payload;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // setAuthNamespace(state, action: PayloadAction<any>) {
+    //   state.io = action.payload;
+    // },
     disconnectSocket(state) {
-      if (state.socket) state.socket.disconnect();
-      state.socket = null;
+      if (state.socket) {
+        state.socket.disconnect();
+        state.socket = null;
+      }
     },
-    setOnlineUsers(state, action: PayloadAction<string[]>) {
-      state.onlineUsers = action.payload;
-    },
+    // disconnectAuthNamespace(state) {
+    //   if (state.io) {
+    //     state.io.disconnect();
+    //     state.io = null;
+    //   }
+    // },
+
     setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
       state.publicMsgNotify = action.payload;
     },
     updateActiveChatId(state, action: PayloadAction<string | null>) {
-      state.activeChatId = action.payload;
+      state.secondUserId = action.payload;
     },
   },
 });
@@ -101,11 +98,12 @@ export const {
   handleCloseMusic,
   setSocket,
   disconnectSocket,
-  setOnlineUsers,
+  // setAuthNamespace,
+  // disconnectAuthNamespace,
   updateActiveChatId,
   showModal,
   resetModel,
-  updateThisEntity,
+  updateStateField,
   setPublicMsgRedPoint,
 } = appStateReducer.actions;
 
@@ -113,8 +111,8 @@ const selectState = (state: RootState) => state.appState;
 
 export const selectCurrentUser = createSelector(selectState, ({ currentUser }) => currentUser);
 export const selectUserAuth = createSelector(selectState, ({ userAuth }) => userAuth);
-export const selectOnlineUsers = createSelector(selectState, ({ onlineUsers }) => onlineUsers);
 export const selectSocket = createSelector(selectState, ({ socket }) => socket);
+// export const selectAuthNamespace = createSelector(selectState, ({ io }) => io);
 export const selectModal = createSelector(selectState, ({ modal }) => modal);
 export const selectIsSignInMode = createSelector(selectState, ({ isSignInMode }) => isSignInMode);
 export const selectIsChatOpen = createSelector(selectState, ({ isChatOpen }) => isChatOpen);
@@ -122,10 +120,10 @@ export const selectToastNotify = createSelector(selectState, ({ toastNotify }) =
 export const selectActiveMusic = createSelector(selectState, ({ activeMusic }) => activeMusic);
 export const selectMusicIsPlaying = createSelector(selectState, ({ musicIsPlaying }) => musicIsPlaying);
 export const selectOpenMusicModal = createSelector(selectState, ({ openMusicModal }) => openMusicModal);
-export const selectActiveChatId = createSelector(selectState, ({ activeChatId }) => activeChatId);
+export const selectActiveSecondUserId = createSelector(selectState, ({ secondUserId }) => secondUserId);
 export const selectPublicMsgNotify = createSelector(selectState, ({ publicMsgNotify }) => publicMsgNotify);
 export const selectHidenLiveStats = createSelector(selectState, ({ hideLiveStats }) => hideLiveStats);
 export const selectSidebarCollapsed = createSelector(selectState, ({ sidebarCollapsed }) => sidebarCollapsed);
-export const selectSmallScreen = createSelector(selectState, ({ smallScreen }) => smallScreen);
+export const selectSmallScreen = createSelector(selectState, ({ mobileScreen }) => mobileScreen);
 
 export default appStateReducer.reducer;

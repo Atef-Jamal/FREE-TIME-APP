@@ -20,14 +20,12 @@ app.use(cookieParser());
 
 app.use(passport.initialize());
 
-connecteToMongodb();
-connectToRedis();
+await connecteToMongodb();
+await connectToRedis();
 
 const server = http.createServer(app);
 
-export const io = initializeSocket(server);
-
-app.set("io", io);
+export const { io, onlineUsers, activeConversations } = initializeSocket(server);
 
 app.use("/uploads", express.static(path.resolve("src/uploads")));
 

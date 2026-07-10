@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { IFrame } from "./frameModel.js";
-import { IOffer } from "./offerModel.js";
+import { IFrame } from "./frame.js";
+import { IOffer } from "./offer.js";
 
 export interface IDailyReward {
   day: number;
@@ -20,13 +20,14 @@ export interface IUser extends Document {
   emailVerified: boolean;
   isOnline: boolean;
   emailVerificationCode: { code: string; date: Date };
-  completedTasks: (Types.ObjectId | IOffer)[];
+  completedOffers: (Types.ObjectId | IOffer)[];
   mySongs: string[];
   myFrames: (Types.ObjectId | IFrame)[];
-  activeFrame?: Types.ObjectId | IFrame;
+  activeFrame?: IFrame;
   coupons: string[];
   week: number;
   dailyReward: IDailyReward[];
+  conversationIds: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -74,6 +75,7 @@ const userSchema = new Schema<IUser>(
     dailyReward: [],
     mySongs: [],
     coupons: [String],
+    conversationIds: [{ type: Schema.Types.ObjectId, ref: "Conversation" }],
     emailVerified: {
       type: Boolean,
       default: false,
@@ -82,17 +84,20 @@ const userSchema = new Schema<IUser>(
       code: String,
       date: Date,
     },
-    activeFrame: { type: Schema.Types.ObjectId, ref: "FrameModel" },
+    activeFrame: {
+      type: Schema.Types.ObjectId,
+      ref: "Frame",
+    },
     myFrames: [
       {
         type: Schema.Types.ObjectId,
-        ref: "FrameModel",
+        ref: "Frame",
       },
     ],
-    completedTasks: [
+    completedOffers: [
       {
         type: Schema.Types.ObjectId,
-        ref: "OfferModel",
+        ref: "Offer",
       },
     ],
   },
@@ -101,5 +106,5 @@ const userSchema = new Schema<IUser>(
 
 userSchema.index({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 });
 
-const UserModel = model<IUser>("UserModel", userSchema);
-export default UserModel;
+const User = model<IUser>("User", userSchema);
+export default User;

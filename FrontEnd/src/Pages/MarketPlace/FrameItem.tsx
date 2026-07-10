@@ -1,10 +1,12 @@
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectUserAuth, selectCurrentUser } from "../../context/appStateSlice";
 import { purshaseFrame } from "../../services";
-import { handleApiError } from "../../utilities";
+import { displaySound, handleApiError } from "../../utilities";
 import type { IFrame } from "../../types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../components/Shared/Common/Spinner";
+import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
+import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 
 interface IProps {
   singleFrame: IFrame;
@@ -15,24 +17,27 @@ const FrameItem = ({ singleFrame }: IProps) => {
   const userAuth = useAppSelector(selectUserAuth);
   const purshasedByCurrentUser = !!currentUser?.myFrames.find((item) => item._id === singleFrame._id);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: purshaseFrame,
+    onSuccess: (data) => {
+      if (!currentUser) return;
+      addNewNotificationCache({ queryClient, newNotification: data.notification });
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          points: data.points,
+          myFrames: [...currentUser.myFrames, data.frame],
+        }),
+      );
+      displaySound(notificationSoundSrc);
+    },
     onError: (error) => {
       dispatch(
         openToast({
           type: "ERROR_GENERAL",
           message: handleApiError(error),
-        }),
-      );
-    },
-    onSuccess: (data) => {
-      if (!currentUser) return;
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          points: data.points,
-          myFrames: [...currentUser.myFrames, data.savedFrame],
         }),
       );
     },

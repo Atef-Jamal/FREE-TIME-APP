@@ -1,16 +1,17 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { MdOutlineMenu } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
 import type { IPrivateMessage } from "../../types";
 import { useAppSelector } from "../../context/hooks";
-import { useListenToSocketEvents } from "../../hooks/useListenToSocketEvents";
+import { useSocketEvents } from "../../hooks/useSocketEvents";
 import { debounce } from "../../utilities";
 import ChatSidebarUserItem from "./ChatSidebarUserItem";
 import ChatSidebarUserItemSkeleton from "./ChatSidebarUserItemSkeleton";
 import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useInfiniteConversations } from "../../tanstackQuery/queryFetch";
-import { selectActiveChatId, selectOnlineUsers, selectUserAuth } from "../../context/appStateSlice";
+import { selectActiveSecondUserId, selectUserAuth } from "../../context/appStateSlice";
+import { useQuery } from "@tanstack/react-query";
 
 interface IProps {
   toggleSidebar: () => void;
@@ -18,33 +19,23 @@ interface IProps {
 }
 
 const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
-  const activeChatId = useAppSelector(selectActiveChatId);
+  const secondUserId = useAppSelector(selectActiveSecondUserId);
   const userAuth = useAppSelector(selectUserAuth);
-  const onlineUsers = useAppSelector(selectOnlineUsers);
   const [redPoint, setRedPoint] = useState(false);
   const conversationsListRef = useRef<HTMLDivElement>(null);
 
   const { data, error, status, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
     useInfiniteConversations({ userAuth: userAuth === "authenticated" });
 
-  const conversations = useMemo(() => {
-    return data?.pages.map((page) => page.conversations).flat();
-  }, [data?.pages]);
+  const { data: onlineUsers } = useQuery<string[]>({ queryKey: ["onlines-users-ids"] });
 
-  const handleNotify = useCallback(
-    (data: IPrivateMessage) => {
-      const isChatWithUserOpen = data.sender._id === activeChatId;
-      if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
-    },
-    [openSidebar, activeChatId],
-  );
+  const handleNotify = (data: IPrivateMessage) => {
+    const isChatWithUserOpen = data.sender._id === secondUserId;
+    if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
+  };
 
-  const events = useMemo(() => ["private-message"], []);
-  const handlers = useMemo(() => [handleNotify], [handleNotify]);
-
-  useListenToSocketEvents({
-    eventsToListen: events,
-    handlers: handlers,
+  useSocketEvents({
+    private_chat_message: handleNotify,
   });
 
   useEffect(() => {
@@ -103,18 +94,22 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
         )}
         {status === "pending" &&
           [...Array(10).keys()].map((skeleton) => <ChatSidebarUserItemSkeleton key={skeleton} />)}
-        {conversations?.map((conversation) => {
-          const isOnLine = onlineUsers.includes(conversation.secondUser._id);
-          const chatWithUserOpen = activeChatId === conversation.secondUser._id;
-          return (
-            <ChatSidebarUserItem
-              key={conversation._id}
-              conversation={conversation}
-              isOnLine={isOnLine}
-              chatWithUserOpen={chatWithUserOpen}
-            />
-          );
-        })}
+        {status === "success" &&
+          data.pages
+            .map((page) => page.conversations)
+            .flat()
+            .map((conversation) => {
+              const isOnLine = Boolean(onlineUsers?.includes(conversation.secondUser._id));
+              const chatWithUserOpen = secondUserId === conversation.secondUser._id;
+              return (
+                <ChatSidebarUserItem
+                  key={conversation._id}
+                  conversation={conversation}
+                  isOnLine={isOnLine}
+                  chatWithUserOpen={chatWithUserOpen}
+                />
+              );
+            })}
 
         {isFetchNextPageError && <p className="text-center text-xs text-[#d83d3d]">an Error occurred!</p>}
       </div>
