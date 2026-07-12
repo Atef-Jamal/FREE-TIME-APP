@@ -14,7 +14,7 @@ redisClient.on("error", (err) => console.error("Redis Client Error", err));
 export const connectToRedis = async () => {
   try {
     await redisClient.connect();
-    await redisClient.flushAll();
+    // await redisClient.flushAll();
     console.log("success connected to Redis cache");
   } catch (error) {
     console.log("Failed to coonect to Redis", error);
