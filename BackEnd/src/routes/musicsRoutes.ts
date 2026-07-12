@@ -5,6 +5,6 @@ import { buyMusic, getMusics } from "../controllers/musicsController.js";
 const router = express.Router();
 
 router.get("/", getMusics);
-router.post("/buy-musics/:id", protectedRoute, buyMusic);
+router.post("/buy-music/:id", protectedRoute, buyMusic);
 
 export default router;

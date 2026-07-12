@@ -12,40 +12,9 @@ import type {
   INotifications,
   IPrivateMessage,
   ITestimonial,
-  IConversation,
   IUnreadPrivateMsgsCache,
+  IOffer,
 } from "../types";
-
-// export const updateCurrentUserCache = ({
-//   queryClient,
-//   updatedUser,
-// }: {
-//   queryClient: QueryClient;
-//   updatedUser: IUser;
-// }) => {
-//   queryClient.setQueryData(
-//     ["live-stats-users"],
-//     (previous: ICashedLiveStatsUsers | undefined): ICashedLiveStatsUsers | undefined => {
-//       if (!previous) return;
-//       return {
-//         ...previous,
-//         pages: previous.pages.map((page) => {
-//           return {
-//             ...page,
-//             users: page.users.map((user) => {
-//               if (user._id === updatedUser._id) {
-//                 return updatedUser;
-//               }
-//               return user;
-//             }),
-//           };
-//         }),
-//       };
-//     },
-//   );
-//   queryClient.invalidateQueries({ queryKey: ["leaderboard-users"] });
-//   return;
-// };
 
 export const updateUserCache = ({
   queryClient,
@@ -282,55 +251,61 @@ export const addSuccessPrivateMsgCache = ({
     ["conversations"],
     (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
       if (!previous) return;
-      const conversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
-      const flatedConversations = conversations?.pages.map((page) => page.conversations).flat();
+      const flatedConversations = previous?.pages.map((page) => page.conversations).flat();
       const findedConversation = flatedConversations?.find(
         (conv) => conv.secondUser._id === newMessage.receiver._id,
       );
 
-      if (findedConversation)
+      if (findedConversation) {
         return {
           ...previous,
-          pages: previous.pages.map((page) => {
-            return {
+          pages: previous.pages
+            .map((page) => ({
               ...page,
-              conversations: page.conversations.map((conv) => {
-                if (conv.secondUser._id === newMessage.receiver._id) {
-                  return {
-                    ...conv,
-                    lastMessage: newMessage,
-                    unreadCounts: {
-                      ...conv.unreadCounts,
-                      [newMessage.receiver._id]: conv.unreadCounts[newMessage.receiver._id] + 1,
-                    },
-                  };
-                }
-                return conv;
-              }),
-            };
-          }),
+              conversations: page.conversations.filter((conv) => conv._id !== findedConversation._id),
+            }))
+            .map((page, index) => {
+              const updatedConversation = { ...findedConversation, lastMessage: newMessage };
+              if (index === 0) {
+                return {
+                  ...page,
+                  conversations: [updatedConversation, ...page.conversations],
+                };
+              }
+              return page;
+            }),
         };
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      }
+    },
+  );
+};
+
+export const addFailedPrivateMsgCache = ({
+  queryClient,
+  secondUserId,
+  uniqeIdForRollback,
+}: {
+  queryClient: QueryClient;
+  secondUserId: string | null;
+  uniqeIdForRollback: string;
+}) => {
+  return queryClient.setQueryData(
+    ["conversation-messages", secondUserId],
+    (previous: ICashedSingleConversation | undefined): ICashedSingleConversation | undefined => {
+      if (!previous) return;
       return {
         ...previous,
-        pages: previous.pages.map((page, index) => {
-          const newConversation: IConversation = {
-            _id: newMessage.conversation,
-            lastMessage: newMessage,
-            conversationName: "",
-            secondUser: newMessage.receiver,
-            unreadCounts: {
-              [newMessage.sender._id]: 0,
-              [newMessage.receiver._id]: 1,
-            },
-          };
-          if (index === 0) {
-            return {
-              ...page,
-              conversations: [newConversation, ...page.conversations],
-            };
-          }
-          return page;
-        }),
+        pages: previous.pages.map((page) => ({
+          ...page,
+          messages: page.messages.map((msg) => {
+            if (msg._id === uniqeIdForRollback) {
+              return { ...msg, isSended: "FAILED" };
+            }
+            return msg;
+          }),
+        })),
       };
     },
   );
@@ -367,86 +342,58 @@ export const addReceivedPrivateMsgCache = ({
     ["conversations"],
     (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
       if (!previous) return;
-      const conversations: ICashedConversations | undefined = queryClient.getQueryData(["conversations"]);
-      const flatedConversations = conversations?.pages.map((page) => page.conversations).flat();
-      const findedConversation = flatedConversations?.find(
+      const flatedConversations = previous.pages.map((page) => page.conversations).flat();
+      const findedConversation = flatedConversations.find(
         (conv) => conv.secondUser._id === newMessage.sender._id,
       );
 
       if (findedConversation) {
         return {
           ...previous,
-          pages: previous.pages.map((page) => {
-            return {
+          pages: previous.pages
+            .map((page) => ({
               ...page,
-              conversations: page.conversations.map((conv) => {
-                const isConversationWithUserOpen =
-                  conv.secondUser._id === secondUserId && isPrivateChatPageOpen;
-                if (conv.secondUser._id === newMessage.sender._id) {
-                  return {
-                    ...conv,
-                    lastMessage: newMessage,
-                    unreadCounts: {
-                      ...conv.unreadCounts,
-                      [currentUserId]: isConversationWithUserOpen
-                        ? conv.unreadCounts[currentUserId]
-                        : conv.unreadCounts[currentUserId] + 1,
-                    },
-                  };
-                }
-                return conv;
-              }),
-            };
-          }),
+              conversations: page.conversations.filter((conv) => conv._id !== findedConversation._id),
+            }))
+            .map((page, index) => {
+              const isConversationWithUserOpen =
+                findedConversation.secondUser._id === secondUserId && isPrivateChatPageOpen;
+              const updatedConversation = {
+                ...findedConversation,
+                lastMessage: newMessage,
+                unreadCounts: {
+                  ...findedConversation.unreadCounts,
+                  [currentUserId]: isConversationWithUserOpen
+                    ? findedConversation.unreadCounts[currentUserId]
+                    : findedConversation.unreadCounts[currentUserId] + 1,
+                },
+              };
+              if (index === 0)
+                return { ...page, conversations: [updatedConversation, ...page.conversations] };
+              return page;
+            }),
         };
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["conversations"] });
       }
-      return {
-        ...previous,
-        pages: previous.pages.map((page, index) => {
-          const count = newMessage.sender._id === secondUserId && isPrivateChatPageOpen ? 0 : 1;
-          const newConversation = {
-            _id: newMessage.conversation,
-            conversationName: "",
-            secondUser: newMessage.sender,
-            lastMessage: newMessage,
-            unreadCounts: {
-              [newMessage.receiver._id]: count,
-              [newMessage.sender._id]: 0,
-            },
-          };
-          if (index === 0) return { ...page, conversations: [newConversation, ...page.conversations] };
-          return page;
-        }),
-      };
-    },
-  );
-};
-
-export const addFailedPrivateMsgCache = ({
-  queryClient,
-  secondUserId,
-  uniqeIdForRollback,
-}: {
-  queryClient: QueryClient;
-  secondUserId: string | null;
-  uniqeIdForRollback: string;
-}) => {
-  return queryClient.setQueryData(
-    ["conversation-messages", secondUserId],
-    (previous: ICashedSingleConversation | undefined): ICashedSingleConversation | undefined => {
-      if (!previous) return;
-      return {
-        ...previous,
-        pages: previous.pages.map((page) => ({
-          ...page,
-          messages: page.messages.map((msg) => {
-            if (msg._id === uniqeIdForRollback) {
-              return { ...msg, isSended: "FAILED" };
-            }
-            return msg;
-          }),
-        })),
-      };
+      // return {
+      //   ...previous,
+      //   pages: previous.pages.map((page, index) => {
+      //     const count = newMessage.sender._id === secondUserId && isPrivateChatPageOpen ? 0 : 1;
+      //     const newConversation = {
+      //       _id: newMessage.conversation,
+      //       conversationName: "",
+      //       secondUser: newMessage.sender,
+      //       lastMessage: newMessage,
+      //       unreadCounts: {
+      //         [newMessage.receiver._id]: count,
+      //         [newMessage.sender._id]: 0,
+      //       },
+      //     };
+      //     if (index === 0) return { ...page, conversations: [newConversation, ...page.conversations] };
+      //     return page;
+      //   }),
+      // };
     },
   );
 };
@@ -600,6 +547,21 @@ export const addFailedPublicMsgCache = ({
       };
     },
   );
+};
+
+export const updateOfferCache = ({
+  queryClient,
+  offerId,
+  user,
+}: {
+  queryClient: QueryClient;
+  offerId: string;
+  user: Pick<IUser, "_id" | "name">;
+}) => {
+  return queryClient.setQueryData(["offers", offerId], (previous: IOffer | undefined): IOffer | undefined => {
+    if (!previous) return;
+    return { ...previous, completedBy: [...previous.completedBy, user] };
+  });
 };
 
 export const addTestimonialCashe = ({

@@ -10,11 +10,14 @@ export interface IOfferReview extends Document {
   updatedAt: Date;
 }
 
-const offerReviewSchema = new Schema<IOfferReview>({
-  offer: { type: Schema.Types.ObjectId, ref: "Offer", required: true },
-  comment: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-});
+const offerReviewSchema = new Schema<IOfferReview>(
+  {
+    offer: { type: Schema.Types.ObjectId, ref: "Offer", required: true },
+    comment: { type: String, required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  },
+  { timestamps: true },
+);
 
 const OfferReview = model<IOfferReview>("OfferReview", offerReviewSchema);
 export default OfferReview;

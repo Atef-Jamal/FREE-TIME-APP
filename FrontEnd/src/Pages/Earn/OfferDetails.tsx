@@ -12,6 +12,7 @@ import { handleCreateOfferReview } from "../../services";
 import OfferDetailsSkeleton from "./OfferDetailsSkeleton";
 import Empty from "../../components/Shared/Common/Empty";
 import { useFetchOfferDetails } from "../../tanstackQuery/queryFetch";
+import { IOffer } from "../../types";
 
 interface IProps {
   offerId: string;
@@ -21,29 +22,29 @@ const OfferDetail = ({ offerId }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const [expandUsers, setExpandUsers] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
   const { t } = useTranslation("earn");
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-  let isCompleted;
-  let notActiveStars;
-
   const { data: offerDetails, status, error } = useFetchOfferDetails({ offerId });
-
-  if (offerDetails) {
-    isCompleted = currentUser?.completedOffers.includes(offerDetails?._id);
-    notActiveStars = 5 - offerDetails.rating;
-  }
 
   const mutation = useMutation({
     mutationFn: handleCreateOfferReview,
+    onMutate: () => {
+      setLoading(true);
+    },
     onError: (error) => {
+      setLoading(false);
       dispatch(openToast({ message: handleApiError(error), type: "ERROR_GENERAL" }));
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["earn", offerId] });
+    onSuccess: (newReview) => {
+      queryClient.setQueryData(["offers", offerId], (prev: IOffer): IOffer => {
+        return { ...prev, reviews: [...prev.reviews, newReview] };
+      });
       setComment("");
+      setLoading(false);
     },
   });
 
@@ -109,7 +110,7 @@ const OfferDetail = ({ offerId }: IProps) => {
             {[...Array(offerDetails.rating).keys()].map((item) => (
               <IoMdStar key={item} />
             ))}
-            {[...Array(notActiveStars).keys()].map((item) => (
+            {[...Array(5 - offerDetails.rating).keys()].map((item) => (
               <IoIosStarOutline key={item} />
             ))}
           </span>
@@ -148,7 +149,13 @@ const OfferDetail = ({ offerId }: IProps) => {
               onChange={(e) => setComment(e.target.value)}
               className="w-full rounded-md border-gray-700 bg-[#171227fd] p-3 text-sm outline-none placeholder:text-gray-500"
             />
-            <button className="mt-2 w-full rounded-md bg-[#3e4152] py-2 text-center">Send</button>
+            <button
+              disabled={loading}
+              type="submit"
+              className="mt-2 w-full rounded-md bg-[#3e4152] py-2 text-center"
+            >
+              {loading ? "loading..." : "submit"}
+            </button>
           </form>
         </div>
         <span className="mb-2 flex w-full items-center gap-3 text-[#aebeb5]">
@@ -157,21 +164,22 @@ const OfferDetail = ({ offerId }: IProps) => {
             {offerDetails.prize} {t("Points")}
           </span>
         </span>
-        {isCompleted && (
+        {currentUser?.completedOffers.includes(offerDetails?._id) && (
           <button
             className={`w-full rounded-md border border-gray-700 bg-[#171430d5] py-2 text-sm text-white`}
           >
             Completed
           </button>
         )}
-        {!isCompleted && offerDetails.isAvailable === "AVAILABLE" && (
-          <Link
-            to={`/playing/${offerDetails._id}`}
-            className={`w-full rounded-md bg-[#a4ec52cc] py-2 text-center text-sm font-bold`}
-          >
-            {t("START NOW")}
-          </Link>
-        )}
+        {!currentUser?.completedOffers.includes(offerDetails?._id) &&
+          offerDetails.isAvailable === "AVAILABLE" && (
+            <Link
+              to={`/playing/${offerDetails._id}`}
+              className={`w-full rounded-md bg-[#a4ec52cc] py-2 text-center text-sm font-bold`}
+            >
+              {t("START NOW")}
+            </Link>
+          )}
         {offerDetails.isAvailable === "UNAVAILABLE" && (
           <button className={`w-full rounded-md bg-[#528feccc] py-2 text-center text-sm font-bold`}>
             {t("Not Available")}

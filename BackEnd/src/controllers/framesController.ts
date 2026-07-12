@@ -65,7 +65,6 @@ export const buyFrame = async (req: Request, res: Response) => {
       type: "FREETIME",
       typeOfTask: "FRAME",
       sender: req.user._id,
-      message: "buying frame",
     });
 
     const [updatedUser, updatedFrame, newNotification, newPublicMessage] = await Promise.all([

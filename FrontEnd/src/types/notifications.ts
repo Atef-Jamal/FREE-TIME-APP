@@ -1,5 +1,5 @@
-import { IFrame } from "./frameTypes";
-import { IUser } from "./userTypes";
+import { IFrame } from "./frames";
+import { IUser } from "./user";
 
 interface INotificationBase {
   _id: string;

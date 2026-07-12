@@ -1,5 +1,3 @@
-// import UploadImage from "../../Common/UploadImage";
-// import type { IFormData } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import UploadIcon from "../../../../assets/images/upload-icon.png";
 import { AuthFormValues, cn } from "../../../../utilities";

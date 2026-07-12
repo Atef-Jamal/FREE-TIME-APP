@@ -3,8 +3,9 @@ import { BiCircle } from "react-icons/bi";
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from "react-icons/io5";
 import type { IPrivateMessage } from "../../types";
 import { useAppSelector } from "../../context/hooks";
-import { cn, formateDate } from "../../utilities";
+import { cn } from "../../utilities";
 import { selectCurrentUser } from "../../context/appStateSlice";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
 interface IProps {
   messagesLength: number;
@@ -15,7 +16,6 @@ interface IProps {
 
 const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const date = formateDate(message.createdAt);
 
   const isread = message.sender._id === currentUser?._id && message.isRead;
   const isSending = message.sender._id === currentUser?._id && message.isSended === "PENDING";
@@ -49,12 +49,7 @@ const PrivateMessageItem = ({ messagesLength, message, lastMessageRef, index }: 
         >
           <span className="truncate text-xs font-bold text-[#3c72c4] sm:text-sm">{message.sender.name}</span>
           <div className="flex items-center gap-2">
-            <span
-              dir="ltr"
-              className="flex w-[110px] items-center justify-center text-xs font-bold text-[#746767]"
-            >
-              {date}
-            </span>
+            <RelativeCountdown targetIsoString={message.createdAt} />
             {isread && <IoCheckmarkDoneSharp className="font-bold" />}
             {isSending && <BiCircle />}
             {isunread && <IoCheckmarkSharp className="font-bold" />}

@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { formateDate } from "../../utilities";
 import { useAppSelector } from "../../context/hooks";
 import type { IPublicChatFreeTime } from "../../types";
 import { verifiedImage } from "../../assets";
 import { selectCurrentUser } from "../../context/appStateSlice";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
 interface IProps {
   singleMessage: IPublicChatFreeTime;
@@ -12,7 +12,6 @@ interface IProps {
 
 const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const date = formateDate(singleMessage.createdAt);
   return (
     <div ref={lastMessageRef} className="space-y-2 rounded-md bg-[#2f2f4e88] p-2">
       <div className="flex w-full items-center justify-between">
@@ -23,7 +22,7 @@ const FreeTime = ({ singleMessage, lastMessageRef }: IProps) => {
           <span className="text-sm font-bold tracking-wider text-[#01D676]">FREE</span>
           <span className="text-sm font-bold tracking-wider text-gray-300">TIME</span>
         </div>
-        <span className="text-xs font-bold text-gray-500">{date}</span>
+        <RelativeCountdown targetIsoString={singleMessage.createdAt} />
       </div>
       {singleMessage.typeOfTask === "OFFER" && (
         <p className="mr-auto text-xs text-[#d9dfdb]">

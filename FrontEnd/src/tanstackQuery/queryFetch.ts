@@ -135,6 +135,7 @@ export const useFetchOfferDetails = ({ offerId }: { offerId: string | undefined 
   return useQuery({
     queryKey: ["offers", offerId],
     queryFn: offerId ? () => fetchOfferDetails({ offerId }) : skipToken,
+    staleTime: 1000 * 60 * 60,
   });
 };
 

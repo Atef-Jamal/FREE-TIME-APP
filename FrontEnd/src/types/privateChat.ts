@@ -1,4 +1,4 @@
-import { IUser } from "./userTypes";
+import { IUser } from "./user";
 
 export interface IPrivateMessage {
   _id: string;

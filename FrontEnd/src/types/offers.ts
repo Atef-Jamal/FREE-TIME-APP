@@ -1,4 +1,4 @@
-import { IUser } from "./userTypes";
+import { IUser } from "./user";
 
 interface IQuiz {
   question: string;
@@ -16,7 +16,7 @@ export interface IGameOffer {
   reviews: IOfferReview[];
   prize: number;
   rating: number;
-  completedBy: IUser[];
+  completedBy: Pick<IUser, "_id" | "name">[];
   description: string;
   createdAt: Date;
 }
@@ -32,7 +32,7 @@ export interface IQuizOffer {
   image: string;
   prize: number;
   rating: number;
-  completedBy: IUser[];
+  completedBy: Pick<IUser, "_id" | "name">[];
   description: string;
   createdAt: Date;
 }
@@ -41,11 +41,11 @@ export type IOffer = IQuizOffer | IGameOffer;
 
 export interface IOfferReview {
   _id: string;
-  offerId: string;
+  offer: IOffer;
   user: IUser;
   comment: string;
 }
 
-export type IFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING";
+export type IFilterByPopularity = "ALL" | "POPULAR" | "REWARD" | "RAITING" | undefined;
 
-export type IFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC";
+export type IFilterByDevice = "ALL" | "DESKTOP" | "ANDROID" | "MAC" | undefined;

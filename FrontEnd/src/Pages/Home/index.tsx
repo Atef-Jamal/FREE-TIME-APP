@@ -13,7 +13,7 @@ import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { openToast, selectCurrentUser, selectUserAuth } from "../../context/appStateSlice";
 import { login, handleSignInWithOauth, handleSendTestimonial } from "../../services";
-import { AuthFormValues, authSchema, cn, formateDate, handleApiError } from "../../utilities";
+import { AuthFormValues, authSchema, cn, handleApiError } from "../../utilities";
 import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -27,6 +27,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
 const Home = () => {
   const currentUser = useAppSelector(selectCurrentUser);
@@ -494,9 +495,7 @@ const Home = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
                           <span className="text-sm text-[#5fec52ee]">{item.user?.name}</span>
-                          {item.createdAt && (
-                            <span className="text-xs text-[#9ba89aee]">{formateDate(item.createdAt)}</span>
-                          )}
+                          {item.createdAt && <RelativeCountdown targetIsoString={item.createdAt} />}
                           <div className="flex items-center gap-1">
                             {[...Array(item.stars).keys()].map((el) => (
                               <MdOutlineStarPurple500 key={el} />

@@ -23,7 +23,12 @@ export const getMusics = async (_req: Request, res: Response) => {
     };
     const response = await fetch(url, options);
     const data = await response.json();
-    await redisClient.set(cacheKey, JSON.stringify(data.data));
+    await redisClient.set(cacheKey, JSON.stringify(data.data), {
+      expiration: {
+        type: "EX",
+        value: 600,
+      },
+    });
     return res.status(200).json(data.data);
   } catch (error) {
     return res.status(404).json({ error: "can't load musics." });
@@ -52,7 +57,7 @@ export const buyMusic = async (req: Request, res: Response) => {
         $inc: { points: -10 },
         mySongs: [...req.user.mySongs, musicId],
       },
-      { new: true },
+      { returnDocument: "after" },
     ).lean();
 
     const newNotificationPromise = Notification.create({

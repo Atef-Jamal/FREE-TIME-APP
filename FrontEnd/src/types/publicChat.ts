@@ -1,4 +1,4 @@
-import { IUser } from "./userTypes";
+import { IUser } from "./user";
 
 export interface IPublicChatMessage {
   _id: string;

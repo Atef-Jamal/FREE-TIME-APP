@@ -33,8 +33,8 @@ const Earn = () => {
   const [openFilterByPopularityMenu, setOpenFilterByPopularityMenu] = useState(false);
   const limitPerPage = 15;
   const [offerId, setOfferId] = useState<string | null>(null);
-  const [filterByPopularity, setFilterByPopularity] = useState<IFilterByPopularity>("ALL");
-  const [filterByDevice, setFilterByDevice] = useState<IFilterByDevice>("ALL");
+  const [filterByPopularity, setFilterByPopularity] = useState<IFilterByPopularity | undefined>(undefined);
+  const [filterByDevice, setFilterByDevice] = useState<IFilterByDevice | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation("earn");
 
@@ -117,6 +117,13 @@ const Earn = () => {
                 <SiApple className="text-lg" />
               </>
             )}
+            {filterByDevice === undefined && (
+              <>
+                <IoDesktop className="text-lg" />
+                <DiAndroid className="text-lg" />
+                <SiApple className="text-lg" />
+              </>
+            )}
             {filterByDevice === "DESKTOP" && <IoDesktop className="text-lg" />}
             {filterByDevice === "ANDROID" && <DiAndroid className="text-lg" />}
             {filterByDevice === "MAC" && <SiApple className="text-lg" />}
@@ -140,7 +147,7 @@ const Earn = () => {
             className="relative flex cursor-pointer items-center justify-evenly rounded-lg bg-[#30304b] py-2 sm:gap-1"
           >
             <IoFilter />
-            <span className="font-bold text-gray-400">{t(filterByPopularity)}</span>
+            <span className="font-bold text-gray-400">{t(filterByPopularity || "ALL")}</span>
             <IoMdArrowDropdown className="text-2xl" />
           </div>
           {openFilterByPopularityMenu && (

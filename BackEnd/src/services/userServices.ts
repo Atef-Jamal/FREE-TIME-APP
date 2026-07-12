@@ -35,7 +35,6 @@ export const sendRewardToUser = async (
     typeOfTask: "REFERRER",
     sender: referrerUser,
     newUserReferred: newUserId,
-    message: "referral system",
   });
 
   const populatedMessage = await PublicMessage.findById(newMessage._id)

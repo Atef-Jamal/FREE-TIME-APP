@@ -1,5 +1,5 @@
 import type { IUser, IFrame, INotifications, IEmailVerifiedNotify } from "../types";
-import { ICashedLeaderboardUsers } from "../types/userTypes";
+import { ICashedLeaderboardUsers } from "../types/user";
 import { axiosRequest } from "../utilities";
 
 export const fetchUserById = async ({ userId }: { userId: string }): Promise<IUser> => {
@@ -53,7 +53,9 @@ export const changeMyPictureFrame = async ({
   frameId: string;
   action: "select" | "unselect";
 }): Promise<IFrame> => {
-  const response = await axiosRequest.get(`api/users/select-unselect-photoFrame/${frameId}?action=${action}`);
+  const response = await axiosRequest.get(
+    `/api/users/select-unselect-photoFrame/${frameId}?action=${action}`,
+  );
   const data = response.data;
   return data;
 };
@@ -71,8 +73,8 @@ export const fetchLiveStatsUsers = async ({
   return data;
 };
 
-export const userVisited = async (visitedUserId: string): Promise<void> => {
-  await axiosRequest.get(`/api/users/${visitedUserId}/view-profile`);
+export const userViewed = async (profileOwnerId: string): Promise<void> => {
+  await axiosRequest.get(`/api/users/${profileOwnerId}/view-profile`);
 };
 
 export const fetchUserActivities = async ({ userId }: { userId: string }): Promise<INotifications[]> => {

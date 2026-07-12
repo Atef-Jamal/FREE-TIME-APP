@@ -1,19 +1,11 @@
 import "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { IUser } from "./userTypes";
+import { IUser } from "./user";
 
 declare module "@tanstack/react-query" {
   interface Register {
     defaultError: AxiosError<{ error: string }>;
   }
-}
-
-export interface IFormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  profilePicture: File | null;
 }
 
 export interface ISearchItem {
@@ -27,7 +19,7 @@ export interface ISearchItem {
 export interface ISearchResults {
   features: ISearchItem[];
   users: ISearchItem[];
-  apps: ISearchItem[];
+  offers: ISearchItem[];
   frames: ISearchItem[];
   musics: ISearchItem[];
 }

@@ -17,10 +17,11 @@ import {
 } from "../../../../context/appStateSlice";
 import { verifiedImage } from "../../../../assets";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
-import { cn, formateDate, handleApiError } from "../../../../utilities";
+import { cn, handleApiError } from "../../../../utilities";
 import Spinner from "../../Common/Spinner";
 import { collectReward } from "../../../../services";
 import { updateNotificationsCache } from "../../../../tanstackQuery/queryCache";
+import RelativeCountdown from "../../../Ui/TimeCountDown";
 
 const NotificationItem = (notify: INotifications) => {
   // @ts-expect-error-isCollected does not exist on some notifications
@@ -36,7 +37,6 @@ const NotificationItem = (notify: INotifications) => {
   let title = "";
   let contentBody = null;
   let button = null;
-  const date = formateDate(notify.createdAt);
 
   const collect = async () => {
     if (!currentUser) return;
@@ -316,7 +316,7 @@ const NotificationItem = (notify: INotifications) => {
       <div className="flex items-center gap-x-2">
         <span className="flex h-6 w-8 items-center justify-center rounded-[4px] bg-[#7aec2e25]">{icon}</span>
         <h1 className="text-[#d67d54]">{title}</h1>
-        <span className="ml-auto text-xs text-[#928888]">{date}</span>
+        <RelativeCountdown targetIsoString={notify.createdAt} />
       </div>
       <p className="w-full text-xs text-[#bbc6d1] sm:text-sm">{contentBody}</p>
       <div className="flex w-full items-center justify-end">{button}</div>

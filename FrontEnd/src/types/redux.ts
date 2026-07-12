@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { IUser } from "./userTypes";
+import { IUser } from "./user";
 import { Dispatch, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { ClientToServerEvents, ServerToClientEvents } from "./socket";
 import { AuthFormValues } from "../utilities";

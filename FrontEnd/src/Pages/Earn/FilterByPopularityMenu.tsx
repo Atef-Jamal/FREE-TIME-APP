@@ -2,7 +2,6 @@ import { memo, useRef } from "react";
 import { CgClose } from "react-icons/cg";
 import type { IFilterByPopularity } from "../../types";
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { useTranslation } from "react-i18next";
 import { filterByPopularMenuItems } from "../../helper/data";
 import { cn } from "../../utilities";
 
@@ -14,7 +13,6 @@ interface IProps {
 
 const FilterByPopularityMenu = memo(
   ({ filterByPopularity, handleCloseFilterByPopularityMenu, activeFilterByPopularity }: IProps) => {
-    const { t } = useTranslation("earn");
     const filterByPopularityRef = useRef<HTMLDivElement | null>(null);
 
     useClickOutside(filterByPopularityRef, () => handleCloseFilterByPopularityMenu(false));
@@ -40,7 +38,7 @@ const FilterByPopularityMenu = memo(
             )}
           >
             {item.icon}
-            {t(item.value)}
+            {item.value}
           </span>
         ))}
       </div>

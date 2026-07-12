@@ -2,7 +2,7 @@ import { FaRankingStar, FaUserLarge } from "react-icons/fa6";
 import { cn } from "../../utilities";
 import Skeleton from "../../components/Shared/Common/Skeleton";
 import Empty from "../../components/Shared/Common/Empty";
-import { ICashedLeaderboardUsers } from "../../types/userTypes";
+import { ICashedLeaderboardUsers } from "../../types/user";
 
 interface IProps {
   data: ICashedLeaderboardUsers | undefined;

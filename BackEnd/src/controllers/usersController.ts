@@ -23,7 +23,6 @@ export const getLiveStatsUsers = async (req: Request, res: Response) => {
     const hasMore = limit === users.length;
     return res.status(200).json({ users, hasMore });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "Can't Load Live stats" });
   }
 };
@@ -78,7 +77,7 @@ export const getUser = async (req: Request, res: Response) => {
     return res.status(200).json(user);
   } catch (error) {
     return res.status(404).json({
-      error: "somthing went wrong ",
+      error: "somthing went wrong",
     });
   }
 };
@@ -90,35 +89,6 @@ export const getTopUser = async (_req: Request, res: Response) => {
     return res.status(200).json({ userId: user._id });
   } catch (error) {
     return res.status(404).json({ error: "somthing went wrong " });
-  }
-};
-
-export const profileViewed = async (req: Request, res: Response) => {
-  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
-  const targetUserId = req.params.userId;
-  try {
-    const user = await User.findById(targetUserId).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    if (req.user._id.toString() !== targetUserId.toString()) {
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      const recentView = await ProfileView.findOne({
-        viewer: req.user._id,
-        profileOwner: targetUserId,
-        viewedAt: { $gte: oneHourAgo },
-      });
-
-      if (!recentView) {
-        await ProfileView.create({
-          viewer: req.user._id,
-          profileOwner: new Types.ObjectId(targetUserId),
-        });
-        return res.status(200).json({ message: "sucess" });
-      }
-    }
-  } catch (error) {
-    return res.status(404).json({ error: "an Error occurred" });
   }
 };
 
@@ -158,6 +128,35 @@ export const changeUserPhotoFrame = async (req: Request, res: Response) => {
   }
 };
 
+export const profileViewed = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
+  const targetUserId = req.params.userId;
+  try {
+    const user = await User.findById(targetUserId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (req.user._id.toString() !== targetUserId.toString()) {
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      const recentView = await ProfileView.findOne({
+        viewer: req.user._id,
+        profileOwner: targetUserId,
+        viewedAt: { $gte: oneHourAgo },
+      });
+
+      if (!recentView) {
+        await ProfileView.create({
+          viewer: req.user._id,
+          profileOwner: new Types.ObjectId(targetUserId),
+        });
+        return res.status(200).json({ message: "sucess" });
+      }
+    }
+  } catch (error) {
+    return res.status(404).json({ error: "an Error occurred" });
+  }
+};
+
 export const getWhoViewMyProfile = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   try {
@@ -168,16 +167,18 @@ export const getWhoViewMyProfile = async (req: Request, res: Response) => {
       {
         $inc: { points: -5 },
       },
-      { new: true },
-    );
+      { returnDocument: "after" },
+    ).lean();
 
     if (!user) return res.status(404).json({ error: "an error occurred" });
 
     const viewers = await ProfileView.find({
       profileOwner: req.user._id,
-    }).populate("viewer", userExcludedFields);
+    })
+      .populate("viewer", "_id name profilePicture")
+      .lean();
 
-    return res.status(200).json({ users: viewers, points: user.points });
+    return res.status(200).json({ viewers: viewers, points: user.points });
   } catch (error) {
     return res.status(404).json({ error: "an error occurred" });
   }

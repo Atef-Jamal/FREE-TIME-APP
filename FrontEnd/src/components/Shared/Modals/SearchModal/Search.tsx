@@ -21,7 +21,7 @@ const Search = () => {
     resultsCounts =
       results.features.length +
       results.users.length +
-      results.apps.length +
+      results.offers.length +
       results.frames.length +
       results.musics.length;
   }
@@ -111,12 +111,12 @@ const Search = () => {
               </>
             )}
 
-            {results.apps.length > 0 && (
+            {results.offers.length > 0 && (
               <>
                 <h1 className="my-1 border border-gray-700 bg-[#504040] text-center font-bold text-[#74b7d1]">
-                  Apps
+                  Offers
                 </h1>
-                <ResultElement type="APPS" results={results.apps} searchTerm={searchTerm} />
+                <ResultElement type="APPS" results={results.offers} searchTerm={searchTerm} />
               </>
             )}
 

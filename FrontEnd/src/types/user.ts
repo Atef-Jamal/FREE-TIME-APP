@@ -1,5 +1,5 @@
-import { IFrame } from "./frameTypes";
-import { IDailyReward } from "./rewardsTypes";
+import { IFrame } from "./frames";
+import { IDailyReward } from "./rewards";
 
 export interface IUser {
   _id: string;

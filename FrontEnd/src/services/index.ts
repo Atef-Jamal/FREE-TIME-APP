@@ -10,9 +10,8 @@ export {
   changeUserPassword,
   changeMyPictureFrame,
   fetchMyNotifications,
-  // fetchOnlineUsersIds,
   fetchOnlineUsersData,
-  userVisited,
+  userViewed,
   getLeaderboardUsers,
 } from "./usersService";
 
@@ -28,6 +27,6 @@ export {
 
 export { fetchAllFrames, purshaseFrame } from "./framesService";
 export { fetchMusics, purshaseMusic } from "./musicService";
-export { fetchTestimonials, getSearchResults, handleSendTestimonial } from "./otherService";
+export { fetchTestimonials, getSearchResults, handleSendTestimonial } from "./other";
 export { applyCode, collectReward } from "./rewardService";
 export { fetchAllOffers, fetchOfferDetails, handleCreateOfferReview } from "./offersService";

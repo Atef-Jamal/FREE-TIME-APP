@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import { MdAutoAwesomeMosaic } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { GiProgression } from "react-icons/gi";
 import { BiTask } from "react-icons/bi";
 import { BsFillClockFill } from "react-icons/bs";
-import { userVisited } from "../../services";
-import { formateDate } from "../../utilities";
+import { userViewed } from "../../services";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { verifiedImage } from "../../assets";
 import { PublicUserProfileSkeleton } from "./PublicUserProfileSkeleton";
@@ -15,6 +13,7 @@ import ActivitiesList from "./ActivitiesList";
 import UserImage from "../../components/Shared/Common/UserImage";
 import { selectUserAuth, updateActiveChatId } from "../../context/appStateSlice";
 import { useFetchUser, useFetchUserActivities } from "../../tanstackQuery/queryFetch";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
 const PublicUserProfile = () => {
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
@@ -25,10 +24,6 @@ const PublicUserProfile = () => {
   const { data: user, status, error } = useFetchUser({ userId: id });
 
   const { data: activities = [] } = useFetchUserActivities({ userId: id });
-
-  const { mutate } = useMutation({
-    mutationFn: userVisited,
-  });
 
   const fitleredActivities = activities?.filter(
     (item) =>
@@ -47,10 +42,11 @@ const PublicUserProfile = () => {
   const numberOfReferredUser = activities?.filter((item) => item.type === "REFERRER").length;
 
   useEffect(() => {
-    if (userAuth === "authenticated" && id && id !== currentUserId) {
-      mutate(id);
-    }
-  }, [id, userAuth, currentUserId, mutate]);
+    const profileView = async () =>
+      userAuth === "authenticated" && id !== currentUserId && id && (await userViewed(id));
+
+    profileView();
+  }, [id, userAuth, currentUserId]);
 
   if (status === "pending") {
     return <PublicUserProfileSkeleton />;
@@ -92,7 +88,10 @@ const PublicUserProfile = () => {
                   <span className="text-gray-400">Verified</span>
                 </div>
               )}
-              <p className="text-sm text-[#b19e9eee]">Joined About {formateDate(user.createdAt)}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-[#b19e9eee]">Joined About </p>
+                <RelativeCountdown targetIsoString={user.createdAt} />
+              </div>
             </div>
           </div>
           <div className="rounded-lg bg-[#191929] px-1 py-2 sm:px-3 md:w-[49%]">

@@ -1,7 +1,7 @@
-import { INotifications } from "./notificationTypes";
-import { IPrivateMessage } from "./privateChatTypes";
-import { IPublicChatItem } from "./publicChatTypes";
-import { IUser } from "./userTypes";
+import { INotifications } from "./notifications";
+import { IPrivateMessage } from "./privateChat";
+import { IPublicChatItem } from "./publicChat";
+import { IUser } from "./user";
 
 export interface ServerToClientEvents {
   connected_guests: (totalGuests: number) => void;

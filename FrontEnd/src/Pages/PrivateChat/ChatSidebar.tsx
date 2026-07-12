@@ -29,6 +29,8 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
 
   const { data: onlineUsers } = useQuery<string[]>({ queryKey: ["onlines-users-ids"] });
 
+  const allConversations = data?.pages.map((page) => page.conversations).flat();
+
   const handleNotify = (data: IPrivateMessage) => {
     const isChatWithUserOpen = data.sender._id === secondUserId;
     if (!openSidebar && !isChatWithUserOpen) setRedPoint(true);
@@ -95,21 +97,18 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
         {status === "pending" &&
           [...Array(10).keys()].map((skeleton) => <ChatSidebarUserItemSkeleton key={skeleton} />)}
         {status === "success" &&
-          data.pages
-            .map((page) => page.conversations)
-            .flat()
-            .map((conversation) => {
-              const isOnLine = Boolean(onlineUsers?.includes(conversation.secondUser._id));
-              const chatWithUserOpen = secondUserId === conversation.secondUser._id;
-              return (
-                <ChatSidebarUserItem
-                  key={conversation._id}
-                  conversation={conversation}
-                  isOnLine={isOnLine}
-                  chatWithUserOpen={chatWithUserOpen}
-                />
-              );
-            })}
+          allConversations?.map((conversation) => {
+            const isOnLine = Boolean(onlineUsers?.includes(conversation.secondUser._id));
+            const chatWithUserOpen = secondUserId === conversation.secondUser._id;
+            return (
+              <ChatSidebarUserItem
+                key={conversation._id}
+                conversation={conversation}
+                isOnLine={isOnLine}
+                chatWithUserOpen={chatWithUserOpen}
+              />
+            );
+          })}
 
         {isFetchNextPageError && <p className="text-center text-xs text-[#d83d3d]">an Error occurred!</p>}
       </div>

@@ -45,7 +45,6 @@ const publicMessageSchema = new Schema<IPublicChatItem>(
     },
     message: {
       type: String,
-      required: true,
     },
     newUserReferred: {
       type: Schema.Types.ObjectId,

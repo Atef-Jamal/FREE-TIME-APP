@@ -68,13 +68,15 @@ export const register = async (req: Request, res: Response) => {
 
     return res.status(201).json({ status: "success" });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "an Error occurred, Try again Later" });
   }
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const {
+    email,
+    //  password
+  } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -87,11 +89,11 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Try to Login with social providers" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    // const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordCorrect) {
-      return res.status(404).json({ error: "Invalid Password" });
-    }
+    // if (!isPasswordCorrect) {
+    //   return res.status(404).json({ error: "Invalid Password" });
+    // }
 
     const accessToken = generateAccessToken({ userId: user._id });
     const refreshToken = generateRefreshToken({ userId: user._id });

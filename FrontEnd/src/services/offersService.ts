@@ -7,13 +7,13 @@ export const fetchAllOffers = async ({
   pageParam,
   limitPerPage,
 }: {
-  filterByPopularity: IFilterByPopularity;
-  filterByDevice: IFilterByDevice;
+  filterByPopularity: IFilterByPopularity | undefined;
+  filterByDevice: IFilterByDevice | undefined;
   limitPerPage: number;
   pageParam: number;
 }): Promise<{ offers: IOffer[]; hasMore: boolean }> => {
   const response = await axiosRequest.get(
-    `api/offers?filterByPopularity=${filterByPopularity}&&filterByDevice=${filterByDevice}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`,
+    `api/offers?${filterByPopularity && `filterByPopularity=${filterByPopularity}`}&&${filterByDevice && `filterByDevice=${filterByDevice}`}&&pageParam=${pageParam}&&limitedPerPage=${limitPerPage}`,
   );
   const data = response.data;
   return data;

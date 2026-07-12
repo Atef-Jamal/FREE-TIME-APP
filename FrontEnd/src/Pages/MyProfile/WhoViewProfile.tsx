@@ -4,9 +4,10 @@ import { BiErrorAlt } from "react-icons/bi";
 import type { IProfileView } from "../../types";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
-import { axiosRequest, cn, formateDate, handleApiError } from "../../utilities";
+import { axiosRequest, cn, handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
 const WhoViewProfile = () => {
   const currentUser = useAppSelector(selectCurrentUser);
@@ -19,7 +20,7 @@ const WhoViewProfile = () => {
   const handleShowWhoVisit = async () => {
     if (!currentUser) return;
     setExpanded(true);
-
+    setError("");
     if (currentUser.points < 5) {
       dispatch(
         openToast({
@@ -32,10 +33,10 @@ const WhoViewProfile = () => {
     }
     setIsLoading(true);
     try {
-      const response = await axiosRequest.get("/api/users/view-profile");
+      const response = await axiosRequest.get("/api/users/profile-views");
       const data = response.data;
       dispatch(setCurrentUser({ ...currentUser, points: data.points }));
-      setUsersVisitsMyProfile(data.users);
+      setUsersVisitsMyProfile(data.viewers);
     } catch (error) {
       setError(handleApiError(error));
       dispatch(
@@ -48,6 +49,7 @@ const WhoViewProfile = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="mx-auto mt-3 flex w-[70%] flex-col items-center justify-center gap-2 pb-3 sm:w-full">
       <div className="flex w-full flex-wrap items-center justify-around gap-y-3 py-2">
@@ -80,11 +82,11 @@ const WhoViewProfile = () => {
                   <div className="h-8 w-8 rounded-full">
                     <img src={item.viewer.profilePicture} alt="" className="rounded-full object-contain" />
                   </div>
-                  <Link to={`/user/${item._id}`} className="text-sm text-[#8a84eb] underline">
+                  <Link to={`/user/${item.viewer._id}`} className="text-sm text-[#8a84eb] underline">
                     {item.viewer.name}
                   </Link>
                 </div>
-                <span className="text-[#b38b8b] sm:text-sm">{formateDate(item.createdAt)}</span>
+                <RelativeCountdown targetIsoString={item.createdAt} />
               </div>
             ))
             .reverse()}

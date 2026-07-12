@@ -54,7 +54,7 @@ export const searchController = async (req: Request, res: Response) => {
     return res.status(200).json({
       features: getFeatures,
       users: usersResult,
-      apps: offersResults,
+      offers: offersResults,
       frames: framesResults,
     });
   } catch (error) {

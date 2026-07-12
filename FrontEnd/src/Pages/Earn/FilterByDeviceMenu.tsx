@@ -1,7 +1,6 @@
 import { memo, useRef } from "react";
 import type { IFilterByDevice } from "../../types";
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { useTranslation } from "react-i18next";
 import { cn } from "../../utilities";
 import { filterByDeviceMenuItems } from "../../helper/data";
 
@@ -13,7 +12,6 @@ interface IProps {
 
 const FilterByDeviceMenu = memo(
   ({ handleCloseFilterByDevice, filterByDevice, activeFilterByDevice }: IProps) => {
-    const { t } = useTranslation("earn");
     const filterByDeviceRef = useRef<HTMLDivElement | null>(null);
 
     useClickOutside(filterByDeviceRef, () => handleCloseFilterByDevice(false));
@@ -37,7 +35,7 @@ const FilterByDeviceMenu = memo(
             <div className="flex items-center gap-3">
               {item.icon}
 
-              <span className="text-gray-400">{t(item.value)}</span>
+              <span className="text-gray-400">{item.value}</span>
             </div>
             <span
               className={

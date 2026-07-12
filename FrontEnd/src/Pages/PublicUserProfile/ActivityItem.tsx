@@ -1,4 +1,5 @@
-import { cn, formateDate } from "../../utilities";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
+import { cn } from "../../utilities";
 
 interface IProps {
   index: number;
@@ -10,7 +11,6 @@ interface IProps {
 }
 
 const ActivityItem = ({ message, prize, price, index, time, icon }: IProps) => {
-  const date = formateDate(time);
   return (
     <div
       className={cn(
@@ -27,7 +27,7 @@ const ActivityItem = ({ message, prize, price, index, time, icon }: IProps) => {
       </p>
 
       <div className="flex h-full items-center justify-center px-1 text-xs text-[#7e7f83ee] md:w-[10%]">
-        {date}
+        <RelativeCountdown targetIsoString={time} />
       </div>
       <div className="flex h-full items-center justify-center p-1 text-xs font-[600] text-[#9fadddee] md:w-[10%] md:p-2">
         <span className="flex h-[30px] w-[35px] items-center justify-center rounded-md border border-gray-400 bg-[#ff1f1f80] md:w-[45px]">

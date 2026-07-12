@@ -1,4 +1,4 @@
-import { memo, RefObject, useCallback, useEffect, useState } from "react";
+import { memo, RefObject, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -11,10 +11,11 @@ import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { handleMessageReaction } from "../../services";
 import type { IPublicChatItem, IPublicChatMessage } from "../../types";
 import { useSocketEvents } from "../../hooks/useSocketEvents";
-import { cn, formateDate, handleApiError } from "../../utilities";
+import { cn, handleApiError } from "../../utilities";
 import { verifiedImage } from "../../assets";
 import UserImage from "../../components/Shared/Common/UserImage";
 import { updatePublicMsgCache } from "../../tanstackQuery/queryCache";
+import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
 interface IProps {
   singleMessage: IPublicChatMessage;
@@ -26,7 +27,6 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   const currentUserId = useAppSelector((state) => state.appState.currentUser?._id);
   const userAuth = useAppSelector(selectUserAuth);
   const [messageItem, setMessageItem] = useState(singleMessage);
-  const [date, setDate] = useState(formateDate(messageItem.createdAt));
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -88,13 +88,6 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
   useSocketEvents({
     public_chat_message_reaction: handleUpdateMessage,
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDate(formateDate(messageItem.createdAt));
-    }, 1000 * 60);
-    return () => clearInterval(interval);
-  }, [messageItem.createdAt]);
 
   const handleLove = () => {
     if (userAuth !== "authenticated") {
@@ -173,7 +166,7 @@ const Message = memo(({ singleMessage, lastMessageRef, handleSetMessageIdToDelet
               <img src={verifiedImage} alt="" className="mx-2 h-[14px] w-[14px] object-cover md:h-4 md:w-4" />
             )}
           </span>
-          {messageItem.createdAt && <span className="text-[10px] font-bold text-[#857272]">{date}</span>}
+          <RelativeCountdown targetIsoString={messageItem.createdAt} />
         </Link>
 
         {currentUserId === messageItem.sender._id && !messageItem.isDeleted && (

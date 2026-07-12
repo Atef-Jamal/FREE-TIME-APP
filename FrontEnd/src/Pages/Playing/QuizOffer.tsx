@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
 import { axiosRequest, displaySound, handleApiError } from "../../utilities";
 import type { IQuizOffer } from "../../types";
-import { addNewNotificationCache } from "../../tanstackQuery/queryCache";
+import { addNewNotificationCache, updateOfferCache } from "../../tanstackQuery/queryCache";
 import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -78,6 +78,11 @@ const QuizOffer = ({ offer }: IProps) => {
             completedOffers: [...currentUser.completedOffers, offer._id],
           }),
         );
+        updateOfferCache({
+          queryClient,
+          offerId: offer._id,
+          user: { _id: currentUser._id, name: currentUser.name },
+        });
         addNewNotificationCache({ queryClient, newNotification: response.data.notification });
         displaySound(notificationSoundSrc);
       }

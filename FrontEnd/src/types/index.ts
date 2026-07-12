@@ -1,4 +1,4 @@
-export type { IUser, ICashedLiveStatsUsers, IProfileView } from "./userTypes";
+export type { IUser, ICashedLiveStatsUsers, IProfileView } from "./user";
 
 export type {
   IInitialState,
@@ -9,7 +9,7 @@ export type {
   IDispatch,
   IModal,
   IToast,
-} from "./reduxTypes";
+} from "./redux";
 
 export type {
   ICashedNotificaions,
@@ -23,7 +23,7 @@ export type {
   IQuizTaskNotify,
   IReferrerNotify,
   INotifications,
-} from "./notificationTypes";
+} from "./notifications";
 
 export type {
   IFilterByDevice,
@@ -32,14 +32,14 @@ export type {
   IQuizOffer,
   IOfferReview,
   IOffer,
-} from "./earnTypes";
+} from "./offers";
 
 export type {
   ICashedPublicChat,
   IPublicChatFreeTime,
   IPublicChatItem,
   IPublicChatMessage,
-} from "./publicChatTypes";
+} from "./publicChat";
 
 export type {
   ICashedConversations,
@@ -47,10 +47,10 @@ export type {
   IConversation,
   IPrivateMessage,
   IUnreadPrivateMsgsCache,
-} from "./privateChatTypes";
+} from "./privateChat";
 
-export type { IBounusCode, IDailyReward } from "./rewardsTypes";
+export type { IBounusCode, IDailyReward } from "./rewards";
 
-export type { IFrame } from "./frameTypes";
+export type { IFrame } from "./frames";
 
-export type { IFormData, IMusicDetail, ISearchItem, ISearchResults, ITestimonial } from "./othersTypes";
+export type { IMusicDetail, ISearchItem, ISearchResults, ITestimonial } from "./others";

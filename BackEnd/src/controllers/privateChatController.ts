@@ -11,7 +11,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
   const currentUserId = req.user._id;
   const pageParam = Number(req.query.pageParam) || 1;
-  let limit = 15;
+  const limit = 15;
   const skip = (pageParam - 1) * limit;
 
   try {
@@ -42,8 +42,16 @@ export const getAllConversations = async (req: Request, res: Response) => {
                 localField: "activeFrame",
                 foreignField: "_id",
                 as: "activeFrameData",
+                pipeline: [
+                  {
+                    $project: {
+                      image: 1,
+                    },
+                  },
+                ],
               },
             },
+            { $unwind: { path: "$activeFrameData", preserveNullAndEmptyArrays: true } },
             {
               $project: {
                 _id: 1,
@@ -146,18 +154,22 @@ export const getAllConversations = async (req: Request, res: Response) => {
     ]);
 
     if (conversations.length < limit) {
-      limit = limit - conversations.length;
+      const newLimit = limit - conversations.length;
+      const newSkip = (pageParam - 1) * newLimit;
 
-      const excludedUsersIds = conversations.map((conv) => {
-        return conv.secondUser._id;
-      });
+      const existingConversation = await Conversation.find({ _id: { $in: req.user.conversationIds } }).select(
+        "participants",
+      );
+      const usersToExclude = existingConversation.map((conv) =>
+        conv.participants.find((userId) => userId.toString() !== currentUserId.toString()),
+      ) as Types.ObjectId[];
 
-      const users = await User.find({ _id: { $nin: [...excludedUsersIds, currentUserId] } })
-        .select(userExcludedFields)
+      const users = await User.find({ _id: { $nin: [...usersToExclude, currentUserId] } })
+        .select("_id name profilePicture")
         .populate("activeFrame")
         .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+        .skip(newSkip)
+        .limit(newLimit);
 
       const potentialConversations = users.map((user) => ({
         _id: new Types.ObjectId(),
@@ -179,7 +191,6 @@ export const getAllConversations = async (req: Request, res: Response) => {
 
     return res.status(200).json({ conversations, hasMore });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({ error: "can not load all conversations" });
   }
 };

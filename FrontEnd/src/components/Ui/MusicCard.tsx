@@ -85,6 +85,7 @@ const MusicCard = ({ songDetails }: IProps) => {
     if (!openMusicModal) {
       dispatch(updateStateField({ entity: "openMusicModal", value: true }));
     }
+
     audioElement.src = songDetails.preview;
     audioElement.play();
     dispatch(

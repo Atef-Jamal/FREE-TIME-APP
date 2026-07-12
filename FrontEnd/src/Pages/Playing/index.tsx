@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import GuessCardOffer from "../../components/Offers/GuessCardOffer";
-import QuizOffer from "../../components/Offers/QuizOffer";
+import GuessCardOffer from "./GuessCardOffer";
+import QuizOffer from "./QuizOffer";
 import { BiErrorAlt } from "react-icons/bi";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useFetchOfferDetails } from "../../tanstackQuery/queryFetch";

@@ -23,6 +23,21 @@ app.use(passport.initialize());
 await connecteToMongodb();
 await connectToRedis();
 
+// const g = async () => {
+//   const numbers = Array.from({ length: 10000 }, (_, i) => i);
+
+//   await User.create(
+//     numbers.map((number) => ({
+//       name: `Anonymous-${number + 1}`,
+//       email: `anonymous-${number + 1}@gmail.com`,
+//       password: "111111",
+//       profilePicture: "https://res.cloudinary.com/dql5bc50n/image/upload/v1780306060/avatar_uogqav.jpg",
+//     })),
+//   );
+//   console.log("Done");
+// };
+
+// g();
 const server = http.createServer(app);
 
 export const { io, onlineUsers, activeConversations } = initializeSocket(server);

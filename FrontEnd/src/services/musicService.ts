@@ -9,6 +9,7 @@ export const purshaseMusic = async ({
   musicTitle: string;
 }): Promise<{ points: number; musicId: string; notification: IMusicNotify }> => {
   const response = await axiosRequest.post(`api/musics/buy-music/${musicId}`, { musicTitle });
+
   const data = response.data;
   return data;
 };
