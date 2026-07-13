@@ -9,7 +9,6 @@ const initialState: IInitialState = {
   currentUser: null,
   userAuth: hasAccessToken ? "pending" : "unauthenticated",
   isSignInMode: false,
-  socket: null,
   mobileScreen: window.innerWidth < 1024,
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
   secondUserId: localStorage.getItem("activeChatSecondUserId") || null,
@@ -59,27 +58,6 @@ const appStateReducer = createSlice({
       state.activeMusic = null;
       state.musicIsPlaying = false;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setSocket(state, action: PayloadAction<any>) {
-      state.socket = action.payload;
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // setAuthNamespace(state, action: PayloadAction<any>) {
-    //   state.io = action.payload;
-    // },
-    disconnectSocket(state) {
-      if (state.socket) {
-        state.socket.disconnect();
-        state.socket = null;
-      }
-    },
-    // disconnectAuthNamespace(state) {
-    //   if (state.io) {
-    //     state.io.disconnect();
-    //     state.io = null;
-    //   }
-    // },
-
     setPublicMsgRedPoint(state, action: PayloadAction<boolean>) {
       state.publicMsgNotify = action.payload;
     },
@@ -96,10 +74,6 @@ export const {
   resetPopup,
   handleAddMusic,
   handleCloseMusic,
-  setSocket,
-  disconnectSocket,
-  // setAuthNamespace,
-  // disconnectAuthNamespace,
   updateActiveChatId,
   showModal,
   resetModel,
@@ -111,8 +85,6 @@ const selectState = (state: RootState) => state.appState;
 
 export const selectCurrentUser = createSelector(selectState, ({ currentUser }) => currentUser);
 export const selectUserAuth = createSelector(selectState, ({ userAuth }) => userAuth);
-export const selectSocket = createSelector(selectState, ({ socket }) => socket);
-// export const selectAuthNamespace = createSelector(selectState, ({ io }) => io);
 export const selectModal = createSelector(selectState, ({ modal }) => modal);
 export const selectIsSignInMode = createSelector(selectState, ({ isSignInMode }) => isSignInMode);
 export const selectIsChatOpen = createSelector(selectState, ({ isChatOpen }) => isChatOpen);

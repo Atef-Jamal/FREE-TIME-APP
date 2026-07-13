@@ -6,7 +6,6 @@ import {
   getWhoViewMyProfile,
   profileViewed,
   getOnlineUsersData,
-  // getOnlineUsersIds,
   getLeaderboardUsers,
   getTopUser,
 } from "../controllers/usersController.js";

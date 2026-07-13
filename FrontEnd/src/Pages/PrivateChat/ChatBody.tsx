@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
-import { openToast, selectCurrentUser, selectSocket, selectUserAuth } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser, selectUserAuth } from "../../context/appStateSlice";
 import { handleApiError } from "../../utilities";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
@@ -11,10 +11,10 @@ import { useFetchUser, useInfiniteConversationMsgs } from "../../tanstackQuery/q
 import { conversationRead } from "../../services/chatService";
 import { ICashedConversations } from "../../types";
 import { updateTotalUnReadPrivateMsgsCache } from "../../tanstackQuery/queryCache";
+import { socket } from "../../lib/socket";
 
 const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
   const currentUser = useAppSelector(selectCurrentUser);
-  const socket = useAppSelector(selectSocket);
   const userAuth = useAppSelector(selectUserAuth);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -96,14 +96,14 @@ const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
 
   useEffect(() => {
     if (secondUserId && currentUser?._id) {
-      socket?.emit("user_joined_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
+      socket.emit("user_joined_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
     }
     return () => {
       if (secondUserId && currentUser?._id) {
-        socket?.emit("user_leaved_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
+        socket.emit("user_leaved_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
       }
     };
-  }, [currentUser?._id, secondUserId, socket]);
+  }, [currentUser?._id, secondUserId]);
 
   if (!secondUserId || error)
     return (

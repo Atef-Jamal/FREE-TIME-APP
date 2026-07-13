@@ -18,7 +18,7 @@ export const getLiveStatsUsers = async (req: Request, res: Response) => {
       .skip(skip)
       .limit(limit)
       .select(userExcludedFields)
-      .populate("activeFrame");
+      .populate("activeFrame", "image");
 
     const hasMore = limit === users.length;
     return res.status(200).json({ users, hasMore });

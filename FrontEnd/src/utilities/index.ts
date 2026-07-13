@@ -1,79 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import axios from "axios";
-import { z } from "zod";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-
-const baseSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-export const authSchema = z.discriminatedUnion("mode", [
-  // Login State
-  baseSchema.extend({
-    mode: z.literal("login"),
-  }),
-
-  // Register State
-  baseSchema
-    .extend({
-      mode: z.literal("register"),
-      name: z.string().min(3, "Name must be at least 3 characters"),
-      confirmPassword: z.string(),
-      profilePicture: z
-        .any()
-        .optional()
-        .refine((file) => {
-          if (!file[0]) return true;
-          return file[0].size <= MAX_FILE_SIZE;
-        }, "Max image size is 2MB.")
-        .refine((file) => {
-          if (!file[0]) return true;
-          return ACCEPTED_IMAGE_TYPES.includes(file[0].type);
-        }, "Only .jpg, .png, and .webp formats are supported."),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords don't match",
-      path: ["confirmPassword"], // Directs the error to the confirmPassword field
-    }),
-]);
-
-export type AuthFormValues = z.infer<typeof authSchema>;
-
-export const axiosRequest = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true,
-});
-
-axiosRequest.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        await axios.post(
-          `${import.meta.env.VITE_SERVER_BASE_URL}/api/auth/refresh-token`,
-          {},
-          { withCredentials: true },
-        );
-
-        return axiosRequest(originalRequest);
-      } catch (refreshError) {
-        localStorage.removeItem("isLoggedIn");
-        return Promise.reject(refreshError);
-      }
-    }
-    return Promise.reject(error);
-  },
-);
+type IDebouncedFunction<T extends (...args: any[]) => void> = (...args: Parameters<T>) => void;
 
 export function calculateTimeLeft(startDate: Date) {
   const now = new Date();
@@ -100,8 +29,6 @@ export const handleApiError = (error: any) => {
   }
   return errorMessage;
 };
-
-type IDebouncedFunction<T extends (...args: any[]) => void> = (...args: Parameters<T>) => void;
 
 export const debounce = <T extends (...args: any[]) => void>(
   func: T,

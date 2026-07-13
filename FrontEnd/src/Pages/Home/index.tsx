@@ -13,7 +13,7 @@ import { ezgifLogo, stashLogo, chooseTask, moneyHome } from "../../assets";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { openToast, selectCurrentUser, selectUserAuth } from "../../context/appStateSlice";
 import { login, handleSignInWithOauth, handleSendTestimonial } from "../../services";
-import { AuthFormValues, authSchema, cn, handleApiError } from "../../utilities";
+import { cn, handleApiError } from "../../utilities";
 import signuporfree from "../../assets/images/signuporfree.png";
 import { check, moneyBag, paypal, dollarInHand, support, timers } from "../../assets";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -28,6 +28,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import RelativeCountdown from "../../components/Ui/TimeCountDown";
+import { AuthFormValues, authSchema } from "../../lib/zod";
 
 const Home = () => {
   const currentUser = useAppSelector(selectCurrentUser);

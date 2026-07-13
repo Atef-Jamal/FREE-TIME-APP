@@ -1,6 +1,6 @@
 import type { IUser, IFrame, INotifications, IEmailVerifiedNotify } from "../types";
 import { ICashedLeaderboardUsers } from "../types/user";
-import { axiosRequest } from "../utilities";
+import { axiosRequest } from "../lib/axios";
 
 export const fetchUserById = async ({ userId }: { userId: string }): Promise<IUser> => {
   const response = await axiosRequest.get(`/api/users/${userId}`);
@@ -88,11 +88,6 @@ export const fetchOnlineUsersData = async (): Promise<IUser[]> => {
   const data = response.data;
   return data;
 };
-
-// export const fetchOnlineUsersIds = async (): Promise<string[]> => {
-//   const response = await axiosRequest.get(`/api/users/online-users-ids`);
-//   return response.data;
-// };
 
 export const getLeaderboardUsers = async ({
   pageParam,

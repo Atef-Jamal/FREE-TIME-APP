@@ -1,5 +1,5 @@
 import type { IMusicDetail, IMusicNotify } from "../types";
-import { axiosRequest } from "../utilities";
+import { axiosRequest } from "../lib/axios";
 
 export const purshaseMusic = async ({
   musicId,

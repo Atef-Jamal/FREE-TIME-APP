@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import notificationSoundSrc from "../assets/images/notificationSound.wav";
 
 import {
@@ -8,7 +8,6 @@ import {
   updateUserCache,
   updateTotalGuestsCache,
   addNewNotificationCache,
-  // updateCurrentUserConversationReadCache,
 } from "../tanstackQuery/queryCache";
 
 import { useSocketEvents } from "../hooks/useSocketEvents";
@@ -24,15 +23,11 @@ import type {
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppDispatch, useAppSelector } from "../context/hooks";
 import {
-  disconnectSocket,
   selectActiveSecondUserId,
   selectCurrentUser,
   selectIsChatOpen,
-  selectUserAuth,
   setPublicMsgRedPoint,
-  setSocket,
 } from "../context/appStateSlice";
-import { io } from "socket.io-client";
 import { useLocation } from "react-router-dom";
 
 export const useSocketEventBinds = () => {
@@ -40,7 +35,6 @@ export const useSocketEventBinds = () => {
   const currentUser = useAppSelector(selectCurrentUser);
   const secondUserId = useAppSelector(selectActiveSecondUserId);
   const location = useLocation();
-  const userAuth = useAppSelector(selectUserAuth);
   const isChatOpen = useAppSelector(selectIsChatOpen);
   const dispatch = useAppDispatch();
 
@@ -111,28 +105,7 @@ export const useSocketEventBinds = () => {
         };
       },
     );
-    // updateCurrentUserConversationReadCache({
-    //   queryClient,
-    //   secondUserId: data.sender,
-    //   currentUserId: currentUser?._id,
-    // });
   };
-
-  useEffect(() => {
-    if (userAuth === "pending") return;
-
-    const socketIo = io(import.meta.env.VITE_SERVER_BASE_URL, {
-      withCredentials: true,
-      transports: ["websocket"],
-    });
-
-    dispatch(setSocket(socketIo));
-
-    return () => {
-      dispatch(disconnectSocket());
-      dispatch(setSocket(null));
-    };
-  }, [userAuth, dispatch]);
 
   const handleTotalGuests = (totalGuests: number) => {
     updateTotalGuestsCache({ queryClient, totalGuests });

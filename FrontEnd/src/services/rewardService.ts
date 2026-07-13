@@ -1,5 +1,5 @@
 import { IEmailVerifiedNotify, IGuessCardTaskNotify, IQuizTaskNotify, IReferrerNotify } from "../types";
-import { axiosRequest } from "../utilities";
+import { axiosRequest } from "../lib/axios";
 
 export const collectReward = async (
   notificationId: string,

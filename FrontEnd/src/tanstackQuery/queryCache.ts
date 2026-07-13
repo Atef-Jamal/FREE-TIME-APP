@@ -375,24 +375,6 @@ export const addReceivedPrivateMsgCache = ({
       } else {
         queryClient.invalidateQueries({ queryKey: ["conversations"] });
       }
-      // return {
-      //   ...previous,
-      //   pages: previous.pages.map((page, index) => {
-      //     const count = newMessage.sender._id === secondUserId && isPrivateChatPageOpen ? 0 : 1;
-      //     const newConversation = {
-      //       _id: newMessage.conversation,
-      //       conversationName: "",
-      //       secondUser: newMessage.sender,
-      //       lastMessage: newMessage,
-      //       unreadCounts: {
-      //         [newMessage.receiver._id]: count,
-      //         [newMessage.sender._id]: 0,
-      //       },
-      //     };
-      //     if (index === 0) return { ...page, conversations: [newConversation, ...page.conversations] };
-      //     return page;
-      //   }),
-      // };
     },
   );
 };

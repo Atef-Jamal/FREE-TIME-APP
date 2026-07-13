@@ -2,13 +2,14 @@ import { memo, useCallback, useEffect } from "react";
 import { MdOutlineClose, MdOutlineEditNotifications } from "react-icons/md";
 import { useAppDispatch } from "../../../../context/hooks";
 import { resetModel, openToast } from "../../../../context/appStateSlice";
-import { axiosRequest, handleApiError } from "../../../../utilities";
+import { handleApiError } from "../../../../utilities";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import type { INotifications } from "../../../../types";
 import Spinner from "../../Common/Spinner";
 import Empty from "../../Common/Empty";
 import NotificationItem from "./NotificationItem";
 import { updateNotificationsIsReadCache } from "../../../../tanstackQuery/queryCache";
+import { axiosRequest } from "../../../../lib/axios";
 
 const Notifications = memo(() => {
   const queryClient = useQueryClient();

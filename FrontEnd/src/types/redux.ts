@@ -1,8 +1,6 @@
-import { Socket } from "socket.io-client";
+import { AuthFormValues } from "../lib/zod";
 import { IUser } from "./user";
 import { Dispatch, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-import { ClientToServerEvents, ServerToClientEvents } from "./socket";
-import { AuthFormValues } from "../utilities";
 
 export interface IToast {
   type: "ERROR_GENERAL" | "ERROR_LOCK" | "SUCESS" | "LOADING" | null;
@@ -37,7 +35,6 @@ export interface IInitialState {
   openMusicModal: boolean;
   musicIsPlaying: boolean;
   activeMusic: IMusicInfo | null;
-  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
   secondUserId: string | null;
   modal: IModal;
   publicMsgNotify: boolean;

@@ -1,4 +1,4 @@
-import { axiosRequest } from "../utilities";
+import { axiosRequest } from "../lib/axios";
 import type { IConversation, IPrivateMessage, IPublicChatItem, IPublicChatMessage } from "../types";
 
 type IPublicMsgFieldName = "loves" | "likes" | "dislikes";

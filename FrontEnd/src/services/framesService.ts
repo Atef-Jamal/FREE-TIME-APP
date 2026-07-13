@@ -1,5 +1,5 @@
+import { axiosRequest } from "../lib/axios";
 import type { IBuyFrameNotify, IFrame } from "../types";
-import { axiosRequest } from "../utilities";
 
 export const fetchAllFrames = async (): Promise<IFrame[]> => {
   const response = await axiosRequest.get("api/frames");

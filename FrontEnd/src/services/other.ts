@@ -1,5 +1,5 @@
 import type { IMusicDetail, ISearchResults, ITestimonial } from "../types";
-import { axiosRequest } from "../utilities";
+import { axiosRequest } from "../lib/axios";
 import { fetchMusics } from "./musicService";
 
 export const getSearchResults = async ({ searchTerm }: { searchTerm: string }): Promise<ISearchResults> => {

@@ -21,19 +21,10 @@ const DisktopChat = memo(() => {
     if (!isChatOpen) dispatch(setPublicMsgRedPoint(true));
   }, [isChatOpen, dispatch]);
 
-  // const events = useMemo(() => ["public_chat_message"], []);
-  // const handlers = useMemo(() => [handleRecievedMessage], [handleRecievedMessage]);
-
-  // useListenToSocketEvents({
-  //   eventsToListen: events,
-  //   handlers: handlers,
-  // });
-
   useSocketEvents({
     public_chat_message: handleRecievedMessage,
   });
   useEffect(() => {
-    // initiallly open chat if user comes with url searchParam containing messageID
     const timeOut = setTimeout(() => {
       if (location.search.includes("messageId"))
         if (!isChatOpen) dispatch(updateStateField({ entity: "isChatOpen", value: true }));

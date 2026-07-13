@@ -5,11 +5,12 @@ import { BiCopy } from "react-icons/bi";
 import type { IBounusCode } from "../../types";
 import { openToast, selectUserAuth } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { axiosRequest, cn, handleApiError } from "../../utilities";
+import { cn, handleApiError } from "../../utilities";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import { dollarInHand } from "../../assets";
 import Ladder from "./Ladder";
 import DailyReward from "./DailyReward";
+import { axiosRequest } from "../../lib/axios";
 
 const Rewards = () => {
   const userAuth = useAppSelector(selectUserAuth);

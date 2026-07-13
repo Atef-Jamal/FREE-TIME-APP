@@ -6,7 +6,7 @@ import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { RiBaseStationLine } from "react-icons/ri";
 import type { IUser, IPublicChatItem } from "../../types";
-import { openToast, selectCurrentUser, selectSocket, selectUserAuth } from "../../context/appStateSlice";
+import { openToast, selectCurrentUser, selectUserAuth } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { sendPublicChatMessage } from "../../services";
 import { cn, handleApiError } from "../../utilities";
@@ -17,7 +17,7 @@ import {
   addPendingPublicMsgCache,
   addSuccessPublicMsgCache,
 } from "../../tanstackQuery/queryCache";
-// import { useFetchOnlineUsersIds } from "../../tanstackQuery/queryFetch";
+import { socket } from "../../lib/socket";
 
 interface IProps {
   stopScrolling: boolean;
@@ -28,7 +28,6 @@ interface IProps {
 const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
-  const socket = useAppSelector(selectSocket);
   const [openMentionList, setOpenMentionList] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
@@ -42,8 +41,6 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const { data: totalGuests } = useQuery<number>({
     queryKey: ["total-guests"],
   });
-
-  // const { data: onlineUsers } = useFetchOnlineUsersIds();
 
   const mutation = useMutation({
     mutationFn: sendPublicChatMessage,
@@ -140,7 +137,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     setMessage(textareaElement.value);
     if (!isTyping && textareaElement.value.trim() !== "") {
       setIsTyping(true);
-      if (socket) socket.emit("public_chat_typing_start");
+      socket.emit("public_chat_typing_start");
     }
     const lastTypingTime = new Date().getTime();
     const timmerLenth = 3000;
@@ -150,7 +147,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       const now = new Date().getTime();
       const timDifference = now - lastTypingTime;
       if (timDifference >= timmerLenth) {
-        if (socket) socket.emit("public_chat_typing_stop");
+        socket.emit("public_chat_typing_stop");
         setIsTyping(false);
       }
     }, timmerLenth);

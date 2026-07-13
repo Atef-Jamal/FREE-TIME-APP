@@ -1,6 +1,8 @@
 import { openToast } from "../context/appStateSlice";
+import { axiosRequest } from "../lib/axios";
+import { socket } from "../lib/socket";
 import type { IDispatch, ILoginProps, IRegisterProps } from "../types";
-import { axiosRequest, handleApiError } from "../utilities";
+import { handleApiError } from "../utilities";
 
 export const registerUser = async ({ data, referrerUser }: IRegisterProps) => {
   const query = referrerUser ? `?referrerUser=${referrerUser}` : "";
@@ -48,6 +50,8 @@ export const handleSignInWithOauth = async (provider: "google" | "github", dispa
 
 export const logOut = async () => {
   localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("activeChatSecondUserId");
   await axiosRequest.post("api/auth/logout");
+  socket.disconnect();
   window.location.href = `${window.location.origin}/?comeFrom=logout`;
 };

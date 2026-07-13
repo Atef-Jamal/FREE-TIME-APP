@@ -8,9 +8,8 @@ import {
   selectActiveSecondUserId,
   selectUserAuth,
 } from "../context/appStateSlice";
-import { axiosRequest, handleApiError } from "../utilities";
+import { handleApiError } from "../utilities";
 import {
-  // useFetchOnlineUsersIds,
   useInfiniteConversationMsgs,
   useInfiniteConversations,
   useInfinitePublicChatMsges,
@@ -18,6 +17,7 @@ import {
 import { useSocketEventBinds } from "../hooks/useSocketEventBinds";
 import { useCallbackHandlers } from "../hooks/useCallbackHandlers";
 import { useWindowEventListeners } from "../hooks/useWindowEventListeners";
+import { axiosRequest } from "../lib/axios";
 
 export const AppInitializer = () => {
   const secondUserId = useAppSelector(selectActiveSecondUserId);
@@ -48,10 +48,6 @@ export const AppInitializer = () => {
   }, [dispatch]);
 
   useCallbackHandlers();
-
-  //prefetch chats
-
-  // useFetchOnlineUsersIds();
 
   useInfinitePublicChatMsges();
   useInfiniteConversations({ userAuth: userAuth === "authenticated" });

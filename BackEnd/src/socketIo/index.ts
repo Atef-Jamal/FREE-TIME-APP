@@ -9,7 +9,7 @@ import { IPrivateMessage } from "../models/privateMessage.js";
 import { getActiveConversationKey } from "../utils/index.js";
 
 interface ServerToClientEvents {
-  connected_guests: (h: number) => void;
+  connected_guests: (guests: number) => void;
   public_chat_typing_start: () => void;
   public_chat_typing_stop: () => void;
   public_chat_message: (publicMessage: IPublicChatItem) => void;
@@ -35,32 +35,59 @@ interface SocketData {
 type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 
 const initializeSocket = function (server: IServer) {
-  let totalGuests = 0;
-
-  const onlineUsers = new Map<string, Set<string>>();
-
+  const activeGuestConnections = new Map<string, Set<string>>();
+  const activeUserConnections = new Map<string, Set<string>>();
   const activeConversations = new Map<string, Set<string>>();
+
+  const userConnect = (userId: string, socketId: string): boolean => {
+    if (!activeUserConnections.has(userId)) {
+      activeUserConnections.set(userId, new Set());
+    }
+    activeUserConnections.get(userId)!.add(socketId);
+
+    return activeUserConnections.get(userId)!.size === 1;
+  };
+
+  const userDisconnect = (userId: string, socketId: string): boolean => {
+    if (!activeUserConnections.has(userId)) return false;
+
+    const userSockets = activeUserConnections.get(userId)!;
+    userSockets.delete(socketId);
+
+    if (userSockets.size === 0) {
+      activeUserConnections.delete(userId);
+      return true;
+    }
+
+    return false;
+  };
+
+  const guestConnect = (ipAddress: string, socketId: string): boolean => {
+    if (!activeGuestConnections.has(ipAddress)) {
+      activeGuestConnections.set(ipAddress, new Set());
+    }
+    activeGuestConnections.get(ipAddress)!.add(socketId);
+
+    return activeGuestConnections.get(ipAddress)!.size === 1;
+  };
+
+  const guestDisconnect = (ipAddress: string, socketId: string): boolean => {
+    if (!activeGuestConnections.has(ipAddress)) return false;
+
+    const guestSockets = activeGuestConnections.get(ipAddress)!;
+    guestSockets.delete(socketId);
+
+    if (guestSockets.size === 0) {
+      activeGuestConnections.delete(ipAddress);
+      return true;
+    }
+
+    return false;
+  };
 
   const io = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>(server, {
     cors: { origin: process.env.CLIENT_BASE_URL, credentials: true },
   });
-
-  const trackUserConnection = (userId: string, socketId: string): void => {
-    if (!onlineUsers.has(userId)) {
-      onlineUsers.set(userId, new Set());
-    }
-    onlineUsers.get(userId)!.add(socketId);
-  };
-
-  const trackUserDisconnection = (userId: string, socketId: string): void => {
-    const userSockets = onlineUsers.get(userId);
-    if (userSockets) {
-      userSockets.delete(socketId);
-      if (userSockets.size === 0) {
-        onlineUsers.delete(userId);
-      }
-    }
-  };
 
   io.use((socket, next) => {
     const reqCookie = socket.handshake.headers.cookie;
@@ -82,31 +109,31 @@ const initializeSocket = function (server: IServer) {
 
   io.on("connection", async (socket) => {
     const userId = socket.data.userId;
+    const ip = socket.handshake.address;
 
-    totalGuests += 1;
-    io.emit("connected_guests", totalGuests);
+    const isFirsGuesttTab = guestConnect(ip, socket.id);
+    if (isFirsGuesttTab) {
+      io.emit("connected_guests", activeGuestConnections.size);
+    }
+
     if (userId) {
-      try {
-        const updated = await User.findByIdAndUpdate(
-          userId,
-          { $set: { isOnline: true } },
-          { returnDocument: "after" },
-        ).select("isOnline");
-
-        if (updated) {
-          trackUserConnection(userId, socket.id);
-          io.emit("online_users", [...onlineUsers.keys()]);
+      const isFirstUserTab = userConnect(userId, socket.id);
+      if (isFirstUserTab) {
+        socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
+        try {
+          await User.findByIdAndUpdate(userId, { isOnline: true });
+        } catch (error) {
+          console.log(`Failed to update user status in DB: ${userId}`);
         }
-      } catch (error) {
-        console.log(`Failed to connect online status for userId: ${userId}`);
       }
 
       socket.on("user_joined_conversation", ({ firstParty, secondParty }) => {
         const key = getActiveConversationKey(firstParty, secondParty);
 
         if (!activeConversations.has(key)) {
-          activeConversations.set(key, new Set(firstParty));
-        } else activeConversations.get(key)!.add(firstParty);
+          activeConversations.set(key, new Set());
+        }
+        activeConversations.get(key)!.add(firstParty);
       });
 
       socket.on("user_leaved_conversation", ({ firstParty, secondParty }) => {
@@ -128,29 +155,24 @@ const initializeSocket = function (server: IServer) {
     });
 
     socket.on("disconnect", async () => {
-      totalGuests -= 1;
-      io.emit("connected_guests", totalGuests);
+      const isLastGuestTab = guestDisconnect(ip, socket.id);
+      if (isLastGuestTab) {
+        io.emit("connected_guests", activeGuestConnections.size);
+      }
       if (userId) {
-        try {
-          const updated = await User.findByIdAndUpdate(
-            userId,
-            { $set: { isOnline: false } },
-            {
-              returnDocument: "after",
-            },
-          ).select("isOnline");
-
-          if (updated) {
-            trackUserDisconnection(userId, socket.id);
-            io.emit("online_users", [...onlineUsers.keys()]);
+        const isLastUserTab = userDisconnect(userId, socket.id);
+        if (isLastUserTab) {
+          socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
+          try {
+            await User.findByIdAndUpdate(userId, { isOnline: false });
+          } catch (err) {
+            console.error("Failed to update user status in DB:", err);
           }
-        } catch (error) {
-          console.log(`Failed to disconnect online status for userId: ${userId}`);
         }
       }
     });
   });
-  return { io, onlineUsers, activeConversations };
+  return { io, onlineUsers: activeUserConnections, activeConversations };
 };
 
 export default initializeSocket;

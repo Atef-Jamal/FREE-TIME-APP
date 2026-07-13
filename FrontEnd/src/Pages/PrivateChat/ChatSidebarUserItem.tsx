@@ -3,7 +3,6 @@ import type { IConversation } from "../../types";
 import { selectCurrentUser, updateActiveChatId } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { cn } from "../../utilities";
-// import { formatDistanceToNow } from "date-fns";
 import UserImage from "../../components/Shared/Common/UserImage";
 import RelativeCountdown from "../../components/Ui/TimeCountDown";
 
@@ -47,7 +46,6 @@ const ChatSidebarUserItem = memo(({ conversation, isOnLine, chatWithUserOpen }: 
           </span>
           {(conversation.lastMessage?.createdAt && (
             <RelativeCountdown targetIsoString={conversation.lastMessage.createdAt} />
-            // <span className="-mt-[2px] text-[0.7rem] font-bold text-[#746767] sm:text-xs">{date}</span>
           )) || <span className="text-xs text-gray-400 md:font-bold"> --:--</span>}
         </div>
       </div>

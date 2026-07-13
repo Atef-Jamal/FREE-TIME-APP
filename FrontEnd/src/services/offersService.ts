@@ -1,4 +1,4 @@
-import { axiosRequest } from "../utilities";
+import { axiosRequest } from "../lib/axios";
 import type { IFilterByDevice, IFilterByPopularity, IOfferReview, IOffer } from "../types";
 
 export const fetchAllOffers = async ({

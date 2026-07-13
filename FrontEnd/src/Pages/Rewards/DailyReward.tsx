@@ -4,12 +4,7 @@ import { useTranslation } from "react-i18next";
 import { BsTwitter } from "react-icons/bs";
 import { MdAppSettingsAlt, MdOutlineGppMaybe } from "react-icons/md";
 import { useAppSelector } from "../../context/hooks";
-import {
-  // openToast,
-  selectCurrentUser,
-  selectSidebarCollapsed,
-  selectUserAuth,
-} from "../../context/appStateSlice";
+import { selectCurrentUser, selectSidebarCollapsed, selectUserAuth } from "../../context/appStateSlice";
 import { cn } from "../../utilities";
 import { desktopAffiliateGraphicRight } from "../../assets";
 import desktopAffiliateBannerBg from "../../assets/images/desktop-affiliate-banner-bg.png";

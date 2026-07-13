@@ -1,21 +1,15 @@
 import { memo, Suspense, useMemo, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
-// import { useAppSelector } from "../../context/hooks";
 import { FaExclamationCircle } from "react-icons/fa";
-// import { useQueryClient } from "@tanstack/react-query";
 import LiveStatsItem from "../../components/Ui/LiveStatsItem";
 import LangMenu from "../../components/Ui/LangMenu";
 import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { useFetchTopUser, useInfiniteLiveStatsUsers } from "../../tanstackQuery/queryFetch";
-// import { updateCurrentUserCache } from "../../tanstackQuery/queryCache";
-// import { selectCurrentUser } from "../../context/appStateSlice";
 
 const LiveStats = memo(() => {
-  // const currentUser = useAppSelector(selectCurrentUser);
   const [openLangMenu, setOpenLangMenu] = useState(false);
-  // const queryClient = useQueryClient();
 
   const { data, status, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
     useInfiniteLiveStatsUsers();

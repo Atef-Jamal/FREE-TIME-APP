@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
-import { axiosRequest, handleApiError } from "../../utilities";
+import { handleApiError } from "../../utilities";
 import { BsClockHistory } from "react-icons/bs";
 import Timer from "./Timer";
 import { useTranslation } from "react-i18next";
 import Spinner from "../../components/Shared/Common/Spinner";
 import { IDailyReward } from "../../types";
+import { axiosRequest } from "../../lib/axios";
 
 interface IProps {
   dayInfo: IDailyReward;

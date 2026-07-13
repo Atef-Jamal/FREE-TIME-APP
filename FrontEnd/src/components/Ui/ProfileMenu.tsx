@@ -22,7 +22,6 @@ const ProfileMenu = ({ setOpenProfileMenu }: IProps) => {
   useClickOutside(menuRef, () => setOpenProfileMenu(false));
 
   const handleLogOut = async () => {
-    localStorage.removeItem("isLoggedIn");
     setOpenProfileMenu((previos) => !previos);
     return await logOut();
   };

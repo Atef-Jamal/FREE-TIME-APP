@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import UploadIcon from "../../../../assets/images/upload-icon.png";
-import { AuthFormValues, cn } from "../../../../utilities";
+import { cn } from "../../../../utilities";
 import { UseFormRegister } from "react-hook-form";
 import { ChangeEvent, RefObject } from "react";
+import { AuthFormValues } from "../../../../lib/zod";
 
 interface IProps {
   register: UseFormRegister<AuthFormValues>;

@@ -3,12 +3,13 @@ import { ImSpinner3 } from "react-icons/im";
 import { BsCheck2Circle, BsExclamationOctagonFill } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
-import { axiosRequest, displaySound, handleApiError } from "../../utilities";
+import { displaySound, handleApiError } from "../../utilities";
 import type { IQuizOffer } from "../../types";
 import { addNewNotificationCache, updateOfferCache } from "../../tanstackQuery/queryCache";
 import notificationSoundSrc from "../../assets/images/notificationSound.wav";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { axiosRequest } from "../../lib/axios";
 
 interface IProps {
   offer: IQuizOffer;

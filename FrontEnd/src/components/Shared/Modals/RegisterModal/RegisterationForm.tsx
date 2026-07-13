@@ -14,11 +14,12 @@ import {
   selectIsSignInMode,
 } from "../../../../context/appStateSlice";
 import { useAppSelector, useAppDispatch } from "../../../../context/hooks";
-import { AuthFormValues, authSchema, cn, handleApiError } from "../../../../utilities";
+import { cn, handleApiError } from "../../../../utilities";
 import { handleSignInWithOauth, login, registerUser } from "../../../../services";
 import LeftSide from "./LeftSide";
 import { IoMdEye } from "react-icons/io";
 import UploadIcon from "../../../../assets/images/upload-icon.png";
+import { AuthFormValues, authSchema } from "../../../../lib/zod";
 
 const RegisterationForm = () => {
   const userAuth = useAppSelector(selectUserAuth);

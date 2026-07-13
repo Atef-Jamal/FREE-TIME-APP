@@ -9,11 +9,12 @@ import { FaArrowDownLong } from "react-icons/fa6";
 import MessageSkeleton from "./MessageSkeleton";
 import { useAppDispatch } from "../../context/hooks";
 import { openToast } from "../../context/appStateSlice";
-import { axiosRequest, debounce, handleApiError } from "../../utilities";
+import { debounce, handleApiError } from "../../utilities";
 import { useScrollToElement } from "../../hooks/useScrollToElement";
 import type { IPublicChatMessage } from "../../types";
 import { ChatModelDeletion } from "./ChatModelDeletion";
 import { useInfinitePublicChatMsges } from "../../tanstackQuery/queryFetch";
+import { axiosRequest } from "../../lib/axios";
 
 const PublicChatBody = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams();

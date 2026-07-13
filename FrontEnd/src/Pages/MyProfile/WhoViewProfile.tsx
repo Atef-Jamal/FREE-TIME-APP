@@ -4,10 +4,11 @@ import { BiErrorAlt } from "react-icons/bi";
 import type { IProfileView } from "../../types";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { setCurrentUser, openToast, selectCurrentUser } from "../../context/appStateSlice";
-import { axiosRequest, cn, handleApiError } from "../../utilities";
+import { cn, handleApiError } from "../../utilities";
 import Spinner from "../../components/Shared/Common/Spinner";
 import Empty from "../../components/Shared/Common/Empty";
 import RelativeCountdown from "../../components/Ui/TimeCountDown";
+import { axiosRequest } from "../../lib/axios";
 
 const WhoViewProfile = () => {
   const currentUser = useAppSelector(selectCurrentUser);
