@@ -71,10 +71,7 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const {
-    email,
-    //  password
-  } = req.body;
+  const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -87,11 +84,11 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Try to Login with social providers" });
     }
 
-    // const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    // if (!isPasswordCorrect) {
-    //   return res.status(404).json({ error: "Invalid Password" });
-    // }
+    if (!isPasswordCorrect) {
+      return res.status(404).json({ error: "Invalid Password" });
+    }
 
     const accessToken = generateAccessToken({ userId: user._id });
     const refreshToken = generateRefreshToken({ userId: user._id });
@@ -129,7 +126,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 1 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
     });
 
     return res.status(200).json({ message: "Token refreshed" });

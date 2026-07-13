@@ -10,6 +10,8 @@ import { connectToRedis } from "./lib/redis.js";
 import passport from "./lib/passport.js";
 import { connecteToMongodb } from "./lib/db.js";
 dotenv.config();
+import bcrypt from "bcryptjs";
+import User from "./models/user.js";
 
 const app = express();
 
@@ -23,21 +25,29 @@ app.use(passport.initialize());
 await connecteToMongodb();
 await connectToRedis();
 
-// const g = async () => {
-//   const numbers = Array.from({ length: 10000 }, (_, i) => i);
+const g = async () => {
+  const numbers = Array.from({ length: 10000 }, (_, i) => i);
 
-//   await User.create(
-//     numbers.map((number) => ({
-//       name: `Anonymous-${number + 1}`,
-//       email: `anonymous-${number + 1}@gmail.com`,
-//       password: "111111",
-//       profilePicture: "https://res.cloudinary.com/dql5bc50n/image/upload/v1780306060/avatar_uogqav.jpg",
-//     })),
-//   );
-//   console.log("Done");
-// };
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash("111111", salt);
 
-// g();
+  const date = new Date();
+  const newUsers = numbers.map((number) => {
+    date.setSeconds(date.getSeconds() - number);
+    return {
+      name: `Anonymous-${number + 1}`,
+      email: `anonymous-${number + 1}@gmail.com`,
+      password: hashedPassword,
+      profilePicture: "https://res.cloudinary.com/dql5bc50n/image/upload/v1780306060/avatar_uogqav.jpg",
+      createdAt: date,
+    };
+  });
+
+  await User.create(newUsers);
+  console.log("Done");
+};
+
+g();
 const server = http.createServer(app);
 
 export const { io, onlineUsers, activeConversations } = initializeSocket(server);
