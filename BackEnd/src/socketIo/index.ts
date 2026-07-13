@@ -34,57 +34,57 @@ interface SocketData {
 
 type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 
-const initializeSocket = function (server: IServer) {
-  const activeGuestConnections = new Map<string, Set<string>>();
-  const activeUserConnections = new Map<string, Set<string>>();
-  const activeConversations = new Map<string, Set<string>>();
+export const activeGuestConnections = new Map<string, Set<string>>();
+export const activeUserConnections = new Map<string, Set<string>>();
+export const activeConversations = new Map<string, Set<string>>();
 
-  const userConnect = (userId: string, socketId: string): boolean => {
-    if (!activeUserConnections.has(userId)) {
-      activeUserConnections.set(userId, new Set());
-    }
-    activeUserConnections.get(userId)!.add(socketId);
+const userConnect = (userId: string, socketId: string): boolean => {
+  if (!activeUserConnections.has(userId)) {
+    activeUserConnections.set(userId, new Set());
+  }
+  activeUserConnections.get(userId)!.add(socketId);
 
-    return activeUserConnections.get(userId)!.size === 1;
-  };
+  return activeUserConnections.get(userId)!.size === 1;
+};
 
-  const userDisconnect = (userId: string, socketId: string): boolean => {
-    if (!activeUserConnections.has(userId)) return false;
+const userDisconnect = (userId: string, socketId: string): boolean => {
+  if (!activeUserConnections.has(userId)) return false;
 
-    const userSockets = activeUserConnections.get(userId)!;
-    userSockets.delete(socketId);
+  const userSockets = activeUserConnections.get(userId)!;
+  userSockets.delete(socketId);
 
-    if (userSockets.size === 0) {
-      activeUserConnections.delete(userId);
-      return true;
-    }
+  if (userSockets.size === 0) {
+    activeUserConnections.delete(userId);
+    return true;
+  }
 
-    return false;
-  };
+  return false;
+};
 
-  const guestConnect = (ipAddress: string, socketId: string): boolean => {
-    if (!activeGuestConnections.has(ipAddress)) {
-      activeGuestConnections.set(ipAddress, new Set());
-    }
-    activeGuestConnections.get(ipAddress)!.add(socketId);
+const guestConnect = (ipAddress: string, socketId: string): boolean => {
+  if (!activeGuestConnections.has(ipAddress)) {
+    activeGuestConnections.set(ipAddress, new Set());
+  }
+  activeGuestConnections.get(ipAddress)!.add(socketId);
 
-    return activeGuestConnections.get(ipAddress)!.size === 1;
-  };
+  return activeGuestConnections.get(ipAddress)!.size === 1;
+};
 
-  const guestDisconnect = (ipAddress: string, socketId: string): boolean => {
-    if (!activeGuestConnections.has(ipAddress)) return false;
+const guestDisconnect = (ipAddress: string, socketId: string): boolean => {
+  if (!activeGuestConnections.has(ipAddress)) return false;
 
-    const guestSockets = activeGuestConnections.get(ipAddress)!;
-    guestSockets.delete(socketId);
+  const guestSockets = activeGuestConnections.get(ipAddress)!;
+  guestSockets.delete(socketId);
 
-    if (guestSockets.size === 0) {
-      activeGuestConnections.delete(ipAddress);
-      return true;
-    }
+  if (guestSockets.size === 0) {
+    activeGuestConnections.delete(ipAddress);
+    return true;
+  }
 
-    return false;
-  };
+  return false;
+};
 
+export const initializeSocket = function (server: IServer) {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>(server, {
     cors: { origin: process.env.CLIENT_BASE_URL, credentials: true },
   });
@@ -172,7 +172,5 @@ const initializeSocket = function (server: IServer) {
       }
     });
   });
-  return { io, onlineUsers: activeUserConnections, activeConversations };
+  return io;
 };
-
-export default initializeSocket;

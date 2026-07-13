@@ -1,10 +1,11 @@
 import { userExcludedFields } from "../constants/index.js";
 import User from "../models/user.js";
-import { io, onlineUsers } from "../app.js";
+import { io } from "../app.js";
 import { redisClient } from "../lib/redis.js";
 import { Types } from "mongoose";
 import Notification from "../models/notification.js";
 import PublicMessage from "../models/publicMessage.js";
+import { activeUserConnections } from "../socketIo/index.js";
 
 export const sendRewardToUser = async (
   referrerUser: Types.ObjectId,
@@ -44,7 +45,7 @@ export const sendRewardToUser = async (
     ])
     .lean();
 
-  const targetSockets = onlineUsers.get(referrerUser.toString());
+  const targetSockets = activeUserConnections.get(referrerUser.toString());
 
   if (targetSockets && populatedNotification) {
     io.to([...targetSockets]).emit("notification", populatedNotification);

@@ -4,8 +4,9 @@ import { Types } from "mongoose";
 import { userExcludedFields } from "../constants/index.js";
 import Conversation from "../models/conversation.js";
 import PrivateMessage from "../models/privateMessage.js";
-import { io, onlineUsers, activeConversations } from "../app.js";
+import { io } from "../app.js";
 import { getActiveConversationKey } from "../utils/index.js";
+import { activeConversations, activeUserConnections } from "../socketIo/index.js";
 
 export const getAllConversations = async (req: Request, res: Response) => {
   if (!req.user) return res.status(401).json({ error: "User authentication missing" });
@@ -282,7 +283,7 @@ export const createMessage = async (req: Request, res: Response) => {
 
     if (!message) return res.status(404).json({ error: "can't create message, an Error occurred" });
 
-    const targetSocketIds = onlineUsers.get(receiver.toString());
+    const targetSocketIds = activeUserConnections.get(receiver.toString());
 
     if (targetSocketIds) {
       io.to([...targetSocketIds]).emit("private_chat_message", message);
@@ -343,7 +344,7 @@ export const conversationIsRead = async (req: Request, res: Response) => {
       ),
     ]);
 
-    const targetSocketIds = onlineUsers.get(secondUserId.toString());
+    const targetSocketIds = activeUserConnections.get(secondUserId.toString());
 
     if (targetSocketIds) {
       io.to([...targetSocketIds]).emit("conversation_read", {

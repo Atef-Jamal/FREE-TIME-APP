@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import PublicMessage from "../models/publicMessage.js";
-import { io, onlineUsers } from "../app.js";
+import { io } from "../app.js";
+import { activeUserConnections } from "../socketIo/index.js";
+
 import Notification, { INotification } from "../models/notification.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
@@ -79,13 +81,13 @@ export const createPublicMessage = async (req: Request, res: Response) => {
         userExcludedFields,
       );
       populatedNotifications.forEach((notify) => {
-        const targetSockets = onlineUsers.get(notify.belongsTo.toString());
+        const targetSockets = activeUserConnections.get(notify.belongsTo.toString());
         if (targetSockets) {
           io.to([...targetSockets]).emit("notification", notify);
         }
       });
     }
-    const currentUserSockets = onlineUsers.get(req.user._id.toString());
+    const currentUserSockets = activeUserConnections.get(req.user._id.toString());
     io.except(currentUserSockets ? [...currentUserSockets] : []).emit(
       "public_chat_message",
       populatedMessage,
@@ -187,7 +189,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
           await interactedWithMessageBefore.save()
         ).populate("metadata.interactedUser", userExcludedFields);
 
-        const targetSockets = onlineUsers.get(savedNotification.belongsTo.toString());
+        const targetSockets = activeUserConnections.get(savedNotification.belongsTo.toString());
         if (targetSockets) {
           io.to([...targetSockets]).emit("notification", savedNotification);
         }
@@ -212,7 +214,7 @@ export const reactToPublicMessage = async (req: Request, res: Response) => {
         );
 
         if (!populatedNotification) return res.status(404).json({ error: "an error occurred" });
-        const targetSockets = onlineUsers.get(populatedNotification.belongsTo.toString());
+        const targetSockets = activeUserConnections.get(populatedNotification.belongsTo.toString());
         if (targetSockets) {
           io.to([...targetSockets]).emit("notification", populatedNotification);
         }

@@ -4,8 +4,9 @@ import Frame from "../models/frame.js";
 import ProfileView from "../models/ProfileView.js";
 import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
-import { onlineUsers, io } from "../app.js";
+import { io } from "../app.js";
 import { Types } from "mongoose";
+import { activeUserConnections } from "../socketIo/index.js";
 
 export const getLiveStatsUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
@@ -29,7 +30,7 @@ export const getLiveStatsUsers = async (req: Request, res: Response) => {
 
 export const getOnlineUsersData = async (_req: Request, res: Response) => {
   try {
-    const usersIds = [...onlineUsers.keys()];
+    const usersIds = [...activeUserConnections.keys()];
     const users = await User.find({ _id: { $in: usersIds } })
       .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: 1 })
       .select(userExcludedFields);
