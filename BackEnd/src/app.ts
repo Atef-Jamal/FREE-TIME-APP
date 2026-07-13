@@ -10,8 +10,6 @@ import { connectToRedis } from "./lib/redis.js";
 import passport from "./lib/passport.js";
 import { connecteToMongodb } from "./lib/db.js";
 dotenv.config();
-import bcrypt from "bcryptjs";
-import User from "./models/user.js";
 
 const app = express();
 
