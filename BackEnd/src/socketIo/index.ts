@@ -14,7 +14,6 @@ interface ServerToClientEvents {
   public_chat_typing_stop: () => void;
   public_chat_message: (publicMessage: IPublicChatItem) => void;
   online_users: (usersIds: string[]) => void;
-  user_registered: (newUser: IUser) => void;
   user_updated: (updatedUser: IUser) => void;
   notification: (updatedUser: INotification) => void;
   public_chat_message_reaction: (publicMessage: IPublicChatItem) => void;

@@ -13,6 +13,7 @@ dotenv.config();
 
 const app = express();
 
+app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.CLIENT_BASE_URL, credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

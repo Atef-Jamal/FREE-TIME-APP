@@ -64,8 +64,6 @@ export const register = async (req: Request, res: Response) => {
 
     setTokenCookies({ accessToken, refreshToken, res });
 
-    io.emit("user_registered", savedUser);
-
     return res.status(201).json({ status: "success" });
   } catch (error) {
     return res.status(404).json({ error: "an Error occurred, Try again Later" });

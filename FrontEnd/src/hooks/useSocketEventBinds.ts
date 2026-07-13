@@ -118,10 +118,6 @@ export const useSocketEventBinds = () => {
     // });
   };
 
-  const handleNewUserRegistered = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["conversations"] });
-  }, [queryClient]);
-
   useEffect(() => {
     if (userAuth === "pending") return;
 
@@ -156,7 +152,6 @@ export const useSocketEventBinds = () => {
     notification: handleAddNewNotification,
     public_chat_message: handleRecieveNewPublicChatMessage,
     user_updated: handleUserUpdated,
-    user_registered: handleNewUserRegistered,
     private_chat_message: handleReceivedPrivateMessage,
     conversation_read: handleConversationReaded,
   });

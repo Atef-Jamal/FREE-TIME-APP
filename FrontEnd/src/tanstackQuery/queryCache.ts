@@ -250,21 +250,21 @@ export const addSuccessPrivateMsgCache = ({
     ["conversations"],
     (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
       if (!previous) return;
-      const flatedConversations = previous?.pages.map((page) => page.conversations).flat();
-      const findedConversation = flatedConversations?.find(
+      const flatedConversations = previous.pages.map((page) => page.conversations).flat();
+      const existingConversation = flatedConversations?.find(
         (conv) => conv.secondUser._id === newMessage.receiver._id,
       );
 
-      if (findedConversation) {
+      if (existingConversation) {
         return {
           ...previous,
           pages: previous.pages
             .map((page) => ({
               ...page,
-              conversations: page.conversations.filter((conv) => conv._id !== findedConversation._id),
+              conversations: page.conversations.filter((conv) => conv._id !== existingConversation._id),
             }))
             .map((page, index) => {
-              const updatedConversation = { ...findedConversation, lastMessage: newMessage };
+              const updatedConversation = { ...existingConversation, lastMessage: newMessage };
               if (index === 0) {
                 return {
                   ...page,
@@ -342,29 +342,29 @@ export const addReceivedPrivateMsgCache = ({
     (previous: ICashedConversations | undefined): ICashedConversations | undefined => {
       if (!previous) return;
       const flatedConversations = previous.pages.map((page) => page.conversations).flat();
-      const findedConversation = flatedConversations.find(
+      const existingConversation = flatedConversations.find(
         (conv) => conv.secondUser._id === newMessage.sender._id,
       );
 
-      if (findedConversation) {
+      if (existingConversation) {
         return {
           ...previous,
           pages: previous.pages
             .map((page) => ({
               ...page,
-              conversations: page.conversations.filter((conv) => conv._id !== findedConversation._id),
+              conversations: page.conversations.filter((conv) => conv._id !== existingConversation._id),
             }))
             .map((page, index) => {
               const isConversationWithUserOpen =
-                findedConversation.secondUser._id === secondUserId && isPrivateChatPageOpen;
+                existingConversation.secondUser._id === secondUserId && isPrivateChatPageOpen;
               const updatedConversation = {
-                ...findedConversation,
+                ...existingConversation,
                 lastMessage: newMessage,
                 unreadCounts: {
-                  ...findedConversation.unreadCounts,
+                  ...existingConversation.unreadCounts,
                   [currentUserId]: isConversationWithUserOpen
-                    ? findedConversation.unreadCounts[currentUserId]
-                    : findedConversation.unreadCounts[currentUserId] + 1,
+                    ? existingConversation.unreadCounts[currentUserId]
+                    : existingConversation.unreadCounts[currentUserId] + 1,
                 },
               };
               if (index === 0)

@@ -20,7 +20,7 @@ export const setTokenCookies = ({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: 15 * 60 * 1000,
+    maxAge: 1 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
