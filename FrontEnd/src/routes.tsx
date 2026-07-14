@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import LoadingPage from "./pages/LoadingPage";
+import LoadingPage from "./Pages/LoadingPage";
 
-import { Layout, Home, Offers, Affiliates, MarketPlace, LeaderBoard, CashOut, MobileChat } from "./pages";
-import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./pages";
-import { ProtectedPage, PageNotFound, AppError } from "./pages";
+import { Layout, Home, Offers, Affiliates, MarketPlace, LeaderBoard, CashOut, MobileChat } from "./Pages";
+import { Rewards, MyProfile, Musics, PrivateChat, PublicUserProfile, Playing } from "./Pages";
+import { ProtectedPage, PageNotFound, AppError } from "./Pages";
 
 export const router = createBrowserRouter(
   [
