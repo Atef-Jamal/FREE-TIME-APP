@@ -86,6 +86,8 @@ const guestDisconnect = (ipAddress: string, socketId: string): boolean => {
 
 export const initializeSocket = function (server: IServer) {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>(server, {
+pingTimeout: 5000,   // Wait 5 seconds instead of 20+
+  pingInterval: 10000, // Check every 10 seconds
     cors: { origin: process.env.CLIENT_BASE_URL, credentials: true },
   });
 
