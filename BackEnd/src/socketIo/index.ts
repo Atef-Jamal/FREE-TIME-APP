@@ -29,7 +29,7 @@ interface ClientToServerEvents {
 }
 
 interface SocketData {
-  userId: string;
+  userId?: string;
 }
 
 type IServer = http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
@@ -165,7 +165,7 @@ export const initializeSocket = function (server: IServer) {
       if (userId) {
         const isLastUserTab = userDisconnect(userId, socket.id);
         if (isLastUserTab) {
-socket.data = undefined;
+socket.data = {};
           socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
           // try {
           //   await User.findByIdAndUpdate(userId, { isOnline: false });
