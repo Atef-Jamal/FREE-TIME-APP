@@ -1,7 +1,11 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import type { IUser, IInitialState, IModal, IMusicInfo, IToast, ITogglActionPayload } from "../types";
+import type { IInitialState, ITogglActionPayload } from "./types";
 import { RootState } from "./store";
+import { IMusicInfo } from "../features/musics/types";
+import { IUser } from "../features/user/types";
+import { IToast } from "../components/Shared/Toast";
+import { IModal } from "../components/Shared/Modal";
 
 const hasAccessToken = !!localStorage.getItem("isLoggedIn");
 

@@ -6,8 +6,8 @@ import { FaMusic } from "react-icons/fa6";
 import { useSocketEvents } from "../../hooks/useSocketEvents";
 import { useAppSelector } from "../../context/hooks";
 import { selectOpenMusicModal, selectPublicMsgNotify } from "../../context/appStateSlice";
-import { mobileNavBottomItems } from "../../helper/data";
-import { cn } from "../../utilities";
+import { mobileNavBottomItems } from "../../constants";
+import { cn } from "../../utils";
 
 interface IProps {
   handleCloseMobileSidebare: (open: boolean) => void;

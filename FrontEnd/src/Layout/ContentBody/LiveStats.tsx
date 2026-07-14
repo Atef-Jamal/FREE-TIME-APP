@@ -2,11 +2,12 @@ import { memo, Suspense, useMemo, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaExclamationCircle } from "react-icons/fa";
-import LiveStatsItem from "../../components/Ui/LiveStatsItem";
-import LangMenu from "../../components/Ui/LangMenu";
-import LiveStatsSkeleton from "../../components/Ui/LiveStatsSkeleton";
-import Spinner from "../../components/Shared/Common/Spinner";
-import { useFetchTopUser, useInfiniteLiveStatsUsers } from "../../tanstackQuery/queryFetch";
+import LiveStatsItem from "../../features/live-stats/components/LiveStatsItem";
+import LangMenu from "../../features/live-stats/components/LangMenu";
+import LiveStatsSkeleton from "../../features/live-stats/components/LiveStatsSkeleton";
+import Spinner from "../../components/Shared/Spinner";
+import { useInfiniteLiveStatsUsers } from "../../features/live-stats/hooks";
+import { useFetchTopUser } from "../../features/user/hooks";
 
 const LiveStats = memo(() => {
   const [openLangMenu, setOpenLangMenu] = useState(false);

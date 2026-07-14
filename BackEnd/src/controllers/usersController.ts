@@ -6,7 +6,7 @@ import { userExcludedFields } from "../constants/index.js";
 import { redisClient } from "../lib/redis.js";
 import { io } from "../app.js";
 import { Types } from "mongoose";
-import { activeUserConnections } from "../socketIo/index.js";
+import { activeGuestConnections, activeUserConnections } from "../socketIo/index.js";
 
 export const getLiveStatsUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
@@ -38,6 +38,10 @@ export const getOnlineUsersData = async (_req: Request, res: Response) => {
   } catch (error) {
     return res.status(404).json({ error: "Can't Load online users data" });
   }
+};
+
+export const getOnlineGuestsCount = (_req: Request, res: Response) => {
+  return res.status(200).json(activeGuestConnections.size);
 };
 
 export const getLeaderboardUsers = async (req: Request, res: Response) => {

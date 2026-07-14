@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
 import { useTranslation } from "react-i18next";
 import { selectUserAuth, showModal } from "../../context/appStateSlice";
-import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-import NavRegisterButtons from "../../components/Ui/NavRegisterButtons";
-import NavProfileHeaderSkeleton from "../../components/Ui/NavProfileHeaderSkeleton";
-import NavProfileHeader from "../../components/Ui/NavProfileHeader";
+import SearchBar from "../../features/search/components/SearchBar";
+import NavRegisterButtons from "../../features/auth/components/NavRegisterButtons";
+import NavProfileHeaderSkeleton from "./NavProfileHeaderSkeleton";
+import NavProfileHeader from "./NavProfileHeader";
 
 const Navbare = memo(() => {
   const userAuth = useAppSelector(selectUserAuth);

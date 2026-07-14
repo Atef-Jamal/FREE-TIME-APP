@@ -1,25 +1,8 @@
 import { useCallback } from "react";
-import notificationSoundSrc from "../assets/images/notificationSound.wav";
-
-import {
-  addReceivedPrivateMsgCache,
-  addNewPublicMsgCache,
-  updateTotalUnReadPrivateMsgsCache,
-  updateUserCache,
-  updateTotalGuestsCache,
-  addNewNotificationCache,
-} from "../tanstackQuery/queryCache";
-
+import notificationSoundSrc from "../assets/audios/notificationSound.wav";
 import { useSocketEvents } from "../hooks/useSocketEvents";
-import { displaySound } from "../utilities";
-import messageSoundSrc from "../assets/images/messageSound.mp3";
-import type {
-  IUser,
-  IPublicChatItem,
-  IPrivateMessage,
-  INotifications,
-  ICashedSingleConversation,
-} from "../types";
+import { displaySound } from "../utils";
+import messageSoundSrc from "../assets/audios/messageSound.mp3";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppDispatch, useAppSelector } from "../context/hooks";
 import {
@@ -29,6 +12,17 @@ import {
   setPublicMsgRedPoint,
 } from "../context/appStateSlice";
 import { useLocation } from "react-router-dom";
+import { IPublicChatItem } from "../features/chats/public-chat/types";
+import { ICashedSingleConversation, IPrivateMessage } from "../features/chats/private-chat/types";
+import { INotifications } from "../features/notifications/types";
+import { IUser } from "../features/user/types";
+import { addNewPublicMsgCache } from "../features/chats/public-chat/cache";
+import {
+  addReceivedPrivateMsgCache,
+  updateTotalUnReadPrivateMsgsCache,
+} from "../features/chats/private-chat/cache";
+import { updateTotalGuestsCache, updateUserCache } from "../features/user/cache";
+import { addNewNotificationCache } from "../features/notifications/cache";
 
 export const useSocketEventBinds = () => {
   const queryClient = useQueryClient();

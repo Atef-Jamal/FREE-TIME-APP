@@ -2,12 +2,12 @@ import { Suspense, lazy, memo } from "react";
 import { useAppSelector } from "../../context/hooks";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import { cn } from "../../utilities";
+import { cn } from "../../utils";
 import LiveStats from "./LiveStats";
 import Footer from "./Footer";
 import { selectHidenLiveStats, selectSidebarCollapsed, selectSmallScreen } from "../../context/appStateSlice";
 
-const DisktopChat = lazy(() => import("../../Pages/PublichChat/DisktopChat"));
+const DisktopChat = lazy(() => import("../../features/chats/public-chat/components/DisktopChat"));
 
 interface IProps {
   openSidbareMobile: boolean;

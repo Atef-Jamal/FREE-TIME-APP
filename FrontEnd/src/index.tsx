@@ -6,12 +6,13 @@ import { Analytics } from "@vercel/analytics/react";
 import { Provider } from "react-redux";
 import store from "./context/store";
 import App from "./App";
+import "./i18next";
+import "@fontsource/roboto";
+import "@fontsource/poppins";
 import "./index.css";
 import "./App.css";
-import "@fontsource/poppins";
-import "@fontsource/roboto";
-import "./i18next";
-import { queryClient } from "./tanstackQuery/confige";
+
+import { queryClient } from "./lib/tanstack-query/confige";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 

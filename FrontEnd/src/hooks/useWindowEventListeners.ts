@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { openToast, updateStateField } from "../context/appStateSlice";
-import { debounce } from "../utilities";
+import { debounce } from "../utils";
 import { useAppDispatch } from "../context/hooks";
 
 export const useWindowEventListeners = () => {

@@ -10,13 +10,13 @@ import {
   selectSmallScreen,
 } from "../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../context/hooks";
-import { sidebareItems } from "../../helper/data";
+import { sidebareItems } from "../../constants";
 import { NavLink } from "react-router-dom";
-import { cn } from "../../utilities";
-import SearchBar from "../../components/Shared/Modals/SearchModal/SearchBar";
-import { useFetchUnreadPrivateMsgs } from "../../tanstackQuery/queryFetch";
+import { cn } from "../../utils";
+import SearchBar from "../../features/search/components/SearchBar";
+import { useFetchUnreadPrivateMsgs } from "../../features/chats/private-chat/hooks";
 
-const MusicPlayer = lazy(() => import("../../components/Ui/MusicPlayer"));
+const MusicPlayer = lazy(() => import("../../features/musics/components/MusicPlayer"));
 
 const Sidebar = memo(({ handleClose }: { handleClose: () => void }) => {
   const userAuth = useAppSelector(selectUserAuth);

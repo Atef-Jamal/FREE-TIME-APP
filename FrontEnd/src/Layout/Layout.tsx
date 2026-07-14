@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useState } from "react";
 import Navbare from "./Navbare/Navbare";
-import Toast from "../components/Shared/Common/Toast";
-import Modal from "../components/Shared/Modals/Modal";
+import Toast from "../components/Shared/Toast";
+import Modal from "../components/Shared/Modal";
 import ContentBody from "./ContentBody/ContentBody";
 import { useAppSelector } from "../context/hooks";
 import { selectSmallScreen } from "../context/appStateSlice";
