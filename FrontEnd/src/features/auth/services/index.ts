@@ -63,5 +63,9 @@ export const logOut = async () => {
   localStorage.removeItem("activeChatSecondUserId");
   await axiosRequest.post("api/auth/logout");
   socket.disconnect();
-  window.location.href = `${window.location.origin}/?comeFrom=logout`;
+setTimeout(() => {
+      window.location.href = `${window.location.origin}/?comeFrom=logout`;
+  }, 200); 
+};
+
 };
