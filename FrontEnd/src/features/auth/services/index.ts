@@ -66,6 +66,6 @@ export const logOut = async () => {
 setTimeout(() => {
       window.location.href = `${window.location.origin}/?comeFrom=logout`;
   }, 200); 
-};
+
 
 };
