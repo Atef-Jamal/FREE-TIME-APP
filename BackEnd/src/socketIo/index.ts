@@ -165,6 +165,7 @@ export const initializeSocket = function (server: IServer) {
       if (userId) {
         const isLastUserTab = userDisconnect(userId, socket.id);
         if (isLastUserTab) {
+socket.data.userId = undefined;
           socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
           // try {
           //   await User.findByIdAndUpdate(userId, { isOnline: false });
