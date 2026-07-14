@@ -59,17 +59,13 @@ export const handleSignInWithOauth = async (provider: "google" | "github", dispa
 };
 
 export const logOut = async () => {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("activeChatSecondUserId");
   const response = await axiosRequest.post("api/auth/logout");
-  
-if(response.status === 200){
-socket.disconnect();
-setTimeout(() => {
+  if (response.status === 200) {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("activeChatSecondUserId");
+    socket.disconnect();
+    setTimeout(() => {
       window.location.href = `${window.location.origin}/?comeFrom=logout`;
-  }, 200); 
-}
-
-
-
+    }, 100);
+  }
 };

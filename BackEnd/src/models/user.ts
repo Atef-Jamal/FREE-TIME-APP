@@ -18,7 +18,6 @@ export interface IUser extends Document {
   points: number;
   profilePicture: string;
   emailVerified: boolean;
-  isOnline: boolean;
   emailVerificationCode: { code: string; date: Date };
   completedOffers: (Types.ObjectId | IOffer)[];
   mySongs: string[];
@@ -67,10 +66,6 @@ const userSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
-    isOnline: {
-      type: Boolean,
-      default: false,
-    },
     week: { type: Number, default: 1 },
     dailyReward: [],
     mySongs: [],
@@ -104,7 +99,7 @@ const userSchema = new Schema<IUser>(
   { timestamps: true },
 );
 
-userSchema.index({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 });
+userSchema.index({ points: -1, emailVerified: 1, createdAt: -1 });
 
 const User = model<IUser>("User", userSchema);
 export default User;

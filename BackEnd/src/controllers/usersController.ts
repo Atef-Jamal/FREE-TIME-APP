@@ -10,17 +10,29 @@ import { activeGuestConnections, activeUserConnections } from "../socketIo/index
 
 export const getLiveStatsUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
-  const limit = 20;
+  const limit = 15;
   const skip = (pageParam - 1) * limit;
 
   try {
-    const users = await User.find({})
-      .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
+    const onlineUsersPromise = User.find({ _id: { $in: [...activeUserConnections.keys()] } })
+      .sort({
+        points: -1,
+        emailVerified: 1,
+        createdAt: -1,
+      })
+      .populate("activeFrame", "image")
+      .select(userExcludedFields);
+
+    const otherUsersPromise = User.find({ _id: { $nin: [...activeUserConnections.keys()] } })
+      .sort({ points: -1, emailVerified: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .select(userExcludedFields)
-      .populate("activeFrame", "image");
+      .populate("activeFrame", "image")
+      .select(userExcludedFields);
 
+    const [onlineUsers, otherUsers] = await Promise.all([onlineUsersPromise, otherUsersPromise]);
+
+    const users = [...onlineUsers, ...otherUsers];
     const hasMore = limit === users.length;
     return res.status(200).json({ users, hasMore });
   } catch (error) {
@@ -32,7 +44,7 @@ export const getOnlineUsersData = async (_req: Request, res: Response) => {
   try {
     const usersIds = [...activeUserConnections.keys()];
     const users = await User.find({ _id: { $in: usersIds } })
-      .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: 1 })
+      .sort({ points: -1, emailVerified: 1, createdAt: 1 })
       .select(userExcludedFields);
     return res.status(200).json(users);
   } catch (error) {
@@ -50,7 +62,7 @@ export const getLeaderboardUsers = async (req: Request, res: Response) => {
   const skip = (pageParam - 1) * limit;
   try {
     const users = await User.find({})
-      .sort({ points: -1, emailVerified: 1, isOnline: -1, createdAt: -1 })
+      .sort({ points: -1, emailVerified: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select(userExcludedFields);

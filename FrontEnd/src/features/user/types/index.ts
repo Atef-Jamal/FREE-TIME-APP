@@ -14,7 +14,6 @@ export interface IUser {
   mySongs: string[];
   completedOffers: string[];
   dailyReward: IDailyReward[];
-  isOnline: boolean;
   week: number;
   createdAt: Date;
   updatedAt: Date;

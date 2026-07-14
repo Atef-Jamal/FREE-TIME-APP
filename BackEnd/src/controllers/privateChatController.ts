@@ -168,7 +168,7 @@ export const getAllConversations = async (req: Request, res: Response) => {
       const users = await User.find({ _id: { $nin: [...usersToExclude, currentUserId] } })
         .select("_id name profilePicture")
         .populate("activeFrame")
-        .sort({ isOnline: -1, points: -1, emailVerified: 1, createdAt: -1 })
+        .sort({ points: -1, emailVerified: 1, createdAt: -1 })
         .skip(newSkip)
         .limit(newLimit);
 

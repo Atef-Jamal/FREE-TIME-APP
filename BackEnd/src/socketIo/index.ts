@@ -1,6 +1,6 @@
 import http from "http";
 import { Server } from "socket.io";
-import User, { IUser } from "../models/user.js";
+import { IUser } from "../models/user.js";
 import { verifyAccessToken } from "../services/authServices.js";
 import * as cookie from "cookie";
 import { IPublicChatItem } from "../models/publicMessage.js";
@@ -86,8 +86,9 @@ const guestDisconnect = (ipAddress: string, socketId: string): boolean => {
 
 export const initializeSocket = function (server: IServer) {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>(server, {
-pingTimeout: 5000,   // Wait 5 seconds instead of 20+
-  pingInterval: 10000, // Check every 10 seconds
+    pingTimeout: 5000,
+    pingInterval: 10000,
+
     cors: { origin: process.env.CLIENT_BASE_URL, credentials: true },
   });
 
@@ -121,12 +122,12 @@ pingTimeout: 5000,   // Wait 5 seconds instead of 20+
     if (userId) {
       const isFirstUserTab = userConnect(userId, socket.id);
       if (isFirstUserTab) {
-        io.emit("online_users", [...activeUserConnections.keys()]);
-        try {
-          await User.findByIdAndUpdate(userId, { isOnline: true });
-        } catch (error) {
-          console.log(`Failed to update user status in DB: ${userId}`);
-        }
+        socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
+        // try {
+        //   await User.findByIdAndUpdate(userId, { isOnline: true });
+        // } catch (error) {
+        //   console.log(`Failed to update user status in DB: ${userId}`);
+        // }
       }
 
       socket.on("user_joined_conversation", ({ firstParty, secondParty }) => {
@@ -164,12 +165,12 @@ pingTimeout: 5000,   // Wait 5 seconds instead of 20+
       if (userId) {
         const isLastUserTab = userDisconnect(userId, socket.id);
         if (isLastUserTab) {
-          io.emit("online_users", [...activeUserConnections.keys()]);
-          try {
-            await User.findByIdAndUpdate(userId, { isOnline: false });
-          } catch (err) {
-            console.error("Failed to update user status in DB:", err);
-          }
+          socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
+          // try {
+          //   await User.findByIdAndUpdate(userId, { isOnline: false });
+          // } catch (err) {
+          //   console.error("Failed to update user status in DB:", err);
+          // }
         }
       }
     });
