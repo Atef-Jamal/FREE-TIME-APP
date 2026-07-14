@@ -61,11 +61,15 @@ export const handleSignInWithOauth = async (provider: "google" | "github", dispa
 export const logOut = async () => {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("activeChatSecondUserId");
-  await axiosRequest.post("api/auth/logout");
-  socket.disconnect();
+  const response = await axiosRequest.post("api/auth/logout");
+  
+if(response.status === 200){
+socket.disconnect();
 setTimeout(() => {
       window.location.href = `${window.location.origin}/?comeFrom=logout`;
   }, 200); 
+}
+
 
 
 };
