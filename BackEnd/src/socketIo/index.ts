@@ -122,7 +122,7 @@ export const initializeSocket = function (server: IServer) {
     if (userId) {
       const isFirstUserTab = userConnect(userId, socket.id);
       if (isFirstUserTab) {
-        socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
+        io.emit("online_users", [...activeUserConnections.keys()]);
         // try {
         //   await User.findByIdAndUpdate(userId, { isOnline: true });
         // } catch (error) {
@@ -166,7 +166,7 @@ export const initializeSocket = function (server: IServer) {
         const isLastUserTab = userDisconnect(userId, socket.id);
         if (isLastUserTab) {
 socket.data = {};
-          socket.broadcast.emit("online_users", [...activeUserConnections.keys()]);
+          io.emit("online_users", [...activeUserConnections.keys()]);
           // try {
           //   await User.findByIdAndUpdate(userId, { isOnline: false });
           // } catch (err) {
