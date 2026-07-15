@@ -16,6 +16,7 @@ const router = express.Router();
 router.get("/live-stats-users", getLiveStatsUsers);
 router.get("/top-user", getTopUser);
 router.get("/onlines", getOnlineUsersData);
+router.get("/onlines-user-ids", getOnlineUsersIds);
 router.get("/guestsCount", getOnlineGuestsCount);
 router.get("/users-leaderboard", getLeaderboardUsers);
 router.get("/select-unselect-photoFrame/:frameId", protectedRoute, changeUserPhotoFrame);
