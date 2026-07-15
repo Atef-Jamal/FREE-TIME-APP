@@ -6,6 +6,7 @@ import {
   getWhoViewMyProfile,
   profileViewed,
   getOnlineUsersData,
+getOnlineUsersIds,
   getLeaderboardUsers,
   getTopUser,
   getOnlineGuestsCount,
