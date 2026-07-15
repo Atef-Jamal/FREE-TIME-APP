@@ -14,6 +14,7 @@ export const getLiveStatsUsers = async (req: Request, res: Response) => {
   const skip = (pageParam - 1) * limit;
 
   try {
+await new Promise((resolve) => setTimeout(resolve, 1000));
     const onlineUsersPromise = User.find({ _id: { $in: [...activeUserConnections.keys()] } })
       .sort({
         points: -1,
