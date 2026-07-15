@@ -4,7 +4,7 @@ import { IUser } from "../../../features/user/types";
 import { crown, verifiedImage } from "../../../assets";
 import UserImage from "../../../components/Shared/UserImage";
 import { selectCurrentUser } from "../../../context/appStateSlice";
-import { useFetchOnlineUsersData } from "../../user/hooks";
+import { useQuery } from "@tanstack/react-query";
 
 interface IProps {
   user: IUser;
@@ -14,8 +14,11 @@ interface IProps {
 const LiveStatsItem = ({ user, topUserId }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const { _id, name, points, emailVerified } = user;
-  const { data: onlineUsers = [] } = useFetchOnlineUsersData();
-  const isOnline = onlineUsers.some((online) => online._id === _id);
+ 
+  
+
+const {data:onlineUsers =[]} = useQuery({queryKey:["onlines-users-ids"] })
+const isOnline = onlineUsers.some((online) => online._id === _id);
 
   return (
     <Link
