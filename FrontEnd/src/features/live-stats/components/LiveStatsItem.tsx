@@ -18,7 +18,7 @@ const LiveStatsItem = ({ user, topUserId }: IProps) => {
   
 
 const {data:onlineUsers =[]} = useQuery<string[]>({queryKey:["onlines-users-ids"] })
-const isOnline = onlineUsers.some((online) => online._id === _id);
+const isOnline = onlineUsers.include(_id)
 
   return (
     <Link
