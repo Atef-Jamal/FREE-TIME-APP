@@ -14,7 +14,7 @@ import { useSocketEventBinds } from "../../hooks/useSocketEventBinds";
 import { useCallbackHandlers } from "../../hooks/useCallbackHandlers";
 import { useWindowEventListeners } from "../../hooks/useWindowEventListeners";
 import { axiosRequest } from "../../lib/axios";
-import { useFetchActiveGuestsCount, useFetchOnlineUsersData } from "../../features/user/hooks";
+import { useFetchActiveGuestsCount } from "../../features/user/hooks";
 import { useInfinitePublicChatMsges } from "../../features/chats/public-chat/hooks";
 import {
   useInfiniteConversationMsgs,
@@ -52,7 +52,6 @@ export const AppInitializer = () => {
   useCallbackHandlers();
 
   useFetchActiveGuestsCount();
-  useFetchOnlineUsersData();
   useInfinitePublicChatMsges();
   useInfiniteConversations({ userAuth: userAuth === "authenticated" });
   useInfiniteConversationMsgs({ userAuth: userAuth === "authenticated", secondUserId });
