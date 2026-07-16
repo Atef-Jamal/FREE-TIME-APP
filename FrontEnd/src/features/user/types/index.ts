@@ -27,3 +27,5 @@ export interface IProfileView {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type IOnlineUser = Pick<IUser, "_id" | "name">;

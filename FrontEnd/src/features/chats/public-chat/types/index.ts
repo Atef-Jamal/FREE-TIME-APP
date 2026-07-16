@@ -1,4 +1,4 @@
-import { IUser } from "../../../../features/user/types";
+import { IOnlineUser, IUser } from "../../../../features/user/types";
 
 export interface IPublicChatMessage {
   _id: string;
@@ -8,7 +8,7 @@ export interface IPublicChatMessage {
   likes: string[];
   dislikes: string[];
   loves: string[];
-  mentionedUsers: Set<IUser>;
+  mentionedUsers: Set<IOnlineUser>;
   isSended?: "PENDING" | "SUCCESS" | "FAILED";
   isDeleted: boolean;
   createdAt: Date;

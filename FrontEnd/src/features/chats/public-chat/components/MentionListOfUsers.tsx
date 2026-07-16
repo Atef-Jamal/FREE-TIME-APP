@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { IUser } from "../../../../features/user/types";
+import { IOnlineUser } from "../../../../features/user/types";
 
 import { useClickOutside } from "../../../../hooks/useClickOutside";
 import Empty from "../../../../components/Shared/Empty";
@@ -8,16 +8,19 @@ import { selectCurrentUser } from "../../../../context/appStateSlice";
 import { useFetchOnlineUsersData } from "../../../user/hooks";
 
 interface IProps {
-  setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IUser>>>;
+  setMentionedUsers: React.Dispatch<React.SetStateAction<Set<IOnlineUser>>>;
   setOpenMentionList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const currentUser = useAppSelector(selectCurrentUser);
-  const { data: users = [], status, error } = useFetchOnlineUsersData();
-  const excludeCurrentUser = users.filter((u) => u._id !== currentUser?._id);
+
+  const { data: onlineUsersData = [], status, error } = useFetchOnlineUsersData();
+  const onlineUsers = onlineUsersData.filter((u) => u._id !== currentUser?._id);
+
   useClickOutside(menuRef, () => setOpenMentionList(false));
+
   return (
     <div
       ref={menuRef}
@@ -25,7 +28,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
       style={{ scrollbarColor: "red" }}
       className="scrollbar-custom flex h-full w-full flex-col items-center gap-1 overflow-auto bg-[#141a36] p-1 max-lg:scrollbar-thin"
     >
-      {users?.length === 0 && status === "success" && (
+      {onlineUsers?.length === 0 && status === "success" && (
         <div className="my-auto">
           <Empty text="no user online now" />
         </div>
@@ -41,7 +44,7 @@ const MentionListOfUsers = ({ setMentionedUsers, setOpenMentionList }: IProps) =
           ))}
         </div>
       )}
-      {excludeCurrentUser.map((user: IUser) => {
+      {onlineUsers.map((user) => {
         return (
           <div
             key={user._id}

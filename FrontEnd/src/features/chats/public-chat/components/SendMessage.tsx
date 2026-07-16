@@ -14,7 +14,7 @@ import MentionListOfUsers from "./MentionListOfUsers";
 
 import { socket } from "../../../../lib/socketIO";
 import { sendPublicChatMessage } from "../services";
-import { IUser } from "../../../../features/user/types";
+import { IOnlineUser } from "../../../../features/user/types";
 import { addFailedPublicMsgCache, addPendingPublicMsgCache, addSuccessPublicMsgCache } from "../cache";
 
 interface IProps {
@@ -28,7 +28,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
   const userAuth = useAppSelector(selectUserAuth);
   const [openMentionList, setOpenMentionList] = useState(false);
   const [message, setMessage] = useState<string>("");
-  const [mentionedUsers, setMentionedUsers] = useState<Set<IUser>>(new Set());
+  const [mentionedUsers, setMentionedUsers] = useState<Set<IOnlineUser>>(new Set());
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const timeOutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

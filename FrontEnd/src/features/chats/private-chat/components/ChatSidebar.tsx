@@ -12,6 +12,7 @@ import { selectActiveSecondUserId, selectUserAuth } from "../../../../context/ap
 import { useQuery } from "@tanstack/react-query";
 import { useInfiniteConversations } from "../hooks";
 import { IPrivateMessage } from "../types";
+import { fetchOnlineUsers } from "../../../user/services";
 
 interface IProps {
   toggleSidebar: () => void;
@@ -27,7 +28,12 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
   const { data, error, status, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
     useInfiniteConversations({ userAuth: userAuth === "authenticated" });
 
-  const { data: onlineUsers } = useQuery<string[]>({ queryKey: ["onlines-users-ids"] });
+  const { data: onlineUsers = [] } = useQuery({
+    queryKey: ["onlines-users"],
+    queryFn: fetchOnlineUsers,
+  });
+
+  console.log(onlineUsers);
 
   const allConversations = data?.pages.map((page) => page.conversations).flat();
 
@@ -98,7 +104,7 @@ const ChatSidbare = memo(({ toggleSidebar, openSidebar }: IProps) => {
           [...Array(10).keys()].map((skeleton) => <ChatSidebarUserItemSkeleton key={skeleton} />)}
         {status === "success" &&
           allConversations?.map((conversation) => {
-            const isOnLine = Boolean(onlineUsers?.includes(conversation.secondUser._id));
+            const isOnLine = onlineUsers.includes(conversation.secondUser._id);
             const chatWithUserOpen = secondUserId === conversation.secondUser._id;
             return (
               <ChatSidebarUserItem

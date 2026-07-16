@@ -4,21 +4,16 @@ import { IUser } from "../../../features/user/types";
 import { crown, verifiedImage } from "../../../assets";
 import UserImage from "../../../components/Shared/UserImage";
 import { selectCurrentUser } from "../../../context/appStateSlice";
-import { useQuery } from "@tanstack/react-query";
 
 interface IProps {
   user: IUser;
   topUserId: string | undefined;
+  isOnline: boolean;
 }
 
-const LiveStatsItem = ({ user, topUserId }: IProps) => {
+const LiveStatsItem = ({ user, topUserId, isOnline }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const { _id, name, points, emailVerified } = user;
- 
-  
-
-const {data:onlineUsers =[]} = useQuery<string[]>({queryKey:["onlines-users-ids"] })
-const isOnline = onlineUsers.includes(_id)
 
   return (
     <Link

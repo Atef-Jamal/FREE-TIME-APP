@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
 import { openToast, selectCurrentUser, selectUserAuth } from "../../../../context/appStateSlice";
 import { handleApiError } from "../../../../utils";
@@ -11,7 +11,7 @@ import UserImage from "../../../../components/Shared/UserImage";
 import { socket } from "../../../../lib/socketIO";
 import { useInfiniteConversationMsgs } from "../hooks";
 import { conversationRead } from "../services";
-import { useFetchUser } from "../../../user/hooks";
+import { useFetchOnlineUsers, useFetchUser } from "../../../user/hooks";
 import { updateConversationReadCache, updateTotalUnReadPrivateMsgsCache } from "../cache";
 
 const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
@@ -28,7 +28,7 @@ const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
 
   const { data: secondUser } = useFetchUser({ userId: secondUserId });
 
-  const { data: onlineUsers } = useQuery<string[]>({ queryKey: ["onlines-users-ids"] });
+  const { data: onlineUsers = [] } = useFetchOnlineUsers();
 
   const messages = data?.pages.map((page) => page.messages).flat();
 
@@ -106,7 +106,7 @@ const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
           </div>
           <span className="text-sm font-bold text-[#3785fa] md:text-base">{secondUser?.name}</span>
         </div>
-        {onlineUsers?.includes(secondUserId) ? (
+        {onlineUsers.includes(secondUserId) ? (
           <span className="text-xs font-bold tracking-wide text-[#68e44a] md:text-sm">online</span>
         ) : (
           <span className="text-xs font-bold tracking-wide text-[#54724c] md:text-sm">offline</span>

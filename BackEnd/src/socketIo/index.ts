@@ -123,11 +123,6 @@ export const initializeSocket = function (server: IServer) {
       const isFirstUserTab = userConnect(userId, socket.id);
       if (isFirstUserTab) {
         io.emit("online_users", [...activeUserConnections.keys()]);
-        // try {
-        //   await User.findByIdAndUpdate(userId, { isOnline: true });
-        // } catch (error) {
-        //   console.log(`Failed to update user status in DB: ${userId}`);
-        // }
       }
 
       socket.on("user_joined_conversation", ({ firstParty, secondParty }) => {
@@ -165,13 +160,7 @@ export const initializeSocket = function (server: IServer) {
       if (userId) {
         const isLastUserTab = userDisconnect(userId, socket.id);
         if (isLastUserTab) {
-socket.data = {};
           io.emit("online_users", [...activeUserConnections.keys()]);
-          // try {
-          //   await User.findByIdAndUpdate(userId, { isOnline: false });
-          // } catch (err) {
-          //   console.error("Failed to update user status in DB:", err);
-          // }
         }
       }
     });

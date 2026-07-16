@@ -1,4 +1,4 @@
-import { memo, Suspense, useMemo, useState } from "react";
+import { memo, Suspense, useState } from "react";
 import { MdLanguage } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaExclamationCircle } from "react-icons/fa";
@@ -8,6 +8,8 @@ import LiveStatsSkeleton from "../../features/live-stats/components/LiveStatsSke
 import Spinner from "../../components/Shared/Spinner";
 import { useInfiniteLiveStatsUsers } from "../../features/live-stats/hooks";
 import { useFetchTopUser } from "../../features/user/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOnlineUsers } from "../../features/user/services";
 
 const LiveStats = memo(() => {
   const [openLangMenu, setOpenLangMenu] = useState(false);
@@ -19,11 +21,10 @@ const LiveStats = memo(() => {
 
   const users = data?.pages.map((page) => page.users).flat();
 
-  const memomizedUsersList = useMemo(() => {
-    return users?.map((user) => {
-      return <LiveStatsItem key={user._id} user={user} topUserId={topUser?.userId} />;
-    });
-  }, [users, topUser?.userId]);
+  const { data: onlineUsers = [] } = useQuery({
+    queryKey: ["onlines-users"],
+    queryFn: fetchOnlineUsers,
+  });
 
   return (
     <div
@@ -51,7 +52,14 @@ const LiveStats = memo(() => {
           </div>
         )}
 
-        {memomizedUsersList}
+        {users?.map((user) => (
+          <LiveStatsItem
+            key={user._id}
+            isOnline={onlineUsers.includes(user._id)}
+            user={user}
+            topUserId={topUser?.userId}
+          />
+        ))}
 
         {isFetchNextPageError && (
           <button className="h-[31px] text-nowrap rounded-sm px-4 text-sm text-red-400 lg:h-[38px] lg:text-base">

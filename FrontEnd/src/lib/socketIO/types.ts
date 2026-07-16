@@ -1,14 +1,14 @@
 import { IPrivateMessage } from "../../features/chats/private-chat/types";
 import { IPublicChatItem } from "../../features/chats/public-chat/types";
 import { INotifications } from "../../features/notifications/types";
-import { IUser } from "../../features/user/types";
+import { IOnlineUser, IUser } from "../../features/user/types";
 
 export interface ServerToClientEvents {
   connected_guests: (totalGuests: number) => void;
   public_chat_typing_start: () => void;
   public_chat_typing_stop: () => void;
   public_chat_message: (publicMessage: IPublicChatItem) => void;
-  online_users: (usersIds: string[]) => void;
+  online_users: (usersIds: IOnlineUser[]) => void;
   user_updated: (updatedUser: IUser) => void;
   notification: (updatedUser: INotifications) => void;
   public_chat_message_reaction: (publicMessage: IPublicChatItem) => void;

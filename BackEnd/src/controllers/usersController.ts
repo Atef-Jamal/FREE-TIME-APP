@@ -12,9 +12,7 @@ export const getLiveStatsUsers = async (req: Request, res: Response) => {
   const pageParam = Number(req.query.pageParam) || 1;
   const limit = 15;
   const skip = (pageParam - 1) * limit;
-
   try {
-await new Promise((resolve) => setTimeout(resolve, 1000));
     const onlineUsersPromise = User.find({ _id: { $in: [...activeUserConnections.keys()] } })
       .sort({
         points: -1,
@@ -41,12 +39,20 @@ await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 };
 
+export const getOnlineUsers = async (_req: Request, res: Response) => {
+  try {
+    const usersIds = [...activeUserConnections.keys()];
+    return res.status(200).json(usersIds);
+  } catch (error) {
+    return res.status(404).json({ error: "Can't Load online users data" });
+  }
+};
 export const getOnlineUsersData = async (_req: Request, res: Response) => {
   try {
     const usersIds = [...activeUserConnections.keys()];
     const users = await User.find({ _id: { $in: usersIds } })
       .sort({ points: -1, emailVerified: 1, createdAt: 1 })
-      .select(userExcludedFields);
+      .select("_id name");
     return res.status(200).json(users);
   } catch (error) {
     return res.status(404).json({ error: "Can't Load online users data" });

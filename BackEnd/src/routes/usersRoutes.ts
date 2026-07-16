@@ -5,6 +5,7 @@ import {
   changeUserPhotoFrame,
   getWhoViewMyProfile,
   profileViewed,
+  getOnlineUsers,
   getOnlineUsersData,
   getLeaderboardUsers,
   getTopUser,
@@ -15,7 +16,8 @@ const router = express.Router();
 
 router.get("/live-stats-users", getLiveStatsUsers);
 router.get("/top-user", getTopUser);
-router.get("/onlines", getOnlineUsersData);
+router.get("/online-users", getOnlineUsers);
+router.get("/online-users-data", getOnlineUsersData);
 router.get("/guestsCount", getOnlineGuestsCount);
 router.get("/users-leaderboard", getLeaderboardUsers);
 router.get("/select-unselect-photoFrame/:frameId", protectedRoute, changeUserPhotoFrame);

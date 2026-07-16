@@ -15,7 +15,7 @@ import { useLocation } from "react-router-dom";
 import { IPublicChatItem } from "../features/chats/public-chat/types";
 import { ICashedSingleConversation, IPrivateMessage } from "../features/chats/private-chat/types";
 import { INotifications } from "../features/notifications/types";
-import { IUser } from "../features/user/types";
+import { IOnlineUser, IUser } from "../features/user/types";
 import { addNewPublicMsgCache } from "../features/chats/public-chat/cache";
 import {
   addReceivedPrivateMsgCache,
@@ -35,10 +35,10 @@ export const useSocketEventBinds = () => {
   const isPrivateChatPageOpen = location.pathname === "/privatechat";
 
   const handleUpdateOnlineUsers = useCallback(
-    (data: string[]) => {
+    (data: IOnlineUser[]) => {
       queryClient.invalidateQueries({ queryKey: ["live-stats-users"] });
-      queryClient.invalidateQueries({ queryKey: ["onlines-users-data"] });
-      queryClient.setQueryData(["onlines-users-ids"], () => data);
+      queryClient.setQueryData(["onlines-users"], () => data);
+      queryClient.invalidateQueries({ queryKey: ["online-users-data"] });
     },
     [queryClient],
   );

@@ -1,5 +1,5 @@
 import { axiosRequest } from "../../../lib/axios";
-import { IUser } from "../../../features/user/types";
+import { IOnlineUser, IUser } from "../types";
 
 export const fetchUserById = async ({ userId }: { userId: string }): Promise<IUser> => {
   const response = await axiosRequest.get(`/api/users/${userId}`);
@@ -19,8 +19,11 @@ export const fetchGuestsCount = async (): Promise<number> => {
   return data;
 };
 
-export const fetchOnlineUsersData = async (): Promise<IUser[]> => {
-  const response = await axiosRequest.get(`/api/users/onlines`);
-  const data = response.data;
-  return data;
+export const fetchOnlineUsers = async (): Promise<string[]> => {
+  const response = await axiosRequest.get("api/users/online-users");
+  return response.data;
+};
+export const fetchOnlineUsersData = async (): Promise<IOnlineUser[]> => {
+  const response = await axiosRequest.get("api/users/online-users-data");
+  return response.data;
 };
