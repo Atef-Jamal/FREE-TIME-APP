@@ -1,14 +1,18 @@
 import { memo, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImSpinner3 } from "react-icons/im";
-import { openToast, selectCurrentUser, selectUserAuth } from "../../../../context/appStateSlice";
+import {
+  openToast,
+  selectCurrentUser,
+  selectSocket,
+  selectUserAuth,
+} from "../../../../context/appStateSlice";
 import { handleApiError } from "../../../../utils";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import SendMessagePrivateChat from "./SendMessagePrivateChat";
 import PrivateMessageItem from "./PrivateMessageItem";
 import UserImage from "../../../../components/Shared/UserImage";
 
-import { socket } from "../../../../lib/socketIO";
 import { useInfiniteConversationMsgs } from "../hooks";
 import { conversationRead } from "../services";
 import { useFetchOnlineUsers, useFetchUser } from "../../../user/hooks";
@@ -17,6 +21,7 @@ import { updateConversationReadCache, updateTotalUnReadPrivateMsgsCache } from "
 const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
+  const socket = useAppSelector(selectSocket);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -73,14 +78,14 @@ const ChatBody = memo(({ secondUserId }: { secondUserId: string }) => {
 
   useEffect(() => {
     if (secondUserId && currentUser?._id) {
-      socket.emit("user_joined_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
+      socket?.emit("user_joined_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
     }
     return () => {
       if (secondUserId && currentUser?._id) {
-        socket.emit("user_leaved_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
+        socket?.emit("user_leaved_conversation", { firstParty: currentUser._id, secondParty: secondUserId });
       }
     };
-  }, [currentUser?._id, secondUserId]);
+  }, [currentUser?._id, secondUserId, socket]);
 
   if (!secondUserId || error)
     return (

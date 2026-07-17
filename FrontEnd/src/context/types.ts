@@ -3,6 +3,7 @@ import { IMusicInfo } from "../features/musics/types";
 import { IUser } from "../features/user/types";
 import { IToast } from "../components/Shared/Toast";
 import { IModal } from "../components/Shared/Modal";
+import { Socket } from "socket.io-client";
 
 export interface IInitialState {
   userAuth: "pending" | "authenticated" | "unauthenticated";
@@ -11,6 +12,7 @@ export interface IInitialState {
   isSignInMode: boolean;
   mobileScreen: boolean;
   toastNotify: IToast;
+  socket: Socket | null;
   sidebarCollapsed: boolean;
   hideLiveStats: boolean;
   openMusicModal: boolean;

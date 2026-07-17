@@ -5,6 +5,13 @@ const store = configureStore({
   reducer: {
     appState: appStateReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredPaths: ["appState.socket"],
+        ignoredActions: ["appState/setSocket"],
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

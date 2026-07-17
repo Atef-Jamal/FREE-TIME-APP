@@ -17,6 +17,7 @@ const initialState: IInitialState = {
   isChatOpen: Boolean(localStorage.getItem("isDesktopChatOpen")),
   secondUserId: localStorage.getItem("activeChatSecondUserId") || null,
   publicMsgNotify: false,
+  socket: null,
   openMusicModal: false,
   activeMusic: null,
   musicIsPlaying: false,
@@ -54,6 +55,9 @@ const appStateReducer = createSlice({
       state.toastNotify.type = null;
       state.toastNotify.message = null;
     },
+    setSocket(state, action: PayloadAction<any>) {
+      state.socket = action.payload;
+    },
     handleAddMusic(state, action: PayloadAction<IMusicInfo>) {
       state.activeMusic = action.payload;
       state.musicIsPlaying = true;
@@ -77,6 +81,7 @@ export const {
   openToast,
   resetPopup,
   handleAddMusic,
+  setSocket,
   handleCloseMusic,
   updateActiveChatId,
   showModal,
@@ -91,6 +96,7 @@ export const selectCurrentUser = createSelector(selectState, ({ currentUser }) =
 export const selectUserAuth = createSelector(selectState, ({ userAuth }) => userAuth);
 export const selectModal = createSelector(selectState, ({ modal }) => modal);
 export const selectIsSignInMode = createSelector(selectState, ({ isSignInMode }) => isSignInMode);
+export const selectSocket = createSelector(selectState, ({ socket }) => socket);
 export const selectIsChatOpen = createSelector(selectState, ({ isChatOpen }) => isChatOpen);
 export const selectToastNotify = createSelector(selectState, ({ toastNotify }) => toastNotify);
 export const selectActiveMusic = createSelector(selectState, ({ activeMusic }) => activeMusic);

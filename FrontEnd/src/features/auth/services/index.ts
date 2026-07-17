@@ -1,7 +1,6 @@
 import { openToast } from "../../../context/appStateSlice";
 import { IDispatch } from "../../../context/types";
 import { axiosRequest } from "../../../lib/axios";
-import { socket } from "../../../lib/socketIO";
 import { AuthFormValues } from "../../../lib/zod/types";
 import { handleApiError } from "../../../utils";
 
@@ -63,9 +62,6 @@ export const logOut = async () => {
   if (response.status === 200) {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("activeChatSecondUserId");
-    socket.disconnect();
-    setTimeout(() => {
-      window.location.href = `${window.location.origin}/?comeFrom=logout`;
-    }, 100);
+    window.location.href = `${window.location.origin}/?comeFrom=logout`;
   }
 };

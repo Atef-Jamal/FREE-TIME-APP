@@ -6,13 +6,17 @@ import { FcLock } from "react-icons/fc";
 import { MdSend } from "react-icons/md";
 import { RiBaseStationLine } from "react-icons/ri";
 import type { IPublicChatItem } from "../types";
-import { openToast, selectCurrentUser, selectUserAuth } from "../../../../context/appStateSlice";
+import {
+  openToast,
+  selectCurrentUser,
+  selectSocket,
+  selectUserAuth,
+} from "../../../../context/appStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../../context/hooks";
 import { cn, handleApiError } from "../../../../utils";
 import { useSocketEvents } from "../../../../hooks/useSocketEvents";
 import MentionListOfUsers from "./MentionListOfUsers";
 
-import { socket } from "../../../../lib/socketIO";
 import { sendPublicChatMessage } from "../services";
 import { IOnlineUser } from "../../../../features/user/types";
 import { addFailedPublicMsgCache, addPendingPublicMsgCache, addSuccessPublicMsgCache } from "../cache";
@@ -26,6 +30,7 @@ interface IProps {
 const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProps) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const userAuth = useAppSelector(selectUserAuth);
+  const socket = useAppSelector(selectSocket);
   const [openMentionList, setOpenMentionList] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [mentionedUsers, setMentionedUsers] = useState<Set<IOnlineUser>>(new Set());
@@ -135,7 +140,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
     setMessage(textareaElement.value);
     if (!isTyping && textareaElement.value.trim() !== "") {
       setIsTyping(true);
-      socket.emit("public_chat_typing_start");
+      socket?.emit("public_chat_typing_start");
     }
     const lastTypingTime = new Date().getTime();
     const timmerLenth = 3000;
@@ -145,7 +150,7 @@ const SendMessage = ({ stopScrolling, setStopScrolling, setSearchParams }: IProp
       const now = new Date().getTime();
       const timDifference = now - lastTypingTime;
       if (timDifference >= timmerLenth) {
-        socket.emit("public_chat_typing_stop");
+        socket?.emit("public_chat_typing_stop");
         setIsTyping(false);
       }
     }, timmerLenth);

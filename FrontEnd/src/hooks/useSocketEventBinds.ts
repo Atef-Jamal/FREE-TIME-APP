@@ -1,6 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import notificationSoundSrc from "../assets/audios/notificationSound.wav";
-import { useSocketEvents } from "../hooks/useSocketEvents";
+import { ClientToServerEvents, ServerToClientEvents, useSocketEvents } from "../hooks/useSocketEvents";
 import { displaySound } from "../utils";
 import messageSoundSrc from "../assets/audios/messageSound.mp3";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +9,9 @@ import {
   selectActiveSecondUserId,
   selectCurrentUser,
   selectIsChatOpen,
+  selectUserAuth,
   setPublicMsgRedPoint,
+  setSocket,
 } from "../context/appStateSlice";
 import { useLocation } from "react-router-dom";
 import { IPublicChatItem } from "../features/chats/public-chat/types";
@@ -23,9 +25,11 @@ import {
 } from "../features/chats/private-chat/cache";
 import { updateTotalGuestsCache, updateUserCache } from "../features/user/cache";
 import { addNewNotificationCache } from "../features/notifications/cache";
+import { io, Socket } from "socket.io-client";
 
 export const useSocketEventBinds = () => {
   const queryClient = useQueryClient();
+  const userAuth = useAppSelector(selectUserAuth);
   const currentUser = useAppSelector(selectCurrentUser);
   const secondUserId = useAppSelector(selectActiveSecondUserId);
   const location = useLocation();
@@ -112,6 +116,22 @@ export const useSocketEventBinds = () => {
     },
     [queryClient],
   );
+
+  useEffect(() => {
+    if (userAuth === "pending") return;
+
+    const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+      import.meta.env.VITE_SERVER_BASE_URL,
+      {
+        withCredentials: true,
+        transports: ["websocket"],
+      },
+    );
+    dispatch(setSocket(socket));
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch, userAuth]);
 
   useSocketEvents({
     connected_guests: handleTotalGuests,
