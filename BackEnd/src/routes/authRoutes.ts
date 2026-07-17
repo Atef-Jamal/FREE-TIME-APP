@@ -21,7 +21,7 @@ const router = express.Router();
 router.post("/register", uploadCloud.single("profilePicture"), register);
 router.post("/login", login);
 router.post("/refresh-token", refreshToken);
-router.post("/logout", logOut);
+router.post("/logout", protectedRoute, logOut);
 
 router.get(
   "/google",

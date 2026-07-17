@@ -14,10 +14,13 @@ export const useCallbackHandlers = () => {
   useEffect(() => {
     if (loggedInWithProvider) {
       localStorage.setItem("isLoggedIn", "ok");
-      setSearchParams((prevSearchParams) => {
-        prevSearchParams.delete("provider-authenticated");
-        return prevSearchParams;
-      });
+      const timmer = setTimeout(() => {
+        setSearchParams((prevSearchParams) => {
+          prevSearchParams.delete("provider-authenticated");
+          return prevSearchParams;
+        });
+      }, 2000);
+      return () => clearTimeout(timmer);
     }
   }, [loggedInWithProvider, setSearchParams]);
 

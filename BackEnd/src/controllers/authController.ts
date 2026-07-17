@@ -17,6 +17,7 @@ import User from "../models/user.js";
 import Notification from "../models/notification.js";
 import PublicMessage from "../models/publicMessage.js";
 import { Types } from "mongoose";
+import { activeUserConnections } from "../socketIo/index.js";
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -137,7 +138,10 @@ export const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
-export const logOut = async (_req: Request, res: Response) => {
+export const logOut = async (req: Request, res: Response) => {
+  if (!req.user) return res.status(401).json({ error: "User authentication missing" });
+  activeUserConnections.delete(req.user._id.toString());
+  io.emit("online_users", [...activeUserConnections.keys()]);
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
   return res.status(200).json({ message: "Logged out successfully" });
